@@ -12,6 +12,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'message is required' }, { status: 400 });
     }
 
+    if (!DIFY_API_KEY) {
+      return NextResponse.json({ error: 'DIFY_API_KEY chưa được set trong Vercel Environment Variables' }, { status: 500 });
+    }
+
     const response = await fetch(`${DIFY_API_URL}/chat-messages`, {
       method: 'POST',
       headers: {
@@ -27,17 +31,17 @@ export async function POST(req: NextRequest) {
       }),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      const err = await response.text();
-      return NextResponse.json({ error: err }, { status: response.status });
+      return NextResponse.json({ error: JSON.stringify(data) }, { status: response.status });
     }
 
-    const data = await response.json();
     return NextResponse.json({
       answer: data.answer,
       conversation_id: data.conversation_id,
     });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
