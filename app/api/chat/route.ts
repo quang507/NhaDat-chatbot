@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         inputs: {},
         query: message,
         response_mode: 'blocking',
-        conversation_id: conversation_id || '',
+        ...(conversation_id ? { conversation_id } : {}),
         user: 'user',
       }),
     });
