@@ -1,33 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const DIFY_API_URL = process.env.DIFY_API_URL || 'https://api.dify.ai/v1';
-const DIFY_API_KEY = process.env.DIFY_API_KEY || '';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT || `Bạn là trợ lý tư vấn bất động sản chuyên nghiệp của NhaDat.com.vn.
+Nhiệm vụ của bạn là giúp người dùng tìm kiếm, tư vấn thông tin về mua bán, cho thuê nhà đất tại Việt Nam.
+Hãy trả lời thân thiện, ngắn gọn và hữu ích bằng tiếng Việt.
+Nếu không có thông tin cụ thể, hãy hướng dẫn người dùng liên hệ trực tiếp hoặc tìm kiếm trên website NhaDat.com.vn.`;
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { message, conversation_id } = body;
+    const { message, history } = body;
 
     if (!message) {
       return NextResponse.json({ error: 'message is required' }, { status: 400 });
     }
 
-    if (!DIFY_API_KEY) {
-      return NextResponse.json({ error: 'DIFY_API_KEY chưa được set trong Vercel Environment Variables' }, { status: 500 });
+    if (!GEMINI_API_KEY) {
+      return NextResponse.json({ error: 'GEMINI_API_KEY chưa được set trong Vercel Environment Variables' }, { status: 500 });
     }
 
-    const response = await fetch(`${DIFY_API_URL}/chat-messages`, {
+    const contents = [
+      ...(history || []).map((m: { role: string; content: string }) => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.content }],
+      })),
+      { role: 'user', parts: [{ text: message }] },
+    ];
+
+    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${DIFY_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        inputs: {},
-        query: message,
-        response_mode: 'blocking',
-        conversation_id: conversation_id || '',
-        user: 'user',
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents,
+        generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
       }),
     });
 
@@ -37,10 +45,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: JSON.stringify(data) }, { status: response.status });
     }
 
-    return NextResponse.json({
-      answer: data.answer,
-      conversation_id: data.conversation_id,
-    });
+    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Không có phản hồi';
+    return NextResponse.json({ answer });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }

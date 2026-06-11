@@ -12,7 +12,6 @@ export default function DifyChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [conversationId, setConversationId] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,12 +28,11 @@ export default function DifyChatbot() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, conversation_id: conversationId }),
+        body: JSON.stringify({ message: msg, history: messages }),
       });
       const data = await res.json();
       if (data.answer) {
         setMessages(prev => [...prev, { role: 'assistant', content: data.answer }]);
-        if (data.conversation_id) setConversationId(data.conversation_id);
       } else {
         setMessages(prev => [...prev, { role: 'assistant', content: 'Có lỗi xảy ra, vui lòng thử lại.' }]);
       }
