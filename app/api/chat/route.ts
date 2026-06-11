@@ -1,12 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { readFile } from 'fs/promises';
+import path from 'path';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
-const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT || `Bạn là trợ lý tư vấn bất động sản chuyên nghiệp của NhaDat.com.vn.
+const BASE_PROMPT = `Bạn là trợ lý tư vấn bất động sản chuyên nghiệp của NhaDat.com.vn.
 Nhiệm vụ của bạn là giúp người dùng tìm kiếm, tư vấn thông tin về mua bán, cho thuê nhà đất tại Việt Nam.
-Hãy trả lời thân thiện, ngắn gọn và hữu ích bằng tiếng Việt.
+Hãy trả lời thân thiện, ngắn gọn và hữu ích bằng tiếng Việt, dựa trên dữ liệu được cung cấp bên dưới.
 Nếu không có thông tin cụ thể, hãy hướng dẫn người dùng liên hệ trực tiếp hoặc tìm kiếm trên website NhaDat.com.vn.`;
+
+let cachedPrompt: string | null = null;
+
+async function getSystemPrompt(): Promise<string> {
+  if (cachedPrompt) return cachedPrompt;
+  let data = '';
+  try {
+    data = await readFile(path.join(process.cwd(), 'data.md'), 'utf-8');
+  } catch {
+    // data.md không tồn tại thì chỉ dùng base prompt
+  }
+  cachedPrompt = data ? `${BASE_PROMPT}\n\n=== DỮ LIỆU ===\n${data}` : BASE_PROMPT;
+  return cachedPrompt;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,7 +49,7 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        system_instruction: { parts: [{ text: await getSystemPrompt() }] },
         contents,
         generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
       }),
