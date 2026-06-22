@@ -80,6 +80,11 @@ export default function AdminPage() {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
 
+  // tab "Khách hàng & Lịch sử"
+  const [showLogs, setShowLogs] = useState(false);
+  const [leads, setLeads] = useState<Record<string, string>[]>([]);
+  const [chats, setChats] = useState<Record<string, string>[]>([]);
+
   // form thêm mục mới
   const [newCat, setNewCat] = useState(CATEGORIES[0]);
   const [newContent, setNewContent] = useState('');
@@ -197,6 +202,27 @@ export default function AdminPage() {
     }
   }
 
+  async function loadLogs() {
+    setBusy(true);
+    setStatus('Đang tải lịch sử...');
+    try {
+      const res = await fetch('/api/admin/logs', { method: 'POST', headers: authHeaders() });
+      const data = await res.json();
+      if (!res.ok) {
+        setStatus(data.error || 'Tải thất bại');
+        return;
+      }
+      setLeads(data.leads || []);
+      setChats(data.chats || []);
+      setShowLogs(true);
+      setStatus('');
+    } catch {
+      setStatus('Không kết nối được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function addEntry() {
     if (!newContent.trim()) {
       setStatus('Chưa có nội dung để thêm.');
@@ -261,7 +287,64 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-6xl mx-auto space-y-5">
-        <h1 className="text-2xl font-bold text-gray-800">📊 Quản lý dữ liệu Bot</h1>
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h1 className="text-2xl font-bold text-gray-800">📊 Quản lý dữ liệu Bot</h1>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowLogs(false)}
+              className={`rounded-lg px-4 py-2 text-sm font-medium ${!showLogs ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-300'}`}
+            >
+              📚 Dữ liệu
+            </button>
+            <button
+              onClick={loadLogs}
+              disabled={busy}
+              className={`rounded-lg px-4 py-2 text-sm font-medium ${showLogs ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-300'} disabled:opacity-50`}
+            >
+              📞 Khách hàng & Lịch sử
+            </button>
+          </div>
+        </div>
+
+        {showLogs && (
+          <div className="space-y-5">
+            {/* Leads */}
+            <div className="bg-white rounded-xl shadow p-5">
+              <p className="font-semibold text-gray-800 mb-3">📞 Khách để lại số điện thoại ({leads.length})</p>
+              {leads.length === 0 && <p className="text-sm text-gray-400">Chưa có khách nào để lại SĐT.</p>}
+              <div className="space-y-2">
+                {leads.map((l, i) => (
+                  <div key={i} className="border border-gray-200 rounded-lg p-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-green-700">📱 {l.phone}</span>
+                      <span className="text-xs text-gray-400">{l.time?.replace('T', ' ').slice(0, 16)}</span>
+                    </div>
+                    <p className="text-gray-600 mt-1">{l.message}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Chat history */}
+            <div className="bg-white rounded-xl shadow p-5">
+              <p className="font-semibold text-gray-800 mb-3">💬 Lịch sử câu hỏi gần đây ({chats.length})</p>
+              {chats.length === 0 && <p className="text-sm text-gray-400">Chưa có câu hỏi nào.</p>}
+              <div className="space-y-3">
+                {chats.map((c, i) => (
+                  <div key={i} className="border border-gray-200 rounded-lg p-3 text-sm">
+                    <span className="text-xs text-gray-400">{c.time?.replace('T', ' ').slice(0, 16)}</span>
+                    <p className="text-gray-800 font-medium mt-1">❓ {c.question}</p>
+                    <p className="text-gray-600 mt-1 whitespace-pre-wrap">💬 {c.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!showLogs && (
+        <>
+        <h1 className="sr-only">Quản lý dữ liệu</h1>
 
         {/* Văn phong bot */}
         <details className="bg-white rounded-xl shadow p-5">
@@ -386,6 +469,8 @@ export default function AdminPage() {
           </button>
           {status && <p className="text-sm text-gray-600">{status}</p>}
         </div>
+        </>
+        )}
       </div>
     </div>
   );
