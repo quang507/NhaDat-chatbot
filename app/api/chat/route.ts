@@ -42,7 +42,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
 
   const index = await loadIndex();
   if (index && index.chunks.length) {
-    const chunks = await retrieve(message, index, 8);
+    const chunks = await retrieve(message, index, 12);
     const data = chunks.map((c, i) => `[Nguồn ${i + 1}]\n${c}`).join('\n\n');
     return {
       text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
