@@ -84,6 +84,8 @@ function now() {
 export default function AdminPage() {
   const [pass, setPass] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState<string | null>(null); // cat đang hover
   const [entries, setEntries] = useState<Entry[]>([]);
   const [persona, setPersona] = useState('');
   const [config, setConfig] = useState<Config>({ suggestions: [], phone: '', zalo: '' });
@@ -549,33 +551,45 @@ export default function AdminPage() {
 
           {entries.length === 0 && <p className="text-sm text-gray-400">Chưa có dữ liệu.</p>}
 
-          {/* Cột theo danh mục (cuộn ngang) */}
+          {/* Cột theo danh mục (cuộn ngang) — hỗ trợ kéo thả thẻ giữa các cột */}
           <div className="flex gap-4 overflow-x-auto pb-3">
             {ALL_COLS.filter(cat => cat !== 'Khác' || entries.some(e => e.cat === 'Khác' || e.id === 'legacy')).map(cat => {
               const colEntries = entries.filter(e => (CATEGORIES.includes(e.cat) ? e.cat : 'Khác') === cat);
+              const isOver = dragOver === cat && dragId !== null && entries.find(e => e.id === dragId)?.cat !== cat;
               return (
-                <div key={cat} className="flex-shrink-0 w-80 bg-gray-100 rounded-xl p-3">
+                <div
+                  key={cat}
+                  className={`flex-shrink-0 w-80 rounded-xl p-3 transition-colors ${isOver ? 'bg-blue-100 ring-2 ring-blue-400' : 'bg-gray-100'}`}
+                  onDragOver={ev => { ev.preventDefault(); setDragOver(cat); }}
+                  onDragLeave={() => setDragOver(null)}
+                  onDrop={ev => {
+                    ev.preventDefault();
+                    setDragOver(null);
+                    if (dragId) updateEntry(dragId, { cat });
+                    setDragId(null);
+                  }}
+                >
                   <div className="flex items-center justify-between mb-3">
                     <span className={`text-xs font-bold rounded-full px-3 py-1 ${CAT_COLOR[cat]}`}>{cat}</span>
                     <span className="text-xs text-gray-400">{colEntries.length}</span>
                   </div>
-                  <div className="space-y-3">
-                    {colEntries.length === 0 && <p className="text-xs text-gray-400 text-center py-4">Trống</p>}
+                  <div className="space-y-3 min-h-[40px]">
+                    {colEntries.length === 0 && (
+                      <p className={`text-xs text-center py-4 ${isOver ? 'text-blue-400' : 'text-gray-400'}`}>
+                        {isOver ? '⬇ Thả vào đây' : 'Trống'}
+                      </p>
+                    )}
                     {colEntries.map(e => (
-                      <div key={e.id} className="bg-white rounded-lg shadow-sm p-3">
+                      <div
+                        key={e.id}
+                        draggable
+                        onDragStart={() => setDragId(e.id)}
+                        onDragEnd={() => { setDragId(null); setDragOver(null); }}
+                        className={`bg-white rounded-lg shadow-sm p-3 transition-opacity ${dragId === e.id ? 'opacity-40' : 'opacity-100'}`}
+                      >
                         <div className="flex items-center justify-between mb-2 gap-2">
-                          <span className="text-[11px] text-gray-400">{e.date}</span>
-                          <div className="flex items-center gap-2">
-                            <select
-                              value={CATEGORIES.includes(e.cat) ? e.cat : 'Khác'}
-                              onChange={ev => updateEntry(e.id, { cat: ev.target.value })}
-                              className="text-[11px] text-gray-500 border border-gray-200 rounded px-1 py-0.5 max-w-[110px]"
-                              title="Chuyển danh mục"
-                            >
-                              {[...CATEGORIES, 'Khác'].map(c => <option key={c} value={c}>{c}</option>)}
-                            </select>
-                            <button onClick={() => deleteEntry(e.id)} className="text-xs text-red-500 hover:text-red-700">🗑</button>
-                          </div>
+                          <span className="text-[11px] text-gray-400 cursor-grab active:cursor-grabbing select-none">⠿ {e.date}</span>
+                          <button onClick={() => deleteEntry(e.id)} className="text-xs text-red-400 hover:text-red-600">🗑</button>
                         </div>
                         <textarea
                           value={e.content}
