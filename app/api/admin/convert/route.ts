@@ -22,9 +22,17 @@ export async function POST(req: NextRequest) {
     let text = '';
 
     if (ext === 'pdf') {
-      const { PDFParse } = await import('pdf-parse');
-      const parser = new PDFParse({ data: buffer });
-      const result = await parser.getText();
+      // pdf-parse v2 dùng DOMMatrix (browser API) - cần polyfill trước khi import
+      if (typeof globalThis.DOMMatrix === 'undefined') {
+        // @ts-expect-error polyfill minimal cho Node.js
+        globalThis.DOMMatrix = class DOMMatrix {
+          constructor() { return this; }
+        };
+      }
+      // Dùng API cũ (v1 style) qua default export để tránh lỗi DOMMatrix
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pdfParse = require('pdf-parse');
+      const result = await pdfParse(buffer);
       text = result.text;
     } else if (ext === 'docx' || ext === 'doc') {
       const mammoth = await import('mammoth');
