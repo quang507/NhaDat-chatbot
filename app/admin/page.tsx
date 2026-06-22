@@ -3,6 +3,8 @@
 import { useState } from 'react';
 
 const CATEGORIES = [
+  'Villa Ny\'ah',
+  'Ny\'ah Phú Định',
   'Pháp lý',
   'Tính năng / Tiện ích',
   'Tiến độ',
@@ -12,6 +14,8 @@ const CATEGORIES = [
 ];
 
 const CAT_COLOR: Record<string, string> = {
+  "Villa Ny'ah": 'bg-rose-100 text-rose-700',
+  "Ny'ah Phú Định": 'bg-orange-100 text-orange-700',
   'Pháp lý': 'bg-red-100 text-red-700',
   'Tính năng / Tiện ích': 'bg-blue-100 text-blue-700',
   'Tiến độ': 'bg-amber-100 text-amber-700',
@@ -28,6 +32,11 @@ interface Entry {
   cat: string;
   date: string;
   content: string;
+}
+interface Config {
+  suggestions: string[];
+  phone: string;
+  zalo: string;
 }
 
 const MARKER = /^## 🔖 \[([^\]]+)\] · (.+)$/gm;
@@ -77,6 +86,7 @@ export default function AdminPage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [persona, setPersona] = useState('');
+  const [config, setConfig] = useState<Config>({ suggestions: [], phone: '', zalo: '' });
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -106,6 +116,7 @@ export default function AdminPage() {
       }
       setEntries(parseEntries(data.content || ''));
       setPersona(data.persona || '');
+      if (data.config) setConfig(data.config);
       setLoggedIn(true);
       setStatus('');
     } catch {
@@ -246,20 +257,59 @@ export default function AdminPage() {
   async function save() {
     setBusy(true);
     setStatus('Đang lưu lên GitHub...');
+    const content = serialize(entries);
     try {
       const res = await fetch('/api/admin/save', {
         method: 'POST',
         headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: serialize(entries), persona }),
+        body: JSON.stringify({ content, persona, config }),
       });
       const data = await res.json();
-      if (res.ok) setStatus('✅ Đã lưu! Vercel deploy lại sau ~1 phút, bot cập nhật dữ liệu mới.');
-      else setStatus(data.error || 'Lưu thất bại');
+      if (!res.ok) {
+        setStatus(data.error || 'Lưu thất bại');
+        return;
+      }
+      // Lập lại chỉ mục tìm kiếm ngay (không cần đợi deploy) để bot trả lời nhanh + đúng
+      setStatus('✅ Đã lưu. Đang lập chỉ mục tìm kiếm cho bot...');
+      const r2 = await fetch('/api/admin/reindex', {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+      });
+      const d2 = await r2.json();
+      if (r2.ok) setStatus(`✅ Đã lưu & lập chỉ mục ${d2.chunks} đoạn. Bot đã sẵn sàng trả lời nhanh!`);
+      else setStatus(`✅ Đã lưu, nhưng lập chỉ mục lỗi: ${d2.error}. Bấm "Lập lại chỉ mục" để thử lại.`);
     } catch {
       setStatus('Không kết nối được');
     } finally {
       setBusy(false);
     }
+  }
+
+  async function reindex() {
+    setBusy(true);
+    setStatus('Đang lập lại chỉ mục tìm kiếm... (dữ liệu lớn có thể mất 1-2 phút)');
+    try {
+      const res = await fetch('/api/admin/reindex', { method: 'POST', headers: authHeaders() });
+      const data = await res.json();
+      if (res.ok) setStatus(`✅ Đã lập chỉ mục ${data.chunks} đoạn. Bot trả lời nhanh & đúng trọng tâm hơn.`);
+      else setStatus(`Lỗi: ${data.error}`);
+    } catch {
+      setStatus('Không kết nối được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function exportLeads() {
+    const rows = [['Thời gian', 'Số điện thoại', 'Tin nhắn'], ...leads.map(l => [l.time || '', l.phone || '', (l.message || '').replace(/\n/g, ' ')])];
+    const csv = '﻿' + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   if (!loggedIn) {
@@ -308,9 +358,39 @@ export default function AdminPage() {
 
         {showLogs && (
           <div className="space-y-5">
+            {/* Thống kê nhanh */}
+            {(() => {
+              const today = new Date().toISOString().slice(0, 10);
+              const chatsToday = chats.filter(c => (c.time || '').slice(0, 10) === today).length;
+              const conv = chats.length ? Math.round((leads.length / chats.length) * 100) : 0;
+              // top câu hỏi theo từ khóa đơn giản
+              const stats = [
+                { label: 'Tổng câu hỏi (gần đây)', value: chats.length, icon: '💬' },
+                { label: 'Câu hỏi hôm nay', value: chatsToday, icon: '📅' },
+                { label: 'Lead (SĐT)', value: leads.length, icon: '📞' },
+                { label: 'Tỉ lệ ra lead', value: `${conv}%`, icon: '📈' },
+              ];
+              return (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {stats.map(s => (
+                    <div key={s.label} className="bg-white rounded-xl shadow p-4">
+                      <p className="text-2xl">{s.icon}</p>
+                      <p className="text-2xl font-bold text-gray-800 mt-1">{s.value}</p>
+                      <p className="text-xs text-gray-500">{s.label}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+
             {/* Leads */}
             <div className="bg-white rounded-xl shadow p-5">
-              <p className="font-semibold text-gray-800 mb-3">📞 Khách để lại số điện thoại ({leads.length})</p>
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-semibold text-gray-800">📞 Khách để lại số điện thoại ({leads.length})</p>
+                {leads.length > 0 && (
+                  <button onClick={exportLeads} className="text-sm bg-green-600 text-white rounded-lg px-3 py-1.5 hover:bg-green-700">⬇️ Xuất Excel (CSV)</button>
+                )}
+              </div>
               {leads.length === 0 && <p className="text-sm text-gray-400">Chưa có khách nào để lại SĐT.</p>}
               <div className="space-y-2">
                 {leads.map((l, i) => (
@@ -362,6 +442,46 @@ export default function AdminPage() {
           />
         </details>
 
+        {/* Cấu hình hiển thị: gợi ý câu hỏi + liên hệ */}
+        <details className="bg-white rounded-xl shadow p-5">
+          <summary className="font-semibold text-gray-800 cursor-pointer">
+            ⚙️ Gợi ý câu hỏi & Liên hệ (Gọi/Zalo)
+          </summary>
+          <div className="mt-3 space-y-3">
+            <div>
+              <p className="text-xs text-gray-500 mb-1">Câu hỏi gợi ý hiện khi khách mở chat (mỗi dòng 1 câu):</p>
+              <textarea
+                value={config.suggestions.join('\n')}
+                onChange={e => setConfig(c => ({ ...c, suggestions: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) }))}
+                rows={4}
+                placeholder="Dự án có những loại sản phẩm nào?"
+                className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">📞 Hotline (nút Gọi)</p>
+                <input
+                  value={config.phone}
+                  onChange={e => setConfig(c => ({ ...c, phone: e.target.value }))}
+                  placeholder="0901234567"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">💬 Link Zalo (nút Chat Zalo)</p>
+                <input
+                  value={config.zalo}
+                  onChange={e => setConfig(c => ({ ...c, zalo: e.target.value }))}
+                  placeholder="https://zalo.me/0901234567"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            <p className="text-xs text-gray-400">Nút Gọi/Zalo tự hiện trong khung chat sau khi khách trò chuyện. Nhớ bấm Lưu.</p>
+          </div>
+        </details>
+
         {/* Thêm mục mới */}
         <div className="bg-white p-5 rounded-xl shadow space-y-3">
           <p className="font-semibold text-gray-800">➕ Thêm dữ liệu mới</p>
@@ -407,13 +527,23 @@ export default function AdminPage() {
               📚 Dữ liệu đã nạp ({entries.length} mục)
             </p>
             {entries.length > 0 && (
-              <button
-                onClick={organize}
-                disabled={busy}
-                className="bg-purple-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
-              >
-                🤖 Phân loại & Làm sạch dữ liệu
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={reindex}
+                  disabled={busy}
+                  className="bg-teal-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-teal-700 disabled:opacity-50"
+                  title="Tạo lại chỉ mục tìm kiếm để bot trả lời nhanh & đúng trọng tâm"
+                >
+                  🔎 Lập lại chỉ mục
+                </button>
+                <button
+                  onClick={organize}
+                  disabled={busy}
+                  className="bg-purple-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
+                >
+                  🤖 Phân loại & Làm sạch dữ liệu
+                </button>
+              </div>
             )}
           </div>
 
