@@ -7,6 +7,16 @@ interface Message {
   content: string;
 }
 
+function renderMarkdown(text: string) {
+  const escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return escaped
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^\s*[\*\-]\s+/gm, '• ');
+}
+
 export default function DifyChatbot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -90,7 +100,11 @@ export default function DifyChatbot() {
                       : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm shadow-sm'
                   }`}
                 >
-                  {m.content}
+                  {m.role === 'assistant' ? (
+                    <span dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }} />
+                  ) : (
+                    m.content
+                  )}
                 </div>
               </div>
             ))}
