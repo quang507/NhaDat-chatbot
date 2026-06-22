@@ -148,6 +148,41 @@ export default function AdminPage() {
     }
   }
 
+  async function autoCategorize() {
+    const legacy = entries.find(e => e.cat === 'Khác' || e.id === 'legacy');
+    if (!legacy) {
+      setStatus('Không tìm thấy mục "Khác" nào để phân loại.');
+      return;
+    }
+    setBusy(true);
+    setStatus('🤖 Đang phân loại bằng AI... (có thể mất 30–60 giây với dữ liệu lớn)');
+    try {
+      const res = await fetch('/api/admin/categorize', {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: legacy.content }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setStatus(`Lỗi: ${data.error}`);
+        return;
+      }
+      const newEntries: Entry[] = data.entries.map((e: { cat: string; content: string }, i: number) => ({
+        id: `auto-${i}-${Date.now()}`,
+        cat: e.cat,
+        date: now(),
+        content: e.content,
+      }));
+      // Thay thẻ cũ bằng các thẻ mới đã phân loại
+      setEntries(prev => [...newEntries, ...prev.filter(e => e.id !== legacy.id)]);
+      setStatus(`✅ Đã phân loại xong thành ${newEntries.length} mục. Kiểm tra rồi bấm Lưu!`);
+    } catch {
+      setStatus('Không kết nối được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function addEntry() {
     if (!newContent.trim()) {
       setStatus('Chưa có nội dung để thêm.');
@@ -269,9 +304,20 @@ export default function AdminPage() {
 
         {/* Danh sách mục đã nạp */}
         <div>
-          <p className="font-semibold text-gray-800 mb-2">
-            📚 Dữ liệu đã nạp ({entries.length} mục) — mới nhất ở trên, bot đọc từ trên xuống
-          </p>
+          <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <p className="font-semibold text-gray-800">
+              📚 Dữ liệu đã nạp ({entries.length} mục) — mới nhất ở trên, bot đọc từ trên xuống
+            </p>
+            {entries.some(e => e.cat === 'Khác' || e.id === 'legacy') && (
+              <button
+                onClick={autoCategorize}
+                disabled={busy}
+                className="bg-purple-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
+              >
+                🤖 Tự động phân loại vào 6 danh mục
+              </button>
+            )}
+          </div>
           <div className="space-y-3">
             {entries.length === 0 && <p className="text-sm text-gray-400">Chưa có dữ liệu.</p>}
             {entries.map(e => (
