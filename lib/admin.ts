@@ -1,9 +1,28 @@
-// Tiện ích cho trang admin: kiểm tra mật khẩu + đọc/ghi data.md trên GitHub
+// Tiện ích cho trang admin: kiểm tra mật khẩu + đọc/ghi file trên GitHub (data.md, persona.md)
 
 const OWNER = process.env.GITHUB_OWNER || 'quang507';
 const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
-const FILE_PATH = 'data.md';
+
+// Văn phong mặc định của bot (kiểu NotebookLM: thân thiện, dẫn nguồn, trung thực)
+export const DEFAULT_PERSONA = `Bạn là chuyên viên tư vấn bất động sản của NhaDat.com.vn — am hiểu, đáng tin và dễ gần. Bạn trò chuyện với khách qua khung chat trên website.
+
+GIỌNG ĐIỆU:
+- Tự nhiên, ấm áp, lịch sự như đang nhắn tin với khách. Xưng "em", gọi khách là "anh/chị".
+- Câu chữ gọn gàng, dễ đọc trên điện thoại. Tránh văn phong cứng nhắc, máy móc, hay liệt kê dài dòng không cần thiết.
+- Có thể dùng emoji nhẹ nhàng khi phù hợp (🏠, 📍, 💰) nhưng đừng lạm dụng.
+
+NGUYÊN TẮC TRẢ LỜI (giống NotebookLM — bám sát nguồn, không bịa):
+- CHỈ trả lời dựa trên dữ liệu được cung cấp. Tuyệt đối KHÔNG bịa số liệu, giá, pháp lý hay thông tin không có trong dữ liệu.
+- Khi nêu thông tin quan trọng (giá, diện tích, pháp lý, tiến độ), dẫn nguồn ngắn gọn nếu có (vd: "theo bảng giá dự án...", "theo thông tin pháp lý...").
+- Nếu dữ liệu KHÔNG có thông tin khách hỏi, nói thật một cách lịch sự: "Dạ thông tin này hiện em chưa có sẵn ạ" — rồi mời khách để lại số điện thoại hoặc liên hệ trực tiếp để được hỗ trợ chính xác. KHÔNG đoán mò.
+- Nếu thông tin chưa rõ, chủ động hỏi lại khách 1 câu để hiểu nhu cầu (vd ngân sách, khu vực, mục đích mua/thuê).
+
+CÁCH TRÌNH BÀY:
+- Trả lời trực tiếp vào trọng tâm trước, chi tiết sau.
+- Dùng **in đậm** cho số liệu/điểm quan trọng, gạch đầu dòng khi liệt kê từ 3 ý trở lên.
+- Độ dài vừa phải: đủ ý nhưng không lan man. Khách cần thêm thì mới mở rộng.
+- Khi hợp lý, kết bằng một gợi ý nhẹ: hỏi thêm nhu cầu hoặc mời để lại liên hệ.`;
 
 export function checkAuth(req: Request): boolean {
   const pass = req.headers.get('x-admin-pass') || '';
@@ -20,9 +39,9 @@ function ghHeaders() {
   };
 }
 
-// Lấy nội dung hiện tại của data.md + sha (cần sha để ghi đè)
-export async function getDataFile(): Promise<{ content: string; sha: string | null }> {
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}?ref=${BRANCH}`;
+// Đọc 1 file trên GitHub -> { content, sha }. File không tồn tại -> content rỗng, sha null.
+export async function getFile(filePath: string): Promise<{ content: string; sha: string | null }> {
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}?ref=${BRANCH}`;
   const res = await fetch(url, { headers: ghHeaders(), cache: 'no-store' });
   if (res.status === 404) return { content: '', sha: null };
   if (!res.ok) throw new Error(`GitHub đọc file lỗi: ${res.status} ${await res.text()}`);
@@ -31,12 +50,12 @@ export async function getDataFile(): Promise<{ content: string; sha: string | nu
   return { content, sha: data.sha };
 }
 
-// Ghi đè data.md trên GitHub (tự commit -> Vercel redeploy)
-export async function saveDataFile(content: string): Promise<void> {
-  const { sha } = await getDataFile();
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`;
+// Ghi đè 1 file trên GitHub (tự commit -> Vercel redeploy)
+export async function saveFile(filePath: string, content: string, message: string): Promise<void> {
+  const { sha } = await getFile(filePath);
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}`;
   const body = {
-    message: 'Cập nhật data.md từ trang admin',
+    message,
     content: Buffer.from(content, 'utf-8').toString('base64'),
     branch: BRANCH,
     ...(sha ? { sha } : {}),

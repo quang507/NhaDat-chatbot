@@ -2,7 +2,7 @@
 const nextConfig = {
   experimental: {
     outputFileTracingIncludes: {
-      '/api/chat': ['./data.md'],
+      '/api/chat': ['./data.md', './persona.md'],
     },
   },
 };

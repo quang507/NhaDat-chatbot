@@ -67,6 +67,7 @@ export default function AdminPage() {
   const [pass, setPass] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [persona, setPersona] = useState('');
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -90,6 +91,7 @@ export default function AdminPage() {
         return;
       }
       setEntries(parseEntries(data.content || ''));
+      setPersona(data.persona || '');
       setLoggedIn(true);
       setStatus('');
     } catch {
@@ -173,7 +175,7 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/save', {
         method: 'POST',
         headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: serialize(entries) }),
+        body: JSON.stringify({ content: serialize(entries), persona }),
       });
       const data = await res.json();
       if (res.ok) setStatus('✅ Đã lưu! Vercel deploy lại sau ~1 phút, bot cập nhật dữ liệu mới.');
@@ -211,6 +213,22 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto space-y-5">
         <h1 className="text-2xl font-bold text-gray-800">📊 Quản lý dữ liệu Bot</h1>
+
+        {/* Văn phong bot */}
+        <details className="bg-white rounded-xl shadow p-5">
+          <summary className="font-semibold text-gray-800 cursor-pointer">
+            🎭 Tính cách & cách trả lời của bot
+          </summary>
+          <p className="text-xs text-gray-400 mt-2 mb-2">
+            Mô tả bot nên trả lời thế nào (giọng điệu, xưng hô, quy tắc). Để trống sẽ dùng văn phong mặc định.
+          </p>
+          <textarea
+            value={persona}
+            onChange={e => setPersona(e.target.value)}
+            rows={12}
+            className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </details>
 
         {/* Thêm mục mới */}
         <div className="bg-white p-5 rounded-xl shadow space-y-3">
