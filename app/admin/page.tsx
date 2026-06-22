@@ -21,6 +21,8 @@ const CAT_COLOR: Record<string, string> = {
   'Khác': 'bg-gray-100 text-gray-700',
 };
 
+const ALL_COLS = [...CATEGORIES, 'Khác'];
+
 interface Entry {
   id: string;
   cat: string;
@@ -52,7 +54,14 @@ function parseEntries(raw: string): Entry[] {
 }
 
 function serialize(entries: Entry[]): string {
-  return entries
+  // Nhóm theo danh mục (theo thứ tự CATEGORIES), trong mỗi nhóm giữ thứ tự mới->cũ
+  const order = [...CATEGORIES, 'Khác'];
+  const sorted = [...entries].sort((a, b) => {
+    const ia = order.indexOf(a.cat) === -1 ? order.length : order.indexOf(a.cat);
+    const ib = order.indexOf(b.cat) === -1 ? order.length : order.indexOf(b.cat);
+    return ia - ib;
+  });
+  return sorted
     .map(e => `## 🔖 [${e.cat}] · ${e.date}\n\n${e.content}`)
     .join('\n\n---\n\n');
 }
@@ -153,34 +162,34 @@ export default function AdminPage() {
     }
   }
 
-  async function autoCategorize() {
-    const legacy = entries.find(e => e.cat === 'Khác' || e.id === 'legacy');
-    if (!legacy) {
-      setStatus('Không tìm thấy mục "Khác" nào để phân loại.');
-      return;
-    }
+  async function organize() {
+    if (entries.length === 0) return;
+    if (!confirm('AI sẽ phân loại vào 6 danh mục và làm sạch (gộp trùng, bỏ thông tin cũ đã bị thay thế). Chỉ đổi khi chắc chắn, không chắc thì giữ nguyên. Bạn vẫn xem lại được trước khi Lưu. Tiếp tục?')) return;
     setBusy(true);
-    setStatus('🤖 Đang phân loại bằng AI... (có thể mất 30–60 giây với dữ liệu lớn)');
+    setStatus('🤖 Đang phân loại & làm sạch bằng AI... (có thể mất 30–60 giây với dữ liệu lớn)');
     try {
-      const res = await fetch('/api/admin/categorize', {
+      const res = await fetch('/api/admin/organize', {
         method: 'POST',
         headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: legacy.content }),
+        body: JSON.stringify({ entries: entries.map(e => ({ cat: e.cat, date: e.date, content: e.content })) }),
       });
       const data = await res.json();
       if (!res.ok) {
         setStatus(`Lỗi: ${data.error}`);
         return;
       }
-      const newEntries: Entry[] = data.entries.map((e: { cat: string; content: string }, i: number) => ({
-        id: `auto-${i}-${Date.now()}`,
+      const organized: Entry[] = data.entries.map((e: { cat: string; content: string }, i: number) => ({
+        id: `org-${i}-${Date.now()}`,
         cat: e.cat,
         date: now(),
         content: e.content,
       }));
-      // Thay thẻ cũ bằng các thẻ mới đã phân loại
-      setEntries(prev => [...newEntries, ...prev.filter(e => e.id !== legacy.id)]);
-      setStatus(`✅ Đã phân loại xong thành ${newEntries.length} mục. Kiểm tra rồi bấm Lưu!`);
+      setEntries(organized);
+      setStatus(
+        (data.truncated
+          ? '⚠️ Dữ liệu lớn nên AI có thể chưa xử lý hết — kiểm tra kỹ xem có bị thiếu không. '
+          : '') + `✅ Đã phân loại & làm sạch: còn ${organized.length} mục (trước đó ${entries.length}). Kiểm tra rồi bấm Lưu!`
+      );
     } catch {
       setStatus('Không kết nối được');
     } finally {
@@ -196,7 +205,7 @@ export default function AdminPage() {
     const entry: Entry = { id: `${Date.now()}`, cat: newCat, date: now(), content: newContent.trim() };
     setEntries(prev => [entry, ...prev]); // mới nhất lên đầu
     setNewContent('');
-    setStatus('Đã thêm 1 mục mới lên đầu danh sách. Nhớ bấm Lưu!');
+    setStatus('Đã thêm 1 mục mới. Nhớ bấm Lưu!');
   }
 
   function updateEntry(id: string, patch: Partial<Entry>) {
@@ -251,7 +260,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto space-y-5">
+      <div className="max-w-6xl mx-auto space-y-5">
         <h1 className="text-2xl font-bold text-gray-800">📊 Quản lý dữ liệu Bot</h1>
 
         {/* Văn phong bot */}
@@ -308,47 +317,65 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* Danh sách mục đã nạp */}
+        {/* Thanh công cụ + danh sách dạng cột */}
         <div>
-          <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <p className="font-semibold text-gray-800">
-              📚 Dữ liệu đã nạp ({entries.length} mục) — mới nhất ở trên, bot đọc từ trên xuống
+              📚 Dữ liệu đã nạp ({entries.length} mục)
             </p>
-            {entries.some(e => e.cat === 'Khác' || e.id === 'legacy') && (
+            {entries.length > 0 && (
               <button
-                onClick={autoCategorize}
+                onClick={organize}
                 disabled={busy}
                 className="bg-purple-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
               >
-                🤖 Tự động phân loại vào 6 danh mục
+                🤖 Phân loại & Làm sạch dữ liệu
               </button>
             )}
           </div>
-          <div className="space-y-3">
-            {entries.length === 0 && <p className="text-sm text-gray-400">Chưa có dữ liệu.</p>}
-            {entries.map(e => (
-              <div key={e.id} className="bg-white rounded-xl shadow p-4">
-                <div className="flex items-center justify-between mb-2 gap-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <select
-                      value={CATEGORIES.includes(e.cat) ? e.cat : 'Khác'}
-                      onChange={ev => updateEntry(e.id, { cat: ev.target.value })}
-                      className={`text-xs font-semibold rounded-full px-3 py-1 border-0 ${CAT_COLOR[e.cat] || CAT_COLOR['Khác']}`}
-                    >
-                      {[...CATEGORIES, 'Khác'].map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                    <span className="text-xs text-gray-400">{e.date}</span>
+
+          {entries.length === 0 && <p className="text-sm text-gray-400">Chưa có dữ liệu.</p>}
+
+          {/* Cột theo danh mục (cuộn ngang) */}
+          <div className="flex gap-4 overflow-x-auto pb-3">
+            {ALL_COLS.filter(cat => cat !== 'Khác' || entries.some(e => e.cat === 'Khác' || e.id === 'legacy')).map(cat => {
+              const colEntries = entries.filter(e => (CATEGORIES.includes(e.cat) ? e.cat : 'Khác') === cat);
+              return (
+                <div key={cat} className="flex-shrink-0 w-80 bg-gray-100 rounded-xl p-3">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className={`text-xs font-bold rounded-full px-3 py-1 ${CAT_COLOR[cat]}`}>{cat}</span>
+                    <span className="text-xs text-gray-400">{colEntries.length}</span>
                   </div>
-                  <button onClick={() => deleteEntry(e.id)} className="text-xs text-red-500 hover:text-red-700">🗑 Xóa</button>
+                  <div className="space-y-3">
+                    {colEntries.length === 0 && <p className="text-xs text-gray-400 text-center py-4">Trống</p>}
+                    {colEntries.map(e => (
+                      <div key={e.id} className="bg-white rounded-lg shadow-sm p-3">
+                        <div className="flex items-center justify-between mb-2 gap-2">
+                          <span className="text-[11px] text-gray-400">{e.date}</span>
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={CATEGORIES.includes(e.cat) ? e.cat : 'Khác'}
+                              onChange={ev => updateEntry(e.id, { cat: ev.target.value })}
+                              className="text-[11px] text-gray-500 border border-gray-200 rounded px-1 py-0.5 max-w-[110px]"
+                              title="Chuyển danh mục"
+                            >
+                              {[...CATEGORIES, 'Khác'].map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                            <button onClick={() => deleteEntry(e.id)} className="text-xs text-red-500 hover:text-red-700">🗑</button>
+                          </div>
+                        </div>
+                        <textarea
+                          value={e.content}
+                          onChange={ev => updateEntry(e.id, { content: ev.target.value })}
+                          rows={Math.min(12, Math.max(3, e.content.split('\n').length))}
+                          className="w-full border border-gray-200 rounded-lg p-2 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <textarea
-                  value={e.content}
-                  onChange={ev => updateEntry(e.id, { content: ev.target.value })}
-                  rows={Math.min(10, Math.max(3, e.content.split('\n').length))}
-                  className="w-full border border-gray-200 rounded-lg p-2 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
