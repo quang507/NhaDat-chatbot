@@ -28,6 +28,13 @@ export default function DifyChatbot() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Khi nhúng qua iframe: báo cho trang cha biết để thu/phóng khung
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.parent !== window) {
+      window.parent.postMessage({ type: 'nhadat-chat', open }, '*');
+    }
+  }, [open]);
+
   async function sendMessage() {
     const msg = input.trim();
     if (!msg || loading) return;

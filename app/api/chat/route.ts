@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
+import { writeLog, extractPhone } from '@/lib/logs';
 
 export const runtime = 'nodejs';
 
@@ -107,6 +108,13 @@ export async function POST(req: NextRequest) {
     }
 
     const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Không có phản hồi';
+
+    // Ghi log (await để chắc chắn hoàn tất trên serverless; lỗi không làm hỏng phản hồi)
+    const time = new Date().toISOString();
+    await writeLog('chats', { time, question: message, answer });
+    const phone = extractPhone(message);
+    if (phone) await writeLog('leads', { time, phone, message });
+
     return NextResponse.json({ answer });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
