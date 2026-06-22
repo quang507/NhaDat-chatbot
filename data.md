@@ -29450,3 +29450,5 @@ file 'C:/Users/quang/OneDrive - Nha Dat Co Ltd/Team Mktg - NPD mktg/mktg - priva
 **CÁC CĂN CÒN TRỐNG (CHƯA BÁN) — thời điểm tháng 5/2026:** căn **01, 02, 03, 23, 24, 42, 50**.
 
 Các căn còn lại đã bán hoặc đã giữ chỗ. Lưu ý: rổ hàng thay đổi theo thời gian, vui lòng liên hệ tư vấn để xác nhận căn còn trống mới nhất trước khi quyết định.
+
+---
