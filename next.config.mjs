@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  outputFileTracingIncludes: {
-    '/api/chat': ['./data.md'],
+  experimental: {
+    outputFileTracingIncludes: {
+      '/api/chat': ['./data.md'],
+    },
   },
 };
 export default nextConfig;
