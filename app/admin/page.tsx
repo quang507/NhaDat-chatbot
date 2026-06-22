@@ -125,20 +125,25 @@ export default function AdminPage() {
     setBusy(false);
   }
 
-  async function crawl() {
+  async function crawl(wholeSite: boolean) {
     if (!url.trim()) return;
     setBusy(true);
-    setStatus(`Đang lấy nội dung từ ${url}...`);
+    setStatus(wholeSite ? `Đang lấy cả web ${url} (có thể mất ~1 phút)...` : `Đang lấy nội dung từ ${url}...`);
     try {
-      const res = await fetch('/api/admin/crawl', {
+      const endpoint = wholeSite ? '/api/admin/crawl-site' : '/api/admin/crawl';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, maxPages: 30 }),
       });
       const data = await res.json();
       if (res.ok) {
         setNewContent(c => (c + data.markdown).trim());
-        setStatus('Đã lấy nội dung từ web vào ô soạn thảo bên dưới.');
+        setStatus(
+          wholeSite
+            ? `Đã lấy ${data.pages} trang vào ô soạn thảo bên dưới.`
+            : 'Đã lấy nội dung từ web vào ô soạn thảo bên dưới.'
+        );
         setUrl('');
       } else setStatus(data.error || 'Lấy nội dung thất bại');
     } catch {
@@ -283,9 +288,10 @@ export default function AdminPage() {
             </div>
             <div className="border border-gray-200 rounded-lg p-3">
               <p className="text-xs text-gray-500 mb-1">🌐 Lấy từ web</p>
+              <input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://nhadat.company/..." className="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
               <div className="flex gap-2">
-                <input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://..." className="flex-1 border border-gray-300 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                <button onClick={crawl} disabled={busy} className="bg-gray-700 text-white rounded-lg px-3 text-sm hover:bg-gray-800 disabled:opacity-50">Lấy</button>
+                <button onClick={() => crawl(false)} disabled={busy} className="flex-1 bg-gray-700 text-white rounded-lg px-3 py-1.5 text-sm hover:bg-gray-800 disabled:opacity-50">1 trang</button>
+                <button onClick={() => crawl(true)} disabled={busy} className="flex-1 bg-indigo-600 text-white rounded-lg px-3 py-1.5 text-sm hover:bg-indigo-700 disabled:opacity-50">Cả web (≤30 trang)</button>
               </div>
             </div>
           </div>
