@@ -3,18 +3,20 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { writeLog, extractPhone } from '@/lib/logs';
+import { loadIndex, retrieve } from '@/lib/rag';
 
 export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
-const DATA_NOTE = `\n\nLƯU Ý VỀ DỮ LIỆU:
-- Dữ liệu chia theo danh mục, mỗi mục bắt đầu bằng dòng "## 🔖 [Danh mục] · ngày".
-- Các mục sắp xếp MỚI NHẤT Ở TRÊN, CŨ NHẤT Ở DƯỚI. Khi thông tin mâu thuẫn, ƯU TIÊN mục ở trên (mới hơn).`;
+const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU:
+- Chỉ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN" bên dưới. Nếu không có thông tin, nói thật là chưa có và mời khách để lại số điện thoại để được tư vấn chính xác.
+- Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.`;
 
-let cachedPrompt: string | null = null;
+let personaCache: { text: string; at: number } | null = null;
 
 async function readRepoFile(name: string): Promise<string> {
   try {
@@ -24,99 +26,128 @@ async function readRepoFile(name: string): Promise<string> {
   }
 }
 
-async function getSystemPrompt(): Promise<string> {
-  if (cachedPrompt) return cachedPrompt;
-  const [persona, data] = await Promise.all([readRepoFile('persona.md'), readRepoFile('data.md')]);
-  const personaText = persona.trim() || DEFAULT_PERSONA;
-  cachedPrompt = `${personaText}${DATA_NOTE}${data ? `\n\n=== DỮ LIỆU ===\n${data}` : ''}`;
-  return cachedPrompt;
+async function getPersona(): Promise<string> {
+  if (personaCache && Date.now() - personaCache.at < 5 * 60 * 1000) return personaCache.text;
+  const persona = (await readRepoFile('persona.md')).trim() || DEFAULT_PERSONA;
+  personaCache = { text: persona, at: Date.now() };
+  return persona;
 }
 
-// ---- Context caching: cache cục system prompt lớn để mỗi câu hỏi không phải nạp lại ----
-let cacheName: string | null = null;
-let cacheHash = '';
-let cacheExpiry = 0;
+// Build system prompt nhỏ gọn: persona + chỉ các đoạn liên quan tới câu hỏi
+async function buildPrompt(message: string, profile?: string): Promise<{ text: string; usedRag: boolean }> {
+  const persona = await getPersona();
+  const profileNote = profile?.trim()
+    ? `\n\nTHÔNG TIN ĐÃ BIẾT VỀ KHÁCH (dùng để cá nhân hóa, đừng hỏi lại thứ đã biết):\n${profile.trim()}`
+    : '';
 
-function hash(s: string): string {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
-  return `${h}:${s.length}`;
-}
-
-// Trả về tên cache nếu tạo được, ngược lại null (sẽ fallback gửi system_instruction trực tiếp)
-async function getCache(systemText: string): Promise<string | null> {
-  const h = hash(systemText);
-  if (cacheName && cacheHash === h && Date.now() < cacheExpiry) return cacheName;
-  try {
-    const res = await fetch(`${BASE}/cachedContents?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: `models/${MODEL}`,
-        system_instruction: { parts: [{ text: systemText }] },
-        ttl: '3600s',
-      }),
-    });
-    if (!res.ok) return null; // vd: dữ liệu quá nhỏ (<1024 token) -> không cache được
-    const data = await res.json();
-    cacheName = data.name;
-    cacheHash = h;
-    cacheExpiry = Date.now() + 50 * 60 * 1000; // dùng lại trong ~50 phút (TTL 60p)
-    return cacheName;
-  } catch {
-    return null;
+  const index = await loadIndex();
+  if (index && index.chunks.length) {
+    const chunks = await retrieve(message, index, 8);
+    const data = chunks.map((c, i) => `[Nguồn ${i + 1}]\n${c}`).join('\n\n');
+    return {
+      text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
+      usedRag: true,
+    };
   }
+
+  // Fallback: chưa có chỉ mục -> dùng toàn bộ data.md (chậm hơn, có thể gặp 429)
+  const data = await readRepoFile('data.md');
+  return {
+    text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${data}`,
+    usedRag: false,
+  };
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, history } = await req.json();
+    const { message, history, profile } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
     if (!GEMINI_API_KEY) {
       return NextResponse.json({ error: 'GEMINI_API_KEY chưa được set trong Vercel Environment Variables' }, { status: 500 });
     }
 
     const contents = [
-      ...(history || []).map((m: { role: string; content: string }) => ({
+      ...(history || []).slice(-10).map((m: { role: string; content: string }) => ({
         role: m.role === 'user' ? 'user' : 'model',
         parts: [{ text: m.content }],
       })),
       { role: 'user', parts: [{ text: message }] },
     ];
 
-    const systemText = await getSystemPrompt();
-    const cache = await getCache(systemText);
+    const { text: systemText } = await buildPrompt(message, profile);
 
-    const reqBody: Record<string, unknown> = {
+    const reqBody = {
       contents,
+      system_instruction: { parts: [{ text: systemText }] },
       generationConfig: { temperature: 0.7, maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
     };
-    if (cache) reqBody.cachedContent = cache;
-    else reqBody.system_instruction = { parts: [{ text: systemText }] };
 
-    const response = await fetch(`${BASE}/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reqBody),
     });
 
-    const data = await response.json();
-    if (!response.ok) {
-      // Nếu cache hỏng (vd hết hạn) thì xóa để lần sau tạo lại
-      cacheName = null;
-      return NextResponse.json({ error: JSON.stringify(data) }, { status: response.status });
+    if (!response.ok || !response.body) {
+      const errText = await response.text();
+      const status = response.status;
+      const friendly = status === 429
+        ? 'Hệ thống đang bận (quá nhiều yêu cầu cùng lúc). Anh/chị thử lại sau giây lát giúp em nhé 🙏'
+        : 'Có lỗi xảy ra, vui lòng thử lại.';
+      return NextResponse.json({ error: errText, friendly }, { status });
     }
 
-    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Không có phản hồi';
+    // Đọc SSE từ Gemini, đẩy text dần ra client; log lại sau khi xong
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    const encoder = new TextEncoder();
+    let full = '';
+    let buffer = '';
 
-    // Ghi log (await để chắc chắn hoàn tất trên serverless; lỗi không làm hỏng phản hồi)
-    const time = new Date().toISOString();
-    await writeLog('chats', { time, question: message, answer });
-    const phone = extractPhone(message);
-    if (phone) await writeLog('leads', { time, phone, message });
+    const stream = new ReadableStream({
+      async pull(controller) {
+        const { done, value } = await reader.read();
+        if (done) {
+          controller.close();
+          const time = new Date().toISOString();
+          await writeLog('chats', { time, question: message, answer: full });
+          const phone = extractPhone(message);
+          if (phone) await writeLog('leads', { time, phone, message });
+          return;
+        }
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          const t = line.trim();
+          if (!t.startsWith('data:')) continue;
+          const payload = t.slice(5).trim();
+          if (!payload || payload === '[DONE]') continue;
+          try {
+            const json = JSON.parse(payload);
+            const piece = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            if (piece) {
+              full += piece;
+              controller.enqueue(encoder.encode(piece));
+            }
+          } catch {
+            // mảnh JSON chưa trọn -> bỏ qua, sẽ ghép ở vòng sau
+          }
+        }
+      },
+      cancel() {
+        reader.cancel();
+      },
+    });
 
-    return NextResponse.json({ answer });
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'X-Accel-Buffering': 'no',
+      },
+    });
   } catch (error) {
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    return NextResponse.json({ error: String(error), friendly: 'Có lỗi xảy ra, vui lòng thử lại.' }, { status: 500 });
   }
 }
