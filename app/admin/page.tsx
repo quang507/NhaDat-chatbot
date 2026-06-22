@@ -3,6 +3,8 @@
 import { useState } from 'react';
 
 const CATEGORIES = [
+  'Villa Ny\'ah',
+  'Ny\'ah Phú Định',
   'Pháp lý',
   'Tính năng / Tiện ích',
   'Tiến độ',
@@ -12,6 +14,8 @@ const CATEGORIES = [
 ];
 
 const CAT_COLOR: Record<string, string> = {
+  "Villa Ny'ah": 'bg-rose-100 text-rose-700',
+  "Ny'ah Phú Định": 'bg-orange-100 text-orange-700',
   'Pháp lý': 'bg-red-100 text-red-700',
   'Tính năng / Tiện ích': 'bg-blue-100 text-blue-700',
   'Tiến độ': 'bg-amber-100 text-amber-700',

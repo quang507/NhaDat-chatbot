@@ -31,6 +31,8 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 const CATEGORIES = [
+  'Villa Ny\'ah',
+  'Ny\'ah Phú Định',
   'Pháp lý',
   'Tính năng / Tiện ích',
   'Tiến độ',
@@ -94,7 +96,7 @@ export async function POST(req: NextRequest) {
 
 Hãy thực hiện 2 việc:
 
-A) PHÂN LOẠI: gán mỗi nội dung vào đúng 1 trong 6 danh mục:
+A) PHÂN LOẠI: gán mỗi nội dung vào đúng 1 trong các danh mục sau (dữ liệu riêng của từng dự án thì gán vào đúng tên dự án):
 ${CATEGORIES.map((c, i) => `   ${i + 1}. ${c}`).join('\n')}
 
 B) LÀM SẠCH (RẤT THẬN TRỌNG):
