@@ -40,15 +40,19 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     ? `\n\nTHÔNG TIN ĐÃ BIẾT VỀ KHÁCH (dùng để cá nhân hóa, đừng hỏi lại thứ đã biết):\n${profile.trim()}`
     : '';
 
-  const index = await loadIndex();
-  if (index && index.chunks.length) {
-    // Khôi phục về 12 chunks theo yêu cầu của bạn
-    const chunks = await retrieve(message, index, 12);
-    const data = chunks.map((c, i) => `[Nguồn ${i + 1}]\n${c}`).join('\n\n');
-    return {
-      text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
-      usedRag: true,
-    };
+  try {
+    const index = await loadIndex();
+    if (index && index.chunks.length) {
+      // Khôi phục về 12 chunks theo yêu cầu của bạn
+      const chunks = await retrieve(message, index, 12);
+      const data = chunks.map((c, i) => `[Nguồn ${i + 1}]\n${c}`).join('\n\n');
+      return {
+        text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
+        usedRag: true,
+      };
+    }
+  } catch (e) {
+    console.warn("RAG retrieval failed (possibly Cohere API limit/overload), falling back to data.md slice:", e);
   }
 
   // Fallback: khôi phục về 40,000 ký tự

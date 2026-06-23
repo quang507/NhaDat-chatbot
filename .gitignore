@@ -24,3 +24,6 @@
 next-env.d.ts
 .env*
 api_key.txt
+cohere_key.txt
+/scratch/
+
