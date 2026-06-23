@@ -184,6 +184,22 @@ export default function AdminPage() {
     setFileProgress(prev => { const n = { ...prev }; delete n[name]; return n; });
   }
 
+  async function extractPdfClientSide(file: File, onProgress?: (page: number, total: number) => void): Promise<string> {
+    const pdfjsLib = await import('pdfjs-dist');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pages: string[] = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      onProgress?.(i, pdf.numPages);
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const text = content.items.map((item) => ('str' in item ? item.str : '')).join(' ');
+      if (text.trim()) pages.push(text.trim());
+    }
+    return pages.join('\n\n');
+  }
+
   async function processFiles() {
     if (pendingFiles.length === 0) return;
     setBusy(true);
@@ -193,10 +209,34 @@ export default function AdminPage() {
     let added = '';
     for (const file of pendingFiles) {
       setFileProgress(prev => ({ ...prev, [file.name]: 'processing' }));
-      setStatus(`Đang xử lý ${file.name}...`);
-      const form = new FormData();
-      form.append('file', file);
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
       try {
+        // PDF: extract client-side, only send text
+        if (ext === 'pdf') {
+          setStatus(`Đang đọc PDF ${file.name}...`);
+          const text = await extractPdfClientSide(file, (page, total) => {
+            setStatus(`${file.name}: trang ${page}/${total}...`);
+          });
+          const res = await fetch('/api/admin/convert', {
+            method: 'POST',
+            headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, name: file.name }),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            added += (added ? '\n\n---\n\n' : '') + data.markdown;
+            setFileProgress(prev => ({ ...prev, [file.name]: 'done' }));
+          } else {
+            setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
+            setStatus(`Lỗi ${file.name}: ${data.error}`);
+          }
+          continue;
+        }
+
+        // Các file khác: gửi binary như cũ
+        setStatus(`Đang xử lý ${file.name}...`);
+        const form = new FormData();
+        form.append('file', file);
         const res = await fetch('/api/admin/convert', { method: 'POST', headers: authHeaders(), body: form });
         const data = await res.json();
         if (res.ok) {
@@ -207,9 +247,9 @@ export default function AdminPage() {
           setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
           setStatus(`Lỗi ${file.name}: ${data.error}`);
         }
-      } catch {
+      } catch (e) {
         setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
-        setStatus(`Không xử lý được ${file.name}`);
+        setStatus(`Không xử lý được ${file.name}: ${String(e)}`);
       }
     }
     if (added) {

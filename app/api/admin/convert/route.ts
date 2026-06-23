@@ -63,11 +63,20 @@ async function extractText(name: string, buffer: Buffer): Promise<string> {
 const SUPPORTED = new Set(['pdf','doc','docx','xls','xlsx','csv','txt','md','png','jpg','jpeg','webp','gif']);
 
 // Nhận 1 file (hoặc ZIP chứa nhiều file) -> trích xuất text -> trả về markdown
+// Hoặc nhận JSON { text, name } khi client đã extract sẵn (PDF.js client-side)
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: 'Sai mật khẩu' }, { status: 401 });
   }
   try {
+    const contentType = req.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const { text, name } = await req.json() as { text: string; name: string };
+      if (!text) return NextResponse.json({ error: 'Không có text' }, { status: 400 });
+      const markdown = `## ${name || 'file'}\n\n${text.trim()}`;
+      return NextResponse.json({ markdown });
+    }
+
     const form = await req.formData();
     const file = form.get('file') as File | null;
     if (!file) return NextResponse.json({ error: 'Không có file' }, { status: 400 });
