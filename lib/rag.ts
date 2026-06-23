@@ -232,13 +232,48 @@ function dot(a: number[], b: number[]): number {
   return s;
 }
 
-// Truy hồi top-K đoạn liên quan nhất với câu hỏi
+// Trích xuất các từ khoá số học quan trọng từ câu hỏi (số phòng, diện tích, giá, ...)
+function extractKeywords(query: string): string[] {
+  const kws: string[] = [];
+  // Số căn cụ thể: "căn 3", "căn số 3", "căn thứ 3", "căn 103"...
+  const canMatch = query.match(/căn\s*(?:số|thứ|mã)?\s*(\d+)/gi);
+  if (canMatch) kws.push(...canMatch);
+  // Số tầng: "tầng 2", "tầng 3"
+  const tangMatch = query.match(/tầng\s*\d+/gi);
+  if (tangMatch) kws.push(...tangMatch);
+  // Các số riêng lẻ trong câu
+  const nums = query.match(/\b\d{1,4}\b/g);
+  if (nums) kws.push(...nums);
+  // Tên dự án cụ thể
+  if (/nyah|phú định/i.test(query)) kws.push('nyah', 'phú định');
+  if (/villa/i.test(query)) kws.push('villa');
+  if (/shophouse/i.test(query)) kws.push('shophouse');
+  return [...new Set(kws.map(k => k.toLowerCase().trim()))];
+}
+
+// Trụ hồi top-K đoạn liên quan nhất + keyword boosting
 export async function retrieve(query: string, index: Index, k = 12): Promise<string[]> {
   const q = await embedQuery(query);
   if (!q.length) return [];
+
+  const keywords = extractKeywords(query);
+
   const scored = index.chunks
-    .map(c => ({ text: c.text, score: dot(q, c.vec) }))
+    .map(c => {
+      const semantic = dot(q, c.vec);
+      // Keyword boost: mỗi từ khoá khớp +0.08 (tối đa +0.24)
+      let kwBoost = 0;
+      if (keywords.length > 0) {
+        const lowerText = c.text.toLowerCase();
+        for (const kw of keywords) {
+          if (lowerText.includes(kw)) kwBoost += 0.08;
+        }
+        kwBoost = Math.min(kwBoost, 0.24);
+      }
+      return { text: c.text, score: semantic + kwBoost };
+    })
     .sort((a, b) => b.score - a.score)
     .slice(0, k);
+
   return scored.map(s => s.text);
 }

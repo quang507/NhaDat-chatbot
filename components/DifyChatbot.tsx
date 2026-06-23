@@ -39,7 +39,8 @@ export default function DifyChatbot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);   // hiện 3 chấm chờ
+  const [streaming, setStreaming] = useState(false); // khóa nút send khi chờ API
   const [cfg, setCfg] = useState<Config>({ suggestions: [], phone: '', zalo: '' });
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -59,11 +60,12 @@ export default function DifyChatbot() {
 
   async function send(text: string) {
     const msg = text.trim();
-    if (!msg || loading) return;
+    if (!msg || streaming) return;
     setInput('');
     const history = messages;
     setMessages(prev => [...prev, { role: 'user', content: msg }]);
-    setLoading(true);
+    setStreaming(true); // khóa nút send ngay
+    setLoading(true);   // hiện 3 chấm chờ
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -79,16 +81,24 @@ export default function DifyChatbot() {
         return;
       }
 
-      // Streaming: hiện chữ dần
+      // Bắt đầu streaming: tạo slot trả lời trống
       setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let acc = '';
+      let firstChunk = true;
+
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         acc += decoder.decode(value, { stream: true });
+        // Khi nhận được chữ đầu tiên -> mở khóa nút send ngay
+        if (firstChunk && acc.trim()) {
+          firstChunk = false;
+          setStreaming(false);
+          setLoading(false);
+        }
         setMessages(prev => {
           const copy = [...prev];
           copy[copy.length - 1] = { role: 'assistant', content: acc };
@@ -105,6 +115,7 @@ export default function DifyChatbot() {
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Không thể kết nối, vui lòng thử lại.' }]);
     } finally {
+      setStreaming(false);
       setLoading(false);
     }
   }
@@ -222,7 +233,7 @@ export default function DifyChatbot() {
             />
             <button
               onClick={() => send(input)}
-              disabled={loading || !input.trim()}
+              disabled={streaming || !input.trim()}
               className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex-shrink-0 self-end"
             >
               ➤
