@@ -89,11 +89,14 @@ async function embedOne(text: string, taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVA
   return normalize(data.embedding?.values || []);
 }
 
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
 async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[][]> {
   if (texts.length === 0) return [];
   const out: number[][] = [];
   const BATCH_SIZE = 100;
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+    if (i > 0) await sleep(1000); // Đợi 1 giây giữa các batch để tránh vượt hạn mức RPM (Requests Per Minute)
     const chunk = texts.slice(i, i + BATCH_SIZE);
     const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
       method: 'POST',
