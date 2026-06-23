@@ -713,7 +713,7 @@ export default function AdminPage() {
                     <span className={`text-xs font-bold rounded-full px-3 py-1 ${CAT_COLOR[cat]}`}>{cat}</span>
                     <span className="text-xs text-gray-400">{colEntries.length}</span>
                   </div>
-                  <div className="space-y-3 min-h-[40px]">
+                  <div className={`space-y-3 min-h-[40px] ${colEntries.length > 5 ? 'max-h-[780px] overflow-y-auto pr-1' : ''}`}>
                     {colEntries.length === 0 && (
                       <p className={`text-xs text-center py-4 ${isOver ? 'text-blue-400' : 'text-gray-400'}`}>
                         {isOver ? '⬇ Thả vào đây' : 'Trống'}
@@ -725,17 +725,18 @@ export default function AdminPage() {
                         draggable
                         onDragStart={() => setDragId(e.id)}
                         onDragEnd={() => { setDragId(null); setDragOver(null); }}
-                        className={`bg-white rounded-lg shadow-sm p-3 transition-opacity ${dragId === e.id ? 'opacity-40' : 'opacity-100'}`}
+                        className={`bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-opacity ${dragId === e.id ? 'opacity-30' : 'opacity-100'}`}
                       >
-                        <div className="flex items-center justify-between mb-2 gap-2">
-                          <span className="text-[11px] text-gray-400 cursor-grab active:cursor-grabbing select-none">⠿ {e.date}</span>
-                          <button onClick={() => deleteEntry(e.id)} className="text-xs text-red-400 hover:text-red-600">🗑</button>
+                        {/* Card header */}
+                        <div className={`flex items-center justify-between px-3 py-1.5 border-b border-gray-100 ${CAT_COLOR[cat]}`}>
+                          <span className="text-[11px] font-medium cursor-grab active:cursor-grabbing select-none opacity-70">⠿ {e.date}</span>
+                          <button onClick={() => deleteEntry(e.id)} className="text-[11px] opacity-50 hover:opacity-100 hover:text-red-600 transition-opacity">✕</button>
                         </div>
                         <textarea
                           value={e.content}
                           onChange={ev => updateEntry(e.id, { content: ev.target.value })}
-                          rows={Math.min(12, Math.max(3, e.content.split('\n').length))}
-                          className="w-full border border-gray-200 rounded-lg p-2 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          rows={Math.min(10, Math.max(3, e.content.split('\n').length))}
+                          className="w-full p-2.5 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
                         />
                       </div>
                     ))}
