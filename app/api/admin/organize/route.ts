@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkAuth } from '@/lib/admin';
 
 export const runtime = 'nodejs';
-export const maxDuration = 300;
+export const maxDuration = 60;
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
@@ -57,8 +57,9 @@ export async function POST(req: NextRequest) {
     }
 
     // 1) Cắt nhỏ các mục quá lớn, rồi gom thành các BATCH dưới ngưỡng token để tránh lỗi 429
-    const CHAR_PER_PART = 30000; // mỗi mảnh tối đa ~7.5k token
-    const BATCH_CHARS = 80000;   // mỗi lần gọi AI tối đa ~20k token (an toàn dưới 250k/phút)
+    // Batch nhỏ hơn để fit trong 60s timeout của Vercel hobby
+    const CHAR_PER_PART = 20000; // mỗi mảnh tối đa ~5k token
+    const BATCH_CHARS = 40000;   // mỗi lần gọi AI tối đa ~10k token
     type E = { cat: string; date: string; content: string };
     const flat: E[] = [];
     for (const e of entries as E[]) {
@@ -84,7 +85,7 @@ export async function POST(req: NextRequest) {
     let anyTruncated = false;
 
     for (let bi = 0; bi < batches.length; bi++) {
-      if (bi > 0) await sleep(6000); // giãn cách để không vượt giới hạn token/phút
+      if (bi > 0) await sleep(2000); // giãn cách nhẹ giữa batch
       const group = batches[bi];
       const input = group
         .map((e, i) =>
@@ -171,7 +172,8 @@ ${input}`;
       return NextResponse.json({ error: 'Không nhận được kết quả hợp lệ' }, { status: 500 });
     }
 
-    return NextResponse.json({ entries: allResults, truncated: anyTruncated });
+    const partial = batches.length > 1 ? `Đã xử lý ${batches.length}/${batches.length} phần. Kiểm tra kết quả rồi Lưu.` : undefined;
+    return NextResponse.json({ entries: allResults, truncated: anyTruncated, partial });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }

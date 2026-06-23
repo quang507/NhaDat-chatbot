@@ -50,10 +50,11 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     };
   }
 
-  // Fallback: chưa có chỉ mục -> dùng toàn bộ data.md (chậm hơn, có thể gặp 429)
+  // Fallback: chưa có chỉ mục -> dùng data.md nhưng giới hạn ~40k ký tự để tránh 429
   const data = await readRepoFile('data.md');
+  const truncated = data.length > 40000 ? data.slice(0, 40000) + '\n\n[... dữ liệu đã được rút ngắn, hãy bấm "Lập lại chỉ mục" trong trang admin để có kết quả tốt hơn]' : data;
   return {
-    text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${data}`,
+    text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     usedRag: false,
   };
 }

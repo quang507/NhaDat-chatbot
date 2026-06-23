@@ -315,12 +315,12 @@ export default function AdminPage() {
       }));
       setEntries(organized);
       setStatus(
-        (data.truncated
-          ? '⚠️ Dữ liệu lớn nên AI có thể chưa xử lý hết — kiểm tra kỹ xem có bị thiếu không. '
-          : '') + `✅ Đã phân loại & làm sạch: còn ${organized.length} mục (trước đó ${entries.length}). Kiểm tra rồi bấm Lưu!`
+        (data.partial ? `⚠️ ${data.partial} ` : '') +
+        (data.truncated ? '⚠️ Một số mục lớn có thể bị rút ngắn. ' : '') +
+        `✅ Đã xử lý: còn ${organized.length} mục (trước ${entries.length}). Kiểm tra rồi bấm Lưu!`
       );
-    } catch {
-      setStatus('Không kết nối được');
+    } catch (e) {
+      setStatus(`⚠️ Mất kết nối giữa chừng (dữ liệu quá lớn). Bấm lại "Phân loại" để tiếp tục. Lỗi: ${String(e)}`);
     } finally {
       setBusy(false);
     }
