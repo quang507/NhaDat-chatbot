@@ -497,8 +497,8 @@ export default function AdminPage() {
 
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-3">
-              <p className="text-xs text-gray-500 mb-1">📎 File (PDF, Word, Excel, CSV, TXT)</p>
-              <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md" onChange={e => uploadFiles(e.target.files)} className="text-sm" />
+              <p className="text-xs text-gray-500 mb-1">📎 File (PDF, Word, Excel, CSV, TXT, PNG, JPG...)</p>
+              <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp,.gif" onChange={e => uploadFiles(e.target.files)} className="text-sm" />
             </div>
             <div className="border border-gray-200 rounded-lg p-3">
               <p className="text-xs text-gray-500 mb-1">🌐 Lấy từ web</p>
