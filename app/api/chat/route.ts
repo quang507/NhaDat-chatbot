@@ -42,7 +42,8 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
 
   const index = await loadIndex();
   if (index && index.chunks.length) {
-    const chunks = await retrieve(message, index, 12);
+    // Giảm xuống 6 chunks (~10k ký tự) để tránh vượt hạn mức 12,000 TPM của Groq Free Tier
+    const chunks = await retrieve(message, index, 6);
     const data = chunks.map((c, i) => `[Nguồn ${i + 1}]\n${c}`).join('\n\n');
     return {
       text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
@@ -50,9 +51,9 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     };
   }
 
-  // Fallback: chưa có chỉ mục -> dùng data.md nhưng giới hạn ~40k ký tự để tránh 429
+  // Fallback: giới hạn 15,000 ký tự (~4,000 tokens) để bảo đảm chạy mượt dưới giới hạn TPM
   const data = await readRepoFile('data.md');
-  const truncated = data.length > 40000 ? data.slice(0, 40000) + '\n\n[... dữ liệu đã được rút ngắn, hãy bấm "Lập lại chỉ mục" trong trang admin để có kết quả tốt hơn]' : data;
+  const truncated = data.length > 15000 ? data.slice(0, 15000) + '\n\n[... dữ liệu đã được rút ngắn, hãy bấm "Lập lại chỉ mục" trong trang admin để có kết quả tốt hơn]' : data;
   return {
     text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     usedRag: false,
