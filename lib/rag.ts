@@ -9,9 +9,9 @@ const INDEX_PATH = 'index.json';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const EMBED_MODEL = 'text-embedding-004';
-const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1';
-const DIMS = 768; // đầy đủ chiều vector -> truy hồi chính xác hơn
+const EMBED_MODEL = 'gemini-embedding-exp-03-07';
+const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+const DIMS = 3072; // gemini-embedding-exp-03-07 output dims
 
 export interface Chunk {
   text: string;
@@ -135,7 +135,11 @@ let memIndexLoading: Promise<Index | null> | null = null;
 
 export async function loadIndex(): Promise<Index | null> {
   // cache trong RAM 5 phút
-  if (memIndex && Date.now() - memIndexAt < 5 * 60 * 1000) return memIndex;
+  if (memIndex && Date.now() - memIndexAt < 5 * 60 * 1000) {
+    // invalidate nếu index dùng dims cũ (text-embedding-004 = 768)
+    if (memIndex.chunks[0]?.vec?.length !== DIMS) { memIndex = null; memIndexAt = 0; }
+    else return memIndex;
+  }
   // dedup: nhiều request đồng thời chỉ tải 1 lần
   if (memIndexLoading) return memIndexLoading;
   memIndexLoading = (async () => {
