@@ -90,10 +90,31 @@ async function embedOne(text: string, taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVA
 }
 
 async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[][]> {
+  if (texts.length === 0) return [];
   const out: number[][] = [];
-  // Gọi tuần tự để tránh rate limit, mỗi text 1 request
-  for (const text of texts) {
-    out.push(await embedOne(text, taskType));
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+    const chunk = texts.slice(i, i + BATCH_SIZE);
+    const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requests: chunk.map(text => ({
+          model: `models/${EMBED_MODEL}`,
+          content: { parts: [{ text }] },
+          taskType,
+        })),
+      }),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Batch embedding lỗi ${res.status}: ${errText}`);
+    }
+    const data = await res.json();
+    const embeddings = data.embeddings || [];
+    for (const emb of embeddings) {
+      out.push(normalize(emb.values || []));
+    }
   }
   return out;
 }
@@ -141,7 +162,7 @@ export async function loadIndex(): Promise<Index | null> {
   // cache trong RAM 5 phút
   if (memIndex && Date.now() - memIndexAt < 5 * 60 * 1000) {
     // invalidate nếu index dùng dims cũ (text-embedding-004 = 768)
-    if (memIndex.chunks[0]?.vec?.length !== DIMS) { memIndex = null; memIndexAt = 0; }
+    if (memIndex.chunks.length > 0 && memIndex.chunks[0]?.vec?.length !== DIMS) { memIndex = null; memIndexAt = 0; }
     else return memIndex;
   }
   // dedup: nhiều request đồng thời chỉ tải 1 lần

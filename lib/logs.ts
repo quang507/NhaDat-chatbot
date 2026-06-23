@@ -75,19 +75,28 @@ export async function readLogs(dir: 'chats' | 'leads', limit = 50): Promise<Reco
     .filter(f => f.name.endsWith('.json'))
     .sort((a, b) => b.name.localeCompare(a.name))
     .slice(0, limit);
-  const items = await Promise.all(
-    recent.map(async f => {
-      const r = await fetch(`${API}/contents/${f.path}?ref=${LOG_BRANCH}`, { headers: ghHeaders(), cache: 'no-store' });
-      if (!r.ok) return null;
-      const data = await r.json();
-      try {
-        return JSON.parse(Buffer.from(data.content || '', 'base64').toString('utf-8'));
-      } catch {
-        return null;
-      }
-    })
-  );
-  return items.filter(Boolean) as Record<string, unknown>[];
+
+  const items: Record<string, unknown>[] = [];
+  const BATCH_SIZE = 10;
+  for (let i = 0; i < recent.length; i += BATCH_SIZE) {
+    const chunk = recent.slice(i, i + BATCH_SIZE);
+    const resList = await Promise.all(
+      chunk.map(async f => {
+        const r = await fetch(`${API}/contents/${f.path}?ref=${LOG_BRANCH}`, { headers: ghHeaders(), cache: 'no-store' });
+        if (!r.ok) return null;
+        const data = await r.json();
+        try {
+          return JSON.parse(Buffer.from(data.content || '', 'base64').toString('utf-8'));
+        } catch {
+          return null;
+        }
+      })
+    );
+    for (const item of resList) {
+      if (item) items.push(item);
+    }
+  }
+  return items;
 }
 
 // Tìm số điện thoại VN trong tin nhắn (nếu có -> coi là lead)
