@@ -10,7 +10,7 @@ const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const EMBED_MODEL = 'text-embedding-004';
-const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1';
 const DIMS = 768; // đầy đủ chiều vector -> truy hồi chính xác hơn
 
 export interface Chunk {
