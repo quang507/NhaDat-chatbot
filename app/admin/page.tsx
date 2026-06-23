@@ -449,7 +449,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto space-y-5">
+      <div className="max-w-[1600px] mx-auto space-y-5">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h1 className="text-2xl font-bold text-gray-800">📊 Quản lý dữ liệu Bot</h1>
           <div className="flex gap-2">
