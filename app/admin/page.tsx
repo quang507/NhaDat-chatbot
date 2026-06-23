@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import JSZip from 'jszip';
 
 const CATEGORIES = [
   'Villa Ny\'ah',
@@ -131,12 +132,49 @@ export default function AdminPage() {
     }
   }
 
-  function pickFiles(files: FileList | null) {
+  const SUPPORTED_EXTS = new Set(['pdf','doc','docx','xls','xlsx','csv','txt','md','png','jpg','jpeg','webp','gif']);
+
+  async function pickFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
     const arr = Array.from(files);
+    const extracted: File[] = [];
+
+    for (const file of arr) {
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+      if (ext === 'zip') {
+        setStatus(`Đang giải nén ${file.name}...`);
+        try {
+          const zip = await JSZip.loadAsync(file);
+          const zipFiles: File[] = [];
+          const tasks: Promise<void>[] = [];
+          zip.forEach((relPath, entry) => {
+            if (entry.dir) return;
+            const name = relPath.split('/').pop() || relPath;
+            if (name.startsWith('__MACOSX') || name.startsWith('.')) return;
+            const entryExt = name.split('.').pop()?.toLowerCase() || '';
+            if (!SUPPORTED_EXTS.has(entryExt)) return;
+            tasks.push(
+              entry.async('blob').then(blob => {
+                zipFiles.push(new File([blob], name, { type: blob.type }));
+              })
+            );
+          });
+          await Promise.all(tasks);
+          zipFiles.sort((a, b) => a.name.localeCompare(b.name));
+          extracted.push(...zipFiles);
+          setStatus(`Đã giải nén ${file.name}: ${zipFiles.length} file`);
+        } catch (e) {
+          setStatus(`Lỗi giải nén ${file.name}: ${String(e)}`);
+          extracted.push(file); // fallback: vẫn thêm ZIP gốc
+        }
+      } else {
+        extracted.push(file);
+      }
+    }
+
     setPendingFiles(prev => {
       const names = new Set(prev.map(f => f.name));
-      return [...prev, ...arr.filter(f => !names.has(f.name))];
+      return [...prev, ...extracted.filter(f => !names.has(f.name))];
     });
     setFileProgress({});
   }
