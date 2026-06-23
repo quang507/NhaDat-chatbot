@@ -16,25 +16,33 @@ function ghHeaders() {
 }
 
 let branchReady = false;
+let branchChecking: Promise<boolean> | null = null;
+
 async function ensureBranch(): Promise<boolean> {
   if (branchReady) return true;
-  const check = await fetch(`${API}/git/refs/heads/${LOG_BRANCH}`, { headers: ghHeaders(), cache: 'no-store' });
-  if (check.ok) {
-    branchReady = true;
-    return true;
-  }
-  // tạo nhánh từ main
-  const base = await fetch(`${API}/git/refs/heads/${SRC_BRANCH}`, { headers: ghHeaders(), cache: 'no-store' });
-  if (!base.ok) return false;
-  const sha = (await base.json()).object?.sha;
-  if (!sha) return false;
-  const create = await fetch(`${API}/git/refs`, {
-    method: 'POST',
-    headers: ghHeaders(),
-    body: JSON.stringify({ ref: `refs/heads/${LOG_BRANCH}`, sha }),
-  });
-  branchReady = create.ok || create.status === 422; // 422 = đã tồn tại
-  return branchReady;
+  // dedup: nhiều request đồng thời không tạo nhánh 2 lần
+  if (branchChecking) return branchChecking;
+  branchChecking = (async () => {
+    try {
+      const check = await fetch(`${API}/git/refs/heads/${LOG_BRANCH}`, { headers: ghHeaders(), cache: 'no-store' });
+      if (check.ok) { branchReady = true; return true; }
+      // tạo nhánh từ main
+      const base = await fetch(`${API}/git/refs/heads/${SRC_BRANCH}`, { headers: ghHeaders(), cache: 'no-store' });
+      if (!base.ok) return false;
+      const sha = (await base.json()).object?.sha;
+      if (!sha) return false;
+      const create = await fetch(`${API}/git/refs`, {
+        method: 'POST',
+        headers: ghHeaders(),
+        body: JSON.stringify({ ref: `refs/heads/${LOG_BRANCH}`, sha }),
+      });
+      branchReady = create.ok || create.status === 422; // 422 = đã tồn tại
+      return branchReady;
+    } finally {
+      branchChecking = null;
+    }
+  })();
+  return branchChecking;
 }
 
 // Ghi 1 bản ghi (mỗi bản = 1 file, tránh xung đột ghi đồng thời)

@@ -12,15 +12,15 @@ export async function POST(req: NextRequest) {
   }
   try {
     const { content, persona, config } = await req.json();
-    if (typeof content === 'string') {
-      await saveFile('data.md', content, 'Cập nhật data.md từ trang admin');
-    }
-    if (typeof persona === 'string') {
-      await saveFile('persona.md', persona, 'Cập nhật văn phong bot từ trang admin');
-    }
-    if (config && typeof config === 'object') {
-      await saveConfig(config as BotConfig);
-    }
+    const tasks: Promise<void>[] = [];
+    if (typeof content === 'string') tasks.push(saveFile('data.md', content, 'Cập nhật data.md từ trang admin'));
+    if (typeof persona === 'string') tasks.push(saveFile('persona.md', persona, 'Cập nhật văn phong bot từ trang admin'));
+    if (config && typeof config === 'object') tasks.push(saveConfig(config as BotConfig));
+    const results = await Promise.allSettled(tasks);
+    const errors = results.flatMap((r, i) =>
+      r.status === 'rejected' ? [`task ${i}: ${String(r.reason)}`] : []
+    );
+    if (errors.length) return NextResponse.json({ error: errors.join('; ') }, { status: 500 });
     return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });

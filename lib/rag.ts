@@ -131,23 +131,31 @@ export async function saveIndex(index: Index): Promise<void> {
 
 let memIndex: Index | null = null;
 let memIndexAt = 0;
+let memIndexLoading: Promise<Index | null> | null = null;
 
 export async function loadIndex(): Promise<Index | null> {
-  // cache trong RAM 5 phút để cold start chỉ tải 1 lần
+  // cache trong RAM 5 phút
   if (memIndex && Date.now() - memIndexAt < 5 * 60 * 1000) return memIndex;
-  try {
-    const sha = await getSha(INDEX_PATH);
-    if (!sha) return null;
-    const r = await fetch(`${API}/git/blobs/${sha}`, { headers: ghHeaders(), cache: 'no-store' });
-    if (!r.ok) return null;
-    const blob = await r.json();
-    const json = Buffer.from(blob.content || '', blob.encoding || 'base64').toString('utf-8');
-    memIndex = JSON.parse(json) as Index;
-    memIndexAt = Date.now();
-    return memIndex;
-  } catch {
-    return null;
-  }
+  // dedup: nhiều request đồng thời chỉ tải 1 lần
+  if (memIndexLoading) return memIndexLoading;
+  memIndexLoading = (async () => {
+    try {
+      const sha = await getSha(INDEX_PATH);
+      if (!sha) return null;
+      const r = await fetch(`${API}/git/blobs/${sha}`, { headers: ghHeaders(), cache: 'no-store' });
+      if (!r.ok) return null;
+      const blob = await r.json();
+      const json = Buffer.from(blob.content || '', blob.encoding || 'base64').toString('utf-8');
+      memIndex = JSON.parse(json) as Index;
+      memIndexAt = Date.now();
+      return memIndex;
+    } catch {
+      return null;
+    } finally {
+      memIndexLoading = null;
+    }
+  })();
+  return memIndexLoading;
 }
 
 function dot(a: number[], b: number[]): number {
