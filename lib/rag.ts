@@ -83,7 +83,6 @@ async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RET
           model: `models/${EMBED_MODEL}`,
           content: { parts: [{ text: t }] },
           taskType,
-          outputDimensionality: DIMS,
         })),
       }),
     });
