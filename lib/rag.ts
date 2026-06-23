@@ -180,13 +180,54 @@ function dot(a: number[], b: number[]): number {
   return s;
 }
 
-// Truy hồi top-K đoạn liên quan nhất với câu hỏi
-export async function retrieve(query: string, index: Index, k = 12): Promise<string[]> {
+function extractKeywords(query: string): RegExp[] {
+  const q = query.toLowerCase();
+  const patterns: RegExp[] = [];
+
+  // Số căn/lô cụ thể
+  let m: RegExpExecArray | null;
+  const unitRe = /(?:căn|lô|ô|unit)\s*(?:số\s*)?([a-z]?\d+[a-z]?)/g;
+  while ((m = unitRe.exec(q)) !== null)
+    patterns.push(new RegExp(`(căn|lô|ô|unit)[^\\d]*${m[1]}\\b`, 'i'));
+
+  // Tên mẫu nhà
+  const modelM = q.match(/\b(cosmo\s*gen\s*\d+|cosmo|fusion|opus|office|villa\s*ny[aâ]h|ny[aâ]h)\b/i);
+  if (modelM) patterns.push(new RegExp(modelM[0].replace(/\s+/g, '\\s*'), 'i'));
+
+  // Người sáng lập / chức danh
+  if (/founder|chủ\s*tịch|giám\s*đốc|sáng\s*lập|lãnh\s*đạo|CEO/i.test(q))
+    patterns.push(/Ngô\s*Trần\s*Công\s*Luận|Nhã\s*Đạt/i);
+
+  // Dự án / địa điểm
+  if (/phú\s*định|villa|địa\s*chỉ|vị\s*trí|quận|đường/i.test(q))
+    patterns.push(/Phú\s*Định|Ny'ah|quận\s*8|An\s*Dương\s*Vương/i);
+
+  // Giá / tài chính
+  if (/giá|bao\s*nhiêu|tiền|thanh\s*toán|vay|đặt\s*cọc|chiết\s*khấu/i.test(q))
+    patterns.push(/(?:tỷ|triệu|thanh\s*toán|chiết\s*khấu|đặt\s*cọc)/i);
+
+  // Pháp lý
+  if (/pháp\s*lý|sổ|quyền\s*sử\s*dụng|giấy\s*tờ|quy\s*hoạch/i.test(q))
+    patterns.push(/(?:sổ\s*(?:đỏ|hồng)|QSDĐ|pháp\s*lý|quy\s*hoạch)/i);
+
+  return patterns;
+}
+
+// Truy hồi top-K đoạn liên quan nhất — hybrid: vector similarity + keyword boost
+export async function retrieve(query: string, index: Index, k = 20): Promise<string[]> {
   const q = await embedQuery(query);
   if (!q.length) return [];
-  const scored = index.chunks
-    .map(c => ({ text: c.text, score: dot(q, c.vec) }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, k);
-  return scored.map(s => s.text);
+
+  const keywords = extractKeywords(query);
+  const scored = index.chunks.map(c => {
+    let score = dot(q, c.vec);
+    if (keywords.length) {
+      const hits = keywords.filter(re => re.test(c.text)).length;
+      score += Math.min(hits * 0.2, 0.4);
+    }
+    return { text: c.text, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, k).map(s => s.text);
 }
