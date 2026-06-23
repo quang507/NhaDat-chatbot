@@ -50,16 +50,25 @@ export async function getFile(filePath: string): Promise<{ content: string; sha:
   return { content, sha: data.sha };
 }
 
-// Ghi đè 1 file trên GitHub (tự commit -> Vercel redeploy)
+// Ghi đè 1 file trên GitHub — tự retry 1 lần nếu SHA lệch (409)
 export async function saveFile(filePath: string, content: string, message: string): Promise<void> {
-  const { sha } = await getFile(filePath);
+  const encoded = Buffer.from(content, 'utf-8').toString('base64');
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}`;
-  const body = {
-    message,
-    content: Buffer.from(content, 'utf-8').toString('base64'),
-    branch: BRANCH,
-    ...(sha ? { sha } : {}),
-  };
-  const res = await fetch(url, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+
+  async function attempt(): Promise<Response> {
+    const { sha } = await getFile(filePath);
+    return fetch(url, {
+      method: 'PUT',
+      headers: ghHeaders(),
+      body: JSON.stringify({ message, content: encoded, branch: BRANCH, ...(sha ? { sha } : {}) }),
+    });
+  }
+
+  let res = await attempt();
+  if (res.status === 409) {
+    // SHA lệch (file vừa được cập nhật bởi request khác) → lấy SHA mới rồi thử lại
+    await new Promise(r => setTimeout(r, 800));
+    res = await attempt();
+  }
   if (!res.ok) throw new Error(`GitHub ghi file lỗi: ${res.status} ${await res.text()}`);
 }
