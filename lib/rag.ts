@@ -89,11 +89,18 @@ async function embedOne(text: string, taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVA
   return normalize(data.embedding?.values || []);
 }
 
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+// Embed song song theo batch nhỏ để nhanh hơn mà không vượt rate limit
+// Free tier gemini-embedding-001: ~1500 RPM -> batch 5 song song + 200ms gap an toàn
 async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[][]> {
-  const out: number[][] = [];
-  // Gọi tuần tự để tránh rate limit, mỗi text 1 request
-  for (const text of texts) {
-    out.push(await embedOne(text, taskType));
+  const PARALLEL = 5;
+  const out: number[][] = new Array(texts.length);
+  for (let i = 0; i < texts.length; i += PARALLEL) {
+    if (i > 0) await sleep(200);
+    const slice = texts.slice(i, i + PARALLEL);
+    const vecs = await Promise.all(slice.map(t => embedOne(t, taskType)));
+    vecs.forEach((v, j) => { out[i + j] = v; });
   }
   return out;
 }
