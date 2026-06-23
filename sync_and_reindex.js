@@ -207,7 +207,7 @@ async function main() {
     let cacheMap = {};
     try {
       console.log("Đang đọc chỉ mục index.json cũ từ nhánh chatbot-logs...");
-      execSync('git checkout chatbot-logs');
+      execSync('git checkout -f chatbot-logs');
       try { execSync('git pull origin chatbot-logs'); } catch {}
       if (fs.existsSync(INDEX_PATH)) {
         const rawIndex = fs.readFileSync(INDEX_PATH, 'utf-8');
@@ -222,10 +222,10 @@ async function main() {
           console.log(`Đã nạp bộ nhớ đệm RAG thành công cho ${Object.keys(cacheMap).length} files.`);
         }
       }
-      execSync('git checkout main');
+      execSync('git checkout -f main');
     } catch (e) {
       console.log("Không tìm thấy chỉ mục cũ hoặc có lỗi. Sẽ tạo mới toàn bộ. Chi tiết:", e.message);
-      try { execSync('git checkout main'); } catch {}
+      try { execSync('git checkout -f main'); } catch {}
     }
 
     // 2. Đồng bộ thư mục OneDrive về Git local
@@ -242,7 +242,6 @@ async function main() {
     console.log(`Tìm thấy ${files.length} file dữ liệu.`);
 
     let finalChunks = [];
-    let chunksToEmbed = [];
     let filesSkipped = 0;
     let filesToEmbed = [];
 
@@ -261,9 +260,23 @@ async function main() {
       filesToEmbed.push({ file, relativePath, hash: currentHash });
     }
 
-    // Phân tích và sinh chunks cho các file cần cập nhật
-    let newChunks = [];
-    for (const item of filesToEmbed) {
+    console.log(`Giữ nguyên: ${filesSkipped} files. Cần sinh vector mới cho: ${filesToEmbed.length} files.`);
+
+    // 4. Sinh vector cho từng file (file-by-file) để hỗ trợ lưu trữ lũy tiến và tránh lỗi 429
+    let hitLimit = false;
+    let filesEmbeddedCount = 0;
+
+    for (let idx = 0; idx < filesToEmbed.length; idx++) {
+      const item = filesToEmbed[idx];
+      
+      // Nếu đã bị dính rate limit ở file trước, khôi phục cache file này (nếu có) và bỏ qua
+      if (hitLimit) {
+        if (cacheMap[item.relativePath]) {
+          finalChunks.push(...cacheMap[item.relativePath].chunks);
+        }
+        continue;
+      }
+
       const fileText = await parseFile(item.file);
       if (!fileText.trim()) continue;
 
@@ -273,43 +286,54 @@ async function main() {
       const rawChunks = chunkText(fileText);
       const annotatedChunks = rawChunks.map(text => `## 🔖 [${category}] · OneDrive\n\n${text}`);
 
-      for (const text of annotatedChunks) {
-        newChunks.push({
-          text,
-          file: item.relativePath,
-          hash: item.hash
-        });
-      }
-    }
+      if (annotatedChunks.length === 0) continue;
 
-    console.log(`Giữ nguyên: ${filesSkipped} files. Cần sinh vector mới cho: ${filesToEmbed.length} files (${newChunks.length} chunks).`);
+      console.log(`[${idx + 1}/${filesToEmbed.length}] Đang xử lý: ${item.relativePath} (${annotatedChunks.length} chunks)...`);
 
-    // 4. Sinh vector cho các chunks mới (sử dụng batching của API để tối ưu RPM)
-    if (newChunks.length > 0) {
-      try {
-        console.log("4. Bắt đầu sinh vector embedding cho các chunks mới...");
-        const vecs = await embedBatch(newChunks.map(c => c.text), 'RETRIEVAL_DOCUMENT');
-        
-        // Gắn vector vào chunks mới
-        newChunks.forEach((c, idx) => {
-          c.vec = vecs[idx] || [];
-        });
-
-        finalChunks.push(...newChunks);
-        console.log(`Đã cập nhật vector thành công cho ${newChunks.length} chunks.`);
-      } catch (err) {
-        console.error(`⚠️ LỖI: Hết hạn mức API Gemini khi sinh vector:`, err.message);
-        console.log(`Khôi phục các chunks cũ của các file bị lỗi để dữ liệu chatbot không bị thiếu hụt.`);
-        
-        // Phục hồi dữ liệu cũ từ cache cho các file không sinh được vector
-        for (const item of filesToEmbed) {
-          if (cacheMap[item.relativePath]) {
-            finalChunks.push(...cacheMap[item.relativePath].chunks);
-            console.log(`- Đã giữ lại chỉ mục cũ của: ${item.relativePath}`);
+      let vecs = null;
+      let retries = 0;
+      
+      while (retries < 2) {
+        try {
+          vecs = await embedBatch(annotatedChunks, 'RETRIEVAL_DOCUMENT');
+          break;
+        } catch (err) {
+          retries++;
+          console.warn(`⚠️ Cảnh báo: Lỗi sinh vector (Lần thử ${retries}):`, err.message);
+          if (retries < 2) {
+            console.log("Đang tạm dừng 10 giây trước khi thử lại...");
+            await sleep(10000);
           }
         }
       }
+
+      if (vecs && vecs.length === annotatedChunks.length) {
+        // Gắn vector vào chunks mới
+        const fileChunks = annotatedChunks.map((text, i) => ({
+          text,
+          file: item.relativePath,
+          hash: item.hash,
+          vec: vecs[i] || []
+        }));
+        
+        finalChunks.push(...fileChunks);
+        filesEmbeddedCount++;
+        console.log(`-> Thành công sinh vector cho ${annotatedChunks.length} chunks.`);
+        
+        // Sleep 1.5s giữa các file để tránh rate limits (RPM)
+        await sleep(1500);
+      } else {
+        console.error(`❌ Lỗi: Không thể sinh vector cho file: ${item.relativePath}. Dừng sinh vector mới để lưu tiến trình.`);
+        hitLimit = true;
+        // Phục hồi từ cache cũ để không bị mất dữ liệu
+        if (cacheMap[item.relativePath]) {
+          finalChunks.push(...cacheMap[item.relativePath].chunks);
+          console.log(`- Đã giữ lại chỉ mục cũ của: ${item.relativePath}`);
+        }
+      }
     }
+
+    console.log(`\nTổng kết: Giữ nguyên ${filesSkipped} files. Đã sinh vector mới cho ${filesEmbeddedCount} files. Các file còn lại được giữ nguyên hoặc bỏ qua.`);
 
     const index = { chunks: finalChunks, builtAt: new Date().toISOString() };
 
@@ -320,7 +344,7 @@ async function main() {
 
     // 6. Chuyển nhánh git đẩy index.json lên GitHub
     console.log("6. Đang chuyển sang nhánh chatbot-logs...");
-    execSync('git checkout chatbot-logs');
+    execSync('git checkout -f chatbot-logs');
     try { execSync('git pull origin chatbot-logs'); } catch {}
 
     const destIndexPath = path.join(__dirname, 'index.json');
@@ -330,13 +354,17 @@ async function main() {
 
     console.log("8. Đang push index.json lên GitHub...");
     execSync('git add index.json');
-    execSync('git commit -m "Update index.json via local OneDrive incremental reindex script"');
-    execSync('git push origin chatbot-logs');
-    console.log("Đã cập nhật chỉ mục (index.json) thành công!");
+    try {
+      execSync('git commit -m "Update index.json via local OneDrive incremental reindex script (partial/full)"');
+      execSync('git push origin chatbot-logs');
+      console.log("Đã cập nhật chỉ mục (index.json) thành công!");
+    } catch (e) {
+      console.log("Không có thay đổi chỉ mục nào cần commit.");
+    }
 
     // 7. Trở lại main và push các file data lên GitHub
     console.log("9. Đang trở về nhánh main...");
-    execSync('git checkout main');
+    execSync('git checkout -f main');
     
     console.log("10. Đang push các file thư mục data lên GitHub...");
     execSync('git add data/');
@@ -348,11 +376,15 @@ async function main() {
       console.log("Không có thay đổi dữ liệu nào cần commit trên main branch.");
     }
 
-    console.log("\n🚀 HOÀN THÀNH: Tất cả dữ liệu đã được đồng bộ & RAG index đã hoạt động hoàn hảo!");
+    if (hitLimit) {
+      console.log("\n⚠️ LƯU Ý: Quá trình đồng bộ chưa hoàn thành 100% do giới hạn hạn mức (rate limit) của API. Hãy chạy lại file BAT sau vài phút để tiếp tục đồng bộ phần còn lại.");
+    } else {
+      console.log("\n🚀 HOÀN THÀNH: Tất cả dữ liệu đã được đồng bộ & RAG index đã hoạt động hoàn hảo!");
+    }
   } catch (e) {
     console.error("Lỗi thực thi:", e);
     try {
-      execSync('git checkout main');
+      execSync('git checkout -f main');
     } catch {}
     process.exit(1);
   }
