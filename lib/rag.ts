@@ -9,9 +9,9 @@ const INDEX_PATH = 'index.json';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const EMBED_MODEL = 'text-embedding-004';
-const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1';
-const DIMS = 768;
+const EMBED_MODEL = 'gemini-embedding-001';
+const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+const DIMS = 3072;
 
 export interface Chunk {
   text: string;
