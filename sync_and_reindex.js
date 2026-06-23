@@ -167,9 +167,9 @@ async function sleep(ms) {
 async function embedBatch(texts, taskType) {
   if (texts.length === 0) return [];
   const out = [];
-  const BATCH_SIZE = 100;
+  const BATCH_SIZE = 5;
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-    if (i > 0) await sleep(1000);
+    if (i > 0) await sleep(1500);
     const chunk = texts.slice(i, i + BATCH_SIZE);
     console.log(`Đang tạo vector embedding cho chunks ${i} đến ${Math.min(i + BATCH_SIZE, texts.length)}... (Tổng: ${texts.length})`);
     const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
