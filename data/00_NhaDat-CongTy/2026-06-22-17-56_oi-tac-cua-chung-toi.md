@@ -1,0 +1,73 @@
+# Đối tác của chúng tôi
+[![](https://nhadat.company/wp-content/uploads/2022/10/Agility_Black-1.png)![](https://nhadat.company/wp-content/uploads/2022/10/Agility_Black.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Codinachs-3.png)![](https://nhadat.company/wp-content/uploads/2022/10/Codinachs-2.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Kobi-3.png)![](https://nhadat.company/wp-content/uploads/2022/10/Kobi-2.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Kanz-1.png)![](https://nhadat.company/wp-content/uploads/2022/10/Kanz.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Anabuki-2.png)![](https://nhadat.company/wp-content/uploads/2022/10/Anabuki-2-1.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Agility_Black-1.png)![](https://nhadat.company/wp-content/uploads/2022/10/Agility_Black.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Codinachs-3.png)![](https://nhadat.company/wp-content/uploads/2022/10/Codinachs-2.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Kobi-3.png)![](https://nhadat.company/wp-content/uploads/2022/10/Kobi-2.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Kanz-1.png)![](https://nhadat.company/wp-content/uploads/2022/10/Kanz.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Anabuki-2.png)![](https://nhadat.company/wp-content/uploads/2022/10/Anabuki-2-1.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Agility_Black-1.png)![](https://nhadat.company/wp-content/uploads/2022/10/Agility_Black.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Codinachs-3.png)![](https://nhadat.company/wp-content/uploads/2022/10/Codinachs-2.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Kobi-3.png)![](https://nhadat.company/wp-content/uploads/2022/10/Kobi-2.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Kanz-1.png)![](https://nhadat.company/wp-content/uploads/2022/10/Kanz.png)](https://nhadat.company/ve-chung-toi/#)
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/Anabuki-2.png)![](https://nhadat.company/wp-content/uploads/2022/10/Anabuki-2-1.png)](https://nhadat.company/ve-chung-toi/#)
+
+##### About
+
+Hơn 20 năm kinh nghiệm, Nhã Đạt tự hào là đơn vị tiên phong kiến tạo nhà ở độc đáo với kiến trúc khác biệt, vượt xa những chuẩn mực thông thường.
+
+##### Contact
+
+[info@nhadat.company](mailto:info@nhadat.company) [Block VPB, Tòa nhà The EverRich Infinity - số 290 An Dương Vương, Phường 04, Quận 5, Thành phố Hồ Chí Minh](https://maps.app.goo.gl/cpgTBWoJeK5FRP2p7) [0909176119](https://nhadat.company/ve-chung-toi/#)
+
+![](https://nhadat.company/wp-content/uploads/2022/10/Logo-120x47-1.png)
+
+© Copyright 2022 by Nha Dat Co Ltd
+
+[![](https://nhadat.company/wp-content/uploads/2022/10/MicrosoftTeams-image.png)](https://beta.nhadat.company/)
+
+##### Chưa có nội dung nên chưa viết
+
+Mô tả cũng chưa có
+
+[![](https://nhadat.company/wp-content/plugins/chat-bubble/assets/images/fbmessenger.svg)](https://m.me/199902760626079 "")[![](https://nhadat.company/wp-content/plugins/chat-bubble/assets/images/calling.svg)](tel:0909176119 "")
+
+✕# NPD BAN GIAO HANDOVER
+
+*Nguồn: 2 tài liệu từ Nhã Đạt*
+
+---
+
+## Quy mô bàn giao.pdf
+QUY MÔ BÀN GIAO
+
+QUY MÔ BÀN GIAO
+
+Hoàn thiện cơ bản
+gói Air
+
+Hoàn thiện nội thất
+gói Max
+
+Xem thông tin chi tiết và chính xác tại hợp đồng mua bán
+
+Xem thông tin chi tiết và chính xác tại hợp đồng mua bán
+
+---

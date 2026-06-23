@@ -1,0 +1,35 @@
+---
+du_an: Villa Ny'ah
+chu_de: Nội dung dự án
+nguon: 3 - kịch bản teaser giới thiệu.md
+---
+
+# KỊCH BẢN CHI TIẾT: VILLA NY'AH – BIẾN MỖI NGÀY THÀNH MỘT NHỊP SỐNG HOMESTAY
+
+* **Thời lượng:** 2 phút 30 giây
+* **Nhân vật:** Nữ quản lý trẻ (30 - 35 tuổi), phong cách thanh lịch, bản lĩnh.
+* **Tone màu:** Chuyển dịch từ tone xám lạnh dồn dập (đô thị) sang bừng sáng, ấm áp và rộng mở (Villa Ny'ah).
+
+**PHẦN 1: ÁP LỰC ĐÔ THỊ & NỖI NHỚ NGUYÊN BẢN (00:00 - 00:50)**
+
+| **Thời lượng** | **Hình ảnh (Visual)** | **Âm thanh & Tiếng động (Sound Design)** | **Giọng đọc (Voice-Over)** |
+| --- | --- | --- | --- |
+| **00:00 - 00:15** | Góc máy từ dưới lên: Những tòa nhà chọc trời ở Sài Gòn xám xịt dưới mây. Tiếng còi xe và dòng người hối hả. ( timelapse hối hả của thành phố)    Cận cảnh đôi giày cao gót bước vội vã trên sàn gạch bóng loáng của phòng họp. Gương mặt nhân vật chính đầy căng thẳng trước màn hình laptop đầy biểu đồ. | Tiếng dồn dập của còi xe, tiếng gõ bàn phím, tiếng tích tắc áp lực của đồng hồ.    Tiếng thông báo tin nhắn công việc dồn dập (whatsapp/Zalo). | *(Không có lời thoại để tạo sự ngột ngạt bằng thị giác và thính giác)* |
+| **00:15 - 00:35** | Nhân vật nữ đứng trong thang máy đông đúc, khẽ thở dài.  Nhân vật nữ bước ra khỏi tòa nhà hiện đại, chóng mặt với những dòng người cuộn chảy    Chuyển cảnh: Cô trở về căn hộ chật bí 1PN tại trung tâm. Không gian bí bách, và mỏi mệt. Cô đứng bên cửa sổ nhỏ kính mờ, nhìn ra dòng xe kẹt cứng, khói bụi bên dưới.  Tiếng shipper báo chuyển khoản. Tiếng báo cháy tại tòa nhà, thông báo họp gấp ngày mai, lịch học của con…. Tiếng tivi lào xào, tiếng con trai làm vỡ ly, tiếng xì xèo trên bếp đang trào đồ ăn ra ngoài…  **Người phụ nữ đang điều hành luôn cả một “trận chiến” gia đình.**   * Thể hiện sự bế tắc cùng cực của ng phụ nữ. | Tiếng thở dài nhẹ. Âm thanh còi xe đô thị vọng vào từ cửa sổ. Nhạc nền là những nốt piano trầm, đứt quãng. | Sài Gòn đón ta bằng những cơ hội, nhưng cũng thử thách ta bằng những khoảng chật hẹp của bốn bức tường thuê tạm.    Có bao giờ, giữa những áp lực nghẹt thở của "lớp áo xã hội", bạn thèm một khoảng thở rộng lớn như những ngày thơ ấu? |
+| **00:35 - 00:50** | Người phụ nữ vỡ òa bế mệt mỏi ( slow) nhắm mắt lại trên sofa khi chưa thay đồ công sở.  ( camera zoom sâu vào đôi mắt mệt mỏi đang nhắm lại, cùng lúc khung cảnh chuyến đi hiện ra từ đó)    Khung hình chuyển cảnh mờ ảo (Flashback hoài niệm): Ký ức tuổi thơ ùa về. Hình ảnh một đứa trẻ chân trần chạy trên bờ đê, hai bên là cánh đồng lúa chín vàng rực và dòng sông quê hương lấp lánh ánh nắng chiều. | Tiếng nhạc chuyển từ tone lạnh sang một nốt ngân dài, trầm ấm.    Tiếng gió rì rào qua đồng lúa chín vang lên khe khẽ. | Nơi có dòng sông xanh ôm ấp ký ức, và những cánh đồng lúa chín chưa bao giờ xóa nhòa trong tâm trí...  Bạn thấy mình vẫn như là 1 cô bé năm nào với những điều mộng mơ và vui thích với cây cỏ |
+
+**PHẦN 2: LIỆU PHÁP 40 PHÚT & SỰ CHUYỂN DỊCH (00:50 - 01:30)**
+
+| **Thời lượng** | **Hình ảnh (Visual)** | **Âm thanh & Tiếng động (Sound Design)** | **Giọng đọc (Voice-Over)** |
+| --- | --- | --- | --- |
+| **00:50 - 01:10** | Nhân vật nữ ngồi trong xe ô tô. Chiếc xe lướt qua bảng địa phận Sài Gòn, tiến vào con đường rợp bóng cây xanh hướng về phía Long An.    Góc máy nghiêng từ cửa sổ xe: Ánh nắng chiều lọc qua tán lá, đổ những vệt sáng ấm áp lên gương mặt đang dần thư giãn, rũ bỏ mệt mỏi của cô. | Tiếng ồn đô thị nhỏ dần rồi biến mất hoàn toàn.    Nhạc nền (Ambient/Cinematic) bắt đầu trỗi dậy, nhẹ nhàng, thanh thoát và bình yên. | Chỉ 40 phút rời khỏi náo nhiệt của Sài Gòn, Villa Ny’ah đưa bạn về gần hơn với chính mình. |
+| **01:10 - 01:30** | Chiếc xe dừng trước cổng Villa Ny'ah. Biểu tượng hạt lúa cách điệu trên bức tường thô mộc đón lấy ánh nắng chiều.    Góc máy flycam hạ thấp từ trên cao: Dòng sông Cầu Tràm hiền hòa uốn lượn ôm trọn lấy khu biệt thự Indochine tinh tế, sang trọng. | Tiếng sóng vỗ nhẹ vào bờ sông. Tiếng chim hót ríu rít tự nhiên. | Tại Villa Ny’ah, hình tượng hạt lúa cách điệu không đơn thuần là một chỉ dấu đồ họa.    Đó là hạt mầm được gieo xuống dòng sông Cầu Tràm trù phú, hiền hòa, nơi dòng chảy thiên nhiên ôm ấp ký ức và nuôi dưỡng tương lai. |
+
+**PHẦN 3: ĐỊNH NGHĨA LẠI KHÔNG GIAN – TRẢI NGHIỆM PHI-THƯỜNG-NHẬT (01:30 - HẾT)**
+
+| **Thời lượng** | **Hình ảnh (Visual)** | **Âm thanh & Tiếng động (Sound Design)** | **Giọng đọc (Voice-Over)** |
+| --- | --- | --- | --- |
+| **01:30 - 01:45** | **Cú máy giải phóng cơ thể:** Nhân vật nữ bước qua cánh cửa vòm Indochine tinh tế được thiết kế bởi KTS Codinachs.    Cô cúi xuống, tháo bỏ đôi giày cao gót. Cận cảnh đôi chân trần sải bước tự do trên nền gỗ mộc ấm áp, tiến thẳng về phía ban công lớn. | **Tiếng "tách" nhẹ của khóa thông minh.**    **Tiếng "rầm" trầm, dứt khoát của đôi giày cao gót chạm sàn.** Nhạc nền lùi lại để tôn vinh tiếng động mộc. | Tại đây, Nhã Đạt kiến tạo một "Chất Liệu Hạnh Phúc" hoàn toàn mới: Sự giao thoa duyên dáng giữa tiện nghi tương lai và ký ức vùng đất.    Một thế hệ chủ nhân mới xuất hiện: Những người phụ nữ điều hành thế giới bằng công nghệ, nhưng chọn tháo bỏ đôi giày cao gót để sải bước tự do... |
+| **01:45 - 02:05** | **Cú máy đắt giá (Highlight):** Tay cô chạm vào hệ cửa kính lùa lớn, **mở toang ra**.    Góc máy từ trong nhà vút ra ngoài: Tầm nhìn bừng sáng, **view chạm thẳng vào dòng sông Cầu Tràm mênh mông** và cánh đồng lúa chín vàng rực phía bờ bên kia. Gió ùa vào làm mái tóc và tà áo linen của cô bay nhẹ. Cô nhắm mắt, hít một hơi sâu đón "hương lúa chín". | **Tiếng "xoạch" của hệ cửa kính lùa lớn mở toang.**    **Tiếng gió sông ùa vào dồn dập**, tiếng sóng vỗ rì rào hòa cùng tiếng xào xạc của đồng lúa chín ngoại khu. | ...bởi vì họ hiểu rằng, nhịp sống homestay. Đó là hành trình đi tìm những trải nghiệm phi-thường-nhật – những khoảng lặng vô giá mà cuộc sống phố thị bận rộn hằng ngày đã vô tình tước đoạt mất của họ. |
+| **02:05 - 02:20** | **Khoảnh khắc Digital Detox:** Cô gái lật úp chiếc điện thoại thông minh xuống mặt bàn gỗ.    Cô thả mình nằm dài trên chiếc ghế lười bằng mây ở ban công, tay cầm ly trà ấm đang bốc khói, mắt thảnh thơi nhìn một cánh chim bay ngang trời. Hệ thống smarthome tự động điều chỉnh ánh sáng dịu nhẹ phía trong nhà. | Tiếng lật úp điện thoại dứt khoát. Tiếng nước trà rót nhẹ nhàng.    Nhạc nền lên cao trào (Climax) đầy cảm xúc, du dương và bình yên tuyệt đối. | Chúng tôi không giữ chân bạn ở quá khứ, chúng tôi mang linh hồn của đất đồng hành cùng bạn bước vào nhịp sống tương lai.    Tại đây, công nghệ thông minh không để phô diễn, mà để giải phóng bạn khỏi những vụn vặt, để bạn thực sự trở thành "vị khách đặc biệt" trong chính tổ ấm của mình. |
+| **02:20 - hết** | Cảnh sáng hôm sau: Ánh bình minh rạng rỡ lấp lánh trên mặt sông. Cô gái tỉnh dậy với nụ cười háo hức, kéo nhẹ rèm đón nắng mới.    Khung hình thu nhỏ dần, hiển thị logo Villa Ny'ah và thông điệp cốt lõi. | Nhạc nền lắng đọng, ngân dài tinh tế. | Tại Villa Ny’ah, ngôi nhà được định nghĩa lại: "Thân thuộc như nhà, thảnh thơi như homestay". Nơi mỗi sớm mai bạn tỉnh dậy với sự háo hức của một kỳ nghỉ dưỡng.    **Villa Ny'ah – Biến mỗi ngày thành một nhịp sống homestay.** |
