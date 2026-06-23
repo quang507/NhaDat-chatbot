@@ -70,30 +70,30 @@ function normalize(v: number[]): number[] {
   return v.map(x => +(x / n).toFixed(5));
 }
 
+async function embedOne(text: string, taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[]> {
+  const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:embedContent?key=${GEMINI_API_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: `models/${EMBED_MODEL}`,
+      content: { parts: [{ text }] },
+      taskType,
+    }),
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    if (res.status === 404) throw new Error(`Embedding 404: model "${EMBED_MODEL}" không tìm thấy. Kiểm tra GEMINI_API_KEY trong Vercel có đúng key từ AI Studio không. Chi tiết: ${errText}`);
+    throw new Error(`Embedding lỗi ${res.status}: ${errText}`);
+  }
+  const data = await res.json();
+  return normalize(data.embedding?.values || []);
+}
+
 async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[][]> {
   const out: number[][] = [];
-  const SIZE = 40; // tránh vượt giới hạn token mỗi request
-  for (let i = 0; i < texts.length; i += SIZE) {
-    const slice = texts.slice(i, i + SIZE);
-    const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        requests: slice.map(t => ({
-          model: `models/${EMBED_MODEL}`,
-          content: { parts: [{ text: t }] },
-          taskType,
-        })),
-      }),
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      if (res.status === 404) throw new Error(`Embedding model "${EMBED_MODEL}" không tìm thấy — kiểm tra GEMINI_API_KEY có quyền dùng Embedding API không. Chi tiết: ${errText}`);
-      if (res.status === 400) throw new Error(`Embedding lỗi tham số: ${errText}`);
-      throw new Error(`Embedding lỗi ${res.status}: ${errText}`);
-    }
-    const data = await res.json();
-    for (const e of data.embeddings || []) out.push(normalize(e.values || []));
+  // Gọi tuần tự để tránh rate limit, mỗi text 1 request
+  for (const text of texts) {
+    out.push(await embedOne(text, taskType));
   }
   return out;
 }
