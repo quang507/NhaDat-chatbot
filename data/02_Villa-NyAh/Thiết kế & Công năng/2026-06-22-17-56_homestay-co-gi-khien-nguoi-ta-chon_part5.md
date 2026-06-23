@@ -1,0 +1,4401 @@
+RF (+9.77)
+AC WT
+BEDROOM 3.10
+2F (+6.67)
+18
+17
+16
+STAIRS 14 15
+13
+12
+11 10.86
+1 9 0 BALCONY 3.10
+8 SITTING
+7
+6
+5
+4
+3
+2 1F (+3.57)
+1
+21
+20
+19
+18
+STAIRS 16 17
+15
+14
+13
+12
+1 1 0 1 LIVING ROOM TEA TERRACE 3.57
+9
+8
+7
+6
+5
+4
+3
+2 GF (+0.00)
+1
+14.00
+
+## Page 106
+
+V I L L A N Y ’A H | R I V E R H O U S E S
+2 | 14 RIVER HOUSE CORNER B SECTION
+1.09
+RF (+9.77)
+WT AC
+3.10 BEDROOM BATHROOM BATHROOM BEDROOM
+2F (+6.67)
+10.86
+3.10 BALCONY MASTER BEDROOM WALKING CLOSET BATHROOM
+1F (+3.57)
+3.57 DINNING ROOM KITCHEN BATHROOM GARAGE
+GF (+0.00)
+14.00
+1.09
+RF (+9.77)
+AC WT
+3.10 BEDROOM
+2F (+6.67)
+18
+17
+16
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IE STA TS IRS EI 1 CG3 14 15 NT U R E D E S I G N
+12
+10.86 11
+L106 P R O P O S A L 3f.10o r V i l l 1 9 0 a N y ´ a h i n L o n g T h u o nBAgLCONY 2 3 / 0 2 / 2 0 2 1
+8 SITTING
+7
+6
+5
+4
+3
+1F (+3.57) 2
+1
+21
+Architect, designer and coordinator Marcià Codinachs Collabora20tors: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+19
+18
+STAIRS 16 17
+15
+14
+13
+12
+3.57 1 1 0 1 LIVING ROOM TEA TERRACE
+9
+8
+7
+6
+5
+4
+3
+GF (+0.00) 2
+1
+14.00
+16.70 14.00
+6.00
+6.00
+6.00
+6.00
+8.00 11.00
+
+## Page 107
+
+07.61
+V I L L A N Y ’A H | R I V E R H O U S E S
+2 | 14 RIVER HOUSE CORNER B ELEVATION
+FRONT BACK
+1.09 1 R . F 0 ( 9 +9.7R7)F (+9.77) 1.09 1 R . F 0 ( 9 +9.7R7)F (+9.77) 1.09 1 R . F 0 ( 9 +9.7R7)F (+9.77)
+3.10 3.10 2.30 2.30 3.10 3.10 1.60 1.60 3.10 3.10 1.80 1.80
+2F (+6.652)F (+6.65) 2F (+6.652)F (+6.65) 2F (+6.672)F (+6.67)
+1.20 1.20 1.30 1.30
+10.8610 3 .8 .1 6 0 3.10 2.30 2.30 10.8610 3 .8 .1 6 0 3.10 0.60 0.60 8.40 8.40 10.8610 3 .8 .1 6 0 3.10 1.80 1.80
+1.20 1.20
+1F (+3.551)F (+3.55) 1F (+3.551)F (+3.55) 1F (+3.571)F (+3.57)
+5.30 5.30
+3.57 3.57 2.20 2.20 3.57 3.57 0.85 0.85 3.57 3.57 2.20 2.20
+GF (+0.0G0)F (+0.00) GF (+0.0G0)F (+0.00) GF (+0.0G0)F (+0.00)
+0.60 0.600.90 0.900.90 0.90
+1.60 1.60 1.60 1.60 1.20 1.20
+6.00 6.00 6.00 06.000.41 14.0014.00
+1.09 1 R . F 0 ( 9 +9.7R7)F (+9.77) 1.09 1 R . F 0 ( 9 +9.7R7)F (+9.77) 1.09 1 R . F 0 ( 9 +9.7R7)F (+9.77)
+1.20 1.20 1.20 1.20 1.20 1.20 0.90 0.90
+3.10 3.10 1.60 1.60 3.10 3.10 1.60 1.60 3.10 3.10 1.60 1.60
+2F (+6.652)F (+6.65) 2F (+6.652)F (+6.65) 2F (+6.672)F (+6.67) 1.20 1.20 1.30 1.30
+10.8610.86 10.8610.86 10.8610.86
+3.10 3.10 2.30 2.30 3.10 3.10 0.60 0.60 3.10 3.10 1.80 1.80
+1.20 1.20 00.6 00.6 00.6 00.6
+1F (+3.551)F (+3.55) 1F (+3.551)F (+3.55) 1F (+3.571)F (+3.57)
+5.30 5.30 5.45 5.45
+3.57 3.57 2.20 2.20 3.57 3.57 0.85 0.8500.8 3.57 3.57 2.20 2.20
+GF (+0.0G0)F (+0.00) GF (+0.0G0)F (+0.00) GF (+0.0G0)F (+0.00)
+0.60 0.600.90 0.900.90 0.90
+1.60 1.60 1.60 1.60 1.20 1.20
+U R B A NU RPBL AANN NP IL NA GN N AI6.N0N0 G6D.00 AANRDC HD IETSEI CG NT U R E D E S I G6.00N6.00 14.0014.00
+L107 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 2 3 / 0 2 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+00.11
+
+## Page 108
+
+V I L L A N Y ’A H | R I V E R H O U S E S
+2 | 14 RIVER HOUSE CORNER B ELEVATION
+SIDE
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L108 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 2 3 / 0 2 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+16.70 14.00
+6.00
+6.00
+6.00
+6.00
+8.00 11.00
+1.09 1.09 1.09 RF (+9.77)
+RF (+9.77) RF (+9.77)
+3.10 3.10 1.60 3.10 1.80
+2.30
+2F (+6.65) 2F (+6.65) 2F (+6.67)
+1.20 1.30
+10.86 10.86 10.86
+3.10 3.10 0.60 3.10 1.80
+2.30 8.40
+1.20
+1F (+3.55) 1F (+3.55) 1F (+3.57)
+5.30
+3.57 2.20 3.57 0.85 3.57 2.20
+GF (+0.00) GF (+0.00) GF (+0.00)
+0.60 0.90 0.90
+1.60 1.60 1.20
+6.00 6.00 14.00
+1.09 RF (+9.77) 1.09 RF (+9.77) 1.09 RF (+9.77)
+1.20 1.20 1.20 0.90
+3.10 1.60 3.10 1.60 3.10 1.60
+2F (+6.65) 2F (+6.65) 2F (+6.67) 1.20 1.30
+10.86 10.86 10.86
+3.10 3.10 0.60 3.10
+2.30 1.80
+1.20
+1F (+3.55) 1F (+3.55) 1F (+3.57)
+5.30 5.45
+3.57 2.20 3.57 0.85 3.57 2.20
+GF (+0.00) GF (+0.00) GF (+0.00)
+0.60 0.90 0.90
+1.60 1.60 1.20
+6.00 6.00 14.00
+
+## Page 109
+
+1.09 1.09 1.09 RF (+9.77)
+RF (+9.77) RF (+9.77)
+3.10 3.10 1.60 3.10 1.80
+2.30
+2F (+6.65) 2F (+6.65) 2F (+6.67)
+1.20 1.30
+10.86 10.86 10.86
+3.10 3.10 0.60 3.10 1.80
+2.30 8.40
+1.20
+1F (+3.55) 1F (+3.55) 1F (+3.57)
+5.30
+3.57 2.20 3.57 0.85 3.57 2.20
+GF (+0.00) GF (+0.00) GF (+0.00)
+V I L L A N Y ’A H | R I V E R H O U S E S
+2 | 14 RIVER HOUSE CORNER B ELEVATION
+0.60 0.90 0.90
+1.60 1.60 1.20
+SIDE
+6.00 6.00 14.00
+1.09 RF (+9.77) 1.09 RF (+9.77) 1.09 RF (+9.77)
+1.20 1.20 1.20 0.90
+3.10 1.60 3.10 1.60 3.10 1.60
+2F (+6.65) 2F (+6.65) 2F (+6.67) 1.20 1.30
+10.86 10.86 10.86
+3.10 3.10 0.60 3.10
+2.30 1.80
+1.20
+1F (+3.55) 1F (+3.55) 1F (+3.57)
+5.30 5.45
+3.57 2.20 3.57 0.85 3.57 2.20
+GF (+0.00) GF (+0.00) GF (+0.00)
+0.60 0.90 0.90
+1.60 1.60 1.20
+6.00 6.00 14.00
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L109 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 2 3 / 0 2 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+16.70 14.00
+6.00
+6.00
+6.00
+6.00
+8.00 11.00
+
+## Page 110
+
+3 . M A T E R I A L D E S C R I P T I O N F O R A L L L A Y O U T S
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L110 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 2 3 / 0 2 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+## Page 111
+
+V I L L A N Y ’A H | R I V E R H O U S E S
+3 | MATERIALS
+R1 ROOF TILE R2.PAINTED FAÇADE
+Location: Rooftop Location: Rooftop
+Description: Roof tile, dark brown Description: Stucco covering with
+/ light brown / dark blue color paint colour
+Dimensions: 40x40 cm
+R1 H1. ALUMINIUM HANDRAIL H1. BALUSTRADE HANDRAIL
+Location: Façade - Balcony Location: Façade - Balcony
+Description: Dark Gray Description: Light Gray
+P1
+P1. SUN PROTECTION
+H1
+Location: Façade - Balcony
+Façade 1F
+Description: Wood Pergola /
+F1
+Stone Canopy / Stone Pergola
+C1. ALUMINIUM CARPENTRY
+Location: Façade - Window frame
+Description: White
+F1.PAINTED FAÇADE
+Location: Façade
+Description: Stucco covering with
+paint colour
+Pantone P2001-C
+Pantone 663 XGC
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L111 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 2 3 / 0 2 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+## Page 112
+
+b y C o d i n a c h s A r c h i t e c t s
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L112 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 2 3 / 0 2 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+|     |              |         |          |                     | S   | C         | H E | M A        | T I     | C     | D E | S I | G   | N   |     |     |       |         |       |
+| --- | ------------ | ------- | -------- | ------------------- | --- | --------- | --- | ---------- | ------- | ----- | --- | --- | --- | --- | --- | --- | ----- | ------- | ----- |
+|     |              | F O     | R        | V I                 | L L | A         | N   | Y ´ A      | H       |   I N |   L | O   | N G |   T | H U | O N | G     |         |       |
+|     |              |         |          |                     |     | 1         | 0   | / 0        | 3       | /     | 2 0 | 2   | 1   |     |     |     |       |         |       |
+| U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  |     | HD IETSEI | CG  | NT  U  R E |   D E S | I G N |     |     |     |     |     |     |       |         |       |
+|     |              |         |          |                     |     |           |     |            |         |       |     |     |     |     |     |     | 1 0 / | 0 3 / 2 | 0 2 1 |
+L1 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+|     |              |         |          |                     | 1 .       |   R E       | N D E | R I N G   |   V | I E W | S   |       |         |       |
+| --- | ------------ | ------- | -------- | ------------------- | --------- | ----------- | ----- | --------- | --- | ----- | --- | ----- | ------- | ----- |
+| U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  | HD IETSEI | CG NT  U  R | E   D | E S I G N |     |       |     |       |         |       |
+|     |              |         |          |                     |           |             |       |           |     |       |     | 1 0 / | 0 3 / 2 | 0 2 1 |
+L2 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+| V I | L L A   N Y | ’A H |     |     |     |     |     |     |     |     |     |
+| --- | ----------- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+RENDERING VIEWS
+| U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  | HD IETSEI | CG NT  U  R | E   D | E S I G N |       |         |       |
+| --- | ------------ | ------- | -------- | ------------------- | --------- | ----------- | ----- | --------- | ----- | ------- | ----- |
+|     |              |         |          |                     |           |             |       |           | 1 0 / | 0 3 / 2 | 0 2 1 |
+L3 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+2 .   S H O P H O U S E S   -   S C H E M A T I C   D E S I G N   D R A W I N G S
+| U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  | HD IETSEI | CG NT  U  R | E   D | E S I G N |       |         |       |
+| --- | ------------ | ------- | -------- | ------------------- | --------- | ----------- | ----- | --------- | ----- | ------- | ----- |
+|     |              |         |          |                     |           |             |       |           | 1 0 / | 0 3 / 2 | 0 2 1 |
+L4 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+|     | V   | I L L A   N Y | ’A H |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | ------------- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+KEY PRODUCTS
+P
+3H
+A
+S
+E
+P H
+A
+S
+E PHASE 1
+2
+KINDERGARTEN
+E L EM
+S C EN T ARY
+HO O L
+M
+S TA E D IC AL
+T IO N
+E
+S
+A
+H
+P 3
+SEWAGE
+PLANT
+|     |     | E2  |     |     |     |     |     |     | COM | M E RCIAL |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+A RE A
+|                        | Yên | S   |     |     |     |     |     |     |     |     |                               | Yên |     |     |     |
+| ---------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------------------------- | --- | --- | --- | --- |
+|                        |     | A   |     |     |     |     |     |     |     |     | COM M E RCIAL                 |     |     |     |     |
+| Kênh rạch Chanh - Trị  |     | H   |     |     |     |     |     |     |     |     | A RE A Kênh rạch Chanh - Trị  |     |     |     |     |
+P
+|     |     |     |     |     |     |     |     |     |     |     |     | 1  METRO VILLAS  |     | 5.50m |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---------------- | --- | ----- | --- |
+P
+|     |     |                |         |          |                     | H A |           |             |       |           |     |                  |       |           |       |
+| --- | --- | -------------- | ------- | -------- | ------------------- | --- | --------- | ----------- | ----- | --------- | --- | ---------------- | ----- | --------- | ----- |
+|     |     |                |         |          |                     | SE  |           |             |       |           |     | 2  METRO VILLAS  |       | 5.75m     |       |
+|     |     |                |         |          |                     | 1   |           |             |       |           |     | 3  RIVER VILLAS  |       | 12m       |       |
+|     |     |                |         |          |                     |     |           |             |       |           |     | 4  RIVER VILLAS  |       | 14m       |       |
+|     |     |                |         |          |                     |     |           |             |       |           |     | 5  SHOPHOUSES    |       | ROAD      |       |
+|     |     |                |         |          |                     |     |           |             |       |           |     | 6  SHOPHOUSES    |       | CENTRE 01 |       |
+|     | U   | R B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  |     | HD IETSEI | CG NT  U  R | E   D | E S I G N |     |                  |       |           |       |
+|     |     |                |         |          |                     |     |           |             |       |           |     |                  | 1 0 / | 0 3 / 2   | 0 2 1 |
+L5 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+CODINACHS OPT LL _SHOPHOUSES
+| V I | L L A   N Y | ’A H |     |     |     |     |     |     |     |     |     |
+| --- | ----------- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+KEY PRODUCTS
+KINDERGARTEN
+E L EM
+S C EN T ARY
+HO O
+L
+M
+S E D IC
+TA T IO N AL
+SEWAGE
+PLANT
+|     |     |     |     |     |     |     | COM | M E RCIAL |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- |
+A RE A
+Yên
+COM M E RCIAL
+A RE A Kênh rạch Chanh - Trị
+|     |              |         |          |                     |           |             |       | 5  SHOPHOUSES  |       | ROAD      |       |
+| --- | ------------ | ------- | -------- | ------------------- | --------- | ----------- | ----- | -------------- | ----- | --------- | ----- |
+|     |              |         |          |                     |           |             |       | 6  SHOPHOUSES  |       | CENTRE 01 |       |
+| U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  | HD IETSEI | CG NT  U  R | E   D | E S I G N      |       |           |       |
+|     |              |         |          |                     |           |             |       |                | 1 0 / | 0 3 / 2   | 0 2 1 |
+L6 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+| V I | L L A   N Y | ’A H   | |   S H O | P H | O U | S E | S   |     |     |     |     |     |     |     |     |     |     |     |
+| --- | ----------- | -------- | ------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+1 | SHOPHOUSES ROAD MID CONTEXT
+|     |     |     | A.C |       |           |          | A.C A.C |       |           |          | A.C A.C |       |           |          | A.C   |     |     |     |
+| --- | --- | --- | --- | ----- | --------- | -------- | ------- | ----- | --------- | -------- | ------- | ----- | --------- | -------- | ----- | --- | --- | --- |
+|     |     |     |     | 17    | 16 15     | 51 61 71 |         | 17    | 16 15     | 51 61 71 |         | 17    | 16 15     | 51 61 71 |       |     |     |     |
+|     |     |     |     |       | 14 41     |          |         |       | 14 41     |          |         |       | 14 41     |          |       |     |     |     |
+|     |     |     |     | 18    | 13 31     | 81       |         | 18    | 13 31     | 81       |         | 18    | 13 31     | 81       |       |     |     |     |
+|     |     |     |     | 19    | 12 21     | 91       |         | 19    | 12 21     | 91       |         | 19    | 12 21     | 91       |       |     |     |     |
+|     |     |     |     | 20    | 11 11     | 02       |         | 20    | 11 11     | 02       |         | 20    | 11 11     | 02       | 16.00 |     |     |     |
+|     |     |     |     | 21    | 10 9 01 9 | 12       |         | 21    | 10 9 01 9 | 12       |         | 21    | 10 9 01 9 | 12       |       |     |     |     |
+|     |     |     |     |       | 8 8       |          |         |       | 8 8       |          |         |       | 8 8       |          |       |     |     |     |
+|     |     |     |     |       | 7 7       |          |         |       | 7 7       |          |         |       | 7 7       |          |       |     |     |     |
+|     |     |     |     | 12345 | 6 6       | 54321    |         | 12345 | 6 6       | 54321    |         | 12345 | 6 6       | 54321    |       |     |     |     |
+3.00
+CODINACHS OPT LL _SHOPHOUSES
+|     |     |     |     | 5.00 |     | 5.00 |     | 5.00 |     | 5.00 |     | 5.00 |     | 5.00 |     |     |     |     |
+| --- | --- | --- | --- | ---- | --- | ---- | --- | ---- | --- | ---- | --- | ---- | --- | ---- | --- | --- | --- | --- |
+10.00
+3.00
+KINDERGARTEN
+E
+SLCEMHOENOT LARY
+SMTAE TDIOIC NAL
+SPELWAANGTE
+|     |              |         |       | 12345 | 6 6              | 54321    |         | 12345 | 6 6         | 54321    |         | 12345 | 6 6         | 54321    |       |                |       |                                          |
+| --- | ------------ | ------- | ----- | ----- | ---------------- | -------- | ------- | ----- | ----------- | -------- | ------- | ----- | ----------- | -------- | ----- | -------------- | ----- | ---------------------------------------- |
+|     |              |         |       |       | 7                |          |         |       | 7           |          |         |       | 7           |          |       | COMAMREEARCIAL |       |                                          |
+|     |              |         |       |       | 7                |          |         |       | 7           |          |         |       | 7           |          |       |                |       | COMAMREEARCIAL Kênh rạch Chanh - Trị Yên |
+|     |              |         |       |       | 8 9 8            |          |         |       | 8 9 8       |          |         |       | 8 9 8       |          |       |                |       |                                          |
+|     |              |         |       | 21    | 10 01 9          | 12       |         | 21    | 10 01 9     | 12       |         | 21    | 10 01 9     | 12       | 16.00 |                |       |                                          |
+|     |              |         |       | 20    | 11 11            | 02       |         | 20    | 11 11       | 02       |         | 20    | 11 11       | 02       |       |                |       |                                          |
+|     |              |         |       | 19    | 12 13 21         | 91       |         | 19    | 12 13 21    | 91       |         | 19    | 12 13 21    | 91       |       |                |       |                                          |
+|     |              |         |       | 18    | 31               | 81       |         | 18    | 31          | 81       |         | 18    | 31          | 81       |       |                |       |                                          |
+|     |              |         |       | 17    | 16 15 14 41      |          |         | 17    | 16 15 14 41 |          |         | 17    | 16 15 14 41 |          |       |                |       |                                          |
+|     |              |         |       |       |                  | 51 61 71 |         |       |             | 51 61 71 |         |       |             | 51 61 71 |       |                |       |                                          |
+|     |              |         | C.A   |       |                  |          | C.A C.A |       |             |          | C.A C.A |       |             |          | C.A   |                |       |                                          |
+| U R | B A NU  RPBL | AANN NP | IL NA | GN N  | AI NNGD  AANRDC  |          |         |       | HD IETSEI   | CG       | NT  U   |  R E  |   D         | E S      | I G N |                |       |                                          |
+|     |              |         |       |       |                  |          |         |       |             |          |         |       |             |          |       | 1 0 /          | 0 3 / | 2 0 2 1                                  |
+L7 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+V I L L A N Y ’A H | S H O P H O U S E S
+1 | SHOPHOUSES ROAD MID GF | 1F | 2F
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L8 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 1 0 / 0 3 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40
+8.8m2 6.3m2 2.85
+3.35
+19.8m2
+3.35
+20.1m2
+3.95 3.95
+TOILET
+1.00
+1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.9 R
+m
+O
+2
+OM
+12 7
+2.65 3.9m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00
+12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC
+2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET
+1.00
+1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8
+BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.7 R
+m
+O
+2
+OM
+12 7
+2.65 3.7m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6
+16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17
+STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00
+CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS
+1 2 34.64m5 2 6
+9.4m2
+2.30 2.30 2.30 3.45 KITCHEN
+5.9m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20
+5.55 21.8m2
+2.20
+DINNING LIVING
+9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC
+2.60 2.40 2.40 2.60 AC
+16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL
+26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING
+1.65
+4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14
+21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12
+16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00
+57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60
+1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35
+3
+1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45
+16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00
+5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING
+4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12
+14.10 14.50
+16 STAIRS AND18 18 11
+15 0.60 9 0.60 10
+16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00
+56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60
+BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS
+3.00
+STAIRS A
+9
+ND
+3.00 3.00 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35
+3
+4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45
+0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40
+8.8m2 6.3m2 2.85
+3.35
+19.8m2
+3.35
+20.1m2
+3.95 3.95
+TOILET
+1.00
+1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.9 R
+m
+O
+2
+OM
+12 7
+2.65 3.9m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00
+12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC
+2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET
+1.00
+1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8
+BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.7 R
+m
+O
+2
+OM
+12 7
+2.65 3.7m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6
+16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17
+STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00
+CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS
+1 2 34.64m5 2 6
+9.4m2
+2.30 2.30 2.30 3.45 KITCHEN
+5.9m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20
+5.55 21.8m2
+2.20
+DINNING LIVING
+9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC
+2.60 2.40 2.40 2.60 AC
+16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL
+26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING
+1.65
+4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14
+21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12
+16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00
+57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60
+1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35
+3
+1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45
+16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00
+5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING
+4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12
+14.10 14.50
+16 STAIRS AND18 18 11
+15 0.60 9 0.60 10
+16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00
+56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60
+BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS
+3.00
+STAIRS A
+9
+ND
+3.00 3.00 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35
+3
+4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45
+0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40
+8.8m2 6.3m2 2.85
+3.35
+19.8m2
+3.35
+20.1m2
+3.95 3.95
+TOILET
+1.00
+1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.9 R
+m
+O
+2
+OM
+12 7
+2.65 3.9m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00
+12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC
+2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET
+1.00
+1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8
+BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.7 R
+m
+O
+2
+OM
+12 7
+2.65 3.7m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6
+16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17
+STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00
+CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS
+1 2 34.64m5 2 6
+9.4m2
+2.30 2.30 2.30 3.45 KITCHEN
+5.9m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20
+5.55 21.8m2
+2.20
+DINNING LIVING
+9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC
+2.60 2.40 2.40 2.60 AC
+16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL
+26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING
+1.65
+4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14
+21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12
+16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00
+57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60
+1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35
+3
+1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45
+16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00
+5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING
+4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12
+14.10 14.50
+16 STAIRS AND18 18 11
+15 0.60 9 0.60 10
+16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00
+56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60
+BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS
+3.00
+STAIRS A
+9
+ND
+3.00 3.00 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35
+3
+4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45
+0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | V I | L L A   N Y | ’A H   | |   S H O P | H O U | S E S |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | -------- | --------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+SHOPHOUSE MAINROAD MID SHOPHOUSE MAINROAD MID
+1 | SHOPHOUSES ROAD MID MEZZANINE | ROOF
+|     |     |     | 5.00 | 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 5.00 5.00 5.00 5.00
+|     |     | 0.80 0.80 | 1.20 1.20 1.05 | 1.05 0.90 0.90 | 1.05 1.05 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --------- | -------------- | -------------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4.80 4.80 4.70 4.70 4.70 4.70 0.95 0.95 0.90 0.90 1.30 1.30 0.900.95 0.900.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+A.C A.C
+BACKYARD BACKYARD
+2.00 2.00 9.1m2 9.1m2 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00
+|     | 1.90 1.90 |     |     |     |     | 1.90 1.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+DINNING DINNING KITCHEN KITCHEN BEDROOM BEDROOM BEDROOM BEDROOM
+2.85 2.85
+|     |           |     | 8.8m2 8.8m2 |     | 6.3m2 6.3m2 |     |           |     |     | 19.8m2 19.8m2 |     |           |           |     |     | 20.1m2 20.1m2 |     |     |           |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| --- | --------- | --- | ----------- | --- | ----------- | --- | --------- | --- | --- | ------------- | --- | --------- | --------- | --- | --- | ------------- | --- | --- | --------- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     | 3.40 3.40 |     |             |     |             |     | 3.35 3.35 |     |     |               |     |           | 3.35 3.35 |     |     |               |     |     |           |     | 4.15 4.15 |     |     |     |     |     | 4.15 4.15 |     |     |     |     |     |     |     |     |     |
+|     |           |     |             |     |             |     |           |     |     |               |     | 3.95 3.95 |           |     |     |               |     |     | 3.95 3.95 |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+TOILET TOILET
+|     |     |     |     |       | 1.8m2 1.8m2 | 1.00 1.00 |     |     |     |          |            |     |     |     |     |       |             |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ----- | ----------- | --------- | --- | --- | --- | -------- | ---------- | --- | --- | --- | --- | ----- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     | 17 17 | 16 16 15 15 |           |     |     |     | 11 11 10 | 10 9 9 8 8 |     |     |     |     | 11 11 | 10 10 9 9 8 | 8   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+14 14
+BATHROOM BATHROOM
+18 18 2.65 2.65 BAT BAT H H R R O O OM OM 2.65 2.65 AC AC AC AC AC AC
+|     |     |     |     |     | 13 13 |     |     |     |     | 12 12 | 7 7 |     |     |     | 3.9m2 3.9m2 | 12 12 | 7   | 7   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | ----------- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+3 .9 3 .9 m m 2 2
+LIVING LIVING 19 19 12 12 13 13 6 6 13 13 6 6 2.60 2.60 2.40 2.40 2.40 2.40 2.60 2.60
+|     | 4.20 4.20 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | AC AC |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+10.7m2 10.7m2 ST2 ST2 0 O 0 O R R AG AG E E 1 1 1 1 1 4 1 4 5 5 1 4 1 4 5 5 CA CA 11.4m2 11.4m2
+16.00 16.00 21 1 21 1 2 2 1 0 1 0 3.40 3.40 16.00 16.00 16.00 16.00 2 1 2 1 4 4 16.00 16.00 16.00 16.00 1 5 1 5 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00
+| 12.50 12.50 |     |     |     | .2 .2 | m m | 12.50 12.50 |     |     |     |                       |     | 4.00 4.00 |     |     |     |       |     |     | 3.70 3.70 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ----------- | --- | --- | --- | ----- | --- | ----------- | --- | --- | --- | --------------------- | --- | --------- | --- | --- | --- | ----- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|             |     |     |     |       | 9 9 |             |     |     |     |                       | 3 3 |           |     |     |     | 16 16 |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|             |     |     |     |       | 8 8 |             |     |     |     | STAIRS AND STAIRS AND | 2 2 |           |     |     |     | 17 17 |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+S T S A T A IR IR S  A S  A N N D D CO CO R R R R ID ID O O RS RS 1 1 ST ST 1A8 1A8 IR IR S  A S  A N N D D 14.00 14.00 14.00 14.00
+7 7 14.00 14.00 BAT BAT H H R R O O OM OM 14.00 14.00 14.00 14.00 14.00 14.00
+C C O O R R R R I D I D O O R R S S 1.75 1.75 1 0 1 .7 0 .7 m m 2 2 C C O O R R R R I D I D O O R R S S
+|     |     |     |     |       | 2 2                           |     |     |     | 2 .7 2 .7 m m 2 2 |     |     |     |           |     |                 |           | 2 2   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ----- | ----------------------------- | --- | --- | --- | ----------------- | --- | --- | --- | --------- | --- | --------------- | --------- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     | 1 1 2 | 2 34 34 . 64 . m 64 5 m 5 6 6 |     |     |     |                   |     |     |     |           |     |                 | 9 . 9 4 . | m 4 m |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |       |                               |     |     |     |                   |     |     |     | 3.45 3.45 |     | KITCHEN KITCHEN |           |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+6.2m2 6.2m2
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | SITTING SITTING |     |     | 1.90 1.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.4m2 5.4m2
+|     |     |     |     |     |     |     |     |     |     | SITTING | SITTING | 2.05 2.05 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------- | ------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4.3m2 4.3m2
+|     | 4.50 4.50 |     |     | RETAIL RETAIL |     | 4.50 4.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| --- | --------- | --- | --- | ------------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |           |     |     | 21.7m2 21.7m2 |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 7.25 7.25 |     |     |     |     |     | 7.25 7.25 |     |     |     |     |     |     |     |     |     |
+LIVING LIVING
+5.55 5.55
+|     |     |     |     |     |     |     |     |     |     | 22.3m2 22.3m2 |     |     |           |     | DINNING DINNING | LIVING LIVING |       |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------- | --- | --- | --------- | --- | --------------- | ------------- | ----- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |               |     |     |           |     | 9.4m2 9.4m2     | 9.5m2         | 9.5m2 |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |     |     |     |     |     |               |     |     | 3.95 3.95 |     |                 |               |       |     | 3.95 3.95 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+3.50 3.50
+| 1.50 1.50 |     |     |      |      |     | 1.50 1.50 |     |     |     |           |     |     |     |     |           |      |      |     |     |     |     |     |                     |           |                |      |     |     |     |           |                               |           |     |     |     |     |
+| --------- | --- | --- | ---- | ---- | --- | --------- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | ---- | ---- | --- | --- | --- | --- | --- | ------------------- | --------- | -------------- | ---- | --- | --- | --- | --------- | ----------------------------- | --------- | --- | --- | --- | --- |
+|           |     |     |      |      |     |           |     |     |     |           |     |     |     |     |           |      |      |     |     |     |     |     | 0.95 0.95 0.90 0.90 | 1.30 1.30 | 0.90 0.90 0.95 | 0.95 |     |     |     | 0.95 0.95 | 0.90 0.90 1.30 1.30 0.90 0.90 | 0.95 0.95 |     |     |     |     |
+|           |     |     | 4.80 | 4.80 |     |           |     |     |     | 4.80 4.80 |     |     |     |     | 2.40 2.40 | 2.40 | 2.40 |     |     |     |     |     |                     |           |                |      |     |     |     |           |                               |           |     |     |     |     |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 5.00 5.00 5.00 5.00
+|     |     |     | 5.00 | 5.00 |     |     |     |     |                 | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |              |         |          |                     |     |     |           |          |          |           |     |     |     |     |     |       |         |       |
+| --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --------------- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | ------------ | ------- | -------- | ------------------- | --- | --- | --------- | -------- | -------- | --------- | --- | --- | --- | --- | --- | ----- | ------- | ----- |
+|     |     |     |      |      |     |     |     |     |                 |           |     |     |     |     |     |           |     | U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  |     |     | HD IETSEI | CG NT  U |  R E   D | E S I G N |     |     |     |     |     |       |         |       |
+|     |     |     |      |      |     |     |     |     | 1 FLOOR 1 FLOOR |           |     |     |     |     |     |           |     |     |              |         |          |                     |     |     |           |          |          |           |     |     |     |     |     | 1 0 / | 0 3 / 2 | 0 2 1 |
+GF FLOOR GF FLOOR 2 FLOOR 2 FLOOR L9 P R O P O S A L   f MEZZANINE MEZZANINE o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n ROOF ROOF g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+SHOPHOUSE MAINROAD CORNER SHOPHOUSE MAINROAD CORNER
+|     |     |     |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.00 5.00
+|     |     |           |                |                |           |     |     | 0.80 0.80 | 1.20 1.20 | 1.00 1.00 1.20 1.20 | 0.80 0.80 |     |     | 0.80 0.80 | 1.20 1.20 | 1.00 1.00 1.20 1.20 | 0.80 0.80 |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+| --- | --- | --------- | -------------- | -------------- | --------- | --- | --- | --------- | --------- | ------------------- | --------- | --- | --- | --------- | --------- | ------------------- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |     | 0.80 0.80 | 1.20 1.20 1.05 | 1.05 0.90 0.90 | 1.05 1.05 |     |     |           |           |                     |           |     |     |           |           |                     |           |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |     |           | 4.80           | 4.80           |           |     |     |           |           | 4.70 4.70           |           |     |     |           |           | 4.70 4.70           |           |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+A.C A.C
+BACKYARD BACKYARD
+2.00 2.00 9.1m2 9.1m2 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00
+|           | 1.90 1.90 |     |     |     |     | 1.90 1.90 |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --------- | --- | --- | --- | --- | --------- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0.45 0.45 |           |     |     |     |     |           | 0.45 0.45 |     |     |     |     |     | 0.45 0.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 0.90 0.90 |           |     |     |     |     |           | 0.90 0.90 |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+DINNING DINNING KITCHEN KITCHEN BEDROOM BEDROOM BEDROOM BEDROOM
+|     |     |     |     |     |     | 2.85 2.85 |     |     |     | 19.4m2 19.4m2 |     |     |     |     |     | 19.7m2 19.7m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | ------------- | --- | --- | --- | --- | --- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+8.5m2 8.5m2 6.3m2 6.3m2 1.05 1.05 3.35 3.35 1.05 1.05 3.35 3.35
+| 1.05 1.05 | 3.40 3.40 |     |     |     |     |     |           |     |     |     |     |           |           |     |     |     |     |     |           |     | 4.15 4.15 |     |     |     |     |     | 4.15 4.15 |     |     |     |     |     |     |     |     |     |
+| --------- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --------- | --- | --- | --- | --- | --- | --------- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|           |           |     |     |     |     |     |           |     |     |     |     | 3.95 3.95 |           |     |     |     |     |     | 3.95 3.95 |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| 0.90 0.90 |           |     |     |     |     |     | 0.90 0.90 |     |     |     |     |           | 0.90 0.90 |     |     |     |     |     |           |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+TOILET TOILET
+1.00 1.00
+1.8m2 1.8m2
+17 17 16 16 15 15 2.45 2.45 11 11 10 10 9 9 8 8 2.45 2.45 11 11 10 10 9 9 8 8 9.00 9.00 9.00 9.00
+| 2.45 2.45 |     |     |     |     | 14 14 |     |     |     |     |     |     |     |     |                   |     |     |     |     |     |     |     |     |       |       |       |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | ----------------- | --- | --- | --- | --- | --- | --- | --- | --- | ----- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|           |     |     |     |     |       |     |     |     |     |     |     |     |     | BATHROOM BATHROOM |     |     |     |     |     |     |     |     | AC AC | AC AC | AC AC |     |     |     |     |     |     |     |     |     |     |     |
+18 18 2.65 2.65 BAT BAT H H R R O O OM OM 2.65 2.65 3.7m2 3.7m2
+|     |           |     |               |       | 13 13 |     |     |     | 2 2           | 12 12   | 7 7 |     |     |     |     | 12 12   | 7   | 7   |     |     |           |           |     |       |     |           |           |     |     |     |     |     |     |     |     |     |
+| --- | --------- | --- | ------------- | ----- | ----- | --- | --- | --- | ------------- | ------- | --- | --- | --- | --- | --- | ------- | --- | --- | --- | --- | --------- | --------- | --- | ----- | --- | --------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |           |     |               |       |       |     |     |     | 3 .7 3 .7 m m |         |     |     |     |     |     |         |     |     |     |     | 2.60 2.60 | 2.40 2.40 |     |       |     | 2.40 2.40 | 2.60 2.60 |     |     |     |     |     |     |     |     |     |
+|     |           |     |               | 19 19 | 12 12 |     |     |     |               | 13 13   | 6 6 |     |     |     |     | 13 13   | 6   | 6   |     |     |           |           |     | AC AC |     |           |           |     |     |     |     |     |     |     |     |     |
+|     | 4.20 4.20 |     | LIVING LIVING |       |       |     |     |     |               | 1 4 1 4 | 5 5 |     |     |     |     | 1 4 1 4 | 5   | 5   |     |     |           |           |     |       |     |           |           |     |     |     |     |     |     |     |     |     |
+10.5m2 10.5m2 ST2 ST2 0 O 0 O R R AG AG E E 1 1 1 1 16.00 16.00 CA CA 11.4m2 11.4m2 16.00 16.00
+16.00 16.00 21 1 21 1 2 2 1 0 1 0 3.40 3.40 16.00 16.00 16.00 16.00 0.60 0.60 2 1 2 1 4 4 16.00 16.00 16.00 16.00 0.60 0.60 1 5 1 5 3.70 3.70 16.00 16.00 16.00 16.00 16.00 16.00
+.2 .2 m m 12.50 12.50 3 3 4.00 4.00 1 6 1 6
+| 1.20 1.20 |     |     |     |     | 9 9 |     |           |     |     |                       |     |     |           |     |     |                           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --------------------- | --- | --- | --------- | --- | --- | ------------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|           |     |     |     |     |     |     | 0.60 0.60 |     |     | STAIRS AND STAIRS AND | 2 2 |     | 0.60 0.60 |     |     | 17 17                     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     | 8 8 |     |           |     |     |                       |     |     |           |     |     | ST18AIRS AND ST18AIRS AND |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+STAIRS AND STAIRS AND BATHROOM BATHROOM CORRIDORS CORRIDORS 1 1 14.00 14.00 14.00 14.00 14.00 14.00 14.00 14.00
+|     |     |     |     |                     | 7 7 |     |           |     | 2.5m2 2.5m2 | 10.7m2 10.7m2 |     |     |     |     |     | CORRIDORS CORRIDORS |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ------------------- | --- | --- | --------- | --- | ----------- | ------------- | --- | --- | --- | --- | --- | ------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     | CORRIDORS CORRIDORS |     |     | 1.75 1.75 |     |             |               |     |     |     |     |     |                     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+9.4m2 9.4m2
+|           |     |     |     | 1 1 2 | 2 34.64m5 34.64m5 2 2 6 6 |     |           |     |     |     |     |     |           |     |                 |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | ----- | ------------------------- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --------------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|           |     |     |     |       |                           |     | 2.30 2.30 |     |     |     |     |     | 2.30 2.30 |     | KITCHEN KITCHEN |     |     |     |     |     | 2.55 2.55 |     |     |     |     |     | 2.55 2.55 |     |     |     |     |     |     |     |     |     |
+| 2.30 2.30 |     |     |     |       |                           |     |           |     |     |     |     |     | 3.45 3.45 |     |                 |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+5.9m2 5.9m2
+SITTING SITTING
+1.90 1.90
+5.4m2 5.4m2
+|     |     |     |     |     |     |     |     |     |     | SITTING | SITTING | 2.05 2.05 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------- | ------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4.3m2 4.3m2
+|     |           |     |     |               |     |           | 0.90 0.90 |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --------- | --- | --- | ------------- | --- | --------- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     | 4.50 4.50 |     |     | RETAIL RETAIL |     | 4.50 4.50 |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+21.2m2 21.2m2
+| 2.95 2.95 |     |     |     |     |     |     |           |     |     | LIVING LIVING |     |     |           |     |                 |               |     |     |           |     |           |     |     |     |     |     |           |     |           |     |     |     |           |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | ------------- | --- | --- | --------- | --- | --------------- | ------------- | --- | --- | --------- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --------- | --- | --- | --- | --------- | --- | --- | --- |
+|           |     |     |     |     |     |     | 5.55 5.55 |     |     | 21.8m2 21.8m2 |     |     |           |     |                 |               |     |     |           |     |           |     |     |     |     |     |           |     |           |     |     |     |           |     |     |     |
+|           |     |     |     |     |     |     | 2.20 2.20 |     |     |               |     |     | 2.20 2.20 |     | DINNING DINNING | LIVING LIVING |     |     |           |     |           |     |     |     |     |     |           |     |           |     |     |     |           |     |     |     |
+|           |     |     |     |     |     |     |           |     |     |               |     |     |           |     | 9.0m2 9.0m2     | 9.5m2 9.5m2   |     |     |           |     |           |     |     |     |     |     |           |     |           |     |     |     |           |     |     |     |
+|           |     |     |     |     |     |     |           |     |     |               |     |     |           |     |                 |               |     |     |           |     | 4.70 4.70 |     |     |     |     |     | 4.70 4.70 |     | 5.00 5.00 |     |     |     | 5.00 5.00 |     |     |     |
+|           |     |     |     |     |     |     |           |     |     |               |     |     | 3.95 3.95 |     |                 |               |     |     | 3.95 3.95 |     |           |     |     |     |     |     |           |     |           |     |     |     |           |     |     |     |
+3.50 3.50
+0.30 0.30
+|           |     |     |     |     |     |           | 0.90 0.90 |     |     |           |     |     | 0.90 0.90 |     |           |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --------- | --------- | --- | --- | --------- | --- | --- | --------- | --- | --------- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+| 1.50 1.50 |     |     |     |     |     | 1.50 1.50 |           |     |     |           |     |     |           |     |           |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|           |     |     |     |     |     |           | 0.65 0.65 |     |     |           |     |     | 0.65 0.65 |     |           |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|           |     |     |     |     |     |           |           |     |     | 4.70 4.70 |     |     |           |     | 2.30 2.30 | 2.40 2.40 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+4.70 4.70
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80
+|     |     |     | 5.00 | 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+GF FLOOR GF FLOOR 1 FLOOR 1 FLOOR MEZZANINE MEZZANINE ROOF ROOF
+2 FLOOR 2 FLOOR
+SHOPHOUSE CENTER ONE MID SHOPHOUSE CENTER ONE MID
+|     |     |     | 5.00 | 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 5.00 5.00 5.00 5.00
+|     |     |     | 4.80 | 4.80 |     |     |     |     |     | 4.80 4.80 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4.80 4.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+|     |     |     |     |     |     |     |     |     |     |     |     |     | 3.15 3.15 |     | BEDROOM BEDROOM |     |     |     | 3.15 3.15 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --------------- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+15.0m2 15.0m2
+RETAIL RETAIL
+|     |     |     |     |     |     | 5.00 5.00 | 4.80 4.80 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+26.6m2 26.6m2
+5.55 5.55
+|     |     |     |     |     |     |     |     |     |     |     |     |     |           |     |                 |                 |             |     |     |     | 7.40 7.40 |     |     |     |     |     | 7.40 7.40 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --------------- | --------------- | ----------- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |     |     |           |     | KITCHEN KITCHEN | DINNING DINNING |             |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |     |     |     |     |     |     |     |     | 1.65 1.65 |     | 4.3m2 4.3m2     |                 | 5.4m2 5.4m2 |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+2.45 2.45
+CORRIDORS CORRIDORS
+2.0m2 2.0m2
+|     |     |     |     |     | 20 20 |     |     |     |     |     |     |     |     |     |     |     | 15 15 14 14 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+T O T O IL IL E T E T 2.25 2.25 2.70 2.70 BAT BAT H H R R O O OM OM BAT BAT H H R R O O OM OM 16 16
+|     |     |     |     |     | 21 21 1 2 9 1 2 9     |     |     |     | 2 2         |     |       |     | 2.70 2.70 |     |                   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --------------------- | --- | --- | --- | ----------- | --- | ----- | --- | --------- | --- | ----------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | 2 .1 2 .1 m m 1 8 1 8 |     |     | 3   | .8 3 .8 m m |     | 20 20 |     |           |     | 3 .8 3 .8 m m 2 2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+13 13
+|                       |     |     |     |     | 17 17   |             |     |     |     |                           | 21 21 19 19           |           |     |     |     | 17 17   | 12                        | 12    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------------------- | --- | --- | --- | --- | ------- | ----------- | --- | --- | --- | ------------------------- | --------------------- | --------- | --- | --- | --- | ------- | ------------------------- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 14.5014.10 14.5014.10 |     |     |     |     |         | 14.50 14.50 |     |     |     |                           |                       |           |     |     |     |         |                           |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|                       |     |     |     |     | 16 16   |             |     |     |     | STAIRS AND18 STAIRS AND18 |                       |           |     |     |     | 18 18   | 11                        | 11    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|                       |     |     |     |     | 1 5 1 5 |             |     |     |     |                           | 9 9                   |           |     |     |     |         | 1                         | 0 1 0 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|                       |     |     |     |     |         |             |     |     |     | CO CO R                   | R R R I DO I DO RS RS | 3.95 3.95 |     |     |     | ST ST A | A IR IR S  A S  A N N D D |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+16.00 16.00 1 4 1 4 16.00 16.00 16.00 16.00 2 2 8 8 16.00 16.00 16.00 16.00 9 9 4.05 4.05 16.00 16.00 AC AC AC AC AC AC
+RETAIL RETAIL 1 3 1 3 1 1 9 . 9 9 . m 9 m 7 7 C C O O R R R R ID ID O O R R S S 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00
+|     |     |     | 57.4m2 57.4m2 |     |     |     |     |     |     |     |     |     |     |     |     |        |        | 8 8 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------ | ------ | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |               |     |     |     |     |     |     | 2 2 | 6 6 |     |     |     |     | 10.4m2 | 10.4m2 | 7 7 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+A A C C
+BATHROOM BATHROOM 3 3 5 5 6 6 2.60 2.60 2.40 2.40 2.40 2.40 2.60 2.60
+|     |     |     |     |     |         |     |           |       |       |     |     |     |           | BATHROOM BATHROOM |             |     |     |     |     |     |     |     |       | 11 11 .5 .5 m2 | m2  |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ------- | --- | --------- | ----- | ----- | --- | --- | --- | --------- | ----------------- | ----------- | --- | --- | --- | --- | --- | --- | --- | ----- | -------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | 1 2 1 2 |     | 2.70 2.70 | 4.1m2 | 4.1m2 |     |     |     |           |                   |             |     |     |     |     |     |     |     | AC AC |                |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |         |     |           |       |       |     |     |     | 2.70 2.70 |                   | 4.0m2 4.0m2 |     |     |     |     |     |     |     |       |                |     |     |     |     |     |     |     |     |     |     |     |     |
+1 1 1 1
+|     |     |     |     |     | 10 10 |     |     |     |     | 4 4 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+CORRIDORS CORRIDORS
+|     |     |     |     |     | 9 9                         |     |     |     |     |     |     |     |     |     | 1.8m2 | 1.8m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --------------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | STAIRS A STAIRS A 8 ND 8 ND |     |     |     |     |     |     |     |     |     |       |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+CORRID7ORS CORRID7ORS
+6.6m62 6.6m62
+6.65 6.65
+5 5
+|     |     |     |     |     |     |     |     |     |     |     |     |     |           |     | KITCHEN KITCHEN | DINNING DINNING |       |     | 2.35 2.35 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --------------- | --------------- | ----- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | 4 4 |     |     |     |     |     |     |     | 1.65 1.65 |     |                 |                 |       |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     | 3 3 |     |     |     |     |     |     |     |           |     | 4.3m2 4.3m2     | 5.1m2           | 5.1m2 |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+2 2
+1 1
+RETAIL RETAIL
+28.3m2 28.3m2
+5.90 5.90
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 6.00 6.00 |     |     |     |     |     | 6.00 6.00 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.10 5.10
+BEDROOM BEDROOM
+|     |     |     |     |     |     |     |     |     |     |     |     |     | 3.45 3.45 |     |     |     |     |     | 3.45 3.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+16.5m2 16.5m2
+| 1.50 1.50 |     |     |     |     |     | 1.50 1.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+3.70 3.70 1.00 1.00 4.80 4.80 4.80 4.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+0.80 0.80 1.20 1.20 1.20 1.20 0.750.90 0.750.90 0.15 0.15 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 5.00 5.00 5.00 5.00
+|     |     |     | 5.00 | 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.00 5.00
+GF FLOOR GF FLOOR 1 FLOOR 1 FLOOR 2 FLOOR 2 FLOOR MEZZANINE MEZZANINE ROOF ROOF
+SHOPHOUSE CENTER ONE CORNER SHOPHOUSE CENTER ONE CORNER
+|     |     |     | 5.00 | 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80
+4.70 4.70
+|     |     |     |     |     |     |     |           |     |     | 4.80 4.80 |     |     |           |     |     | 4.80 4.80 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --------- | --- | --- | --------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     | 0.75 0.75 |     |     |           |     |     | 0.75 0.75 |     |     |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+1.10 1.10
+|     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     | 0.90 0.90 |     |                 |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --------------- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |           |     |     |     |     |     | 3.15 3.15 |     | BEDROOM BEDROOM |     |     |     | 3.15 3.15 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+14.7m2 14.7m2
+|           |     |     |     |     |     |           |                     |     |     | R R E T E A T A IL IL   |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --------- | ------------------- | --- | --- | ----------------------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|           |     |     |     |     |     | 5.00 5.00 | 2.00 2.00 4.80 4.80 |     |     |                         |     |     | 2.00 2.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 3.50 3.50 |     |     |     |     |     |           |                     |     |     | 2 6 2 . 6 1 . m 1 m 2 2 |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+5.55 5.55
+|     |     |     |     |     |     |     |           |     |     |     |     |     |           |     |                 |                 |       |     |     |     | 7.40 7.40 |     |     |     |     |     | 7.40 7.40 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --------------- | --------------- | ----- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     | 0.90 0.90 |     | KITCHEN KITCHEN | DINNING DINNING |       |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |     |     |           |     |     |     |     |     | 1.65 1.65 |     | 4.2m2 4.2m2     | 5.4m2           | 5.4m2 |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+2.45 2.45
+|           |     |     |     |     |         |     |           |     |     |     |     |     |           |     |                     |       |             |     |     |     |     |     |     |     |     |     |     |     | 11.00 11.00 |     |     |     | 11.00 11.00 |     |     |     |
+| --------- | --- | --- | --- | --- | ------- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | ------------------- | ----- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | --- | --- | --- | ----------- | --- | --- | --- |
+|           |     |     |     |     |         |     |           |     |     |     |     |     |           |     | CORRIDORS CORRIDORS |       |             |     |     |     |     |     |     |     |     |     |     |     |             |     |     |     |             |     |     |     |
+| 2.70 2.70 |     |     |     |     |         |     | 2.70 2.70 |     |     |     |     |     | 2.70 2.70 |     | 2.0m2               | 2.0m2 |             |     |     |     |     |     |     |     |     |     |     |     |             |     |     |     |             |     |     |     |
+|           |     |     |     |     | 2 0 2 0 |     |           |     |     |     |     |     |           |     |                     |       | 15 15 14 14 |     |     |     |     |     |     |     |     |     |     |     |             |     |     |     |             |     |     |     |
+T O T O IL IL E T E T 2.25 2.25 BAT BAT H H R R O O OM OM 2.70 2.70 BAT BAT H H R R O O OM OM 16 16
+|     |     |     |     |     | 21 21 1 9 1 9 |     | 2.70 2.70 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ------------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+2 .1 2 .1 m m 1 2 8 1 2 8 3 .6 3 .6 m m 2 2 3 .6 3 .6 m m 2 2
+|     |             |     |     |     |       |             |           |     |     |                           | 20 20       |     |           |     |     |       | 13  | 13  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | ----------- | --- | --- | --- | ----- | ----------- | --------- | --- | --- | ------------------------- | ----------- | --- | --------- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |             |     |     |     | 17 17 |             |           |     |     |                           | 21 21 19 19 |     |           |     |     | 17 17 | 12  | 12  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     | 14.10 14.10 |     |     |     |       | 14.50 14.50 |           |     |     |                           |             |     |           |     |     |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |             |     |     |     | 16 16 |             |           |     |     | STAIRS AND18 STAIRS AND18 |             |     |           |     |     | 18 18 | 11  | 11  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |             |     |     |     | 15 15 |             | 0.60 0.60 |     |     |                           | 9 9         |     | 0.60 0.60 |     |     |       | 10  | 10  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+1.20 1.20 CO CO R R R R I D I D ORS ORS 3.95 3.95 ST ST A A IR IR S  A S  A N N D D
+16.00 16.00 1 4 1 4 16.00 16.00 16.00 16.00 8 8 16.00 16.00 16.00 16.00 9 9 4.05 4.05 16.00 16.00 AC AC AC AC AC AC
+RETAIL RETAIL 1 3 1 3 0.60 0.60 9 . 9 9 . m 9 m 2 2 0.60 0.60 C C O O R R R R ID ID O O R R S S 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00
+|     |     |     | 56.1m2 56.1m2 |     |     |     |     |     |     | 1 1 | 7 7 |     |     |     |     |        | 8        | 8   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------ | -------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |               |     |     |     |     |     |     | 2 2 | 6 6 |     |     |     |     | 10.4m2 | 10.4m2 7 | 7   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+AC AC
+BATHROOM BATHROOM 3 3 5 5 6 6 2.60 2.60 2.40 2.40 2.40 2.40 2.60 2.60
+|     |     |     |     |     |       |     |           |       |       |     |     |     |           | BATHROOM BATHROOM |             |     |     |     |     |     |     |     |       | 11.5m2 11.5m2 |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ----- | --- | --------- | ----- | ----- | --- | --- | --- | --------- | ----------------- | ----------- | --- | --- | --- | --- | --- | --- | --- | ----- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | 12 12 |     | 2.70 2.70 | 3.8m2 | 3.8m2 |     |     |     | 2.70 2.70 |                   | 3.8m2 3.8m2 |     |     |     |     |     |     |     | AC AC |               |     |     |     |     |     |     |     |     |     |     |     |     |
+11 11
+|           |     |     |     |     | 10 10                       |     |           |     |     | 4 4 |     |     |           |     |                     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --------------------------- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | ------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 3.00 3.00 |     |     |     |     |                             |     | 3.00 3.00 |     |     |     |     |     | 3.00 3.00 |     | CORRIDORS CORRIDORS |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     | 9 9                         |     |           |     |     |     |     |     |           |     | 1.8m2 1.8m2         |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     | STAIRS A STAIRS A 8 ND 8 ND |     |           |     |     |     |     |     |           |     |                     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+CORRID7ORS CORRID7ORS
+|     |     |     |     |     | 6.6m62 6.6m62 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 1.30 1.30 |     |     |     |     |     | 1.30 1.30 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+6.65 6.65
+|     |     |     |     |     | 5 5 |     |     |     |     |     |     |     |           |     |                 |                 |       |     | 2.35 2.35 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --------------- | --------------- | ----- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |     |     |           |     | KITCHEN KITCHEN | DINNING DINNING |       |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     | 4 4 |     |     |     |     |     |     |     | 1.65 1.65 |     | 4.2m2 4.2m2     | 5.1m2           | 5.1m2 |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+3 3
+|     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+2 2
+1 1
+RETAIL RETAIL
+2.70 2.70
+|     |     |     |     |     |     |     |     |     |     | 27.8m2 27.8m2 |     | 5.90 5.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.10 5.10
+|     |     |     |     |     |     |     | 2.00 2.00 |     |     |     |     |     | 2.00 2.00 |     |     |     |     |     |     |     |           |     |     |     |     |     |           |     |           |     |     |     |           |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --------- | --- | --- | --- | --------- | --- | --- | --- |
+|     |     |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |     |     | 4.40 4.40 |     |     |     |     |     | 4.40 4.40 |     | 5.00 5.00 |     |     |     | 5.00 5.00 |     |     |     |
+BEDROOM BEDROOM
+|     |     |     |     |     |     |     |     |     |     |     |     |     | 3.45 3.45 |     | 16.2m2 | 16.2m2 |     |     | 3.45 3.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | ------ | ------ | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+0.35 0.35
+|           |     |     |           |     |           |           | 0.90 0.90 |     |     |           |     |     | 0.90 0.90 |     |     |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+| --------- | --- | --- | --------- | --- | --------- | --------- | --------- | --- | --- | --------- | --- | --- | --------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+| 1.50 1.50 |     |     |           |     |           | 1.50 1.50 |           |     |     |           |     |     |           |     |     |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|           |     |     |           |     |           |           | 0.75 0.75 |     |     |           |     |     | 0.75 0.75 |     |     |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|           |     |     | 3.60 3.60 |     | 1.00 1.00 |           |           |     |     | 4.70 4.70 |     |     |           |     |     | 4.80 4.80 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+0.80 0.80 11..2200 11..2200 11..2200 11..2200 0.750.90 0.750.90 00..1155 00..1155 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80
+|     |     |     | 55..0000 | 55..0000 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | -------- | -------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+GF FLOOR GF FLOOR 1 FLOOR 1 FLOOR MEZZANINE MEZZANINE ROOF ROOF
+2 FLOOR 2 FLOOR
+
+| V I | L L A   N Y | ’A H   | |   S H O | P H | O U | S E | S   |     |     |     |     |     |     |     |     |     |     |     |
+| --- | ----------- | -------- | ------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+1 | SHOPHOUSES ROAD CORNER CONTEXT
+|     |     |     | A.C |       |           |          | A.C A.C |       |           |          | A.C A.C |       |           |          | A.C   |     |     |     |
+| --- | --- | --- | --- | ----- | --------- | -------- | ------- | ----- | --------- | -------- | ------- | ----- | --------- | -------- | ----- | --- | --- | --- |
+|     |     |     |     | 17    | 16 15     | 51 61 71 |         | 17    | 16 15     | 51 61 71 |         | 17    | 16 15     | 51 61 71 |       |     |     |     |
+|     |     |     |     |       | 14 41     |          |         |       | 14 41     |          |         |       | 14 41     |          |       |     |     |     |
+|     |     |     |     | 18    | 13 31     | 81       |         | 18    | 13 31     | 81       |         | 18    | 13 31     | 81       |       |     |     |     |
+|     |     |     |     | 19    | 12 21     | 91       |         | 19    | 12 21     | 91       |         | 19    | 12 21     | 91       |       |     |     |     |
+|     |     |     |     | 20    | 11 11     | 02       |         | 20    | 11 11     | 02       |         | 20    | 11 11     | 02       | 16.00 |     |     |     |
+|     |     |     |     | 21    | 10 9 01 9 | 12       |         | 21    | 10 9 01 9 | 12       |         | 21    | 10 9 01 9 | 12       |       |     |     |     |
+|     |     |     |     |       | 8 8       |          |         |       | 8 8       |          |         |       | 8 8       |          |       |     |     |     |
+|     |     |     |     |       | 7 7       |          |         |       | 7 7       |          |         |       | 7 7       |          |       |     |     |     |
+|     |     |     |     | 12345 | 6 6       | 54321    |         | 12345 | 6 6       | 54321    |         | 12345 | 6 6       | 54321    |       |     |     |     |
+3.00
+CODINACHS OPT LL _SHOPHOUSES
+|     |     |     |     | 5.00 |     | 5.00 |     | 5.00 |     | 5.00 |     | 5.00 |     | 5.00 |     |     |     |     |
+| --- | --- | --- | --- | ---- | --- | ---- | --- | ---- | --- | ---- | --- | ---- | --- | ---- | --- | --- | --- | --- |
+10.00
+3.00
+KINDERGARTEN
+E
+SLCEMHOENOT LARY
+SMTAE TDIOIC NAL
+SPELWAANGTE
+|     |              |         |       | 12345 | 6 6              | 54321    |         | 12345 | 6 6         | 54321    |         | 12345 | 6 6         | 54321    |       |                |       |                                          |
+| --- | ------------ | ------- | ----- | ----- | ---------------- | -------- | ------- | ----- | ----------- | -------- | ------- | ----- | ----------- | -------- | ----- | -------------- | ----- | ---------------------------------------- |
+|     |              |         |       |       | 7                |          |         |       | 7           |          |         |       | 7           |          |       | COMAMREEARCIAL |       |                                          |
+|     |              |         |       |       | 7                |          |         |       | 7           |          |         |       | 7           |          |       |                |       | COMAMREEARCIAL Kênh rạch Chanh - Trị Yên |
+|     |              |         |       |       | 8 9 8            |          |         |       | 8 9 8       |          |         |       | 8 9 8       |          |       |                |       |                                          |
+|     |              |         |       | 21    | 10 01 9          | 12       |         | 21    | 10 01 9     | 12       |         | 21    | 10 01 9     | 12       | 16.00 |                |       |                                          |
+|     |              |         |       | 20    | 11 11            | 02       |         | 20    | 11 11       | 02       |         | 20    | 11 11       | 02       |       |                |       |                                          |
+|     |              |         |       | 19    | 12 13 21         | 91       |         | 19    | 12 13 21    | 91       |         | 19    | 12 13 21    | 91       |       |                |       |                                          |
+|     |              |         |       | 18    | 31               | 81       |         | 18    | 31          | 81       |         | 18    | 31          | 81       |       |                |       |                                          |
+|     |              |         |       | 17    | 16 15 14 41      |          |         | 17    | 16 15 14 41 |          |         | 17    | 16 15 14 41 |          |       |                |       |                                          |
+|     |              |         |       |       |                  | 51 61 71 |         |       |             | 51 61 71 |         |       |             | 51 61 71 |       |                |       |                                          |
+|     |              |         | C.A   |       |                  |          | C.A C.A |       |             |          | C.A C.A |       |             |          | C.A   |                |       |                                          |
+| U R | B A NU  RPBL | AANN NP | IL NA | GN N  | AI NNGD  AANRDC  |          |         |       | HD IETSEI   | CG       | NT  U   |  R E  |   D         | E S      | I G N |                |       |                                          |
+|     |              |         |       |       |                  |          |         |       |             |          |         |       |             |          |       | 1 0 /          | 0 3 / | 2 0 2 1                                  |
+L10 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+V I L L A N Y ’A H | S H O P H O U S E S
+1 | SHOPHOUSES ROAD CORNER GF | 1F | 2F
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L11 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 1 0 / 0 3 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM 3.40 8.8m2 6.3m2 2.85 3.35 19.8m2 3.35 20.1m2 3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8 BATHROOM 18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN 6.2m2
+SITTING 1.90 SITTING 2.05 5.4m2 4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING 5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95 3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM 1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2 3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM 18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00 8 0.60 STAIRS AND 2 0.60 17 STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00 CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90 SITTING 2.05 5.4m2 4.3m2
+0.90 0.90
+4.50 RETAIL 4.50 21.2m2
+2.95 LIVING 2.20 5.55 21.8m2 2.20 DINNING LIVING 9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00 AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00 14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15 15.0m2
+5.00 4.80 RETAIL 26.6m2 5.55
+7.40 7.40
+KITCHEN DINNING 1.65 4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11 16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7 BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1 1 2 1 2.70 4.1m2 2.70 4.0m2 AC 10 4 CORRIDORS STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62 6.65 5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00 5.10
+BEDROOM 3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75 1.10
+0.90 0.90
+3.15 BEDROOM 3.15 14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING 4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2 21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7 3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2 12 2.70 3.8m2 2.70 3.8m2 AC 11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS 6.6m62 6.65 1.30 1.30 5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2 2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00 4.40 4.40 5.00 5.00
+BEDROOM 3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM 3.40 8.8m2 6.3m2 2.85 3.35 19.8m2 3.35 20.1m2 3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8 BATHROOM 18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN 6.2m2
+SITTING 1.90 SITTING 2.05 5.4m2 4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING 5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95 3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM 1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2 3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM 18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00 8 0.60 STAIRS AND 2 0.60 17 STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00 CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90 SITTING 2.05 5.4m2 4.3m2
+0.90 0.90
+4.50 RETAIL 4.50 21.2m2
+2.95 LIVING 2.20 5.55 21.8m2 2.20 DINNING LIVING 9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00 AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00 14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15 15.0m2
+5.00 4.80 RETAIL 26.6m2 5.55
+7.40 7.40
+KITCHEN DINNING 1.65 4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11 16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7 BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1 1 2 1 2.70 4.1m2 2.70 4.0m2 AC 10 4 CORRIDORS STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62 6.65 5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00 5.10
+BEDROOM 3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75 1.10
+0.90 0.90
+3.15 BEDROOM 3.15 14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING 4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2 21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7 3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2 12 2.70 3.8m2 2.70 3.8m2 AC 11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS 6.6m62 6.65 1.30 1.30 5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2 2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00 4.40 4.40 5.00 5.00
+BEDROOM 3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM 3.40 8.8m2 6.3m2 2.85 3.35 19.8m2 3.35 20.1m2 3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8 BATHROOM 18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN 6.2m2
+SITTING 1.90 SITTING 2.05 5.4m2 4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING 5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95 3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM 1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2 3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM 18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00 8 0.60 STAIRS AND 2 0.60 17 STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00 CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90 SITTING 2.05 5.4m2 4.3m2
+0.90 0.90
+4.50 RETAIL 4.50 21.2m2
+2.95 LIVING 2.20 5.55 21.8m2 2.20 DINNING LIVING 9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00 AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00 14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15 15.0m2
+5.00 4.80 RETAIL 26.6m2 5.55
+7.40 7.40
+KITCHEN DINNING 1.65 4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11 16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7 BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1 1 2 1 2.70 4.1m2 2.70 4.0m2 AC 10 4 CORRIDORS STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62 6.65 5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00 5.10
+BEDROOM 3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75 1.10
+0.90 0.90
+3.15 BEDROOM 3.15 14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING 4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2 21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7 3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2 12 2.70 3.8m2 2.70 3.8m2 AC 11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS 6.6m62 6.65 1.30 1.30 5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2 2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00 4.40 4.40 5.00 5.00
+BEDROOM 3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+
+SHOPHOUSE MAINROAD MID
+SHOPHOUSE MAINROAD MID
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     |      |     |     |     |     |     |     |     |      |     |
+| --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- |
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     |      |     |     |     |     |     |     |     |      |     |
+|     |     |     |      |     |     |     |     |     |     |     |     |      |     |     |     |     |     |     |     |      |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 |     |
+0.80 0.80 1.20 1.20 1.05 1.05 0.90 0.90 1.05 1.05 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 5.00 5.00
+4.80 4.70 4.70 0.95 0.90 1.30 0.900.95 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70 0.95 0.90 1.30 0.900.95 0.95 0.90 1.30 0.90 0.95
+A.C
+A.C
+BACKYARD
+|     |     |     | BACKYARD |     |     |     |     | 2.00 |     |     |     |     |     |     | 2.00 |     |     |     |     |     |     |     |     |     | 2.00 |     |     |     |     |     |     | 2.00 |     | 2.00 |     |     | 2.00 |
+| --- | --- | --- | -------- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | ---- | --- | ---- | --- | --- | ---- |
+2.00 2.00 1.90 1.90 9.1m2 9.1m2 1.90 1.90 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00
+|     |           | DINNING |             |         | KITCHEN     |      |     |     |           |     |     | BEDROOM       |     |     |           |     |           |     |     | BEDROOM       |     |     |           |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+| --- | --------- | ------- | ----------- | ------- | ----------- | ---- | --- | --- | --------- | --- | --- | ------------- | --- | --- | --------- | --- | --------- | --- | --- | ------------- | --- | --- | --------- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |           | DINNING |             | KITCHEN |             | 2.85 |     |     |           |     |     | BEDROOM       |     |     |           |     |           |     |     | BEDROOM       |     |     |           |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |           |         | 8.8m2 8.8m2 |         | 6.3m2 6.3m2 | 2.85 |     |     |           |     |     | 19.8m2 19.8m2 |     |     |           |     |           |     |     | 20.1m2 20.1m2 |     |     |           |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     | 3.40 3.40 |         |             |         |             |      |     |     | 3.35 3.35 |     |     |               |     |     |           |     | 3.35 3.35 |     |     |               |     |     |           |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |           |         |             |         |             |      |     |     |           |     |     |               |     |     |           |     |           |     |     |               |     |     |           |     | 4.15 4.15 |     |     |     |     |     |     | 4.15 4.15 |     |     |     |     |     |
+|     |           |         |             |         |             |      |     |     |           |     |     |               |     |     | 3.95 3.95 |     |           |     |     |               |     |     | 3.95 3.95 |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+TOILET
+|     |     |     |     | TOILET |     | 1.00 1.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ------ | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+1.8m2 1.8m2
+17 16 15
+|     |     |     |     | 17  | 16 15 14 |     |     |     |      |     |            |     | 11 11 10 10 | 9 9 8 8 |     |     |      |          |             | 11 11 | 10 10 9 9 8 | 8   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | -------- | --- | --- | --- | ---- | --- | ---------- | --- | ----------- | ------- | --- | --- | ---- | -------- | ----------- | ----- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | 14       |     |     |     |      |     |            |     |             |         |     |     |      | BATHROOM |             |       |             |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     | 18  |          |     |     |     | 2.65 | BAT | H R O OM   |     |             |         |     |     | 2.65 | BATHROOM |             |       |             |     |     |     |     |     | AC  | AC  | AC  |     |     |     |     |     |     |     |     |
+|     |     |     |     | 18  |          |     |     |     | 2.65 | BAT | H R O OM   |     |             |         |     |     | 2.65 |          | 3.9m2 3.9m2 |       |             |     |     |     |     |     | AC  | AC  | AC  |     |     |     |     |     |     |     |     |
+|     |     |     |     |     | 13 13    |     |     |     |      |     | 3 .9 m 2 2 |     | 12 12       | 7 7     |     |     |      |          |             | 12 12 | 7           | 7   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+19 12 3 .9 m 13 6 13 6 2.60 2.60 2.40 2.40 2.40 2.40 2.60 2.60
+|     | 4.20 |     | LIVING LIVING | 19  | 12  |     |     |     |     |     |     |     | 13  | 6   |     |     |     |     |     | 13  | 6   |     |     |     |     |     |     | AC  |     |     |     |     |     |     |     |     |     |
+| --- | ---- | --- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4.20 10.7m2 ST2 ST2 0 0 O R AG E 1 1 1 1 1 4 1 4 5 5 1 4 1 4 5 5 CA AC
+16.00 10.7m2 O R AG E 3.40 16.00 16.00 2 1 4 16.00 16.00 16.00 16.00 16.00 CA 11.4m2 11.4m2 16.00 16.00 16.00 16.00 16.00 16.00
+16.00 21 1 21 .2 1 .2 m m 2 2 1 0 1 0 3.40 16.00 16.00 2 1 4 16.00 16.00 1 5 1 5 3.70 3.70 16.00
+| 12.50 12.50 |     |     |     |     | 9   |     | 12.50 12.50 |     |     |     |     |                       |     | 3 3 | 4.00 4.00 |     |     |     |     | 16    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ----------- | --- | --- | --- | --- | --- | --- | ----------- | --- | --- | --- | --- | --------------------- | --- | --- | --------- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|             |     |     |     |     | 9   |     |             |     |     |     |     |                       |     |     |           |     |     |     |     | 16    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|             |     |     |     |     | 8 8 |     |             |     |     |     |     | STAIRS AND STAIRS AND |     | 2 2 |           |     |     |     |     | 17 17 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+S T A IR S  A N D CO R R ID O RS 1 ST ST 1A8 1A8 IR IR S  A S  A N N D D
+S T A IR S  A N D 7 14.00 14.00 BAT H R O OM CO R R ID O RS 1 14.00 14.00 14.00 14.00 14.00 14.00 14.00 14.00 14.00 14.00
+C O R R I D O R S 7 1.75 BAT H R O OM 1 0 .7 m 2 2 C C O O R R R R I D I D O O R R S S
+|     |     |     |     | C O     | R R I D O R S     |     |     |     | 1.75 |     | 2 .7 m 2 2 |     | 1 0 .7 m |     |     |     |      |     |                 |     | 2               |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ------- | ----------------- | --- | --- | --- | ---- | --- | ---------- | --- | -------- | --- | --- | --- | ---- | --- | --------------- | --- | --------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |         | 34 . 64 m 2 2     |     |     |     |      |     | 2 .7 m     |     |          |     |     |     |      |     |                 | 9   | . 9 4 . m 4 m 2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     | 1 1 2 2 | 34 . 64 m 5 5 6 6 |     |     |     |      |     |            |     |          |     |     |     |      |     |                 |     |                 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |         |                   |     |     |     |      |     |            |     |          |     |     |     | 3.45 |     | KITCHEN KITCHEN |     |                 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |         |                   |     |     |     |      |     |            |     |          |     |     |     | 3.45 |     | 6.2m2           |     |                 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+6.2m2
+SITTING SITTING
+|     |     |     |     |     |     |     |     |     |     |     |     |     |         |     |           |     |     |     |     |     | 5.4m2 |     | 1.90 1.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------- | --- | --------- | --- | --- | --- | --- | --- | ----- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |     |     | SITTING |     |           |     |     |     |     |     | 5.4m2 |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |     |     |     |     |     |     |     |     | SITTING |     | 2.05 2.05 |     |     |     |     |     |       |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+4.3m2 4.3m2
+|     | 4.50 |     | RETAIL | RETAIL |     | 4.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+| --- | ---- | --- | ------ | ------ | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     | 4.50 |     |        | 21.7m2 |     | 4.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |      |     | 21.7m2 |        |     |      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 7.25 7.25 |     |     |     |     |     |     | 7.25 7.25 |     |     |     |     |     |
+LIVING LIVING
+|     |     |     |     |     |     |     |     |     | 5.55 5.55 |     |     | 22.3m2 |     |     |      |     |      |     | DINNING     |     | LIVING      |     |      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | ------ | --- | --- | ---- | --- | ---- | --- | ----------- | --- | ----------- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |           |     |     | 22.3m2 |     |     |      |     |      |     | DINNING     |     | LIVING      |     |      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |     |     |     |     |           |     |     |        |     |     |      |     |      |     | 9.4m2 9.4m2 |     | 9.5m2 9.5m2 |     |      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |     |     |     |     |           |     |     |        |     |     |      |     | 3.95 |     |             |     |             |     | 3.95 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |     |     |     |     |           |     |     |        |     |     | 3.50 |     | 3.95 |     |             |     |             |     | 3.95 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+3.50
+| 1.50 |     |     |     |     |     |     | 1.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ---- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1.50 |     |     |     |     |     |     | 1.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+4.80 4.80 4.80 4.80 2.40 2.40 2.40 2.40 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 5.00 5.00
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+GF FLOOR GF FLOOR 1 FLOOR 1 FLOOR 2 FLOOR MEZZANINE MEZZANINE ROOF ROOF
+2 FLOOR
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | V I | L L A   N Y | ’A H   | |   S H O P | H O U | S E S |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | -------- | --------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+SHOPHOUSE MAINROAD CORNER SHOPHOUSE MAINROAD CORNER
+1 | SHOPHOUSES ROAD CORNER MEZZANINE | ROOF
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.00
+|     |     |     |     |     |     |     |     |     |     | 0.80 | 1.20 | 1.00 | 1.20 | 0.80 |     |     |     | 0.80 | 1.20 | 1.00 | 1.20 0.80 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- | ---- | ---- | --- | --- | --- | ---- | ---- | ---- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+0.80 0.80 1.20 1.20 1.05 1.05 0.90 0.90 1.05 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+|     |     |     |           |     |     |     |     |     |     |     |     | 4.70 4.70 |     |     |     |     |     |     |     | 4.70 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     | 5.00 |     |
+| --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | ---- | --- |
+|     |     |     | 4.80 4.80 |     |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     | 4.70 |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     | 5.00 |     |
+A.C
+A.C
+BACKYARD
+BACKYARD 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00
+2.00 2.00 1.90 1.90 9.1m2 9.1m2 1.90 1.90 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00
+|           |     |     |     |     |     |     |     | 0.45      |     |     |     |     |     |     |     | 0.45      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0.45 0.45 |     |     |     |     |     |     |     | 0.45      |     |     |     |     |     |     |     | 0.45      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 0.90      |     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+0.90
+|     |     | DINNING |     |         | KITCHEN |     |     |     |     |     |     | BEDROOM BEDROOM |     |     |     |     |     |     |     | BEDROOM BEDROOM |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | ------- | --- | ------- | ------- | --- | --- | --- | --- | --- | --- | --------------- | --- | --- | --- | --- | --- | --- | --- | --------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     | DINNING |     | KITCHEN |         |     |     |     |     |     |     |                 |     |     |     |     |     |     |     |                 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+8.5m2 8.5m2 6.3m2 6.3m2 2.85 2.85 1.05 3.35 19.4m2 19.4m2 1.05 3.35 19.7m2 19.7m2
+| 1.05 1.05 | 3.40 |     |     |     |     |     |     | 1.05      | 3.35 |     |     |     |     |     |      | 1.05      | 3.35 |     |     |     |     |     |      |     | 4.15 |     |     |     |     |     |     | 4.15 |     |     |     |     |     |
+| --------- | ---- | --- | --- | --- | --- | --- | --- | --------- | ---- | --- | --- | --- | --- | --- | ---- | --------- | ---- | --- | --- | --- | --- | --- | ---- | --- | ---- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- |
+|           | 3.40 |     |     |     |     |     |     |           |      |     |     |     |     |     | 3.95 |           |      |     |     |     |     |     | 3.95 |     | 4.15 |     |     |     |     |     |     | 4.15 |     |     |     |     |     |
+|           |      |     |     |     |     |     |     |           |      |     |     |     |     |     | 3.95 |           |      |     |     |     |     |     | 3.95 |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|           |      |     |     |     |     |     |     | 0.90 0.90 |      |     |     |     |     |     |      | 0.90 0.90 |      |     |     |     |     |     |      |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+0.90 0.90
+TOILET
+|     |     |     |     | TOILET |       | 1.00 |     |      |     |     |     |     |       |     |     |      |     |     |     |     |      |     |     |     |     |     |     |     |     |     |     |     |     |      |     |     |      |
+| --- | --- | --- | --- | ------ | ----- | ---- | --- | ---- | --- | --- | --- | --- | ----- | --- | --- | ---- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | ---- |
+|     |     |     |     | 1.8m2  | 1.8m2 | 1.00 |     |      |     |     |     |     |       |     |     |      |     |     |     |     |      |     |     |     |     |     |     |     |     |     |     |     |     |      |     |     |      |
+|     |     |     |     | 17     | 16 15 |      |     | 2.45 |     |     |     |     | 11 10 | 9 8 |     | 2.45 |     |     |     | 11  | 10 9 | 8   |     |     |     |     |     |     |     |     |     |     |     | 9.00 |     |     | 9.00 |
+2.45 2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 9.00 9.00
+|     |     |     |               |     | 14    |     |     |     |      |     |                   |     |       |     |     |     |      | BATHROOM BATHROOM |       |       |     |     |     |     |      |      |       |       |       |     |      |      |     |     |     |     |     |
+| --- | --- | --- | ------------- | --- | ----- | --- | --- | --- | ---- | --- | ----------------- | --- | ----- | --- | --- | --- | ---- | ----------------- | ----- | ----- | --- | --- | --- | --- | ---- | ---- | ----- | ----- | ----- | --- | ---- | ---- | --- | --- | --- | --- | --- |
+|     |     |     |               | 18  |       |     |     |     | 2.65 | BAT | H R O OM          |     |       |     |     |     | 2.65 |                   | 3.7m2 |       |     |     |     |     |      |      | AC AC | AC AC | AC AC |     |      |      |     |     |     |     |     |
+|     |     |     |               | 18  |       |     |     |     | 2.65 | BAT | H R O OM          |     | 12    | 7   |     |     | 2.65 |                   | 3.7m2 | 12    |     | 7   |     |     |      |      |       |       |       |     |      |      |     |     |     |     |     |
+|     |     |     |               |     | 13 13 |     |     |     |      |     | 3 .7 3 .7 m m 2 2 |     | 12    | 7   |     |     |      |                   |       | 12    | 7   |     |     |     | 2.60 | 2.40 |       |       |       |     | 2.40 | 2.60 |     |     |     |     |     |
+|     |     |     |               | 19  | 12    |     |     |     |      |     |                   |     | 13 13 | 6 6 |     |     |      |                   |       | 13 13 | 6   | 6   |     |     | 2.60 | 2.40 |       |       |       |     | 2.40 | 2.60 |     |     |     |     |     |
+|     |     |     | LIVING LIVING | 19  | 12    |     |     |     |      |     |                   |     |       | 5   |     |     |      |                   |       |       |     | 5   |     |     |      |      |       | AC AC |       |     |      |      |     |     |     |     |     |
+4.20 4.20 10.5m2 ST2 ST2 0 0 O R AG E 1 1 1 1 1 4 1 4 5 1 4 1 4 5 CA CA 11.4m2
+16.00 10.5m2 O R AG E 3.40 16.00 16.00 16.00 0.60 2 1 4 16.00 16.00 16.00 16.00 0.60 1 5 3.70 16.00 16.00 16.00 16.00 11.4m2 16.00 16.00 16.00 16.00 16.00 16.00
+16.00 21 1 21 1 .2 m 2 2 1 0 1 0 3.40 16.00 0.60 2 1 4 4.00 0.60 1 5 3.70
+| 1.20 |     |     |     | .2 m | 9   |     | 12.50 12.50 |           |     |     |     |            |     | 3 3 | 4.00 |           |     |     |     | 1 6 1 6 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ---- | --- | --- | --- | ---- | --- | --- | ----------- | --------- | --- | --- | --- | ---------- | --- | --- | ---- | --------- | --- | --- | --- | ------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1.20 |     |     |     |      | 9   |     |             |           |     |     |     | STAIRS AND |     | 2   |      |           |     |     |     | 17      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|      |     |     |     |      | 8 8 |     |             | 0.60 0.60 |     |     |     | STAIRS AND |     | 2   |      | 0.60 0.60 |     |     |     | 17      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+STAIRS AND BATHROOM CORRIDORS 1 1 14.00 ST18AIRS AND ST18AIRS AND 14.00
+STAIRS AND 7 BATHROOM CORRIDORS 14.00 14.00 14.00 14.00 14.00 14.00
+CORRIDORS 7 1.75 2.5m2 2.5m2 10.7m2 10.7m2 CORRIDORS CORRIDORS
+|      |     |     |     | CORRIDORS |             |     |     |           | 1.75 |     |     |     |                 |     |      |           |           |     |             |         | 9.4m2   |     |      |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+| ---- | --- | --- | --- | --------- | ----------- | --- | --- | --------- | ---- | --- | --- | --- | --------------- | --- | ---- | --------- | --------- | --- | ----------- | ------- | ------- | --- | ---- | --- | ---- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- |
+|      |     |     |     |           | 34.64m5 2 2 |     |     |           |      |     |     |     |                 |     |      |           |           |     |             | 9.4m2   |         |     |      |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|      |     |     |     | 1 1 2 2   | 34.64m5 6 6 |     |     |           |      |     |     |     |                 |     |      |           |           |     |             |         |         |     |      |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|      |     |     |     |           |             |     |     |           |      |     |     |     |                 |     |      |           |           |     | KITCHEN     |         |         |     |      |     | 2.55 |     |     |     |     |     |     | 2.55 |     |     |     |     |     |
+| 2.30 |     |     |     |           |             |     |     | 2.30 2.30 |      |     |     |     |                 |     |      | 2.30 2.30 | 3.45 3.45 |     | KITCHEN     |         |         |     |      |     | 2.55 |     |     |     |     |     |     | 2.55 |     |     |     |     |     |
+| 2.30 |     |     |     |           |             |     |     |           |      |     |     |     |                 |     |      |           |           |     | 5.9m2 5.9m2 |         |         |     |      |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|      |     |     |     |           |             |     |     |           |      |     |     |     |                 |     |      |           |           |     |             | SITTING | SITTING |     | 1.90 |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|      |     |     |     |           |             |     |     |           |      |     |     |     |                 |     |      |           |           |     |             |         | 5.4m2   |     | 1.90 |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|      |     |     |     |           |             |     |     |           |      |     |     |     | SITTING SITTING |     | 2.05 |           |           |     |             |         | 5.4m2   |     |      |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|      |     |     |     |           |             |     |     |           |      |     |     |     | 4.3m2           |     | 2.05 |           |           |     |             |         |         |     |      |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+4.3m2
+|     |      |     |        |        |     |      |     | 0.90 0.90 |     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | ---- | --- | ------ | ------ | --- | ---- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     | 4.50 |     | RETAIL | RETAIL |     | 4.50 |     |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     | 4.50 |     |        | 21.2m2 |     | 4.50 |     |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+21.2m2
+| 2.95 |     |     |     |     |     |     |     |           |      |     |     | LIVING        |     |     |     |           |           |     |                 |        |        |     |           |     |           |     |     |     |     |     |     |           |     |      |     |     |      |
+| ---- | --- | --- | --- | --- | --- | --- | --- | --------- | ---- | --- | --- | ------------- | --- | --- | --- | --------- | --------- | --- | --------------- | ------ | ------ | --- | --------- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | ---- | --- | --- | ---- |
+| 2.95 |     |     |     |     |     |     |     |           | 5.55 |     |     | LIVING        |     |     |     |           |           |     |                 |        |        |     |           |     |           |     |     |     |     |     |     |           |     |      |     |     |      |
+|      |     |     |     |     |     |     |     |           | 5.55 |     |     | 21.8m2 21.8m2 |     |     |     |           |           |     | DINNING DINNING | LIVING | LIVING |     |           |     |           |     |     |     |     |     |     |           |     |      |     |     |      |
+|      |     |     |     |     |     |     |     | 2.20 2.20 |      |     |     |               |     |     |     | 2.20 2.20 |           |     | 9.0m2           |        | 9.5m2  |     |           |     |           |     |     |     |     |     |     |           |     |      |     |     |      |
+|      |     |     |     |     |     |     |     |           |      |     |     |               |     |     |     |           |           |     | 9.0m2           |        | 9.5m2  |     |           |     |           |     |     |     |     |     |     |           |     | 5.00 |     |     | 5.00 |
+|      |     |     |     |     |     |     |     |           |      |     |     |               |     |     |     |           |           |     |                 |        |        |     |           |     | 4.70 4.70 |     |     |     |     |     |     | 4.70 4.70 |     | 5.00 |     |     | 5.00 |
+|      |     |     |     |     |     |     |     |           |      |     |     |               |     |     |     |           | 3.95 3.95 |     |                 |        |        |     | 3.95 3.95 |     |           |     |     |     |     |     |     |           |     |      |     |     |      |
+3.50
+3.50
+0.30
+0.30
+|      |     |     |     |     |     |     |      | 0.90      |     |     |     |     |     |     |     | 0.90      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ---- | --- | --- | --- | --- | --- | --- | ---- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|      |     |     |     |     |     |     |      | 0.90      |     |     |     |     |     |     |     | 0.90      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 1.50 |     |     |     |     |     |     | 1.50 |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 1.50 |     |     |     |     |     |     | 1.50 |           |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|      |     |     |     |     |     |     |      | 0.65 0.65 |     |     |     |     |     |     |     | 0.65 0.65 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+5.00
+|     |     |     |     | 4.70 |     |     |     |     |     |     |     | 4.70 4.70 |     |     |     |     |     |     | 2.30 2.30 |     | 2.40 2.40 |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 5.00 |     |
+| --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --------- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- |
+4.70
+|     |     |     |     |     |     |     |     |     |     | 0.80 | 1.20 | 1.00 | 1.20 | 0.80 |     |     |     | 0.80 | 1.20 | 1.00 | 1.20 0.80 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- | ---- | ---- | --- | --- | --- | ---- | ---- | ---- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.00
+|     |     |          |     |     |     |     |     |     |     |     |         |     |     |     |     |     |     |     |     |     |     | U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  |           |     | HD IETSEI | CG  | NT  U |  R E   D | E S I G N |     |      |     |     |
+| --- | --- | -------- | --- | --- | --- | --- | --- | --- | --- | --- | ------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------ | ------- | -------- | ------------------- | --------- | --- | --------- | --- | ----- | -------- | --------- | --- | ---- | --- | --- |
+|     |     | GF FLOOR |     |     |     |     |     |     |     |     | 1 FLOOR |     |     |     |     |     |     |     |     |     |     |     |              |         |          |                     | MEZZANINE |     |           |     |       |          |           |     | ROOF |     |     |
+GF FLOOR 1 FLOOR 2 FLOOR 2 FLOOR MEZZANINE ROOF 1 0 / 0 3 / 2 0 2 1
+L12 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+SHOPHOUSE CENTER ONE MID SHOPHOUSE CENTER ONE MID
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0.95 | 0.90 | 1.30 | 0.90 0.95 |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- | --------- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- |
+4.80 4.80 4.80 4.80 4.80 4.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 3.15 |     |     | BEDROOM BEDROOM |     |     | 3.15 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --------------- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 3.15 |     |     |                 |     |     | 3.15 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+15.0m2 15.0m2
+RETAIL
+|     |     |     |     |     |     | 5.00 |     |     | 4.80 4.80 |     |     | RETAIL        |     |     |           |     |           |     |             |     |             |     |     |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | ---- | --- | --- | --------- | --- | --- | ------------- | --- | --- | --------- | --- | --------- | --- | ----------- | --- | ----------- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     | 5.00 |     |     |           |     |     | 26.6m2 26.6m2 |     |     |           |     |           |     |             |     |             |     |     |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|     |     |     |     |     |     |      |     |     |           |     |     |               |     |     | 5.55 5.55 |     |           |     |             |     |             |     |     |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|     |     |     |     |     |     |      |     |     |           |     |     |               |     |     |           |     |           |     |             |     |             |     |     |     | 7.40 |     |     |     |     |     |     | 7.40 |     |     |     |     |     |
+|     |     |     |     |     |     |      |     |     |           |     |     |               |     |     |           |     |           |     |             |     |             |     |     |     | 7.40 |     |     |     |     |     |     | 7.40 |     |     |     |     |     |
+|     |     |     |     |     |     |      |     |     |           |     |     |               |     |     |           |     |           |     | KITCHEN     |     | DINNING     |     |     |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|     |     |     |     |     |     |      |     |     |           |     |     |               |     |     |           |     | 1.65 1.65 |     | KITCHEN     |     | DINNING     |     |     |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+|     |     |     |     |     |     |      |     |     |           |     |     |               |     |     |           |     |           |     | 4.3m2 4.3m2 |     | 5.4m2 5.4m2 |     |     |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+2.45
+2.45
+CORRIDORS CORRIDORS
+2.0m2 2.0m2
+|     |     |     |     |     | 20            |      |     |     |     |     |          |     |     |     |     |     |     |     |          |     | 15 15 14 14 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ------------- | ---- | --- | --- | --- | --- | -------- | --- | --- | --- | --- | --- | --- | --- | -------- | --- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | T O IL 20 E T | 2.25 |     |     |     | BAT | H R O OM |     |     |     |     |     |     | BAT | H R O OM | 16  |             |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+21 T O IL E 1 T 9 1 9 2.25 2.70 2.70 BAT H R O OM 2.70 2.70 BAT H R O OM 16
+|            |     |     |     |     | 21 2 .1 m 2 2  |     |       |     |     |     | 3 .8 3 .8 m m 2 2 |     |                           |           |     |     |     |     | 3 .8 m 2 2 |       |     |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ---------- | --- | --- | --- | --- | -------------- | --- | ----- | --- | --- | --- | ----------------- | --- | ------------------------- | --------- | --- | --- | --- | --- | ---------- | ----- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|            |     |     |     |     | 2 .1 m 1 8 1 8 |     |       |     |     |     |                   |     |                           | 20 20     |     |     |     |     | 3 .8 m     |       | 13  | 13    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|            |     |     |     |     | 17             |     |       |     |     |     |                   |     | 21                        | 19        |     |     |     |     |            |       |     |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 14.5014.10 |     |     |     |     | 17             |     | 14.50 |     |     |     |                   |     | 21                        | 19        |     |     |     |     |            | 17 17 | 12  | 12    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 14.5014.10 |     |     |     |     | 16 16          |     | 14.50 |     |     |     |                   |     | STAIRS AND18 STAIRS AND18 |           |     |     |     |     |            | 18    |     | 11    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|            |     |     |     |     | 1 5            |     |       |     |     |     |                   |     |                           | 9         |     |     |     |     |            | 18    | 11  |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|            |     |     |     |     | 1 5            |     |       |     |     |     |                   |     | CO R R                    | I DO RS 9 |     |     |     |     |            |       | 1   | 0 1 0 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+16.00 1 4 1 4 16.00 16.00 CO R R I DO RS 8 3.95 3.95 16.00 ST ST A A IR IR S  A S  A N N D D 9 4.05 AC AC AC
+16.00 RETAIL RETAIL 16.00 16.00 9 . 9 9 . m 9 m 2 2 8 16.00 16.00 16.00 C O R R ID O R 9 S 4.05 16.00 16.00 16.00 16.00 AC AC AC 16.00 16.00 16.00 16.00 16.00 16.00
+|     |     |     |               |     | 1 3 1 3 |     |     |     |      |                   |       |     | 1 1 | 7 7 |     |     |           |          |             | C   | O R R ID O R S | 8 8 |     |     |           |           |     |          |     |     |           |           |     |     |     |     |     |
+| --- | --- | --- | ------------- | --- | ------- | --- | --- | --- | ---- | ----------------- | ----- | --- | --- | --- | --- | --- | --------- | -------- | ----------- | --- | -------------- | --- | --- | --- | --------- | --------- | --- | -------- | --- | --- | --------- | --------- | --- | --- | --- | --- | --- |
+|     |     |     | 57.4m2 57.4m2 |     |         |     |     |     |      |                   |       |     | 2   | 6   |     |     |           |          |             |     | 10.4m2 10.4m2  |     |     |     |           |           |     |          |     |     |           |           |     |     |     |     |     |
+|     |     |     |               |     |         |     |     |     |      |                   |       |     | 2   | 6   |     |     |           |          |             |     |                | 7 7 |     |     |           |           |     | A        | C   |     |           |           |     |     |     |     |     |
+|     |     |     |               |     |         |     |     |     |      |                   |       |     | 3 3 | 5 5 |     |     |           |          |             |     |                | 6   |     |     | 2.60 2.60 | 2.40 2.40 |     | A C      |     |     | 2.40 2.40 | 2.60 2.60 |     |     |     |     |     |
+|     |     |     |               |     |         |     |     |     |      | BATHROOM BATHROOM |       |     |     |     |     |     |           | BATHROOM |             |     |                | 6   |     |     |           |           |     | 11 .5 m2 | m2  |     |           |           |     |     |     |     |     |
+|     |     |     |               |     | 1 2     |     |     |     | 2.70 |                   | 4.1m2 |     |     |     |     |     |           | BATHROOM |             |     |                |     |     |     |           |           | AC  | 11 .5    |     |     |           |           |     |     |     |     |     |
+|     |     |     |               |     | 1 2     |     |     |     | 2.70 |                   | 4.1m2 |     |     |     |     |     | 2.70 2.70 |          | 4.0m2 4.0m2 |     |                |     |     |     |           |           | AC  |          |     |     |           |           |     |     |     |     |     |
+1 1 1 1
+|     |     |     |     |     | 10                        |     |     |     |     |     |     |     | 4 4 |     |     |     |     |     |           |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ------------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | 10                        |     |     |     |     |     |     |     |     |     |     |     |     |     | CORRIDORS | CORRIDORS |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     | 9                         |     |     |     |     |     |     |     |     |     |     |     |     |     |           | 1.8m2     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     | STAIRS A STAIRS A 9 ND ND |     |     |     |     |     |     |     |     |     |     |     |     |     |           | 1.8m2     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+8 8
+CORRID7ORS CORRID7ORS
+6.6m62
+|     |     |     |     |     | 6.6m62 | 6.65 |     |     |     |     |     |     |     |     |     |     |           |     |             |         |             |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ------ | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | ----------- | ------- | ----------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | 5      | 6.65 |     |     |     |     |     |     |     |     |     |     |           |     |             |         |             |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     | 5      |      |     |     |     |     |     |     |     |     |     |     |           |     | KITCHEN     |         | DINNING     |     | 2.35 2.35 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     | 4 4    |      |     |     |     |     |     |     |     |     |     |     |           |     | KITCHEN     | DINNING |             |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     | 3      |      |     |     |     |     |     |     |     |     |     |     | 1.65 1.65 |     | 4.3m2 4.3m2 |         | 5.1m2 5.1m2 |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+3
+2
+2
+1 1
+RETAIL
+RETAIL
+|     |     |     |     |     |     |     |     |     |      |     |     | 28.3m2 28.3m2 |     |     | 5.90 5.90 |     |     |     |     |     |     |     |     |     |      |     |     |     |     |     |     |      |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | ------------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |      |     |     |               |     |     |           |     |     |     |     |     |     |     |     |     | 6.00 |     |     |     |     |     |     | 6.00 |     |     |     |     |     |
+|     |     |     |     |     |     |     |     |     | 5.10 |     |     |               |     |     |           |     |     |     |     |     |     |     |     |     | 6.00 |     |     |     |     |     |     | 6.00 |     |     |     |     |     |
+5.10
+BEDROOM
+|      |     |     |      |     |      |     |      |     |     |     |     |      |     |     |     |     | 3.45 |     |     | BEDROOM       |     |     | 3.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ---- | --- | --- | ---- | --- | ---- | --- | ---- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | ---- | --- | --- | ------------- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|      |     |     |      |     |      |     |      |     |     |     |     |      |     |     |     |     | 3.45 |     |     | 16.5m2 16.5m2 |     |     | 3.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 1.50 |     |     |      |     |      |     | 1.50 |     |     |     |     |      |     |     |     |     |      |     |     |               |     |     |      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 1.50 |     |     |      |     |      |     | 1.50 |     |     |     |     |      |     |     |     |     |      |     |     |               |     |     |      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|      |     |     | 3.70 |     | 1.00 |     |      |     |     |     |     | 4.80 |     |     |     |     |      |     |     | 4.80          |     |     |      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+3.70 1.00 4.80 4.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+0.80 0.80 1.20 1.20 1.20 1.20 0.750.90 0.750.90 0.15 0.15 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0.95 | 0.90 | 1.30 | 0.90 0.95 |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- | --------- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- |
+5.00
+|     |     |                   | 5.00 |     |     |     |     |     |     |     |                 | 5.00 5.00 |     |     |     |     |     |     |                 | 5.00 5.00 |     |     |     |     |     |     |           |     |     |     |     |     |     |     |      |     |     |
+| --- | --- | ----------------- | ---- | --- | --- | --- | --- | --- | --- | --- | --------------- | --------- | --- | --- | --- | --- | --- | --- | --------------- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- |
+|     |     | GF FLOOR GF FLOOR |      |     |     |     |     |     |     |     | 1 FLOOR 1 FLOOR |           |     |     |     |     |     |     |                 |           |     |     |     |     |     |     | MEZZANINE |     |     |     |     |     |     |     | ROOF |     |     |
+|     |     |                   |      |     |     |     |     |     |     |     |                 |           |     |     |     |     |     |     | 2 FLOOR 2 FLOOR |           |     |     |     |     |     |     | MEZZANINE |     |     |     |     |     |     |     | ROOF |     |     |
+SHOPHOUSE CENTER ONE CORNER SHOPHOUSE CENTER ONE CORNER
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     | 5.00 |     |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+|     |     |     |      |      |     |     |     |     |     | 0.80 | 1.20 | 1.00      | 1.20 | 0.80 |     |     |     | 0.80 | 1.20 | 1.00 1.20 | 0.80 |     |     |     |     |     |     |      |     |     |     |     |     |     |     |           |     |
+| --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | ---- | ---- | --------- | ---- | ---- | --- | --- | --- | ---- | ---- | --------- | ---- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- |
+|     |     |     | 4.70 | 4.70 |     |     |     |     |     |      |      | 4.80 4.80 |      |      |     |     |     |      |      | 4.80 4.80 |      |     |     |     |     |     |     | 5.00 |     |     |     |     |     |     |     | 5.00 5.00 |     |
+5.00
+|      |     |     |     |     |     |     |     | 0.75 |     |     |     |     |     |     |     | 0.75 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1.10 |     |     |     |     |     |     |     | 0.75 |     |     |     |     |     |     |     | 0.75 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+1.10
+|     |     |     |     |     |     |     |     | 0.90 |     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+0.90
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 3.15 |     |     | BEDROOM BEDROOM |     |     | 3.15 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --------------- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 3.15 |     |     | 14.7m2          |     |     | 3.15 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+14.7m2
+|           |     |     |     |     |     | 5.00 |     | 2.00 | 4.80 4.80 |     |     | R R E T E A T A IL IL |     |     |      | 2.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | ---- | --- | ---- | --------- | --- | --- | --------------------- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 3.50 3.50 |     |     |     |     |     | 5.00 |     | 2.00 |           |     |     |                       | 2   |     |      | 2.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     |     |      |     |      |           |     |     | 2 6 2 . 6 1 . m 1 m 2 |     |     | 5.55 |      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+5.55
+|     |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |      |           |     |             |         |             |     |     |     | 7.40 7.40 |     |     |     |     |     |     | 7.40 7.40 |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | ---- | --------- | --- | ----------- | ------- | ----------- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     | 0.90 |           |     | KITCHEN     |         | DINNING     |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     | 0.90 | 1.65 1.65 |     | KITCHEN     | DINNING |             |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |      |           |     | 4.2m2 4.2m2 |         | 5.4m2 5.4m2 |     |     |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+2.45 2.45
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | CORRIDORS CORRIDORS |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 11.00 11.00 |     |     | 11.00 11.00 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | --- | --- | ----------- |
+2.0m2
+| 2.70 2.70 |     |     |     |     |                |     |     | 2.70 2.70 |     |     |          |     |     |     |     | 2.70 2.70 |     |     |          | 2.0m2 |             |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | -------------- | --- | --- | --------- | --- | --- | -------- | --- | --- | --- | --- | --------- | --- | --- | -------- | ----- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|           |     |     |     |     | 2 0            |     |     |           |     |     |          |     |     |     |     |           |     |     |          |       | 15 15 14 14 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     | T O IL 2 E 0 T |     |     |           |     | BAT | H R O OM |     |     |     |     |           |     | BAT | H R O OM | 16 16 |             |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+21 T O IL E T 1 9 2.25 2.25 2.70 2.70 BAT H R O OM 2.70 2.70 BAT H R O OM
+|     |       |     |     |     | 21 2 .1 m 1 2 9 2 |     |       |           |     |     | 3 .6 m 2 2 |     |                           |             |     |           |     |     | 3 .6 m 2 2 |     |                  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | ----- | --- | --- | --- | ----------------- | --- | ----- | --------- | --- | --- | ---------- | --- | ------------------------- | ----------- | --- | --------- | --- | --- | ---------- | --- | ---------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |       |     |     |     | 2 .1 m 1 8 1 8    |     |       |           |     |     | 3 .6 m     |     |                           | 20 20       |     |           |     |     | 3 .6 m     |     | 13               | 13  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |       |     |     |     | 17                |     |       |           |     |     |            |     | 21                        | 19          |     |           |     |     |            | 17  |                  | 12  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     | 14.10 |     |     |     | 17                |     | 14.50 |           |     |     |            |     | 21                        | 19          |     |           |     |     |            | 17  | 12               |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     | 14.10 |     |     |     | 16 16             |     | 14.50 |           |     |     |            |     | STAIRS AND18 STAIRS AND18 |             |     |           |     |     |            | 18  | 11               | 11  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |       |     |     |     | 15                |     |       | 0.60 0.60 |     |     |            |     |                           |             |     | 0.60 0.60 |     |     |            | 18  |                  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |       |     |     |     | 15                |     |       |           |     |     |            |     | CO R R                    | I D ORS 9 9 |     |           |     |     |            | ST  | A IR S  A N D 10 | 10  |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+16.00 1.20 1.20 1 4 1 4 16.00 CO R R I D ORS 8 3.95 3.95 ST A IR S  A N D 9 4.05 4.05 AC AC AC
+16.00 RETAIL 16.00 16.00 16.00 0.60 9 . 9 m 2 2 8 16.00 16.00 16.00 16.00 0.60 C O R R ID O R 9 S 16.00 16.00 16.00 16.00 AC AC AC 16.00 16.00 16.00 16.00 16.00 16.00
+RETAIL 1 3 1 3 0.60 1 1 9 . 9 m 7 7 0.60 C O R R ID O R S 8 8
+|     |     |     | 56.1m2 56.1m2 |     |       |     |     |     |           |                   |       |     | 2   | 6   |     |     |           |          |             |     | 10.4m2 10.4m2 | 7   |     |     |           |           |       |        |     |     |           |           |     |     |     |     |     |
+| --- | --- | --- | ------------- | --- | ----- | --- | --- | --- | --------- | ----------------- | ----- | --- | --- | --- | --- | --- | --------- | -------- | ----------- | --- | ------------- | --- | --- | --- | --------- | --------- | ----- | ------ | --- | --- | --------- | --------- | --- | --- | --- | --- | --- |
+|     |     |     |               |     |       |     |     |     |           |                   |       |     | 2   | 6   |     |     |           |          |             |     | 7             |     |     |     |           |           |       |        |     |     |           |           |     |     |     |     |     |
+|     |     |     |               |     |       |     |     |     |           |                   |       |     | 3 3 | 5   |     |     |           |          |             |     | 6             | 6   |     |     | 2.60 2.60 | 2.40 2.40 |       | AC AC  |     |     | 2.40 2.40 | 2.60 2.60 |     |     |     |     |     |
+|     |     |     |               |     |       |     |     |     |           | BATHROOM BATHROOM |       |     |     | 5   |     |     |           | BATHROOM |             |     |               |     |     |     |           |           |       | 11.5m2 |     |     |           |           |     |     |     |     |     |
+|     |     |     |               |     |       |     |     |     |           |                   | 3.8m2 |     |     |     |     |     |           | BATHROOM |             |     |               |     |     |     |           |           |       | 11.5m2 |     |     |           |           |     |     |     |     |     |
+|     |     |     |               |     | 12 12 |     |     |     | 2.70 2.70 |                   | 3.8m2 |     |     |     |     |     | 2.70 2.70 |          | 3.8m2 3.8m2 |     |               |     |     |     |           |           | AC AC |        |     |     |           |           |     |     |     |     |     |
+11 11
+|      |     |     |     |     | 10                        |     |     |           |     |     |     |     | 4   |     |     |           |     |     |                     |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ---- | --- | --- | --- | --- | ------------------------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | ------------------- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 3.00 |     |     |     |     | 10                        |     |     |           |     |     |     |     | 4   |     |     |           |     |     | CORRIDORS CORRIDORS |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 3.00 |     |     |     |     | 9                         |     |     | 3.00 3.00 |     |     |     |     |     |     |     | 3.00 3.00 |     |     |                     | 1.8m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|      |     |     |     |     | STAIRS A STAIRS A 9 ND ND |     |     |           |     |     |     |     |     |     |     |           |     |     |                     | 1.8m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+8 8
+CORRID7ORS CORRID7ORS
+|     |     |     |     |     | 6.6m62 |      |     |     |     |     |     |     |     |     |     |     |           |     |             |         |             |     |           |     | 1.30 1.30 |     |     |     |     |     |     | 1.30 1.30 |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ------ | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | ----------- | ------- | ----------- | --- | --------- | --- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |     |     |     |     | 6.6m62 | 6.65 |     |     |     |     |     |     |     |     |     |     |           |     |             |         |             |     |           |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |     |     |     |     | 5      | 6.65 |     |     |     |     |     |     |     |     |     |     |           |     |             |         |             |     |           |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |     |     |     |     | 5      |      |     |     |     |     |     |     |     |     |     |     |           |     | KITCHEN     |         | DINNING     |     | 2.35 2.35 |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |     |     |     |     | 4 4    |      |     |     |     |     |     |     |     |     |     |     |           |     | KITCHEN     | DINNING |             |     |           |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |     |     |     |     |        |      |     |     |     |     |     |     |     |     |     |     | 1.65 1.65 |     | 4.2m2 4.2m2 |         | 5.1m2 5.1m2 |     |           |     |           |     |     |     |     |     |     |           |     |     |     |     |     |
+3 3
+|     |     |     |     |     | 2   |     |     | 0.90 0.90 |     |     |     |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+2
+1 1
+RETAIL
+RETAIL
+| 2.70 2.70 |     |     |     |     |     |     |     |     |     |     |     | 27.8m2 27.8m2 |     |     | 5.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------------- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.90
+5.10
+|     |     |     |     |     |     |     |     | 2.00 2.00 | 5.10 |     |     |     |     |     |     | 2.00 2.00 |     |     |     |     |     |     |     |     |      |     |     |     |     |     |     |      |     |           |     |     |           |
+| --- | --- | --- | --- | --- | --- | --- | --- | --------- | ---- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | ---- | --- | --------- | --- | --- | --------- |
+|     |     |     |     |     |     |     |     |           |      |     |     |     |     |     |     |           |     |     |     |     |     |     |     |     | 4.40 |     |     |     |     |     |     | 4.40 |     | 5.00 5.00 |     |     | 5.00 5.00 |
+|     |     |     |     |     |     |     |     |           |      |     |     |     |     |     |     |           |     |     |     |     |     |     |     |     | 4.40 |     |     |     |     |     |     | 4.40 |     |           |     |     |           |
+BEDROOM
+|      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 3.45 3.45 |     |     | BEDROOM       |     |     | 3.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | ------------- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0.35 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |           |     |     | 16.2m2 16.2m2 |     |     | 3.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+0.35
+|           |     |     |      |     |      |     |           | 0.90      |     |     |     |      |     |     |     | 0.90      |     |     |     |      |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |           |     |
+| --------- | --- | --- | ---- | --- | ---- | --- | --------- | --------- | --- | --- | --- | ---- | --- | --- | --- | --------- | --- | --- | --- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- |
+|           |     |     |      |     |      |     |           | 0.90      |     |     |     |      |     |     |     | 0.90      |     |     |     |      |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |           |     |
+| 1.50 1.50 |     |     |      |     |      |     | 1.50 1.50 |           |     |     |     |      |     |     |     |           |     |     |     |      |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |           |     |
+|           |     |     |      |     |      |     |           | 0.75 0.75 |     |     |     |      |     |     |     | 0.75 0.75 |     |     |     |      |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |           |     |
+|           |     |     | 3.60 |     | 1.00 |     |           |           |     |     |     | 4.70 |     |     |     |           |     |     |     | 4.80 |     |     |     |     |     |     |     |           |     |     |     |     |     |     |     |           |     |
+|           |     |     | 3.60 |     | 1.00 |     |           |           |     |     |     | 4.70 |     |     |     |           |     |     |     | 4.80 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     | 5.00 5.00 |     |
+0.80 0.80 11..2200 11..2200 11..2200 11..2200 0.750.90 0.750.90 00..1155 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+|     |     |                   |                   |     |     |     |     |     |     | 0.80 | 1.20            | 1.00      | 1.20 | 0.80 |     |     |     | 0.80 | 1.20            | 1.00 1.20 | 0.80 |     |     |     |     |     |           |     |     |     |     |     |     |     |      |     |     |
+| --- | --- | ----------------- | ----------------- | --- | --- | --- | --- | --- | --- | ---- | --------------- | --------- | ---- | ---- | --- | --- | --- | ---- | --------------- | --------- | ---- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- |
+|     |     |                   | 55..0000 55..0000 |     |     |     |     |     |     |      |                 | 5.00 5.00 |      |      |     |     |     |      |                 | 5.00 5.00 |      |     |     |     |     |     |           |     |     |     |     |     |     |     |      |     |     |
+|     |     | GF FLOOR GF FLOOR |                   |     |     |     |     |     |     |      | 1 FLOOR 1 FLOOR |           |      |      |     |     |     |      |                 |           |      |     |     |     |     |     | MEZZANINE |     |     |     |     |     |     |     | ROOF |     |     |
+|     |     |                   |                   |     |     |     |     |     |     |      |                 |           |      |      |     |     |     |      | 2 FLOOR 2 FLOOR |           |      |     |     |     |     |     | MEZZANINE |     |     |     |     |     |     |     | ROOF |     |     |
+
+| V I | L L A   N Y | ’A H   | |   S H O P | H O U | S E S |     |     |     |     |     |     |     |     |     |
+| --- | ----------- | -------- | --------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+2 | SHOPHOUSES CENTER ONE MID CONTEXT
+|     |     |     |     | 20 02              |     | 20 02              |     | 20 02              |     |       |     |     |     |     |
+| --- | --- | --- | --- | ------------------ | --- | ------------------ | --- | ------------------ | --- | ----- | --- | --- | --- | --- |
+|     |     |     |     | 21 1 1 8 9 8 9 1 1 | 12  | 21 1 1 8 9 8 9 1 1 | 12  | 21 1 1 8 9 8 9 1 1 | 12  |       |     |     |     |     |
+|     |     |     |     | 1 7 7 1            |     | 1 7 7 1            |     | 1 7 7 1            |     |       |     |     |     |     |
+|     |     |     |     | 1 6 6 1            |     | 1 6 6 1            |     | 1 6 6 1            |     |       |     |     |     |     |
+|     |     |     |     | 1 1 4 5 4 5 1 1    |     | 1 1 4 5 4 5 1 1    |     | 1 1 4 5 4 5 1 1    |     | 16.00 |     |     |     |     |
+|     |     |     |     | 1 3 3 1            |     | 1 3 3 1            |     | 1 3 3 1            |     |       |     |     |     |     |
+|     |     |     |     | 1 1 2 1 2 1 1 1    |     | 1 1 2 1 2 1 1 1    |     | 1 1 2 1 2 1 1 1    |     |       |     |     |     |     |
+|     |     |     |     | 1 0 0 1            |     | 1 0 0 1            |     | 1 0 0 1            |     |       |     |     |     |     |
+|     |     |     |     | 9 8 9              |     | 8 9 9              |     | 8 9 9              |     |       |     |     |     |     |
+|     |     |     |     | 7 8 7              |     | 7 8 7              |     | 7 8 7              |     |       |     |     |     |     |
+|     |     |     |     | 6 6                |     | 6 6                |     | 6 6                |     |       |     |     |     |     |
+|     |     |     |     | 4 5 4 5            |     | 4 5 4 5            |     | 4 5 4 5            |     |       |     |     |     |     |
+|     |     |     |     | 3 3                |     | 3 3                |     | 3 3                |     |       |     |     |     |     |
+|     |     |     |     | 2 2                |     | 2 2                |     | 2 2                |     |       |     |     |     |     |
+|     |     |     |     | 1 1                |     | 1 1                |     | 1 1                |     |       |     |     |     |     |
+3.00
+CODINACHS OPT LL _SHOPHOUSES
+|     |     |     |     | 5.00 | 5.00 | 5.00 | 5.00 | 5.00 | 5.00 |     |     |     |     |     |
+| --- | --- | --- | --- | ---- | ---- | ---- | ---- | ---- | ---- | --- | --- | --- | --- | --- |
+10.00
+3.00
+KINDERGARTEN
+E
+SLCEMHOENOT LARY
+|     |     |     |     | 1 1             |     | 1 1             |     | 1 1             |     |     |                  |                |     |              |
+| --- | --- | --- | --- | --------------- | --- | --------------- | --- | --------------- | --- | --- | ---------------- | -------------- | --- | ------------ |
+|     |     |     |     | 2 2             |     | 2 2             |     | 2 2             |     |     | SMTAE TDIOIC NAL |                |     |              |
+|     |     |     |     | 3 4 3 4         |     | 3 4 3 4         |     | 3 4 3 4         |     |     |                  |                |     |              |
+|     |     |     |     | 5 5             |     | 5 5             |     | 5 5             |     |     |                  |                |     |              |
+|     |     |     |     | 7 6 6           |     | 7 6 6           |     | 7 6 6           |     |     |                  |                |     |              |
+|     |     |     |     | 8 8 7           |     | 8 8 7           |     | 8 8 7           |     |     |                  |                |     |              |
+|     |     |     |     | 9 9             |     | 9 9             |     | 9 9             |     |     |                  |                |     | S EL W AN GT |
+|     |     |     |     | 1 1 1 0 1 0 1 1 |     | 1 1 1 0 1 0 1 1 |     | 1 1 1 0 1 0 1 1 |     |     |                  |                |     | P A E        |
+|     |     |     |     | 1 2 2 1         |     | 1 2 2 1         |     | 1 2 2 1         |     |     |                  | COMAMREEARCIAL |     |              |
+CO M Kênh rạch Chanh - Trị Yên
+A M R EE AR C IAL
+|     |              |         |          | 1 1 3 4 3 1         |     | 1 1 3 4 3 1     |          | 1 1 3 4 3 1     |       | 16.00 |     |       |         |       |
+| --- | ------------ | ------- | -------- | ------------------- | --- | --------------- | -------- | --------------- | ----- | ----- | --- | ----- | ------- | ----- |
+|     |              |         |          | 1 5 4 5 1 1         |     | 1 5 4 5 1 1     |          | 1 5 4 5 1 1     |       |       |     |       |         |       |
+|     |              |         |          | 1 6 6 1             |     | 1 6 6 1         |          | 1 6 6 1         |       |       |     |       |         |       |
+|     |              |         |          | 1 1 7 8 7 8 1 1     |     | 1 1 7 8 7 8 1 1 |          | 1 1 7 8 7 8 1 1 |       |       |     |       |         |       |
+|     |              |         |          | 21 1 9 9 1          | 12  | 21 1 9 9 1      | 12       | 21 1 9 9 1      | 12    |       |     |       |         |       |
+|     |              |         |          | 2 0 0 2             |     | 2 0 0 2         |          | 2 0 0 2         |       |       |     |       |         |       |
+| U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  |     | HD IETSEI       | CG NT  U |  R E   D        | E S I | G N   |     |       |         |       |
+|     |              |         |          |                     |     |                 |          |                 |       |       |     | 1 0 / | 0 3 / 2 | 0 2 1 |
+L13 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+V I L L A N Y ’A H | S H O P H O U S E S
+2 | SHOPHOUSES CENTER ONE MID GF | 1F | 2F
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L14 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 1 0 / 0 3 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40 8.8m2 6.3m2 2.85 3.35 19.8m2 3.35 20.1m2
+3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING 1.90 SITTING 2.05 5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM
+18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17 STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00 CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90 SITTING 2.05 5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20 5.55 21.8m2 2.20 DINNING LIVING 9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL 26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING 1.65 4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING 4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40 8.8m2 6.3m2 2.85 3.35 19.8m2 3.35 20.1m2
+3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING 1.90 SITTING 2.05 5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM
+18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17 STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00 CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90 SITTING 2.05 5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20 5.55 21.8m2 2.20 DINNING LIVING 9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL 26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING 1.65 4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING 4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40 8.8m2 6.3m2 2.85 3.35 19.8m2 3.35 20.1m2
+3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING 1.90 SITTING 2.05 5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM
+18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17 STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00 CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90 SITTING 2.05 5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20 5.55 21.8m2 2.20 DINNING LIVING 9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL 26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING 1.65 4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING 4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+
+V I L L A N Y ’A H | S H O P H O U S E S
+2 | SHOPHOUSES CENTER ONE MID MEZZANINE | ROOF
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L15 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 1 0 / 0 3 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40
+8.8m2 6.3m2 2.85
+3.35
+19.8m2
+3.35
+20.1m2
+3.95 3.95
+TOILET
+1.00
+1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.9 R
+m
+O
+2
+OM
+12 7
+2.65 3.9m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC
+2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET
+1.00
+1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.7 R
+m
+O
+2
+OM
+12 7
+2.65 3.7m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17
+STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00
+CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS
+1 2 34.64m5 2 6
+9.4m2
+2.30 2.30 2.30 3.45 KITCHEN
+5.9m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20
+5.55 21.8m2
+2.20
+DINNING LIVING
+9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC
+2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL 26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING
+1.65
+4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60
+1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35
+3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING
+4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12
+14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00
+56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60
+BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS
+3.00 STAIRS A 9 ND 3.00 3.00 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35
+3
+4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40
+8.8m2 6.3m2 2.85
+3.35
+19.8m2
+3.35
+20.1m2
+3.95 3.95
+TOILET
+1.00
+1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.9 R
+m
+O
+2
+OM
+12 7
+2.65 3.9m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC
+2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET
+1.00
+1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM
+18
+13
+2.65 BAT
+3
+H
+.7 R
+m
+O
+2
+OM
+12 7
+2.65 3.7m2
+12 7
+AC AC
+LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17
+STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00
+CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS
+1 2 34.64m5 2 6
+9.4m2
+2.30 2.30 2.30 3.45 KITCHEN
+5.9m2
+SITTING
+1.90
+SITTING 2.05
+5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20
+5.55 21.8m2
+2.20
+DINNING LIVING
+9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC
+2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL 26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING
+1.65
+4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60
+1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35
+3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING
+4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12
+14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00
+56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60
+BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS
+3.00 STAIRS A 9 ND 3.00 3.00 1.8m2
+8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35
+3
+4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+
+| V I | L L A   N Y | ’A H   | |   S H O P | H O U | S E S |     |     |     |     |     |     |     |     |     |
+| --- | ----------- | -------- | --------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+2 | SHOPHOUSES CENTER ONE CORNER CONTEXT
+|     |     |     |     | 20 02              |     | 20 02              |     | 20 02              |     |       |     |     |     |     |
+| --- | --- | --- | --- | ------------------ | --- | ------------------ | --- | ------------------ | --- | ----- | --- | --- | --- | --- |
+|     |     |     |     | 21 1 1 8 9 8 9 1 1 | 12  | 21 1 1 8 9 8 9 1 1 | 12  | 21 1 1 8 9 8 9 1 1 | 12  |       |     |     |     |     |
+|     |     |     |     | 1 7 7 1            |     | 1 7 7 1            |     | 1 7 7 1            |     |       |     |     |     |     |
+|     |     |     |     | 1 6 6 1            |     | 1 6 6 1            |     | 1 6 6 1            |     |       |     |     |     |     |
+|     |     |     |     | 1 1 4 5 4 5 1 1    |     | 1 1 4 5 4 5 1 1    |     | 1 1 4 5 4 5 1 1    |     | 16.00 |     |     |     |     |
+|     |     |     |     | 1 3 3 1            |     | 1 3 3 1            |     | 1 3 3 1            |     |       |     |     |     |     |
+|     |     |     |     | 1 1 2 1 2 1 1 1    |     | 1 1 2 1 2 1 1 1    |     | 1 1 2 1 2 1 1 1    |     |       |     |     |     |     |
+|     |     |     |     | 1 0 0 1            |     | 1 0 0 1            |     | 1 0 0 1            |     |       |     |     |     |     |
+|     |     |     |     | 9 8 9              |     | 8 9 9              |     | 8 9 9              |     |       |     |     |     |     |
+|     |     |     |     | 7 8 7              |     | 7 8 7              |     | 7 8 7              |     |       |     |     |     |     |
+|     |     |     |     | 6 6                |     | 6 6                |     | 6 6                |     |       |     |     |     |     |
+|     |     |     |     | 4 5 4 5            |     | 4 5 4 5            |     | 4 5 4 5            |     |       |     |     |     |     |
+|     |     |     |     | 3 3                |     | 3 3                |     | 3 3                |     |       |     |     |     |     |
+|     |     |     |     | 2 2                |     | 2 2                |     | 2 2                |     |       |     |     |     |     |
+|     |     |     |     | 1 1                |     | 1 1                |     | 1 1                |     |       |     |     |     |     |
+3.00
+CODINACHS OPT LL _SHOPHOUSES
+|     |     |     |     | 5.00 | 5.00 | 5.00 | 5.00 | 5.00 | 5.00 |     |     |     |     |     |
+| --- | --- | --- | --- | ---- | ---- | ---- | ---- | ---- | ---- | --- | --- | --- | --- | --- |
+10.00
+3.00
+KINDERGARTEN
+E
+SLCEMHOENOT LARY
+|     |     |     |     | 1 1             |     | 1 1             |     | 1 1             |     |     |                  |                |     |              |
+| --- | --- | --- | --- | --------------- | --- | --------------- | --- | --------------- | --- | --- | ---------------- | -------------- | --- | ------------ |
+|     |     |     |     | 2 2             |     | 2 2             |     | 2 2             |     |     | SMTAE TDIOIC NAL |                |     |              |
+|     |     |     |     | 3 4 3 4         |     | 3 4 3 4         |     | 3 4 3 4         |     |     |                  |                |     |              |
+|     |     |     |     | 5 5             |     | 5 5             |     | 5 5             |     |     |                  |                |     |              |
+|     |     |     |     | 7 6 6           |     | 7 6 6           |     | 7 6 6           |     |     |                  |                |     |              |
+|     |     |     |     | 8 8 7           |     | 8 8 7           |     | 8 8 7           |     |     |                  |                |     |              |
+|     |     |     |     | 9 9             |     | 9 9             |     | 9 9             |     |     |                  |                |     | S EL W AN GT |
+|     |     |     |     | 1 1 1 0 1 0 1 1 |     | 1 1 1 0 1 0 1 1 |     | 1 1 1 0 1 0 1 1 |     |     |                  |                |     | P A E        |
+|     |     |     |     | 1 2 2 1         |     | 1 2 2 1         |     | 1 2 2 1         |     |     |                  | COMAMREEARCIAL |     |              |
+CO M Kênh rạch Chanh - Trị Yên
+A M R EE AR C IAL
+|     |              |         |          | 1 1 3 4 3 1         |     | 1 1 3 4 3 1     |          | 1 1 3 4 3 1     |       | 16.00 |     |       |         |       |
+| --- | ------------ | ------- | -------- | ------------------- | --- | --------------- | -------- | --------------- | ----- | ----- | --- | ----- | ------- | ----- |
+|     |              |         |          | 1 5 4 5 1 1         |     | 1 5 4 5 1 1     |          | 1 5 4 5 1 1     |       |       |     |       |         |       |
+|     |              |         |          | 1 6 6 1             |     | 1 6 6 1         |          | 1 6 6 1         |       |       |     |       |         |       |
+|     |              |         |          | 1 1 7 8 7 8 1 1     |     | 1 1 7 8 7 8 1 1 |          | 1 1 7 8 7 8 1 1 |       |       |     |       |         |       |
+|     |              |         |          | 21 1 9 9 1          | 12  | 21 1 9 9 1      | 12       | 21 1 9 9 1      | 12    |       |     |       |         |       |
+|     |              |         |          | 2 0 0 2             |     | 2 0 0 2         |          | 2 0 0 2         |       |       |     |       |         |       |
+| U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  |     | HD IETSEI       | CG NT  U |  R E   D        | E S I | G N   |     |       |         |       |
+|     |              |         |          |                     |     |                 |          |                 |       |       |     | 1 0 / | 0 3 / 2 | 0 2 1 |
+L16 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+V I L L A N Y ’A H | S H O P H O U S E S
+2 | SHOPHOUSES CENTER ONE CORNER GF | 1F | 2F
+U R B A NU RPBL AANN NP IL NA GN N AI NNGD AANRDC HD IETSEI CG NT U R E D E S I G N
+L17 P R O P O S A L f o r V i l l a N y ´ a h i n L o n g T h u o n g 1 0 / 0 3 / 2 0 2 1
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs, Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40
+8.8m2 6.3m2 2.85
+3.35
+19.8m2
+3.35
+20.1m2
+3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING 1.90
+SITTING 2.05 5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM
+18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17
+STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00
+CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90
+SITTING 2.05
+5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20 5.55 21.8m2 2.20 DINNING LIVING
+9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL 26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING 1.65
+4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING
+4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40
+8.8m2 6.3m2 2.85
+3.35
+19.8m2
+3.35
+20.1m2
+3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING 1.90
+SITTING 2.05 5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM
+18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17
+STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00
+CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90
+SITTING 2.05
+5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20 5.55 21.8m2 2.20 DINNING LIVING
+9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL 26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING 1.65
+4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING
+4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+4.80 4.70 4.70
+BACKYARD
+2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+DINNING KITCHEN BEDROOM BEDROOM
+3.40
+8.8m2 6.3m2 2.85
+3.35
+19.8m2
+3.35
+20.1m2
+3.95 3.95
+TOILET 1.00 1.8m2
+17 16 15 14 11 10 9 8 11 10 9 8
+BATHROOM
+18 13 2.65 BAT 3 H .9 R m O 2 OM 12 7 2.65 3.9m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 4.20 10.7m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 0 1 3.40 16.00 16.00 1 2 4 1 4 5 16.00 16.00 1 1 4 5 5 3.70 16.00 12.50 9 12.50 3 4.00 16
+8 STAIRS AND 2 17
+1 C S 2 T O A 34 R IR . R 64 S I m D A 5 O 2 N R D 6 S 7 14.00 1.75 BAT 2 H .7 R m O 2 OM CO 1 R 0 R .7 ID m O 2 RS 1 14.00 14.00 C ST O 1A8 9 R IR . R 4 S I m D A O 2 N R D S 14.00
+3.45 KITCHEN
+6.2m2
+SITTING 1.90
+SITTING 2.05 5.4m2
+4.3m2
+4.50 RETAIL 4.50
+21.7m2
+LIVING
+5.55 22.3m2 DINNING LIVING
+9.4m2 9.5m2
+3.95 3.95
+3.50
+1.50 1.50
+4.80 4.80 2.40 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95
+5.00 5.00 5.00
+CA
+5.00
+0.95 0.90 1.30 0.900.95
+2.00 2.00
+4.15 4.15
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00
+7.25 7.25
+0.95 0.90 1.30 0.90 0.95
+5.00
+A.C
+5.00 5.00 5.00
+0.80 1.20 1.05 0.90 1.05 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.80 4.70 4.70
+BACKYARD 2.00 1.90 9.1m2 1.90 2.00 2.00 2.00 2.00 2.00
+0.45 0.45 0.45
+0.90 0.90 0.90
+DINNING KITCHEN BEDROOM BEDROOM
+1.05 3.40 8.5m2 6.3m2 2.85 1.05 3.35 19.4m2 1.05 3.35 19.7m2
+3.95 3.95
+0.90 0.90 0.90
+TOILET 1.00 1.8m2
+2.45 17 16 15 14 2.45 11 10 9 8 2.45 11 10 9 8 BATHROOM
+18 13 2.65 BAT 3 H .7 R m O 2 OM 12 7 2.65 3.7m2 12 7 AC AC LIVING 19 12 13 6 13 6 16.00 1.20 4.20 10.5m2 ST2 21 0 1 O .2 R m AG 2 E 1 1 9 0 1 3.40 12.50 16.00 16.00 0.60 1 2 4 1 5 3 4 4.00 16.00 16.00 0.60 1 1 1 4 5 6 5 3.70 16.00
+8 0.60 STAIRS AND 2 0.60 17
+STAIRS AND BATHROOM CORRIDORS 1 14.00 ST18AIRS AND 14.00
+CORRIDORS 7 1.75 2.5m2 10.7m2 CORRIDORS 1 2 34.64m5 2 6 9.4m2
+2.30 2.30 2.30 3.45 KITCHEN 5.9m2
+SITTING 1.90
+SITTING 2.05
+5.4m2
+4.3m2
+0.90 0.90
+4.50 RETAIL 4.50
+21.2m2
+2.95 LIVING
+2.20 5.55 21.8m2 2.20 DINNING LIVING
+9.0m2 9.5m2
+3.95 3.95
+3.50
+0.30
+0.90 0.90
+1.50 1.50
+0.65 0.65
+4.70 4.70 2.30 2.40
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+5.00 5.00 5.00
+CA
+SHOPHOUSE MAINROAD MID
+5.00
+0.95 0.90 1.30 0.90 0.95
+2.00 2.00
+16.00 16.00
+14.00 14.00
+0.95 0.90 1.30 0.90 0.95
+5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE MAINROAD CORNER
+5.00 5.00
+2.00 2.00 2.00 2.00 2.00 2.00
+4.15 4.15
+9.00 9.00
+AC 2.60 2.40 2.40 2.60 AC 16.00 11.4m2 16.00 16.00 16.00
+14.00 14.00
+2.55 2.55
+4.70 4.70 5.00 5.00
+5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE MID
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+3.15 BEDROOM 3.15
+15.0m2
+5.00 4.80 RETAIL 26.6m2
+5.55
+7.40 7.40
+KITCHEN DINNING 1.65
+4.3m2 5.4m2
+2.45
+CORRIDORS
+2.0m2
+20 15 14 21 T 2 O .1 IL m E 1 1 2 T 8 9 2.25 2.70 BAT 3 H .8 R m O 2 OM 20 2.70 BAT 3 H .8 R m O 2 OM 16 13
+14.5014.10 17 14.50 21 19 17 12 16 STAIRS AND18 18 11
+16.00 RETAIL 1 1 1 3 4 5 16.00 16.00 1 CO 9 R . R 9 I m DO 2 RS 7 8 9 3.95 16.00 16.00 C ST O A R IR R S ID A O N R D S 1 9 8 0 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 57.4m2 2 6 10.4m2 7
+BATHROOM 3 5 BATHROOM 6 2.60 2.40 11 A .5 C m2 2.40 2.60 1
+1
+2
+1
+2.70 4.1m2 2.70 4.0m2 AC
+10 4 CORRIDORS
+STAIRS A 9 ND 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+5 4 KITCHEN DINNING 2.35 3 1.65 4.3m2 5.1m2
+2
+1
+RETAIL
+28.3m2 5.90
+6.00 6.00
+5.10
+BEDROOM
+3.45 3.45 16.5m2
+1.50 1.50
+3.70 1.00 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+0.80 1.20 1.20 0.750.90 0.15 0.80 1.20 1.00 1.20 0.80 0.95 0.90 1.30 0.90 0.95 5.00 5.00
+5.00 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+SHOPHOUSE CENTER ONE CORNER
+5.00 5.00 5.00
+0.80 1.20 2.20 0.80 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+4.70 4.80 4.80 5.00 5.00
+0.75 0.75
+1.10
+0.90 0.90
+3.15 BEDROOM 3.15
+14.7m2
+3.50 5.00 2.00 4.80 2 R 6 E . T 1 A m IL 2 2.00 5.55
+7.40 7.40
+0.90 0.90 1.65 KITCHEN DINNING
+4.2m2 5.4m2
+2.45
+CORRIDORS 11.00 11.00
+2.70 2.70 2.70 2.0m2
+21 T 2 O .1 IL m E 1 1 2 2 T 8 9 0 2.25 2.70 BAT 3 H .6 R m O 2 OM 20 2.70 BAT 3 H .6 R m O 2 OM 16 15 14 13
+17 21 19 17 12 14.10 14.50 16 STAIRS AND18 18 11 15 0.60 9 0.60 10 16.00 1.20 RETAIL 1 1 3 4 16.00 16.00 0.60 1 CO 9 R . R 9 I m D 2 ORS 7 8 3.95 16.00 16.00 0.60 C ST O A R IR R S ID A O N R D S 9 8 4.05 16.00 16.00 AC AC AC 16.00 16.00 16.00 56.1m2 2 6 10.4m2 7
+3 5 6 2.60 2.40 AC 2.40 2.60 BATHROOM BATHROOM 11.5m2
+12 2.70 3.8m2 2.70 3.8m2 AC
+11
+10 4 CORRIDORS 3.00 STAIRS A 9 ND 3.00 3.00 1.8m2 8
+CORRID7ORS
+6.6m62
+6.65
+1.30 1.30
+5 KITCHEN DINNING 2.35 3 4 1.65 4.2m2 5.1m2
+2 0.90 0.90
+1
+RETAIL
+2.70 27.8m2 5.90
+2.00 5.10 2.00
+4.40 4.40 5.00 5.00
+BEDROOM
+3.45 3.45 0.35 16.2m2
+0.90 0.90
+1.50 1.50
+0.75 0.75
+3.60 1.00 4.70 4.80 5.00 5.00
+0.80 11..2200 11..2200 0.750.90 00..1155 0.80 1.20 1.00 1.20 0.80 0.80 1.20 1.00 1.20 0.80
+55..0000 5.00 5.00
+GF FLOOR 1 FLOOR 2 FLOOR MEZZANINE ROOF
+
+SHOPHOUSE MAINROAD MID SHOPHOUSE MAINROAD MID
+|     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     | 5.00 | 5.00 |     |     |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+| --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |     |           |     |     |     |     |     |           |     |     |     |     |      |      |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+0.80 0.80 1.20 1.20 1.05 1.05 0.90 0.90 1.05 1.05 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+4.80 4.80 4.70 4.70 4.70 4.70 0.95 0.95 0.90 0.90 1.30 1.30 0.900.95 0.900.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+A.C A.C
+BACKYARD BACKYARD
+2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00
+| 2.00 2.00 1.90 1.90 |     | 9.1m2 9.1m2 |     |     | 1.90 1.90 2.00 2.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ------------------- | --- | ----------- | --- | --- | ------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+DINNING DINNING KITCHEN KITCHEN BEDROOM BEDROOM BEDROOM BEDROOM
+|           |     |             |             |     | 2.85 2.85 |           |     |               |     |           |           |     |        |        |     |      |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| --------- | --- | ----------- | ----------- | --- | --------- | --------- | --- | ------------- | --- | --------- | --------- | --- | ------ | ------ | --- | ---- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|           |     | 8.8m2 8.8m2 | 6.3m2 6.3m2 |     |           |           |     | 19.8m2 19.8m2 |     |           |           |     | 20.1m2 | 20.1m2 |     |      |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| 3.40 3.40 |     |             |             |     |           | 3.35 3.35 |     |               |     |           | 3.35 3.35 |     |        |        |     |      |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+|           |     |             |             |     |           |           |     |               |     | 3.95 3.95 |           |     |        |        |     | 3.95 |     |     | 4.15 4.15 |     |     |     |     | 4.15 4.15 |     |     |     |     |     |     |     |     |     |
+3.95
+TOILET TOILET
+|     |     |     |     |     | 1.00 1.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+1.8m2 1.8m2
+17 17 16 16 15 15
+|     |     |     |     | 14 14 |     |     |     |     | 11 11 10 10 9 9 8 8 |     |     |     |     | 11 11 | 10 10 9 9 8 8 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ----- | --- | --- | --- | --- | ------------------- | --- | --- | --- | --- | ----- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+BATHROOM BATHROOM
+18 18 2.65 2.65 BAT BAT H H R R O O OM OM 2.65 2.65 AC AC AC AC AC AC
+|     |     |     |     | 13  |     |     |               |     | 12     |     |     | 3.9m2 | 3.9m2 |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | ------------- | --- | ------ | --- | --- | ----- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     | 13  |     |     | 3 .9 3 .9 m m | 2 2 | 12 7 7 |     |     |       |       | 12 12 | 7 7 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+19 19 12 12 13 13 6 6 13 13 6 6 2.60 2.60 2.40 2.40 2.40 2.40 2.60 2.60
+| 4.20 4.20 |     | LIVING LIVING |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | AC AC |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+10.7m2 10.7m2 ST2 ST2 0 O 0 O R R AG AG E E 1 1 1 1 1 4 1 4 5 5 1 4 1 4 5 5 CA CA
+16.00 16.00 21 1 1 0 1 0 3.40 3.40 16.00 16.00 16.00 16.00 2 1 2 1 4 4 16.00 16.00 16.00 16.00 1 5 1 5 16.00 16.00 16.00 16.00 11.4m2 11.4m2 16.00 16.00 16.00 16.00 16.00 16.00
+|             |     |     | 21 .2 1 .2 m m 2 2 |     |             |     |     |     |     |           |     |     |     |       |     | 3.70 3.70 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ----------- | --- | --- | ------------------ | --- | ----------- | --- | --- | --- | --- | --------- | --- | --- | --- | ----- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 12.50 12.50 |     |     |                    | 9 9 | 12.50 12.50 |     |     |     | 3 3 | 4.00 4.00 |     |     |     | 16 16 |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+STAIRS AND
+|     |     |     |     | 8 8 |     |     |     | STAIRS AND | 2 2 |     |     |     |     | 17 17 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | ---------- | --- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+S T S A T A IR IR S  A S  A N N D D CO CO R R R R ID ID O O RS RS 1 1 ST ST 1A8 1A8 IR IR S  A S  A N N D D 14.00 14.00
+7 7 14.00 14.00 BAT BAT H H R R O O OM OM 14.00 14.00 14.00 14.00 14.00 14.00 14.00 14.00
+C C O O R R R R I D I D O O R R S S 1.75 1.75 1 0 1 .7 0 .7 m m 2 2 C C O O R R R R I D I D O O R R S S
+|     |     |     |                               |           |     |     | 2 .7 2 .7 m m | 2 2 |     |     |           |         |         |           | 2 2   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ----------------------------- | --------- | --- | --- | ------------- | --- | --- | --- | --------- | ------- | ------- | --------- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     | 1 1 2 2 34 34 . 64 . m 64 5 m | 2 5 2 6 6 |     |     |               |     |     |     |           |         |         | 9 . 9 4 . | m 4 m |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |                               |           |     |     |               |     |     |     | 3.45 3.45 | KITCHEN | KITCHEN |           |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+6.2m2 6.2m2
+SITTING SITTING
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     | 5.4m2 | 5.4m2 | 1.90 1.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- | ----- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+SITTING SITTING
+2.05 2.05
+4.3m2 4.3m2
+| 4.50 4.50 |     | RETAIL RETAIL |     |     | 4.50 4.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | ------------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+21.7m2 21.7m2
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 7.25 7.25 |     |     |     |     | 7.25 7.25 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+LIVING LIVING
+|     |     |     |     |     |     | 5.55 5.55 |     | 22.3m2 22.3m2 |     |     |           |     | DINNING DINNING | LIVING LIVING |       |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --------- | --- | ------------- | --- | --- | --------- | --- | --------------- | ------------- | ----- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |           |     |               |     |     |           |     | 9.4m2 9.4m2     | 9.5m2         | 9.5m2 |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |     |     |           |     |               |     |     | 3.95 3.95 |     |                 |               |       | 3.95 3.95 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+3.50 3.50
+| 1.50 1.50 |     |     |     |     | 1.50 1.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4.80 4.80 4.80 4.80 2.40 2.40 2.40 2.40 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+|     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     | 5.00 | 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+1 FLOOR 1 FLOOR
+GF FLOOR GF FLOOR 2 FLOOR 2 FLOOR MEZZANINE MEZZANINE ROOF ROOF
+SHOPHOUSE MAINROAD CORNER SHOPHOUSE MAINROAD CORNER
+|     |           | 5.00 5.00           |                |      |     |     |                     | 5.00 5.00 |                     |     |     |           | 5.00           | 5.00           |           |     |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+| --- | --------- | ------------------- | -------------- | ---- | --- | --- | ------------------- | --------- | ------------------- | --- | --- | --------- | -------------- | -------------- | --------- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |           |                     |                |      |     |     | 0.80 0.80 1.20 1.20 | 1.00 1.00 | 1.20 1.20 0.80 0.80 |     |     | 0.80 0.80 | 1.20 1.20 1.00 | 1.00 1.20 1.20 | 0.80 0.80 |     |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+|     | 0.80 0.80 | 1.20 1.20 1.05 1.05 | 0.90 0.90 1.05 | 1.05 |     |     |                     |           |                     |     |     |           |                |                |           |     |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+|     |           | 4.80                |                |      |     |     |                     | 4.70 4.70 |                     |     |     |           |                | 4.70 4.70      |           |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+4.80
+A.C A.C
+BACKYARD BACKYARD
+2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00 2.00
+| 2.00 2.00 1.90 1.90 |     | 9.1m2 9.1m2 |     |     | 1.90 1.90 2.00 2.00 |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ------------------- | --- | ----------- | --- | --- | ------------------- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|                     |     |             |     |     |                     | 0.45 0.45 |     |     |     |     | 0.45 0.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+0.45 0.45
+| 0.90 0.90 |     |     |     |     |     | 0.90 0.90 |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+DINNING DINNING KITCHEN KITCHEN BEDROOM BEDROOM BEDROOM BEDROOM
+|     |     |     |     |     | 2.85 |     |     | 19.4m2 19.4m2 |     |     |     |     | 19.7m2 | 19.7m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | ---- | --- | --- | ------------- | --- | --- | --- | --- | ------ | ------ | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+8.5m2 8.5m2 6.3m2 6.3m2 2.85 1.05 1.05 3.35 3.35 1.05 1.05 3.35 3.35
+| 1.05 1.05 3.40 3.40 |     |     |     |     |     |           |     |     |     |           |           |     |     |     |     |           |     |     | 4.15 4.15 |     |     |     |     | 4.15 4.15 |     |     |     |     |     |     |     |     |     |
+| ------------------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --------- | --------- | --- | --- | --- | --- | --------- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|                     |     |     |     |     |     |           |     |     |     | 3.95 3.95 |           |     |     |     |     | 3.95 3.95 |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| 0.90 0.90           |     |     |     |     |     | 0.90 0.90 |     |     |     |           | 0.90 0.90 |     |     |     |     |           |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+TOILET TOILET
+|     |     |     |     |     | 1.00 1.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+1.8m2 1.8m2
+17 17 16 16 15 15 2.45 2.45 11 11 10 10 9 9 8 8 2.45 2.45 11 11 10 10 9 9 8 8 9.00 9.00 9.00 9.00
+| 2.45 2.45 |     |     |     | 14 14 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+BATHROOM BATHROOM
+18 18 2.65 2.65 BAT BAT H H R R O O OM OM 2.65 2.65 3.7m2 3.7m2 AC AC AC AC AC AC
+|     |     |     |     |     |     |     |     |     | 12 12 7 7 |     |     |     |     | 12 12 | 7 7 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+13 13 3 .7 3 .7 m m 2 2 2.60 2.60 2.40 2.40 2.40 2.40 2.60 2.60
+|      |     |               | 19 19 | 12 12 |     |     |     |     | 13 13 6 6 |     |     |     |     | 13 13 | 6 6 |     |     |     |     |     |     |       |     |     |     |     |     |     |     |     |     |     |     |
+| ---- | --- | ------------- | ----- | ----- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 4.20 |     | LIVING LIVING |       |       |     |     |     |     | 5 5       |     |     |     |     |       | 5 5 |     |     |     |     |     |     | AC AC |     |     |     |     |     |     |     |     |     |     |     |
+4.20 10.5m2 10.5m2 ST2 ST2 0 O 0 O R R AG AG E E 1 1 1 1 1 4 1 4 1 4 1 4 16.00 16.00 CA CA 11.4m2 11.4m2 16.00 16.00
+16.00 16.00 3.40 3.40 16.00 16.00 16.00 16.00 0.60 0.60 2 1 2 1 4 4 16.00 16.00 16.00 16.00 0.60 0.60 1 5 1 5 3.70 3.70 16.00 16.00 16.00 16.00 16.00 16.00
+|           |     |     | 21 1 21 .2 1 .2 m m 2 2 | 1 0 1 0 |             |      |     |                       |     | 4.00 4.00 |      |     |     |         |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | ----------------------- | ------- | ----------- | ---- | --- | --------------------- | --- | --------- | ---- | --- | --- | ------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1.20 1.20 |     |     |                         | 9 9     | 12.50 12.50 |      |     |                       | 3 3 |           |      |     |     | 1 6 1 6 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |                         |         |             | 0.60 |     | STAIRS AND STAIRS AND | 2 2 |           | 0.60 |     |     | 17 17   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |                         | 8 8     |             | 0.60 |     |                       |     |           | 0.60 |     |     |         |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+STAIRS AND STAIRS AND BATHROOM BATHROOM CORRIDORS CORRIDORS 1 1 14.00 14.00 ST18AIRS AND ST18AIRS AND 14.00 14.00 14.00 14.00
+|     |     |     |     | 7 7 |     |     |     |     |     |     |     |     |     | CORRIDORS |     |     |     |     |     |     |     |     |     |     |     | 14.00 |     |     |     | 14.00 |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- | --- | --- | --- | ----- | --- | --- | --- |
+CORRIDORS CORRIDORS 1.75 1.75 2.5m2 2.5m2 10.7m2 10.7m2 CORRIDORS
+9.4m2 9.4m2
+34.64m5 34.64m5 2 2
+|           |     |     | 1 1 2 2 | 6 6 |     |           |     |     |     |     |                     |         |         |     |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | ------- | --- | --- | --------- | --- | --- | --- | --- | ------------------- | ------- | ------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|           |     |     |         |     |     |           |     |     |     |     |                     | KITCHEN | KITCHEN |     |     |     |     |     | 2.55 2.55 |     |     |     |     | 2.55 2.55 |     |     |     |     |     |     |     |     |     |
+| 2.30 2.30 |     |     |         |     |     | 2.30 2.30 |     |     |     |     | 2.30 2.30 3.45 3.45 |         |         |     |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+5.9m2 5.9m2
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     | SITTING SITTING |     | 1.90 1.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.4m2 5.4m2
+|     |     |     |     |     |     |     |     |     | SITTING SITTING | 2.05 2.05 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --------------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4.3m2 4.3m2
+|           |     |               |     |     |           | 0.90 0.90 |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | ------------- | --- | --- | --------- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 4.50 4.50 |     | RETAIL RETAIL |     |     | 4.50 4.50 |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+21.2m2 21.2m2
+| 2.95 2.95 |     |     |     |     |     |     |     | LIVING LIVING |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --- | --- | ------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.55 5.55
+|     |     |     |     |     |     |           |     | 21.8m2 21.8m2 |     |     |           |     | DINNING DINNING | LIVING LIVING |     |           |     |     |           |     |     |     |     |           |     |           |     |     |           |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --------- | --- | ------------- | --- | --- | --------- | --- | --------------- | ------------- | --- | --------- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --------- | --- | --- | --------- | --- | --- | --- | --- |
+|     |     |     |     |     |     | 2.20 2.20 |     |               |     |     | 2.20 2.20 |     | 9.0m2 9.0m2     | 9.5m2 9.5m2   |     |           |     |     |           |     |     |     |     |           |     |           |     |     |           |     |     |     |     |
+|     |     |     |     |     |     |           |     |               |     |     |           |     |                 |               |     |           |     |     |           |     |     |     |     |           |     | 5.00 5.00 |     |     | 5.00 5.00 |     |     |     |     |
+|     |     |     |     |     |     |           |     |               |     |     |           |     |                 |               |     |           |     |     | 4.70 4.70 |     |     |     |     | 4.70 4.70 |     |           |     |     |           |     |     |     |     |
+|     |     |     |     |     |     |           |     |               |     |     | 3.95 3.95 |     |                 |               |     | 3.95 3.95 |     |     |           |     |     |     |     |           |     |           |     |     |           |     |     |     |     |
+3.50 3.50
+0.30 0.30
+|           |     |     |     |     |           | 0.90 0.90 |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --------- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1.50 1.50 |     |     |     |     | 1.50 1.50 |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     |           | 0.65 0.65 |     |     |     |     | 0.65 0.65 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+5.00 5.00
+|     |           | 4.70 4.70      |      |           |     |     |                     | 4.70 4.70 |                     |     |     |           | 2.30 2.30      | 2.40 2.40      |           |     |     |     |     |     |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+| --- | --------- | -------------- | ---- | --------- | --- | --- | ------------------- | --------- | ------------------- | --- | --- | --------- | -------------- | -------------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |           |                |      |           |     |     | 0.80 0.80 1.20 1.20 | 1.00 1.00 | 1.20 1.20 0.80 0.80 |     |     | 0.80 0.80 | 1.20 1.20 1.00 | 1.00 1.20 1.20 | 0.80 0.80 |     |     |     |     |     |     |     |     |     |     |     |     |           |     |     |     |     |     |
+|     | 0.80 0.80 | 1.20 1.20 2.20 | 2.20 | 0.80 0.80 |     |     |                     |           |                     |     |     |           |                |                |           |     |     |     |     |     |     |     |     |     |     |     |     |           |     |     |     |     |     |
+|     |           | 5.00 5.00      |      |           |     |     |                     | 5.00 5.00 |                     |     |     |           | 5.00           | 5.00           |           |     |     |     |     |     |     |     |     |     |     |     |     |           |     |     |     |     |     |
+GF FLOOR GF FLOOR 1 FLOOR 1 FLOOR MEZZANINE MEZZANINE ROOF ROOF
+2 FLOOR 2 FLOOR
+SHOPHOUSE CENTER ONE MID SHOPHOUSE CENTER ONE MID
+|     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.00 5.00
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 5.00 5.00 5.00 5.00
+4.80 4.80 4.80 4.80 4.80 4.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95
+|     |     |     |     |     |     |     |     |     |     |     | 3.15 3.15 |     | BEDROOM BEDROOM |     |     | 3.15 3.15 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --------------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+15.0m2 15.0m2
+RETAIL RETAIL
+|     |     |     |     |     | 5.00 5.00 | 4.80 4.80 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+26.6m2 26.6m2
+5.55 5.55
+|     |     |     |     |     |     |     |     |     |     |     |     |     |                 |                 |     |     |     |     | 7.40 7.40 |     |     |     |     | 7.40 7.40 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------------- | --------------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |     |     | KITCHEN KITCHEN | DINNING DINNING |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+1.65 1.65
+|     |     |     |     |     |     |     |     |     |     |     |     |     | 4.3m2 4.3m2 |     | 5.4m2 5.4m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | --- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+2.45 2.45
+CORRIDORS CORRIDORS
+2.0m2 2.0m2
+|     |     |     |     | 20 20 |     |     |     |     |     |     |     |     |     |     | 15 15 14 14 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+T O T O IL IL E T E T 2.25 2.25 BAT BAT H H R R O O OM OM BAT BAT H H R R O O OM OM 16 16
+|                       |     |     | 21 21 | 1 9 1 9         |             | 2.70 2.70 |                 |     |                               |      | 2.70 2.70 |     |                 |         |                                   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------------------- | --- | --- | ----- | --------------- | ----------- | --------- | --------------- | --- | ----------------------------- | ---- | --------- | --- | --------------- | ------- | --------------------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|                       |     |     | 2     | .1 2 .1 m m 2 2 |             |           | 3 .8 3 .8 m m 2 | 2   |                               |      |           | 3   | .8 3 .8 m m 2 2 |         |                                   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|                       |     |     |       | 1 8 1 8         |             |           |                 |     | 20 20                         |      |           |     |                 |         | 13 13                             |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|                       |     |     |       | 17 17           |             |           |                 |     | 21 21 19 19                   |      |           |     |                 |         | 12                                |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 14.5014.10 14.5014.10 |     |     |       |                 | 14.50 14.50 |           |                 |     |                               |      |           |     |                 | 17 17   | 12                                |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|                       |     |     |       | 16 16           |             |           |                 |     | STAIRS AND18 STAIRS AND18     |      |           |     |                 | 18 18   | 11 11                             |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|                       |     |     |       | 1 5 1 5         |             |           |                 |     | 9 9                           |      |           |     |                 |         |                                   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|                       |     |     |       |                 |             |           |                 |     | CO CO R R R R I DO I DO RS RS | 3.95 |           |     |                 | ST ST A | A IR IR S  A S  A N N D D 1 0 1 0 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+16.00 16.00 1 4 1 4 16.00 16.00 16.00 16.00 8 8 3.95 16.00 16.00 9 9 4.05 4.05 AC AC AC AC AC AC
+RETAIL RETAIL 1 3 9 . 9 9 . m 9 m 2 2 16.00 16.00 C C O O R R R R ID ID O O R R S S 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00
+|     |     | 57.4m2 |     | 1 3 |     |     |     |     | 1 1 7 7 |     |     |     |     |        | 8 8        |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | ------ | --- | --- | --- | --- | --- | --- | ------- | --- | --- | --- | --- | ------ | ---------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     | 57.4m2 |     |     |     |     |     |     | 2 2 6 6 |     |     |     |     | 10.4m2 | 10.4m2 7 7 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+A A C C
+|     |     |     |     |         |     |           |                   |     | 3 3 5 5 |     |           |                   |       |     | 6 6 |     |     |     | 2.60 2.60 | 2.40 2.40 |       |                   |     | 2.40 2.40 2.60 2.60 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ------- | --- | --------- | ----------------- | --- | ------- | --- | --------- | ----------------- | ----- | --- | --- | --- | --- | --- | --------- | --------- | ----- | ----------------- | --- | ------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |         |     |           | BATHROOM BATHROOM |     |         |     |           | BATHROOM BATHROOM |       |     |     |     |     |     |           |           |       | 11 11 .5 .5 m2 m2 |     |                     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     | 1 2 1 2 |     | 2.70 2.70 | 4.1m2 4.1m2       |     |         |     |           |                   |       |     |     |     |     |     |           |           | AC AC |                   |     |                     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |         |     |           |                   |     |         |     | 2.70 2.70 | 4.0m2             | 4.0m2 |     |     |     |     |     |           |           |       |                   |     |                     |     |     |     |     |     |     |     |     |     |
+1 1 1 1
+|     |     |     |     | 10 10 |     |     |     |     | 4 4 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+CORRIDORS CORRIDORS
+|     |     |     |                   | 9 9   |     |     |     |     |     |     |     |     | 1.8m2 1.8m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ----------------- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     | STAIRS A STAIRS A | ND ND |     |     |     |     |     |     |     |     |             |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+8 8
+CORRID7ORS CORRID7ORS
+6.6m62 6.6m62
+|     |     |     |     |     | 6.65 6.65 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5 5
+|     |     |     |     |     |     |     |     |     |     |     |     |     | KITCHEN KITCHEN | DINNING DINNING |     | 2.35 2.35 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------------- | --------------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4 4
+|     |     |     |     | 3 3 |     |     |     |     |     |     | 1.65 1.65 |     | 4.3m2 4.3m2 | 5.1m2 | 5.1m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | ----------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+2 2
+1 1
+RETAIL RETAIL
+|     |     |     |     |     |     |     |     | 28.3m2 28.3m2 |     | 5.90 5.90 |     |     |     |     |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | ------------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |               |     |           |     |     |     |     |     |     |     |     | 6.00 6.00 |     |     |     |     | 6.00 6.00 |     |     |     |     |     |     |     |     |     |
+5.10 5.10
+BEDROOM BEDROOM
+|     |     |     |     |     |     |     |     |     |     |     | 3.45 3.45 |     |     |     |     | 3.45 3.45 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+16.5m2 16.5m2
+| 1.50 1.50 |     |     |     |     | 1.50 1.50 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+3.70 3.70 1.00 1.00 4.80 4.80 4.80 4.80 0.95 0.90 1.30 0.90 0.95 0.95 0.90 1.30 0.90 0.95
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0.95 0.90 | 1.30 0.90 | 0.95 |     |     |     | 0.95 0.90 | 1.30 0.90 | 0.95 |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --------- | ---- | --- | --- | --- | --------- | --------- | ---- | --- | --- | --- | --- |
+0.80 0.80 1.20 1.20 1.20 1.20 0.750.90 0.750.90 0.15 0.15 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.95 0.95 0.90 0.90 1.30 1.30 0.90 0.90 0.95 0.95 5.00 5.00 5.00 5.00
+|     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.00 5.00
+GF FLOOR GF FLOOR 1 FLOOR 1 FLOOR MEZZANINE MEZZANINE ROOF ROOF
+2 FLOOR 2 FLOOR
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | V I L L | A   N Y | ’A H   | |   S H O P | H O U | S E S |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------- | ------- | -------- | --------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+SHOPHOUSE CENTER ONE CORNER SHOPHOUSE CENTER ONE CORNER
+2 | SHOPHOUSES CENTER ONE CORNER  MEZZANINE | ROOF
+|     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     | 5.00 | 5.00 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+0.80 0.80 1.20 1.20 2.20 2.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80
+|     |     | 4.70 4.70 |     |     |     |           |     | 4.80 4.80 |     |     |           |     | 4.80 | 4.80 |     |     |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+| --- | --- | --------- | --- | --- | --- | --------- | --- | --------- | --- | --- | --------- | --- | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+|     |     |           |     |     |     | 0.75 0.75 |     |           |     |     | 0.75 0.75 |     |      |      |     |     |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+1.10 1.10
+|     |     |     |     |     |     | 0.90 0.90 |     |     |     |     | 0.90 0.90 |     |                 |     |     |           |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --------------- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |           |     |     |     |     | 3.15 3.15 |     | BEDROOM BEDROOM |     |     | 3.15 3.15 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+14.7m2 14.7m2
+|           |     |     |     |     | 5.00 5.00 | 2.00 2.00 4.80 4.80 |     | R R E T E A T A IL IL |     |           | 2.00 2.00 |     |                 |                 |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --------- | ------------------- | --- | --------------------- | --- | --------- | --------- | --- | --------------- | --------------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 3.50 3.50 |     |     |     |     |           |                     |     | 2 6 . 1 m 2 2         |     |           |           |     |                 |                 |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     |           |                     |     | 2 6 . 1 m             |     | 5.55 5.55 |           |     |                 |                 |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     |           |                     |     |                       |     |           |           |     |                 |                 |     |     |     |     | 7.40 7.40 |     |     |     |     | 7.40 7.40 |     |     |     |     |     |     |     |     |     |
+|           |     |     |     |     |           | 0.90 0.90           |     |                       |     |           | 0.90 0.90 |     | KITCHEN KITCHEN | DINNING DINNING |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+1.65 1.65
+|     |     |     |     |     |     |     |     |     |     |     |     |     | 4.2m2 4.2m2 | 5.4m2 | 5.4m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+2.45 2.45
+|           |     |     |     |         |     |           |     |     |     |     |           |     | CORRIDORS CORRIDORS |     |             |     |     |     |     |     |     |     |     |     |     | 11.00 11.00 |     |     | 11.00 11.00 |     |     |     |     |
+| --------- | --- | --- | --- | ------- | --- | --------- | --- | --- | --- | --- | --------- | --- | ------------------- | --- | ----------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----------- | --- | --- | ----------- | --- | --- | --- | --- |
+| 2.70 2.70 |     |     |     |         |     |           |     |     |     |     |           |     | 2.0m2 2.0m2         |     |             |     |     |     |     |     |     |     |     |     |     |             |     |     |             |     |     |     |     |
+|           |     |     |     |         |     | 2.70 2.70 |     |     |     |     | 2.70 2.70 |     |                     |     |             |     |     |     |     |     |     |     |     |     |     |             |     |     |             |     |     |     |     |
+|           |     |     |     | 2 0 2 0 |     |           |     |     |     |     |           |     |                     |     | 15 15 14 14 |     |     |     |     |     |     |     |     |     |     |             |     |     |             |     |     |     |     |
+T O T O IL IL E T E T 2.25 BAT BAT H H R R O O OM OM BAT BAT H H R R O O OM OM 16 16
+|             |     |     | 21 21 | 1 9 1 9         | 2.25        | 2.70 2.70 |                 |     |                           |     | 2.70 2.70 |     |                 |       |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| ----------- | --- | --- | ----- | --------------- | ----------- | --------- | --------------- | --- | ------------------------- | --- | --------- | --- | --------------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|             |     |     | 2     | .1 2 .1 m m 2 2 |             |           | 3 .6 3 .6 m m 2 | 2   |                           |     |           | 3   | .6 3 .6 m m 2 2 |       |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|             |     |     |       | 1 8 1 8         |             |           |                 |     | 20 20                     |     |           |     |                 |       | 13 13 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|             |     |     |       | 17 17           |             |           |                 |     | 21 21 19 19               |     |           |     |                 | 17 17 | 12 12 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| 14.10 14.10 |     |     |       |                 | 14.50 14.50 |           |                 |     |                           |     |           |     |                 |       |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|             |     |     |       | 16 16           |             |           |                 |     | STAIRS AND18 STAIRS AND18 |     |           |     |                 | 18 18 | 11 11 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|             |     |     |       | 15 15           |             | 0.60 0.60 |                 |     |                           |     | 0.60 0.60 |     |                 |       |       |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+1.20 CO CO R R R R I D I D ORS ORS 9 9 ST ST A A IR IR S  A S  A N N D D 10 10
+16.00 16.00 1.20 1 4 1 4 16.00 16.00 8 8 3.95 3.95 9 9 4.05 4.05 AC AC AC AC AC AC
+RETAIL RETAIL 16.00 16.00 0.60 0.60 9 . 9 9 . m 9 m 2 2 16.00 16.00 16.00 16.00 0.60 0.60 C C O O R R R R ID ID O O R R S S 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00 16.00
+|     |     |               |     | 1 3 1 3 |     |     |     |     | 1 1 7 7 |     |     |     |     |        | 8 8        |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | ------------- | --- | ------- | --- | --- | --- | --- | ------- | --- | --- | --- | --- | ------ | ---------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     | 56.1m2 56.1m2 |     |         |     |     |     |     | 2 2 6 6 |     |     |     |     | 10.4m2 | 10.4m2 7 7 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+AC
+|     |     |     |     |       |     |           |                   |     | 3 3 5 5 |     |           |                   |       |     | 6 6 |     |     |     | 2.60 2.60 | 2.40 2.40 |       | AC            |     | 2.40 2.40 2.60 2.60 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | ----- | --- | --------- | ----------------- | --- | ------- | --- | --------- | ----------------- | ----- | --- | --- | --- | --- | --- | --------- | --------- | ----- | ------------- | --- | ------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |       |     |           | BATHROOM BATHROOM |     |         |     |           | BATHROOM BATHROOM |       |     |     |     |     |     |           |           |       | 11.5m2 11.5m2 |     |                     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     | 12 12 |     |           | 3.8m2 3.8m2       |     |         |     |           |                   |       |     |     |     |     |     |           |           |       |               |     |                     |     |     |     |     |     |     |     |     |     |
+|     |     |     |     |       |     | 2.70 2.70 |                   |     |         |     | 2.70 2.70 | 3.8m2             | 3.8m2 |     |     |     |     |     |           |           | AC AC |               |     |                     |     |     |     |     |     |     |     |     |     |
+11 11
+|           |     |     |                   | 10 10 |     |           |     |     | 4 4 |     |           |     |                     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | ----------------- | ----- | --- | --------- | --- | --- | --- | --- | --------- | --- | ------------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 3.00 3.00 |     |     |                   |       |     |           |     |     |     |     |           |     | CORRIDORS CORRIDORS |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     |                   | 9 9   |     | 3.00 3.00 |     |     |     |     | 3.00 3.00 |     | 1.8m2 1.8m2         |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+|           |     |     | STAIRS A STAIRS A | ND ND |     |           |     |     |     |     |           |     |                     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+8 8
+CORRID7ORS CORRID7ORS
+|     |     |     | 6.6m62 | 6.6m62 |           |     |     |     |     |     |     |     |     |     |     |     |     |     | 1.30 1.30 |     |     |     |     | 1.30 1.30 |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | ------ | ------ | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |        |        | 6.65 6.65 |     |     |     |     |     |     |     |     |     |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     |     |     |
+5 5
+|     |     |     |     |     |     |     |     |     |     |     |     |     | KITCHEN KITCHEN | DINNING DINNING |     | 2.35 2.35 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------------- | --------------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+4 4
+|     |     |     |     | 3   |     |     |     |     |     |     | 1.65 1.65 |     | 4.2m2 4.2m2 | 5.1m2 | 5.1m2 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | ----------- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+3
+|     |     |     |     | 2 2 |     | 0.90 0.90 |     |     |     |     | 0.90 0.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+1 1
+RETAIL RETAIL
+| 2.70 2.70 |     |     |     |     |     |     |     | 27.8m2 27.8m2 |     | 5.90 5.90 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| --------- | --- | --- | --- | --- | --- | --- | --- | ------------- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+5.10 5.10
+|     |     |     |     |     |     | 2.00 2.00 |     |     |     |     | 2.00 2.00 |     |     |     |     |     |     |     |           |     |     |     |     |           |     |           |     |     |           |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --------- | --- | --------- | --- | --- | --------- | --- | --- | --- | --- |
+|     |     |     |     |     |     |           |     |     |     |     |           |     |     |     |     |     |     |     | 4.40 4.40 |     |     |     |     | 4.40 4.40 |     | 5.00 5.00 |     |     | 5.00 5.00 |     |     |     |     |
+BEDROOM BEDROOM
+|           |     |           |      |      |           |           |     |           |     |     | 3.45 3.45 |     |               |      |     | 3.45 3.45 |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+| --------- | --- | --------- | ---- | ---- | --------- | --------- | --- | --------- | --- | --- | --------- | --- | ------------- | ---- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | --- |
+| 0.35 0.35 |     |           |      |      |           |           |     |           |     |     |           |     | 16.2m2 16.2m2 |      |     |           |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+|           |     |           |      |      |           | 0.90 0.90 |     |           |     |     | 0.90 0.90 |     |               |      |     |           |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+| 1.50 1.50 |     |           |      |      | 1.50 1.50 |           |     |           |     |     |           |     |               |      |     |           |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+|           |     |           |      |      |           | 0.75 0.75 |     |           |     |     | 0.75 0.75 |     |               |      |     |           |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+|           |     | 3.60 3.60 | 1.00 | 1.00 |           |           |     | 4.70 4.70 |     |     |           |     | 4.80          | 4.80 |     |           |     |     |     |     |     |           |     |     |     |     |     |           |     |     |     |     |     |
+|           |     |           |      |      |           |           |     |           |     |     |           |     |               |      |     |           |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     | 5.00 5.00 |     |     |     |     |     |
+0.80 0.80 11..2200 11..2200 11..2200 11..2200 0.750.90 0.750.90 00..1155 00..1155 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80 0.80 0.80 1.20 1.20 1.00 1.00 1.20 1.20 0.80 0.80
+|     |     | 55..0000 55..0000 |     |     |     |     |     | 5.00 5.00 |     |     |     |     | 5.00 | 5.00 |     |       |          |         |          |                     |     |           |     |                |           |     |     |     |     |     |     |     |     |
+| --- | --- | ----------------- | --- | --- | --- | --- | --- | --------- | --- | --- | --- | --- | ---- | ---- | --- | ----- | -------- | ------- | -------- | ------------------- | --- | --------- | --- | -------------- | --------- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |                   |     |     |     |     |     |           |     |     |     |     |      |      | U   | R B A | NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  |     | HD IETSEI | CG  | NT  U  R E   D | E S I G N |     |     |     |     |     |     |     |     |
+GF FLOOR GF FLOOR 1 FLOOR 1 FLOOR MEZZANINE MEZZANINE ROOF ROOF
+|     |     |     |     |     |     |     |     |     |     |     |     | 2 FLOOR | 2 FLOOR |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 1 0 / | 0 3 / 2 | 0 2 1 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ------- | ------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- | ------- | ----- |
+L18 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez
+
+|     |              |         |          | b y                 |   C | o d       | i n      | a c      | h s     |   A | r c | h i | t e | c t | s   |       |         |       |
+| --- | ------------ | ------- | -------- | ------------------- | --- | --------- | -------- | -------- | ------- | --- | --- | --- | --- | --- | --- | ----- | ------- | ----- |
+| U R | B A NU  RPBL | AANN NP | IL NA GN | N  AI NNGD  AANRDC  |     | HD IETSEI | CG NT  U |  R E   D | E S I G | N   |     |     |     |     |     |       |         |       |
+|     |              |         |          |                     |     |           |          |          |         |     |     |     |     |     |     | 1 0 / | 0 3 / 2 | 0 2 1 |
+L19 P R O P O S A L   f o r   V i l l a   N y ´ a h   i n   L o n g   T h u o n g
+Architect, designer and coordinator Marcià Codinachs Collaborators: Alejandro Beceyro, Eugènia Codinachs, Josep Codinachs,  Radina Angelova, JLL Sánchez-Fortún, Natalia Ordoñez

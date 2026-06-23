@@ -12,8 +12,9 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
-const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU:
-- Chỉ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN" bên dưới. Nếu không có thông tin, nói thật là chưa có và mời khách để lại số điện thoại để được tư vấn chính xác.
+const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
+- CHỈ trả lời dựa trên phần "ĐỦ LIỆU LIÊN QUAN" bên dưới. Không suy diễn hay bịa thêm thông tin.
+- Nếu khách hỏi về một căn/lô cụ thể (vd: "căn số 3", "căn 3") mà dữ liệu KHÔNG có thông tin về căn đó, hãy nói thật: "Dạ em chưa có thông tin chi tiết về căn số X ạ" rồi mời khách để lại số điện thoại. KHÔNG lấy thông tin của căn khác ra trả lời thay.
 - Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.`;
 
 let personaCache: { text: string; at: number } | null = null;
@@ -40,17 +41,22 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     ? `\n\nTHÔNG TIN ĐÃ BIẾT VỀ KHÁCH (dùng để cá nhân hóa, đừng hỏi lại thứ đã biết):\n${profile.trim()}`
     : '';
 
-  const index = await loadIndex();
-  if (index && index.chunks.length) {
-    const chunks = await retrieve(message, index, 12);
-    const data = chunks.map((c, i) => `[Nguồn ${i + 1}]\n${c}`).join('\n\n');
-    return {
-      text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
-      usedRag: true,
-    };
+  try {
+    const index = await loadIndex();
+    if (index && index.chunks.length) {
+      // Khôi phục về 12 chunks theo yêu cầu của bạn
+      const chunks = await retrieve(message, index, 12);
+      const data = chunks.map((c, i) => `[Nguồn ${i + 1}]\n${c}`).join('\n\n');
+      return {
+        text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
+        usedRag: true,
+      };
+    }
+  } catch (e) {
+    console.warn("RAG retrieval failed (possibly Cohere API limit/overload), falling back to data.md slice:", e);
   }
 
-  // Fallback: chưa có chỉ mục -> dùng data.md nhưng giới hạn ~40k ký tự để tránh 429
+  // Fallback: khôi phục về 40,000 ký tự
   const data = await readRepoFile('data.md');
   const truncated = data.length > 40000 ? data.slice(0, 40000) + '\n\n[... dữ liệu đã được rút ngắn, hãy bấm "Lập lại chỉ mục" trong trang admin để có kết quả tốt hơn]' : data;
   return {
@@ -79,6 +85,94 @@ export async function POST(req: NextRequest) {
 
     const { text: systemText } = await buildPrompt(message, profile);
 
+    const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
+
+    if (GROQ_API_KEY) {
+      try {
+        // 1) Sử dụng Groq (Llama-3.3-70b-versatile) nếu có key
+        const messages = [
+          { role: 'system', content: systemText },
+          ...contents.map(c => ({
+            role: c.role === 'model' ? 'assistant' : 'user',
+            content: c.parts[0].text,
+          })),
+        ];
+
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages,
+            temperature: 0.7,
+            max_tokens: 4096,
+            stream: true,
+          }),
+        });
+
+        if (response.ok && response.body) {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          const encoder = new TextEncoder();
+          let full = '';
+          let buffer = '';
+
+          const stream = new ReadableStream({
+            async pull(controller) {
+              const { done, value } = await reader.read();
+              if (done) {
+                controller.close();
+                const time = new Date().toISOString();
+                await writeLog('chats', { time, question: message, answer: full });
+                const phone = extractPhone(message);
+                if (phone) await writeLog('leads', { time, phone, message });
+                return;
+              }
+              buffer += decoder.decode(value, { stream: true });
+              const lines = buffer.split('\n');
+              buffer = lines.pop() || '';
+              for (const line of lines) {
+                const t = line.trim();
+                if (!t.startsWith('data:')) continue;
+                const payload = t.slice(5).trim();
+                if (!payload || payload === '[DONE]') continue;
+                try {
+                  const json = JSON.parse(payload);
+                  const piece = json.choices?.[0]?.delta?.content || '';
+                  if (piece) {
+                    full += piece;
+                    controller.enqueue(encoder.encode(piece));
+                  }
+                } catch {
+                  // Mảnh JSON chưa trọn vẹn
+                }
+              }
+            },
+            cancel() {
+              reader.cancel();
+            },
+          });
+
+          return new Response(stream, {
+            headers: {
+              'Content-Type': 'text/plain; charset=utf-8',
+              'Cache-Control': 'no-cache',
+              'X-Accel-Buffering': 'no',
+            },
+          });
+        } else {
+          const errText = await response.text();
+          console.warn(`Groq API error (status ${response.status}): ${errText}. Falling back to Gemini...`);
+        }
+      } catch (err) {
+        console.warn('Failed to call Groq API (network error). Falling back to Gemini...', err);
+      }
+    }
+
+    // 2) Fallback: dùng Gemini nếu không cấu hình Groq hoặc Groq lỗi
     const reqBody = {
       contents,
       system_instruction: { parts: [{ text: systemText }] },
@@ -100,7 +194,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: errText, friendly }, { status });
     }
 
-    // Đọc SSE từ Gemini, đẩy text dần ra client; log lại sau khi xong
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     const encoder = new TextEncoder();
@@ -134,7 +227,7 @@ export async function POST(req: NextRequest) {
               controller.enqueue(encoder.encode(piece));
             }
           } catch {
-            // mảnh JSON chưa trọn -> bỏ qua, sẽ ghép ở vòng sau
+            // Mảnh JSON chưa trọn vẹn
           }
         }
       },

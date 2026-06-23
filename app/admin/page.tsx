@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import JSZip from 'jszip';
 
 const SUPPORTED_EXTS = new Set(['pdf','doc','docx','xls','xlsx','csv','txt','md','png','jpg','jpeg','webp','gif']);
 
 async function extractPdfClientSide(file: File, onProgress?: (page: number, total: number) => void): Promise<string> {
   const pdfjsLib = await import('pdfjs-dist');
-  // Use bundled worker via public path to avoid CDN dependency
   pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -22,124 +21,108 @@ async function extractPdfClientSide(file: File, onProgress?: (page: number, tota
   return pages.join('\n\n');
 }
 
-const CATEGORIES = [
-  'Villa Ny\'ah',
-  'Ny\'ah Phú Định',
-  'Pháp lý',
-  'Tính năng / Tiện ích',
-  'Tiến độ',
-  'Giá & Thanh toán',
-  'Vị trí',
-  'Câu hỏi thường gặp',
-];
-
-const CAT_COLOR: Record<string, string> = {
-  "Villa Ny'ah": 'bg-rose-100 text-rose-700',
-  "Ny'ah Phú Định": 'bg-orange-100 text-orange-700',
-  'Pháp lý': 'bg-red-100 text-red-700',
-  'Tính năng / Tiện ích': 'bg-blue-100 text-blue-700',
-  'Tiến độ': 'bg-amber-100 text-amber-700',
-  'Giá & Thanh toán': 'bg-green-100 text-green-700',
-  'Vị trí': 'bg-purple-100 text-purple-700',
-  'Câu hỏi thường gặp': 'bg-cyan-100 text-cyan-700',
-  'Khác': 'bg-gray-100 text-gray-700',
-};
-
-const ALL_COLS = [...CATEGORIES, 'Khác'];
-
-interface Entry {
-  id: string;
-  cat: string;
-  date: string;
-  content: string;
+interface TreeNode {
+  name: string;
+  path: string;
+  type: 'file' | 'directory';
+  size?: number;
+  children?: TreeNode[];
 }
+
 interface Config {
   suggestions: string[];
   phone: string;
   zalo: string;
 }
 
-const MARKER = /^## 🔖 \[([^\]]+)\] · (.+)$/gm;
-
-function parseEntries(raw: string): Entry[] {
-  const matches = Array.from(raw.matchAll(MARKER));
-  if (matches.length === 0) {
-    return raw.trim()
-      ? [{ id: 'legacy', cat: 'Khác', date: 'dữ liệu cũ', content: raw.trim() }]
-      : [];
-  }
-  const entries: Entry[] = [];
-  const pre = raw.slice(0, matches[0].index!).trim();
-  for (let i = 0; i < matches.length; i++) {
-    const m = matches[i];
-    const start = m.index! + m[0].length;
-    const end = i + 1 < matches.length ? matches[i + 1].index! : raw.length;
-    let content = raw.slice(start, end).trim();
-    content = content.replace(/\n*---\s*$/, '').trim();
-    entries.push({ id: `${i}-${m[2]}`, cat: m[1], date: m[2], content });
-  }
-  if (pre) entries.push({ id: 'legacy', cat: 'Khác', date: 'dữ liệu cũ', content: pre });
-  return entries;
-}
-
-function serialize(entries: Entry[]): string {
-  // Nhóm theo danh mục (theo thứ tự CATEGORIES), trong mỗi nhóm giữ thứ tự mới->cũ
-  const order = [...CATEGORIES, 'Khác'];
-  const sorted = [...entries].sort((a, b) => {
-    const ia = order.indexOf(a.cat) === -1 ? order.length : order.indexOf(a.cat);
-    const ib = order.indexOf(b.cat) === -1 ? order.length : order.indexOf(b.cat);
-    return ia - ib;
-  });
-  return sorted
-    .map(e => `## 🔖 [${e.cat}] · ${e.date}\n\n${e.content}`)
-    .join('\n\n---\n\n');
-}
-
-function now() {
-  const d = new Date();
-  const p = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
-}
-
 export default function AdminPage() {
   const [pass, setPass] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
-  const [dragId, setDragId] = useState<string | null>(null);
-  const [dragOver, setDragOver] = useState<string | null>(null); // cat đang hover
-  const [entries, setEntries] = useState<Entry[]>([]);
+  const [tree, setTree] = useState<TreeNode[]>([]);
   const [persona, setPersona] = useState('');
   const [config, setConfig] = useState<Config>({ suggestions: [], phone: '', zalo: '' });
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
 
-  // tab "Khách hàng & Lịch sử"
-  const [showLogs, setShowLogs] = useState(false);
+  // Tabs: 'tree' | 'crawl' | 'settings' | 'logs'
+  const [activeTab, setActiveTab] = useState<'tree' | 'crawl' | 'settings' | 'logs'>('tree');
+
+  // Logs & Leads
   const [leads, setLeads] = useState<Record<string, string>[]>([]);
   const [chats, setChats] = useState<Record<string, string>[]>([]);
 
-  // form thêm mục mới
-  const [newCat, setNewCat] = useState(CATEGORIES[0]);
-  const [newContent, setNewContent] = useState('');
+  // Tree View States
+  const [openDirs, setOpenDirs] = useState<Record<string, boolean>>({});
+  const [selectedFile, setSelectedFile] = useState<TreeNode | null>(null);
+  const [fileContent, setFileContent] = useState<string>('');
+  const [loadingFile, setLoadingFile] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Crawl & Convert States
   const [url, setUrl] = useState('');
-  // file queue: chọn trước, xem trước, xóa bớt rồi mới xử lý
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [fileProgress, setFileProgress] = useState<Record<string, 'waiting' | 'processing' | 'done' | 'error'>>({});
+  const [outputMarkdown, setOutputMarkdown] = useState('');
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [crawlMaxPages, setCrawlMaxPages] = useState(30);
+  const [crawlFilename, setCrawlFilename] = useState('');
+  const [embedStatus, setEmbedStatus] = useState('');
 
   function authHeaders() {
     return { 'x-admin-pass': pass };
   }
 
+  // Khởi chạy mở rộng các thư mục cấp 1 khi có dữ liệu cây
+  useEffect(() => {
+    if (tree.length > 0) {
+      const initOpen: Record<string, boolean> = {};
+      tree.forEach(node => {
+        if (node.type === 'directory') {
+          initOpen[node.path] = true;
+        }
+      });
+      setOpenDirs(initOpen);
+    }
+  }, [tree]);
+
+  // Tự động mở rộng các thư mục khi tìm kiếm
+  useEffect(() => {
+    if (searchQuery) {
+      const paths: string[] = [];
+      const getPaths = (nodes: TreeNode[]) => {
+        nodes.forEach(n => {
+          if (n.type === 'directory') {
+            paths.push(n.path);
+            if (n.children) getPaths(n.children);
+          }
+        });
+      };
+      const filtered = filterTree(tree, searchQuery);
+      getPaths(filtered);
+      setOpenDirs(prev => {
+        const next = { ...prev };
+        paths.forEach(p => {
+          next[p] = true;
+        });
+        return next;
+      });
+    }
+  }, [searchQuery]);
+
   async function login() {
     setBusy(true);
     setStatus('Đang đăng nhập...');
     try {
-      const res = await fetch('/api/admin/data', { method: 'POST', headers: authHeaders() });
+      const res = await fetch('/api/admin/data', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json', ...authHeaders() } 
+      });
       const data = await res.json();
       if (!res.ok) {
         setStatus(data.error || 'Đăng nhập thất bại');
         return;
       }
-      setEntries(parseEntries(data.content || ''));
+      setTree(data.tree || []);
       setPersona(data.persona || '');
       if (data.config) setConfig(data.config);
       setLoggedIn(true);
@@ -148,6 +131,59 @@ export default function AdminPage() {
       setStatus('Không kết nối được');
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function loadLogs() {
+    setBusy(true);
+    setStatus('Đang tải lịch sử...');
+    try {
+      const res = await fetch('/api/admin/logs', { 
+        method: 'POST', 
+        headers: authHeaders() 
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setStatus(data.error || 'Tải thất bại');
+        return;
+      }
+      setLeads(data.leads || []);
+      setChats(data.chats || []);
+      setStatus('');
+    } catch {
+      setStatus('Không kết nối được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Load logs automatically when selecting logs tab
+  useEffect(() => {
+    if (loggedIn && activeTab === 'logs') {
+      loadLogs();
+    }
+  }, [activeTab, loggedIn]);
+
+  async function selectFile(node: TreeNode) {
+    setSelectedFile(node);
+    setLoadingFile(true);
+    setFileContent('');
+    try {
+      const res = await fetch('/api/admin/data/file', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ path: node.path }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setFileContent(data.content || '');
+      } else {
+        setFileContent(`Lỗi khi tải file: ${data.error}`);
+      }
+    } catch (e) {
+      setFileContent(`Lỗi kết nối: ${String(e)}`);
+    } finally {
+      setLoadingFile(false);
     }
   }
 
@@ -169,7 +205,6 @@ export default function AdminPage() {
             if (relPath.includes('__MACOSX') || relPath.split('/').pop()?.startsWith('.')) return;
             const entryExt = relPath.split('.').pop()?.toLowerCase() || '';
             if (!SUPPORTED_EXTS.has(entryExt)) return;
-            // Use relPath as filename to preserve uniqueness across subdirs
             const displayName = relPath.replace(/\//g, ' › ');
             tasks.push(
               entry.async('blob').then(blob => {
@@ -183,7 +218,7 @@ export default function AdminPage() {
           setStatus(`Đã giải nén ${file.name}: ${zipFiles.length} file`);
         } catch (e) {
           setStatus(`Lỗi giải nén ${file.name}: ${String(e)}`);
-          extracted.push(file); // fallback: vẫn thêm ZIP gốc
+          extracted.push(file);
         }
       } else {
         extracted.push(file);
@@ -213,7 +248,6 @@ export default function AdminPage() {
       setFileProgress(prev => ({ ...prev, [file.name]: 'processing' }));
       const ext = file.name.split('.').pop()?.toLowerCase() || '';
       try {
-        // PDF: extract client-side, only send text
         if (ext === 'pdf') {
           setStatus(`Đang đọc PDF ${file.name}...`);
           const text = await extractPdfClientSide(file, (page, total) => {
@@ -235,7 +269,6 @@ export default function AdminPage() {
           continue;
         }
 
-        // Các file khác: gửi binary như cũ
         setStatus(`Đang xử lý ${file.name}...`);
         const form = new FormData();
         form.append('file', file);
@@ -244,7 +277,6 @@ export default function AdminPage() {
         if (res.ok) {
           added += (added ? '\n\n---\n\n' : '') + data.markdown;
           setFileProgress(prev => ({ ...prev, [file.name]: 'done' }));
-          if (data.count) setStatus(`✅ ZIP: đã đọc ${data.count} file`);
         } else {
           setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
           setStatus(`Lỗi ${file.name}: ${data.error}`);
@@ -255,8 +287,8 @@ export default function AdminPage() {
       }
     }
     if (added) {
-      setNewContent(c => (c ? c + '\n\n---\n\n' + added : added).trim());
-      setStatus(`✅ Xong ${pendingFiles.length} file. Nội dung hiện ở ô bên dưới, chỉnh sửa rồi Thêm.`);
+      setOutputMarkdown(c => (c ? c + '\n\n---\n\n' : '') + added);
+      setStatus(`✅ Xử lý thành công ${pendingFiles.length} file. Bạn có thể copy Markdown bên dưới.`);
     }
     setPendingFiles([]);
     setFileProgress({});
@@ -266,147 +298,124 @@ export default function AdminPage() {
   async function crawl(wholeSite: boolean) {
     if (!url.trim()) return;
     setBusy(true);
-    setStatus(wholeSite ? `Đang lấy cả web ${url} (có thể mất ~1 phút)...` : `Đang lấy nội dung từ ${url}...`);
+    setOutputMarkdown(c => c);
     try {
-      const endpoint = wholeSite ? '/api/admin/crawl-site' : '/api/admin/crawl';
-      const res = await fetch(endpoint, {
+      if (!wholeSite) {
+        // Trích xuất 1 trang đơn
+        setStatus(`Đang lấy nội dung từ ${url}...`);
+        const res = await fetch('/api/admin/crawl', {
+          method: 'POST',
+          headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setOutputMarkdown(c => (c ? c + '\n\n---\n\n' : '') + data.markdown);
+          setStatus('✅ Đã lấy nội dung từ web thành công.');
+          setUrl('');
+        } else setStatus(data.error || 'Lấy nội dung thất bại');
+        return;
+      }
+
+      // --- Quét cả site: Batch crawl từ client ---
+      setStatus(`Đang khám phá các trang con của ${url}...`);
+
+      // Bước 1: Khám phá toàn bộ links từ trang chủ
+      const linksRes = await fetch('/api/admin/crawl-links', {
         method: 'POST',
         headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, maxPages: 30 }),
+        body: JSON.stringify({ url }),
+      });
+      const linksData = await linksRes.json();
+      if (!linksRes.ok) {
+        setStatus(linksData.error || 'Không lấy được danh sách trang');
+        return;
+      }
+
+      // Bước 2: Xây danh sách URLs cần crawl (giới hạn maxPages)
+      const allLinks: string[] = linksData.links || [];
+      const urlsToVisit = Array.from(new Set([url, ...allLinks])).slice(0, crawlMaxPages);
+
+      // Hiện nội dung trang chủ ngay lập tức nếu có
+      let collectedMarkdown = '';
+      if (linksData.homeText) {
+        collectedMarkdown = `## Nguồn: ${url}\n\n${linksData.homeText}`;
+        setOutputMarkdown(collectedMarkdown);
+      }
+
+      // Bước 3: Crawl từng batch 5 trang một
+      const BATCH = 5;
+      const remainingUrls = urlsToVisit.filter(u => u !== url);
+      let doneCount = linksData.homeText ? 1 : 0;
+      const total = urlsToVisit.length;
+
+      for (let i = 0; i < remainingUrls.length; i += BATCH) {
+        const batch = remainingUrls.slice(i, i + BATCH);
+        setStatus(`Đang quét trang ${doneCount + 1}–${Math.min(doneCount + BATCH, total)} / ${total}...`);
+
+        const batchRes = await fetch('/api/admin/crawl-site', {
+          method: 'POST',
+          headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ urls: batch }),
+        });
+        const batchData = await batchRes.json();
+        if (batchRes.ok && batchData.markdown) {
+          collectedMarkdown += '\n' + batchData.markdown;
+          setOutputMarkdown(collectedMarkdown);
+          doneCount += batchData.pages;
+        }
+      }
+
+      setStatus(`✅ Quét hoàn tất ${doneCount} trang (tìm thấy ${allLinks.length} trang con).`);
+      setUrl('');
+    } catch {
+      setStatus('Không kết nối được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function embedAndIndex() {
+    if (!outputMarkdown.trim()) return;
+    const name = crawlFilename.trim() || 'web-crawl';
+    setBusy(true);
+    setEmbedStatus('🔄 Đang tạo embedding và cập nhật index...');
+    try {
+      const res = await fetch('/api/admin/crawl-save-index', {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: name, markdown: outputMarkdown }),
       });
       const data = await res.json();
       if (res.ok) {
-        setNewContent(c => (c + data.markdown).trim());
-        setStatus(
-          wholeSite
-            ? `Đã lấy ${data.pages} trang vào ô soạn thảo bên dưới.`
-            : 'Đã lấy nội dung từ web vào ô soạn thảo bên dưới.'
-        );
-        setUrl('');
-      } else setStatus(data.error || 'Lấy nội dung thất bại');
-    } catch {
-      setStatus('Không kết nối được');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function organize() {
-    if (entries.length === 0) return;
-    if (!confirm('AI sẽ phân loại vào 6 danh mục và làm sạch (gộp trùng, bỏ thông tin cũ đã bị thay thế). Chỉ đổi khi chắc chắn, không chắc thì giữ nguyên. Bạn vẫn xem lại được trước khi Lưu. Tiếp tục?')) return;
-    setBusy(true);
-    setStatus('🤖 Đang phân loại & làm sạch bằng AI... (có thể mất 30–60 giây với dữ liệu lớn)');
-    try {
-      const res = await fetch('/api/admin/organize', {
-        method: 'POST',
-        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ entries: entries.map(e => ({ cat: e.cat, date: e.date, content: e.content })) }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setStatus(`Lỗi: ${data.error}`);
-        return;
+        setEmbedStatus(`✅ Đã lưu file và nạp ${data.newChunks} chunk mới vào RAG (tổng: ${data.totalChunks} chunks).${
+          data.truncated ? ' ⚠️ Một số chunk bị bỏ do quá giới hạn.' : ''
+        }`);
+      } else {
+        setEmbedStatus(`❌ Lỗi: ${data.error}`);
       }
-      const organized: Entry[] = data.entries.map((e: { cat: string; content: string }, i: number) => ({
-        id: `org-${i}-${Date.now()}`,
-        cat: e.cat,
-        date: now(),
-        content: e.content,
-      }));
-      setEntries(organized);
-      setStatus(
-        (data.partial ? `⚠️ ${data.partial} ` : '') +
-        (data.truncated ? '⚠️ Một số mục lớn có thể bị rút ngắn. ' : '') +
-        `✅ Đã xử lý: còn ${organized.length} mục (trước ${entries.length}). Kiểm tra rồi bấm Lưu!`
-      );
-    } catch (e) {
-      setStatus(`⚠️ Mất kết nối giữa chừng (dữ liệu quá lớn). Bấm lại "Phân loại" để tiếp tục. Lỗi: ${String(e)}`);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function loadLogs() {
-    setBusy(true);
-    setStatus('Đang tải lịch sử...');
-    try {
-      const res = await fetch('/api/admin/logs', { method: 'POST', headers: authHeaders() });
-      const data = await res.json();
-      if (!res.ok) {
-        setStatus(data.error || 'Tải thất bại');
-        return;
-      }
-      setLeads(data.leads || []);
-      setChats(data.chats || []);
-      setShowLogs(true);
-      setStatus('');
     } catch {
-      setStatus('Không kết nối được');
+      setEmbedStatus('❌ Không kết nối được');
     } finally {
       setBusy(false);
     }
   }
 
-  function addEntry() {
-    if (!newContent.trim()) {
-      setStatus('Chưa có nội dung để thêm.');
-      return;
-    }
-    const entry: Entry = { id: `${Date.now()}`, cat: newCat, date: now(), content: newContent.trim() };
-    setEntries(prev => [entry, ...prev]); // mới nhất lên đầu
-    setNewContent('');
-    setStatus('Đã thêm 1 mục mới. Nhớ bấm Lưu!');
-  }
-
-  function updateEntry(id: string, patch: Partial<Entry>) {
-    setEntries(prev => prev.map(e => (e.id === id ? { ...e, ...patch } : e)));
-  }
-
-  function deleteEntry(id: string) {
-    setEntries(prev => prev.filter(e => e.id !== id));
-    setStatus('Đã xóa 1 mục. Nhớ bấm Lưu!');
-  }
-
-  async function save() {
+  async function saveSettings() {
     setBusy(true);
-    setStatus('Đang lưu lên GitHub...');
-    const content = serialize(entries);
+    setStatus('Đang lưu cấu hình lên GitHub...');
     try {
       const res = await fetch('/api/admin/save', {
         method: 'POST',
         headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, persona, config }),
+        body: JSON.stringify({ persona, config }),
       });
       const data = await res.json();
       if (!res.ok) {
         setStatus(data.error || 'Lưu thất bại');
         return;
       }
-      // Lập lại chỉ mục tìm kiếm ngay (không cần đợi deploy) để bot trả lời nhanh + đúng
-      setStatus('✅ Đã lưu. Đang lập chỉ mục tìm kiếm cho bot...');
-      const r2 = await fetch('/api/admin/reindex', {
-        method: 'POST',
-        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
-      });
-      const d2 = await r2.json();
-      if (r2.ok) setStatus(`✅ Đã lưu & lập chỉ mục ${d2.chunks} đoạn. Bot đã sẵn sàng trả lời nhanh!`);
-      else setStatus(`✅ Đã lưu, nhưng lập chỉ mục lỗi: ${d2.error}. Bấm "Lập lại chỉ mục" để thử lại.`);
-    } catch {
-      setStatus('Không kết nối được');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function reindex() {
-    setBusy(true);
-    setStatus('Đang lập lại chỉ mục tìm kiếm... (dữ liệu lớn có thể mất 1-2 phút)');
-    try {
-      const res = await fetch('/api/admin/reindex', { method: 'POST', headers: authHeaders() });
-      const data = await res.json();
-      if (res.ok) setStatus(`✅ Đã lập chỉ mục ${data.chunks} đoạn. Bot trả lời nhanh & đúng trọng tâm hơn.`);
-      else setStatus(`Lỗi: ${data.error}`);
+      setStatus('✅ Đã lưu cấu hình lên GitHub thành công! Vercel sẽ tự động cập nhật sau 1-2 phút.');
     } catch {
       setStatus('Không kết nối được');
     } finally {
@@ -425,338 +434,652 @@ export default function AdminPage() {
     URL.revokeObjectURL(a.href);
   }
 
+  function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
+  }
+
+  // Lọc cây dữ liệu dựa trên từ khóa tìm kiếm
+  function filterTree(nodes: TreeNode[], query: string): TreeNode[] {
+    if (!query) return nodes;
+    const lowerQuery = query.toLowerCase();
+    
+    return nodes
+      .map(node => {
+        if (node.type === 'file') {
+          return node.name.toLowerCase().includes(lowerQuery) ? node : null;
+        } else {
+          const filteredChildren = filterTree(node.children || [], query);
+          if (filteredChildren.length > 0 || node.name.toLowerCase().includes(lowerQuery)) {
+            return { ...node, children: filteredChildren };
+          }
+          return null;
+        }
+      })
+      .filter((n): n is TreeNode => n !== null);
+  }
+
+  const toggleDir = (path: string) => {
+    setOpenDirs(prev => ({ ...prev, [path]: !prev[path] }));
+  };
+
+  // Render đệ quy cây thư mục
+  function renderTreeNodes(nodes: TreeNode[], depth = 0) {
+    return nodes.map(node => {
+      const isOpen = !!openDirs[node.path];
+      const isSelected = selectedFile?.path === node.path;
+      
+      if (node.type === 'directory') {
+        return (
+          <div key={node.path} className="select-none">
+            <div
+              onClick={() => toggleDir(node.path)}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-slate-800/40 transition-colors text-slate-300 font-medium my-0.5 group"
+              style={{ paddingLeft: `${depth * 16 + 12}px` }}
+            >
+              <span className={`text-slate-500 text-[10px] transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}>▶</span>
+              <span className="text-amber-500 text-lg">📂</span>
+              <span className="truncate flex-1 text-slate-200 group-hover:text-white">{node.name}</span>
+              <span className="text-[10px] bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full font-normal group-hover:bg-slate-700">
+                {node.children?.length || 0}
+              </span>
+            </div>
+            {isOpen && node.children && (
+              <div className="mt-0.5 border-l border-slate-800/50 ml-5">
+                {renderTreeNodes(node.children, depth + 1)}
+              </div>
+            )}
+          </div>
+        );
+      } else {
+        return (
+          <div
+            key={node.path}
+            onClick={() => selectFile(node)}
+            className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm my-0.5 border-l-2 ${
+              isSelected
+                ? 'bg-blue-600/10 text-blue-400 border-blue-500 font-semibold'
+                : 'hover:bg-slate-800/30 text-slate-400 hover:text-slate-200 border-transparent'
+            }`}
+            style={{ paddingLeft: `${depth * 16 + 16}px` }}
+          >
+            <span className="text-sky-400 text-base">📄</span>
+            <span className="truncate flex-1">{node.name}</span>
+            {node.size !== undefined && (
+              <span className="text-[10px] text-slate-600 font-normal">
+                {(node.size / 1024).toFixed(1)} KB
+              </span>
+            )}
+          </div>
+        );
+      }
+    });
+  }
+
   if (!loggedIn) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="bg-white p-8 rounded-2xl shadow-lg w-80">
-          <h1 className="text-xl font-bold mb-4 text-gray-800">🔐 Quản trị dữ liệu</h1>
-          <input
-            type="password"
-            value={pass}
-            onChange={e => setPass(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && login()}
-            placeholder="Mật khẩu"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button onClick={login} disabled={busy} className="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 disabled:opacity-50">
-            Đăng nhập
-          </button>
-          {status && <p className="text-sm text-red-500 mt-3">{status}</p>}
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100 p-4">
+        {/* Glow Effects */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-60 h-60 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="relative bg-slate-900/60 backdrop-blur-xl p-8 rounded-2xl border border-slate-800 shadow-2xl w-full max-w-sm">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-blue-600/15 border border-blue-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/5 text-3xl">🔐</div>
+            <h1 className="text-2xl font-bold text-slate-100">Quản trị Hệ thống</h1>
+            <p className="text-sm text-slate-500 mt-1">Đồng bộ cơ sở dữ liệu & thiết lập Bot</p>
+          </div>
+          <div className="space-y-4">
+            <input
+              type="password"
+              value={pass}
+              onChange={e => setPass(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && login()}
+              placeholder="Nhập mật khẩu truy cập..."
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+            />
+            <button 
+              onClick={login} 
+              disabled={busy} 
+              className="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-medium rounded-xl py-3 shadow-lg shadow-blue-500/20 disabled:opacity-50 transition-all text-sm"
+            >
+              {busy ? 'Đang xác thực...' : 'Đăng nhập'}
+            </button>
+            {status && (
+              <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-center">
+                ⚠️ {status}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-[1600px] mx-auto space-y-5">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <h1 className="text-2xl font-bold text-gray-800">📊 Quản lý dữ liệu Bot</h1>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowLogs(false)}
-              className={`rounded-lg px-4 py-2 text-sm font-medium ${!showLogs ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-300'}`}
-            >
-              📚 Dữ liệu
-            </button>
-            <button
-              onClick={loadLogs}
-              disabled={busy}
-              className={`rounded-lg px-4 py-2 text-sm font-medium ${showLogs ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-300'} disabled:opacity-50`}
-            >
-              📞 Khách hàng & Lịch sử
-            </button>
-          </div>
-        </div>
+  const filteredTree = filterTree(tree, searchQuery);
 
-        {showLogs && (
-          <div className="space-y-5">
-            {/* Thống kê nhanh */}
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+      {/* Glow ambient background */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-purple-600/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-slate-950/80 backdrop-blur-md border-b border-slate-900 px-6 py-4">
+        <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-600/10 border border-blue-500/20 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-blue-500/5">🤖</div>
+            <div>
+              <h1 className="text-lg font-bold text-white flex items-center gap-2">
+                NhaDat ChatBot Admin
+                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium">Trực tuyến</span>
+              </h1>
+              <p className="text-xs text-slate-500">Cơ sở dữ liệu RAG & Cấu hình AI</p>
+            </div>
+          </div>
+          
+          {/* Navigation Tabs */}
+          <nav className="flex bg-slate-900/60 border border-slate-800 p-1 rounded-xl">
+            <button
+              onClick={() => setActiveTab('tree')}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all ${activeTab === 'tree' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              📁 Sơ đồ cây
+            </button>
+            <button
+              onClick={() => setActiveTab('crawl')}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all ${activeTab === 'crawl' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              🌐 Nạp dữ liệu
+            </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all ${activeTab === 'settings' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              ⚙️ Cấu hình Bot
+            </button>
+            <button
+              onClick={() => setActiveTab('logs')}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all ${activeTab === 'logs' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              📞 Khách hàng
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-[1600px] w-full mx-auto p-6 flex flex-col gap-6">
+        
+        {/* Status notification */}
+        {status && (
+          <div className={`p-4 rounded-2xl border flex items-center justify-between text-sm transition-all ${
+            status.includes('✅') 
+              ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' 
+              : status.includes('⚠️') || status.includes('Lỗi') 
+                ? 'bg-red-500/5 border-red-500/20 text-red-400' 
+                : 'bg-blue-500/5 border-blue-500/20 text-blue-400'
+          }`}>
+            <span className="flex items-center gap-2 font-medium">
+              {status.includes('✅') ? '✨' : status.includes('⚠️') ? '⚠️' : '⚡'} {status}
+            </span>
+            <button onClick={() => setStatus('')} className="text-slate-500 hover:text-slate-300 text-xs font-bold px-2">Đóng</button>
+          </div>
+        )}
+
+        {/* TAB 1: Sơ đồ cây (Tree View & Preview) */}
+        {activeTab === 'tree' && (
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[600px]">
+            {/* Left side: Directory Tree */}
+            <div className="lg:col-span-4 bg-slate-900/30 backdrop-blur-md border border-slate-900 rounded-2xl p-4 flex flex-col gap-4">
+              
+              {/* Sync guide alert */}
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs text-slate-400 space-y-2">
+                <p className="font-semibold text-slate-200 flex items-center gap-1.5">
+                  <span className="text-blue-400 text-sm">💡</span> Đồng bộ dữ liệu OneDrive
+                </p>
+                <p className="leading-relaxed text-[11px]">
+                  Dữ liệu RAG được đồng bộ từ thư mục OneDrive. Để thêm, sửa hoặc xóa file, hãy thực hiện trên máy tính của bạn và chạy script:
+                </p>
+                <div className="bg-slate-900 text-slate-300 font-mono p-2 rounded-lg text-[10px] select-all border border-slate-800">
+                  node sync_and_reindex.js
+                </div>
+              </div>
+
+              {/* Search file input */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm file, thư mục..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 text-xs">🔍</span>
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs font-bold">✕</button>
+                )}
+              </div>
+
+              {/* Tree container */}
+              <div className="flex-1 overflow-y-auto max-h-[550px] pr-1 scrollbar-thin">
+                {filteredTree.length === 0 ? (
+                  <div className="text-center py-8 text-slate-600 text-xs">
+                    {searchQuery ? 'Không tìm thấy kết quả nào' : 'Thư mục data rỗng'}
+                  </div>
+                ) : (
+                  <div className="space-y-0.5">
+                    {renderTreeNodes(filteredTree)}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right side: File Preview Panel */}
+            <div className="lg:col-span-8 bg-slate-900/30 backdrop-blur-md border border-slate-900 rounded-2xl p-5 flex flex-col min-h-[500px]">
+              {selectedFile ? (
+                <div className="flex-1 flex flex-col gap-4">
+                  {/* File Metadata Header */}
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">📄</span>
+                      <div>
+                        <h2 className="text-sm font-semibold text-white truncate max-w-[320px] sm:max-w-md">{selectedFile.name}</h2>
+                        <p className="text-[10px] text-slate-500 font-mono mt-0.5">Đường dẫn: {selectedFile.path}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      {selectedFile.size !== undefined && (
+                        <span className="text-xs bg-slate-800 border border-slate-700/50 px-2.5 py-1 rounded-lg text-slate-400 font-mono">
+                          {(selectedFile.size / 1024).toFixed(1)} KB
+                        </span>
+                      )}
+                      {fileContent && (
+                        <>
+                          <button
+                            onClick={() => copyToClipboard(fileContent)}
+                            className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/50 transition-colors flex items-center gap-1.5"
+                          >
+                            {copySuccess ? '✅ Đã sao chép' : '📋 Sao chép'}
+                          </button>
+                          
+                          {/* Download as file */}
+                          <a
+                            href={`data:text/plain;charset=utf-8,${encodeURIComponent(fileContent)}`}
+                            download={selectedFile.name}
+                            className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/50 transition-colors flex items-center gap-1.5"
+                          >
+                            ⬇️ Tải về
+                          </a>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* File Content Display */}
+                  <div className="flex-1 flex flex-col min-h-[350px]">
+                    {loadingFile ? (
+                      <div className="flex-1 flex items-center justify-center text-slate-500 text-xs">
+                        <span className="animate-pulse">⚡ Đang đọc nội dung file...</span>
+                      </div>
+                    ) : (
+                      <div className="flex-1 relative bg-slate-950 border border-slate-900 rounded-xl overflow-hidden flex flex-col">
+                        
+                        {/* Word count status bar */}
+                        <div className="bg-slate-900/50 border-b border-slate-900 px-3 py-1.5 flex justify-between items-center text-[10px] text-slate-500 font-mono">
+                          <span>ĐỊNH DẠNG: {selectedFile.name.split('.').pop()?.toUpperCase()}</span>
+                          <span>ĐỘ DÀI: {fileContent.length} ký tự (khoảng {fileContent.split(/\s+/).filter(Boolean).length} từ)</span>
+                        </div>
+
+                        {/* File Textarea Viewer */}
+                        <textarea
+                          readOnly
+                          value={fileContent}
+                          placeholder="File này không có nội dung văn bản."
+                          className="flex-1 w-full bg-slate-950 p-4 font-mono text-xs text-slate-300 leading-relaxed resize-none focus:outline-none scrollbar-thin select-text cursor-default"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
+                  <div className="w-16 h-16 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-slate-950/50 mb-4 text-slate-600">📂</div>
+                  <h3 className="text-slate-300 font-semibold text-sm">Chưa có file nào được chọn</h3>
+                  <p className="text-slate-600 text-xs mt-1.5 max-w-sm leading-relaxed">Click chọn bất kỳ tệp tin nào trong danh sách sơ đồ cây bên trái để xem trước nội dung nạp vào chatbot.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: Nạp dữ liệu (Crawl & Convert) */}
+        {activeTab === 'crawl' && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[500px]">
+            {/* Tools Area */}
+            <div className="lg:col-span-5 flex flex-col gap-6">
+              
+              {/* File Converter */}
+              <div className="bg-slate-900/30 border border-slate-900 rounded-2xl p-5 space-y-4">
+                <h2 className="font-bold text-sm text-slate-200 flex items-center gap-2">📎 Trình chuyển đổi File sang Markdown</h2>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Hỗ trợ kéo thả PDF, Word, Excel, CSV, TXT, ZIP. Công cụ sẽ chuyển đổi nội dung file thành định dạng Markdown chuẩn cho Bot.
+                </p>
+
+                <div className="border-2 border-dashed border-slate-800 hover:border-slate-700/80 rounded-xl p-6 text-center space-y-3 transition-colors relative cursor-pointer group">
+                  <input 
+                    type="file" 
+                    multiple 
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp,.gif,.zip" 
+                    onChange={e => pickFiles(e.target.files)} 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                  />
+                  <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center mx-auto text-lg border border-slate-800 text-slate-500 group-hover:text-blue-400 group-hover:border-blue-500/20 transition-all">📂</div>
+                  <div>
+                    <span className="text-xs text-slate-300 block font-medium">Bấm chọn hoặc kéo thả files vào đây</span>
+                    <span className="text-[10px] text-slate-600 block mt-1">Dung lượng file tối đa 20MB</span>
+                  </div>
+                </div>
+
+                {pendingFiles.length > 0 && (
+                  <div className="bg-slate-950 border border-slate-900 rounded-xl p-3.5 space-y-2.5">
+                    <p className="text-[10px] text-slate-400 font-bold tracking-wider uppercase">Danh sách chờ xử lý ({pendingFiles.length})</p>
+                    <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
+                      {pendingFiles.map(f => {
+                        const prog = fileProgress[f.name];
+                        const icon = prog === 'processing' ? '⏳' : prog === 'done' ? '✅' : prog === 'error' ? '❌' : '📄';
+                        const size = f.size > 1024 * 1024 ? `${(f.size / 1024 / 1024).toFixed(1)}MB` : `${Math.round(f.size / 1024)}KB`;
+                        return (
+                          <div key={f.name} className="flex items-center gap-2 bg-slate-900/50 rounded-lg px-2.5 py-1.5 border border-slate-900/50 text-xs">
+                            <span className="text-xs">{icon}</span>
+                            <span className="flex-1 text-slate-300 truncate max-w-[180px]" title={f.name}>{f.name}</span>
+                            <span className="text-[10px] text-slate-600 font-mono">{size}</span>
+                            {!prog && (
+                              <button onClick={() => removeFile(f.name)} className="text-slate-500 hover:text-red-400 text-xs font-bold leading-none px-1.5" title="Xóa">✕</button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <button
+                      onClick={processFiles}
+                      disabled={busy}
+                      className="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold rounded-lg py-2 disabled:opacity-50 transition-all flex items-center justify-center gap-1"
+                    >
+                      🚀 Bắt đầu chuyển đổi {pendingFiles.length} file
+                    </button>
+                  </div>
+                )}
+              </div>
+
+            {/* Markdown Output Area */}
+            <div className="lg:col-span-7 bg-slate-900/30 border border-slate-900 rounded-2xl p-5 flex flex-col min-h-[400px]">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">📝</span>
+                  <h3 className="font-bold text-sm text-slate-200">Kết quả Markdown đầu ra</h3>
+                </div>
+                {outputMarkdown && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <button
+                      onClick={embedAndIndex}
+                      disabled={busy}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg shadow-emerald-500/10 transition-all disabled:opacity-50 flex items-center gap-1"
+                    >
+                      ⚡ Embed &amp; Nạp vào Bot
+                    </button>
+                    <button
+                      onClick={() => copyToClipboard(outputMarkdown)}
+                      className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg shadow-blue-500/10 transition-all"
+                    >
+                      {copySuccess ? '✅ Đã sao chép' : '📋 Sao chép'}
+                    </button>
+                    <button
+                      onClick={() => { setOutputMarkdown(''); setEmbedStatus(''); }}
+                      className="bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs px-2.5 py-1.5 rounded-lg border border-slate-800 font-semibold"
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Tên file khi embed */}
+              {outputMarkdown && (
+                <div className="flex items-center gap-2 mt-3">
+                  <label className="text-xs text-slate-500 whitespace-nowrap">📁 Tên file:</label>
+                  <input
+                    value={crawlFilename}
+                    onChange={e => setCrawlFilename(e.target.value)}
+                    placeholder="vd: nhadat-company (không cần .md)"
+                    className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+              )}
+
+              {/* Trạng thái embed */}
+              {embedStatus && (
+                <div className={`mt-2 text-xs px-3 py-2 rounded-lg border ${
+                  embedStatus.startsWith('✅') ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400'
+                  : embedStatus.startsWith('❌') ? 'bg-red-500/5 border-red-500/20 text-red-400'
+                  : 'bg-blue-500/5 border-blue-500/20 text-blue-400'
+                }`}>
+                  {embedStatus}
+                </div>
+              )}
+
+              <div className="flex-1 mt-4 relative bg-slate-950 border border-slate-900 rounded-xl overflow-hidden flex flex-col">
+                <div className="bg-slate-900/50 border-b border-slate-900 px-3 py-1.5 text-[10px] text-slate-500 font-mono flex justify-between">
+                  <span>MÔ TẢ: Copy nội dung này tạo file md lưu vào OneDrive của bạn</span>
+                  <span>ĐỘ DÀI: {outputMarkdown.length} ký tự</span>
+                </div>
+                <textarea
+                  value={outputMarkdown}
+                  onChange={e => setOutputMarkdown(e.target.value)}
+                  placeholder="Nội dung Markdown được sinh ra từ các file hoặc website tải lên sẽ xuất hiện ở đây để bạn xem trước, chỉnh sửa và copy..."
+                  className="flex-1 w-full bg-slate-950 p-4 font-mono text-xs text-slate-300 leading-relaxed resize-none focus:outline-none scrollbar-thin"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: Cấu hình Bot (Persona & Settings) */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            
+            {/* Instructions info box */}
+            <div className="bg-slate-900/30 border border-slate-900 rounded-2xl p-4 flex gap-3 text-xs text-slate-400">
+              <span className="text-xl">⚙️</span>
+              <div className="space-y-1">
+                <p className="font-semibold text-slate-200">Cài đặt cấu hình trực tuyến</p>
+                <p className="leading-relaxed">
+                  Thiết lập này được lưu trực tiếp trên GitHub và có hiệu lực ngay sau khi lưu. Persona quy định tính cách và hành vi trả lời của AI, trong khi cấu hình gợi ý giúp người dùng dễ dàng tương tác.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Persona Textarea */}
+              <div className="lg:col-span-7 bg-slate-900/30 border border-slate-900 rounded-2xl p-5 flex flex-col gap-3">
+                <h2 className="font-bold text-sm text-slate-200 flex items-center gap-2">🎭 Tính cách & Quy tắc trả lời của Bot (Persona)</h2>
+                <p className="text-xs text-slate-500">Quy định cách chatbot xưng hô, giọng điệu phản hồi và các nguyên tắc bám sát nguồn dữ liệu.</p>
+                <textarea
+                  value={persona}
+                  onChange={e => setPersona(e.target.value)}
+                  rows={16}
+                  className="w-full bg-slate-950 border border-slate-900 rounded-xl p-4 text-xs font-mono text-slate-300 leading-relaxed focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none scrollbar-thin"
+                />
+              </div>
+
+              {/* Bot Config (Suggestions + Contact) */}
+              <div className="lg:col-span-5 flex flex-col gap-6">
+                
+                {/* Suggestions List */}
+                <div className="bg-slate-900/30 border border-slate-900 rounded-2xl p-5 space-y-3">
+                  <h2 className="font-bold text-sm text-slate-200">💡 Câu hỏi gợi ý ban đầu</h2>
+                  <p className="text-xs text-slate-500">Mỗi dòng tương ứng với một nút câu hỏi nhanh khi khách hàng vừa mở khung chat.</p>
+                  <textarea
+                    value={config.suggestions.join('\n')}
+                    onChange={e => setConfig(c => ({ ...c, suggestions: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) }))}
+                    rows={6}
+                    placeholder="Mỗi dòng là một câu hỏi..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 leading-relaxed focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Contact information */}
+                <div className="bg-slate-900/30 border border-slate-900 rounded-2xl p-5 space-y-4">
+                  <h2 className="font-bold text-sm text-slate-200">📞 Thông tin liên hệ nút chat</h2>
+                  <p className="text-xs text-slate-500">Các nút liên hệ nhanh sẽ xuất hiện trong bong bóng chat của khách hàng.</p>
+                  
+                  <div className="space-y-3.5">
+                    <div>
+                      <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Số điện thoại Hotline</label>
+                      <input
+                        value={config.phone}
+                        onChange={e => setConfig(c => ({ ...c, phone: e.target.value }))}
+                        placeholder="Ví dụ: 0901234567"
+                        className="w-full bg-slate-950 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Đường dẫn liên hệ Zalo</label>
+                      <input
+                        value={config.zalo}
+                        onChange={e => setConfig(c => ({ ...c, zalo: e.target.value }))}
+                        placeholder="Ví dụ: https://zalo.me/0901234567"
+                        className="w-full bg-slate-950 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sticky/Fixed Save Bar */}
+            <div className="bg-slate-900/60 backdrop-blur-md border border-slate-900 p-4 rounded-2xl flex items-center justify-between">
+              <span className="text-xs text-slate-500">Lưu ý: Mọi cấu hình thay đổi cần bấm nút Lưu để cập nhật.</span>
+              <button
+                onClick={saveSettings}
+                disabled={busy}
+                className="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-500/20 disabled:opacity-50 transition-all flex items-center gap-1.5"
+              >
+                💾 Lưu & Cập nhật Bot
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: Khách hàng (Leads & Chat history logs) */}
+        {activeTab === 'logs' && (
+          <div className="space-y-6">
+            {/* Dashboard Statistics */}
             {(() => {
               const today = new Date().toISOString().slice(0, 10);
               const chatsToday = chats.filter(c => (c.time || '').slice(0, 10) === today).length;
               const conv = chats.length ? Math.round((leads.length / chats.length) * 100) : 0;
-              // top câu hỏi theo từ khóa đơn giản
               const stats = [
-                { label: 'Tổng câu hỏi (gần đây)', value: chats.length, icon: '💬' },
-                { label: 'Câu hỏi hôm nay', value: chatsToday, icon: '📅' },
-                { label: 'Lead (SĐT)', value: leads.length, icon: '📞' },
-                { label: 'Tỉ lệ ra lead', value: `${conv}%`, icon: '📈' },
+                { label: 'Tổng số hội thoại', value: chats.length, icon: '💬', color: 'text-blue-400 bg-blue-500/5 border-blue-500/10' },
+                { label: 'Hội thoại hôm nay', value: chatsToday, icon: '📅', color: 'text-purple-400 bg-purple-500/5 border-purple-500/10' },
+                { label: 'Khách hàng để lại SĐT (Leads)', value: leads.length, icon: '📞', color: 'text-emerald-400 bg-emerald-500/5 border-emerald-500/10' },
+                { label: 'Tỷ lệ chuyển đổi SĐT', value: `${conv}%`, icon: '📈', color: 'text-amber-400 bg-amber-500/5 border-amber-500/10' },
               ];
               return (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {stats.map(s => (
-                    <div key={s.label} className="bg-white rounded-xl shadow p-4">
-                      <p className="text-2xl">{s.icon}</p>
-                      <p className="text-2xl font-bold text-gray-800 mt-1">{s.value}</p>
-                      <p className="text-xs text-gray-500">{s.label}</p>
+                    <div key={s.label} className={`border rounded-2xl p-4 flex items-center justify-between shadow-sm ${s.color}`}>
+                      <div>
+                        <p className="text-xs text-slate-500 font-medium">{s.label}</p>
+                        <p className="text-2xl font-bold mt-1.5 text-slate-200">{s.value}</p>
+                      </div>
+                      <span className="text-3xl filter saturate-75 opacity-90">{s.icon}</span>
                     </div>
                   ))}
                 </div>
               );
             })()}
 
-            {/* Leads */}
-            <div className="bg-white rounded-xl shadow p-5">
-              <div className="flex items-center justify-between mb-3">
-                <p className="font-semibold text-gray-800">📞 Khách để lại số điện thoại ({leads.length})</p>
-                {leads.length > 0 && (
-                  <button onClick={exportLeads} className="text-sm bg-green-600 text-white rounded-lg px-3 py-1.5 hover:bg-green-700">⬇️ Xuất Excel (CSV)</button>
-                )}
-              </div>
-              {leads.length === 0 && <p className="text-sm text-gray-400">Chưa có khách nào để lại SĐT.</p>}
-              <div className="space-y-2">
-                {leads.map((l, i) => (
-                  <div key={i} className="border border-gray-200 rounded-lg p-3 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-green-700">📱 {l.phone}</span>
-                      <span className="text-xs text-gray-400">{l.time?.replace('T', ' ').slice(0, 16)}</span>
-                    </div>
-                    <p className="text-gray-600 mt-1">{l.message}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Chat history */}
-            <div className="bg-white rounded-xl shadow p-5">
-              <p className="font-semibold text-gray-800 mb-3">💬 Lịch sử câu hỏi gần đây ({chats.length})</p>
-              {chats.length === 0 && <p className="text-sm text-gray-400">Chưa có câu hỏi nào.</p>}
-              <div className="space-y-3">
-                {chats.map((c, i) => (
-                  <div key={i} className="border border-gray-200 rounded-lg p-3 text-sm">
-                    <span className="text-xs text-gray-400">{c.time?.replace('T', ' ').slice(0, 16)}</span>
-                    <p className="text-gray-800 font-medium mt-1">❓ {c.question}</p>
-                    <p className="text-gray-600 mt-1 whitespace-pre-wrap">💬 {c.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {!showLogs && (
-        <>
-        <h1 className="sr-only">Quản lý dữ liệu</h1>
-
-        {/* Văn phong bot */}
-        <details className="bg-white rounded-xl shadow p-5">
-          <summary className="font-semibold text-gray-800 cursor-pointer">
-            🎭 Tính cách & cách trả lời của bot
-          </summary>
-          <p className="text-xs text-gray-400 mt-2 mb-2">
-            Mô tả bot nên trả lời thế nào (giọng điệu, xưng hô, quy tắc). Để trống sẽ dùng văn phong mặc định.
-          </p>
-          <textarea
-            value={persona}
-            onChange={e => setPersona(e.target.value)}
-            rows={12}
-            className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </details>
-
-        {/* Cấu hình hiển thị: gợi ý câu hỏi + liên hệ */}
-        <details className="bg-white rounded-xl shadow p-5">
-          <summary className="font-semibold text-gray-800 cursor-pointer">
-            ⚙️ Gợi ý câu hỏi & Liên hệ (Gọi/Zalo)
-          </summary>
-          <div className="mt-3 space-y-3">
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Câu hỏi gợi ý hiện khi khách mở chat (mỗi dòng 1 câu):</p>
-              <textarea
-                value={config.suggestions.join('\n')}
-                onChange={e => setConfig(c => ({ ...c, suggestions: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) }))}
-                rows={4}
-                placeholder="Dự án có những loại sản phẩm nào?"
-                className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <p className="text-xs text-gray-500 mb-1">📞 Hotline (nút Gọi)</p>
-                <input
-                  value={config.phone}
-                  onChange={e => setConfig(c => ({ ...c, phone: e.target.value }))}
-                  placeholder="0901234567"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 mb-1">💬 Link Zalo (nút Chat Zalo)</p>
-                <input
-                  value={config.zalo}
-                  onChange={e => setConfig(c => ({ ...c, zalo: e.target.value }))}
-                  placeholder="https://zalo.me/0901234567"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            <p className="text-xs text-gray-400">Nút Gọi/Zalo tự hiện trong khung chat sau khi khách trò chuyện. Nhớ bấm Lưu.</p>
-          </div>
-        </details>
-
-        {/* Thêm mục mới */}
-        <div className="bg-white p-5 rounded-xl shadow space-y-3">
-          <p className="font-semibold text-gray-800">➕ Thêm dữ liệu mới</p>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <label className="text-sm text-gray-600">Loại:</label>
-            <select value={newCat} onChange={e => setNewCat(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 space-y-2">
-              <p className="text-xs text-gray-500">📎 PDF, Word, Excel, CSV, TXT, PNG, JPG, ZIP</p>
-              <label className="inline-block cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium rounded-lg px-3 py-1.5 transition">
-                + Chọn file
-                <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp,.gif,.zip" onChange={e => pickFiles(e.target.files)} className="hidden" />
-              </label>
-              {pendingFiles.length > 0 && (
-                <div className="space-y-1">
-                  {pendingFiles.map(f => {
-                    const prog = fileProgress[f.name];
-                    const icon = prog === 'processing' ? '⏳' : prog === 'done' ? '✅' : prog === 'error' ? '❌' : '📄';
-                    const size = f.size > 1024 * 1024 ? `${(f.size / 1024 / 1024).toFixed(1)}MB` : `${Math.round(f.size / 1024)}KB`;
-                    return (
-                      <div key={f.name} className="flex items-center gap-2 bg-gray-50 rounded-lg px-2 py-1">
-                        <span className="text-xs">{icon}</span>
-                        <span className="flex-1 text-xs text-gray-700 truncate max-w-[160px]" title={f.name}>{f.name}</span>
-                        <span className="text-[10px] text-gray-400">{size}</span>
-                        {!prog && (
-                          <button onClick={() => removeFile(f.name)} className="text-gray-400 hover:text-red-500 text-xs font-bold leading-none" title="Xóa khỏi danh sách">✕</button>
-                        )}
-                      </div>
-                    );
-                  })}
-                  <button
-                    onClick={processFiles}
-                    disabled={busy}
-                    className="w-full mt-1 bg-blue-600 text-white text-xs font-medium rounded-lg py-1.5 hover:bg-blue-700 disabled:opacity-50"
-                  >
-                    ▶ Xử lý {pendingFiles.length} file
-                  </button>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              
+              {/* Leads Container (Left side) */}
+              <div className="lg:col-span-5 bg-slate-900/30 border border-slate-900 rounded-2xl p-5 flex flex-col min-h-[450px]">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
+                  <p className="font-bold text-sm text-slate-200 flex items-center gap-2">
+                    <span>📞</span> Danh sách Leads ({leads.length})
+                  </p>
+                  {leads.length > 0 && (
+                    <button 
+                      onClick={exportLeads} 
+                      className="text-xs bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-lg px-3 py-1.5 transition-all font-semibold"
+                    >
+                      ⬇️ Xuất file Excel
+                    </button>
+                  )}
                 </div>
-              )}
-            </div>
-            <div className="border border-gray-200 rounded-lg p-3">
-              <p className="text-xs text-gray-500 mb-1">🌐 Lấy từ web</p>
-              <input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://nhadat.company/..." className="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              <div className="flex gap-2">
-                <button onClick={() => crawl(false)} disabled={busy} className="flex-1 bg-gray-700 text-white rounded-lg px-3 py-1.5 text-sm hover:bg-gray-800 disabled:opacity-50">1 trang</button>
-                <button onClick={() => crawl(true)} disabled={busy} className="flex-1 bg-indigo-600 text-white rounded-lg px-3 py-1.5 text-sm hover:bg-indigo-700 disabled:opacity-50">Cả web (≤30 trang)</button>
-              </div>
-            </div>
-          </div>
 
-          <textarea
-            value={newContent}
-            onChange={e => setNewContent(e.target.value)}
-            rows={5}
-            placeholder="Nội dung mục mới (gõ tay, hoặc nội dung từ file/web sẽ hiện ở đây để bạn chỉnh sửa trước khi thêm)..."
-            className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button onClick={addEntry} disabled={busy} className="bg-blue-600 text-white rounded-lg px-5 py-2 font-medium hover:bg-blue-700 disabled:opacity-50">
-            ➕ Thêm vào danh sách
-          </button>
-        </div>
-
-        {/* Thanh công cụ + danh sách dạng cột */}
-        <div>
-          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-            <p className="font-semibold text-gray-800">
-              📚 Dữ liệu đã nạp ({entries.length} mục)
-            </p>
-            {entries.length > 0 && (
-              <div className="flex gap-2">
-                <button
-                  onClick={reindex}
-                  disabled={busy}
-                  className="bg-teal-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-teal-700 disabled:opacity-50"
-                  title="Tạo lại chỉ mục tìm kiếm để bot trả lời nhanh & đúng trọng tâm"
-                >
-                  🔎 Lập lại chỉ mục
-                </button>
-                <button
-                  onClick={organize}
-                  disabled={busy}
-                  className="bg-purple-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
-                >
-                  🤖 Phân loại & Làm sạch dữ liệu
-                </button>
-              </div>
-            )}
-          </div>
-
-          {entries.length === 0 && <p className="text-sm text-gray-400">Chưa có dữ liệu.</p>}
-
-          {/* Cột theo danh mục (cuộn ngang) — hỗ trợ kéo thả thẻ giữa các cột */}
-          <div className="flex gap-4 overflow-x-auto pb-3">
-            {ALL_COLS.filter(cat => cat !== 'Khác' || entries.some(e => e.cat === 'Khác' || e.id === 'legacy')).map(cat => {
-              const colEntries = entries.filter(e => (CATEGORIES.includes(e.cat) ? e.cat : 'Khác') === cat);
-              const isOver = dragOver === cat && dragId !== null && entries.find(e => e.id === dragId)?.cat !== cat;
-              return (
-                <div
-                  key={cat}
-                  className={`flex-shrink-0 w-80 rounded-xl p-3 transition-colors ${isOver ? 'bg-blue-100 ring-2 ring-blue-400' : 'bg-gray-100'}`}
-                  onDragOver={ev => { ev.preventDefault(); setDragOver(cat); }}
-                  onDragLeave={() => setDragOver(null)}
-                  onDrop={ev => {
-                    ev.preventDefault();
-                    setDragOver(null);
-                    if (dragId) updateEntry(dragId, { cat });
-                    setDragId(null);
-                  }}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className={`text-xs font-bold rounded-full px-3 py-1 ${CAT_COLOR[cat]}`}>{cat}</span>
-                    <span className="text-xs text-gray-400">{colEntries.length}</span>
-                  </div>
-                  <div className={`space-y-3 min-h-[40px] ${colEntries.length > 5 ? 'max-h-[780px] overflow-y-auto pr-1' : ''}`}>
-                    {colEntries.length === 0 && (
-                      <p className={`text-xs text-center py-4 ${isOver ? 'text-blue-400' : 'text-gray-400'}`}>
-                        {isOver ? '⬇ Thả vào đây' : 'Trống'}
-                      </p>
-                    )}
-                    {colEntries.map(e => (
-                      <div
-                        key={e.id}
-                        draggable
-                        onDragStart={() => setDragId(e.id)}
-                        onDragEnd={() => { setDragId(null); setDragOver(null); }}
-                        className={`bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-opacity ${dragId === e.id ? 'opacity-30' : 'opacity-100'}`}
-                      >
-                        {/* Card header */}
-                        <div className={`flex items-center justify-between px-3 py-1.5 border-b border-gray-100 ${CAT_COLOR[cat]}`}>
-                          <span className="text-[11px] font-medium cursor-grab active:cursor-grabbing select-none opacity-70">⠿ {e.date}</span>
-                          <button onClick={() => deleteEntry(e.id)} className="text-[11px] opacity-50 hover:opacity-100 hover:text-red-600 transition-opacity">✕</button>
+                <div className="flex-1 mt-4 overflow-y-auto max-h-[500px] space-y-3 pr-1 scrollbar-thin">
+                  {leads.length === 0 ? (
+                    <div className="text-center py-12 text-slate-600 text-xs">Chưa có số điện thoại nào được đăng ký.</div>
+                  ) : (
+                    leads.map((l, i) => (
+                      <div key={i} className="bg-slate-950 border border-slate-900 rounded-xl p-3.5 text-xs space-y-2">
+                        <div className="flex items-center justify-between border-b border-slate-900 pb-1.5">
+                          <span className="font-bold text-emerald-400 text-sm">📱 {l.phone}</span>
+                          <span className="text-[10px] text-slate-500 font-mono">{l.time?.replace('T', ' ').slice(0, 16)}</span>
                         </div>
-                        <textarea
-                          value={e.content}
-                          onChange={ev => updateEntry(e.id, { content: ev.target.value })}
-                          rows={Math.min(10, Math.max(3, e.content.split('\n').length))}
-                          className="w-full p-2.5 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
-                        />
+                        <p className="text-slate-400 leading-relaxed">
+                          <span className="text-slate-600 font-bold block mb-0.5 text-[10px] uppercase">Tin nhắn tương tác:</span>
+                          "{l.message}"
+                        </p>
                       </div>
-                    ))}
-                  </div>
+                    ))
+                  )}
                 </div>
-              );
-            })}
-          </div>
-        </div>
+              </div>
 
-        {/* Save bar */}
-        <div className="flex items-center gap-4 sticky bottom-0 bg-gray-50 py-3 border-t border-gray-200">
-          <button onClick={save} disabled={busy} className="bg-green-600 text-white rounded-lg px-6 py-3 font-semibold hover:bg-green-700 disabled:opacity-50">
-            💾 Lưu & Cập nhật Bot
-          </button>
-          {status && <p className="text-sm text-gray-600">{status}</p>}
-        </div>
-        </>
+              {/* Chat history logs (Right side) */}
+              <div className="lg:col-span-7 bg-slate-900/30 border border-slate-900 rounded-2xl p-5 flex flex-col min-h-[450px]">
+                <p className="font-bold text-sm text-slate-200 border-b border-slate-800 pb-3 flex items-center gap-2">
+                  <span>💬</span> Lịch sử hội thoại gần đây ({chats.length})
+                </p>
+
+                <div className="flex-1 mt-4 overflow-y-auto max-h-[500px] space-y-4 pr-1 scrollbar-thin">
+                  {chats.length === 0 ? (
+                    <div className="text-center py-12 text-slate-600 text-xs">Chưa có cuộc hội thoại nào.</div>
+                  ) : (
+                    chats.map((c, i) => (
+                      <div key={i} className="bg-slate-950 border border-slate-900 rounded-xl p-4 text-xs space-y-3">
+                        <div className="flex items-center justify-between border-b border-slate-900 pb-2">
+                          <span className="text-[10px] text-slate-500 font-mono">{c.time?.replace('T', ' ').slice(0, 16)}</span>
+                          <span className="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-full text-[9px] text-slate-400">Hội thoại #{chats.length - i}</span>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="space-y-0.5">
+                            <span className="text-blue-400 font-bold text-[9px] uppercase">Khách hàng hỏi:</span>
+                            <p className="text-slate-200 font-medium bg-slate-900/40 p-2.5 rounded-lg leading-relaxed">{c.question}</p>
+                          </div>
+                          <div className="space-y-0.5">
+                            <span className="text-purple-400 font-bold text-[9px] uppercase">AI phản hồi:</span>
+                            <div className="text-slate-400 bg-slate-900/10 p-2.5 rounded-lg leading-relaxed whitespace-pre-wrap">{c.answer}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         )}
-      </div>
+      </main>
+
+      {/* Footer bar */}
+      <footer className="bg-slate-950 border-t border-slate-900 px-6 py-4 text-center text-[10px] text-slate-600 font-mono">
+        NHADAT BOT MANAGEMENT SYSTEM PANEL © 2026
+      </footer>
     </div>
   );
 }

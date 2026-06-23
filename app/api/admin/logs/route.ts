@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Sai mật khẩu' }, { status: 401 });
   }
   try {
-    const [leads, chats] = await Promise.all([readLogs('leads', 100), readLogs('chats', 100)]);
+    const [leads, chats] = await Promise.all([readLogs('leads', 30), readLogs('chats', 30)]);
     return NextResponse.json({ leads, chats });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
