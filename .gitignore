@@ -22,3 +22,5 @@
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.env*
+api_key.txt
