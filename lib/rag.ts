@@ -9,9 +9,10 @@ const INDEX_PATH = 'index.json';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const COHERE_API_KEY = process.env.COHERE_API_KEY || '';
 const EMBED_MODEL = 'gemini-embedding-001';
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-const DIMS = 3072;
+const DIMS = COHERE_API_KEY ? 1024 : 3072;
 
 export interface Chunk {
   text: string;
@@ -94,29 +95,63 @@ const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[][]> {
   if (texts.length === 0) return [];
   const out: number[][] = [];
-  const BATCH_SIZE = 100;
-  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-    if (i > 0) await sleep(1000); // Đợi 1 giây giữa các batch để tránh vượt hạn mức RPM (Requests Per Minute)
-    const chunk = texts.slice(i, i + BATCH_SIZE);
-    const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        requests: chunk.map(text => ({
-          model: `models/${EMBED_MODEL}`,
-          content: { parts: [{ text }] },
-          taskType,
-        })),
-      }),
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Batch embedding lỗi ${res.status}: ${errText}`);
+
+  if (COHERE_API_KEY) {
+    // 1) Dùng Cohere Multilingual Embedding
+    const cohereTaskType = taskType === 'RETRIEVAL_DOCUMENT' ? 'search_document' : 'search_query';
+    const BATCH_SIZE = 96;
+    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+      if (i > 0) await sleep(2000);
+      const chunk = texts.slice(i, i + BATCH_SIZE);
+      const res = await fetch('https://api.cohere.com/v1/embed', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${COHERE_API_KEY}`,
+          'Content-Type': 'application/json',
+          'accept': 'application/json',
+        },
+        body: JSON.stringify({
+          texts: chunk,
+          model: 'embed-multilingual-v3.0',
+          input_type: cohereTaskType,
+        }),
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Cohere embedding error ${res.status}: ${errText}`);
+      }
+      const data = await res.json();
+      const embeddings = data.embeddings || [];
+      for (const emb of embeddings) {
+        out.push(normalize(emb));
+      }
     }
-    const data = await res.json();
-    const embeddings = data.embeddings || [];
-    for (const emb of embeddings) {
-      out.push(normalize(emb.values || []));
+  } else {
+    // 2) Fallback: dùng Gemini Embedding
+    const BATCH_SIZE = 100;
+    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+      if (i > 0) await sleep(1000);
+      const chunk = texts.slice(i, i + BATCH_SIZE);
+      const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requests: chunk.map(text => ({
+            model: `models/${EMBED_MODEL}`,
+            content: { parts: [{ text }] },
+            taskType,
+          })),
+        }),
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Batch embedding lỗi ${res.status}: ${errText}`);
+      }
+      const data = await res.json();
+      const embeddings = data.embeddings || [];
+      for (const emb of embeddings) {
+        out.push(normalize(emb.values || []));
+      }
     }
   }
   return out;
