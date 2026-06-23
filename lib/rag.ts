@@ -9,9 +9,9 @@ const INDEX_PATH = 'index.json';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const EMBED_MODEL = 'gemini-embedding-exp-03-07';
+const EMBED_MODEL = 'text-embedding-004';
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-const DIMS = 3072; // gemini-embedding-exp-03-07 output dims
+const DIMS = 768;
 
 export interface Chunk {
   text: string;
@@ -86,7 +86,12 @@ async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RET
         })),
       }),
     });
-    if (!res.ok) throw new Error(`Embedding lỗi: ${res.status} ${await res.text()}`);
+    if (!res.ok) {
+      const errText = await res.text();
+      if (res.status === 404) throw new Error(`Embedding model "${EMBED_MODEL}" không tìm thấy — kiểm tra GEMINI_API_KEY có quyền dùng Embedding API không. Chi tiết: ${errText}`);
+      if (res.status === 400) throw new Error(`Embedding lỗi tham số: ${errText}`);
+      throw new Error(`Embedding lỗi ${res.status}: ${errText}`);
+    }
     const data = await res.json();
     for (const e of data.embeddings || []) out.push(normalize(e.values || []));
   }
