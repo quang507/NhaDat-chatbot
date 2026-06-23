@@ -134,8 +134,8 @@ export default function DifyChatbot() {
           <div className="bg-blue-600 text-white px-4 py-3 flex items-center gap-2">
             <span className="text-xl">🏠</span>
             <div className="flex-1">
-              <p className="font-semibold text-sm">Tư vấn Bất động sản</p>
-              <p className="text-xs opacity-80">Hỏi về nhà đất, giá cả, khu vực...</p>
+              <p className="font-semibold text-sm">nhadat.company</p>
+              <p className="text-xs opacity-80">NyAh Phú Định · Villa NyAh</p>
             </div>
             {cfg.phone && (
               <a href={`tel:${cfg.phone}`} className="text-xs bg-white/20 hover:bg-white/30 rounded-full px-2 py-1" title="Gọi tư vấn">📞</a>
@@ -147,7 +147,7 @@ export default function DifyChatbot() {
             {messages.length === 0 && (
               <div className="text-center text-gray-500 text-sm mt-4">
                 <p className="text-3xl mb-2">🏡</p>
-                <p className="mb-3">Xin chào! Em có thể giúp anh/chị tìm hiểu về bất động sản.</p>
+                <p className="mb-3">Xin chào anh/chị! Em là trợ lý của <strong>nhadat.company</strong>, sẵn sàng tư vấn về dự án <strong>NyAh Phú Định</strong> và <strong>Villa NyAh</strong> ạ.</p>
                 {cfg.suggestions.length > 0 && (
                   <div className="space-y-2 text-left">
                     {cfg.suggestions.map((s, i) => (
