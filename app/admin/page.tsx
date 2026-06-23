@@ -101,6 +101,9 @@ export default function AdminPage() {
   const [newCat, setNewCat] = useState(CATEGORIES[0]);
   const [newContent, setNewContent] = useState('');
   const [url, setUrl] = useState('');
+  // file queue: chọn trước, xem trước, xóa bớt rồi mới xử lý
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [fileProgress, setFileProgress] = useState<Record<string, 'waiting' | 'processing' | 'done' | 'error'>>({});
 
   function authHeaders() {
     return { 'x-admin-pass': pass };
@@ -128,11 +131,30 @@ export default function AdminPage() {
     }
   }
 
-  async function uploadFiles(files: FileList | null) {
+  function pickFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
+    const arr = Array.from(files);
+    setPendingFiles(prev => {
+      const names = new Set(prev.map(f => f.name));
+      return [...prev, ...arr.filter(f => !names.has(f.name))];
+    });
+    setFileProgress({});
+  }
+
+  function removeFile(name: string) {
+    setPendingFiles(prev => prev.filter(f => f.name !== name));
+    setFileProgress(prev => { const n = { ...prev }; delete n[name]; return n; });
+  }
+
+  async function processFiles() {
+    if (pendingFiles.length === 0) return;
     setBusy(true);
+    const init: Record<string, 'waiting' | 'processing' | 'done' | 'error'> = {};
+    pendingFiles.forEach(f => { init[f.name] = 'waiting'; });
+    setFileProgress(init);
     let added = '';
-    for (const file of Array.from(files)) {
+    for (const file of pendingFiles) {
+      setFileProgress(prev => ({ ...prev, [file.name]: 'processing' }));
       setStatus(`Đang xử lý ${file.name}...`);
       const form = new FormData();
       form.append('file', file);
@@ -141,16 +163,23 @@ export default function AdminPage() {
         const data = await res.json();
         if (res.ok) {
           added += (added ? '\n\n---\n\n' : '') + data.markdown;
-          if (data.count) setStatus(`✅ ZIP: đã đọc ${data.count} file${data.errors ? ` (${data.errors.length} lỗi)` : ''}`);
-        } else setStatus(`Lỗi ${file.name}: ${data.error}`);
+          setFileProgress(prev => ({ ...prev, [file.name]: 'done' }));
+          if (data.count) setStatus(`✅ ZIP: đã đọc ${data.count} file`);
+        } else {
+          setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
+          setStatus(`Lỗi ${file.name}: ${data.error}`);
+        }
       } catch {
+        setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
         setStatus(`Không xử lý được ${file.name}`);
       }
     }
     if (added) {
-      setNewContent(c => (c + added).trim());
-      setStatus('Đã trích xuất nội dung từ file vào ô soạn thảo bên dưới.');
+      setNewContent(c => (c ? c + '\n\n---\n\n' + added : added).trim());
+      setStatus(`✅ Xong ${pendingFiles.length} file. Nội dung hiện ở ô bên dưới, chỉnh sửa rồi Thêm.`);
     }
+    setPendingFiles([]);
+    setFileProgress({});
     setBusy(false);
   }
 
@@ -498,9 +527,38 @@ export default function AdminPage() {
           </div>
 
           <div className="grid sm:grid-cols-2 gap-3">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-3">
-              <p className="text-xs text-gray-500 mb-1">📎 File (PDF, Word, Excel, CSV, TXT, PNG, JPG, ZIP)</p>
-              <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp,.gif,.zip" onChange={e => uploadFiles(e.target.files)} className="text-sm" />
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 space-y-2">
+              <p className="text-xs text-gray-500">📎 PDF, Word, Excel, CSV, TXT, PNG, JPG, ZIP</p>
+              <label className="inline-block cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium rounded-lg px-3 py-1.5 transition">
+                + Chọn file
+                <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp,.gif,.zip" onChange={e => pickFiles(e.target.files)} className="hidden" />
+              </label>
+              {pendingFiles.length > 0 && (
+                <div className="space-y-1">
+                  {pendingFiles.map(f => {
+                    const prog = fileProgress[f.name];
+                    const icon = prog === 'processing' ? '⏳' : prog === 'done' ? '✅' : prog === 'error' ? '❌' : '📄';
+                    const size = f.size > 1024 * 1024 ? `${(f.size / 1024 / 1024).toFixed(1)}MB` : `${Math.round(f.size / 1024)}KB`;
+                    return (
+                      <div key={f.name} className="flex items-center gap-2 bg-gray-50 rounded-lg px-2 py-1">
+                        <span className="text-xs">{icon}</span>
+                        <span className="flex-1 text-xs text-gray-700 truncate max-w-[160px]" title={f.name}>{f.name}</span>
+                        <span className="text-[10px] text-gray-400">{size}</span>
+                        {!prog && (
+                          <button onClick={() => removeFile(f.name)} className="text-gray-400 hover:text-red-500 text-xs font-bold leading-none" title="Xóa khỏi danh sách">✕</button>
+                        )}
+                      </div>
+                    );
+                  })}
+                  <button
+                    onClick={processFiles}
+                    disabled={busy}
+                    className="w-full mt-1 bg-blue-600 text-white text-xs font-medium rounded-lg py-1.5 hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    ▶ Xử lý {pendingFiles.length} file
+                  </button>
+                </div>
+              )}
             </div>
             <div className="border border-gray-200 rounded-lg p-3">
               <p className="text-xs text-gray-500 mb-1">🌐 Lấy từ web</p>
