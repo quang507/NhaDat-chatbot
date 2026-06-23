@@ -196,6 +196,7 @@ async function main() {
     try {
       console.log("Đang đọc chỉ mục index.json cũ từ nhánh chatbot-logs...");
       execSync('git checkout chatbot-logs');
+      try { execSync('git pull origin chatbot-logs'); } catch {}
       if (fs.existsSync(INDEX_PATH)) {
         const rawIndex = fs.readFileSync(INDEX_PATH, 'utf-8');
         const parsed = JSON.parse(rawIndex);
@@ -308,6 +309,7 @@ async function main() {
     // 6. Chuyển nhánh git đẩy index.json lên GitHub
     console.log("6. Đang chuyển sang nhánh chatbot-logs...");
     execSync('git checkout chatbot-logs');
+    try { execSync('git pull origin chatbot-logs'); } catch {}
 
     const destIndexPath = path.join(__dirname, 'index.json');
     fs.copyFileSync(tempIndexPath, destIndexPath);
