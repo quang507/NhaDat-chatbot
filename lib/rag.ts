@@ -9,10 +9,9 @@ const INDEX_PATH = 'index.json';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const COHERE_API_KEY = process.env.COHERE_API_KEY || '';
 const EMBED_MODEL = 'gemini-embedding-001';
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-const DIMS = COHERE_API_KEY ? 1024 : 3072;
+const DIMS = 3072;
 
 export interface Chunk {
   text: string;
@@ -92,67 +91,16 @@ async function embedOne(text: string, taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVA
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
+// Embed song song theo batch nhỏ để nhanh hơn mà không vượt rate limit
+// Free tier gemini-embedding-001: ~1500 RPM -> batch 5 song song + 200ms gap an toàn
 async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[][]> {
-  if (texts.length === 0) return [];
-  const out: number[][] = [];
-
-  if (COHERE_API_KEY) {
-    // 1) Dùng Cohere Multilingual Embedding
-    const cohereTaskType = taskType === 'RETRIEVAL_DOCUMENT' ? 'search_document' : 'search_query';
-    const BATCH_SIZE = 96;
-    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-      if (i > 0) await sleep(2000);
-      const chunk = texts.slice(i, i + BATCH_SIZE);
-      const res = await fetch('https://api.cohere.com/v1/embed', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${COHERE_API_KEY}`,
-          'Content-Type': 'application/json',
-          'accept': 'application/json',
-        },
-        body: JSON.stringify({
-          texts: chunk,
-          model: 'embed-multilingual-v3.0',
-          input_type: cohereTaskType,
-        }),
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Cohere embedding error ${res.status}: ${errText}`);
-      }
-      const data = await res.json();
-      const embeddings = data.embeddings || [];
-      for (const emb of embeddings) {
-        out.push(normalize(emb));
-      }
-    }
-  } else {
-    // 2) Fallback: dùng Gemini Embedding
-    const BATCH_SIZE = 100;
-    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-      if (i > 0) await sleep(1000);
-      const chunk = texts.slice(i, i + BATCH_SIZE);
-      const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          requests: chunk.map(text => ({
-            model: `models/${EMBED_MODEL}`,
-            content: { parts: [{ text }] },
-            taskType,
-          })),
-        }),
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Batch embedding lỗi ${res.status}: ${errText}`);
-      }
-      const data = await res.json();
-      const embeddings = data.embeddings || [];
-      for (const emb of embeddings) {
-        out.push(normalize(emb.values || []));
-      }
-    }
+  const PARALLEL = 5;
+  const out: number[][] = new Array(texts.length);
+  for (let i = 0; i < texts.length; i += PARALLEL) {
+    if (i > 0) await sleep(200);
+    const slice = texts.slice(i, i + PARALLEL);
+    const vecs = await Promise.all(slice.map(t => embedOne(t, taskType)));
+    vecs.forEach((v, j) => { out[i + j] = v; });
   }
   return out;
 }
@@ -200,7 +148,7 @@ export async function loadIndex(): Promise<Index | null> {
   // cache trong RAM 5 phút
   if (memIndex && Date.now() - memIndexAt < 5 * 60 * 1000) {
     // invalidate nếu index dùng dims cũ (text-embedding-004 = 768)
-    if (memIndex.chunks.length > 0 && memIndex.chunks[0]?.vec?.length !== DIMS) { memIndex = null; memIndexAt = 0; }
+    if (memIndex.chunks[0]?.vec?.length !== DIMS) { memIndex = null; memIndexAt = 0; }
     else return memIndex;
   }
   // dedup: nhiều request đồng thời chỉ tải 1 lần
@@ -232,48 +180,13 @@ function dot(a: number[], b: number[]): number {
   return s;
 }
 
-// Trích xuất các từ khoá số học quan trọng từ câu hỏi (số phòng, diện tích, giá, ...)
-function extractKeywords(query: string): string[] {
-  const kws: string[] = [];
-  // Số căn cụ thể: "căn 3", "căn số 3", "căn thứ 3", "căn 103"...
-  const canMatch = query.match(/căn\s*(?:số|thứ|mã)?\s*(\d+)/gi);
-  if (canMatch) kws.push(...canMatch);
-  // Số tầng: "tầng 2", "tầng 3"
-  const tangMatch = query.match(/tầng\s*\d+/gi);
-  if (tangMatch) kws.push(...tangMatch);
-  // Các số riêng lẻ trong câu
-  const nums = query.match(/\b\d{1,4}\b/g);
-  if (nums) kws.push(...nums);
-  // Tên dự án cụ thể
-  if (/nyah|phú định/i.test(query)) kws.push('nyah', 'phú định');
-  if (/villa/i.test(query)) kws.push('villa');
-  if (/shophouse/i.test(query)) kws.push('shophouse');
-  return [...new Set(kws.map(k => k.toLowerCase().trim()))];
-}
-
-// Trụ hồi top-K đoạn liên quan nhất + keyword boosting
+// Truy hồi top-K đoạn liên quan nhất với câu hỏi
 export async function retrieve(query: string, index: Index, k = 12): Promise<string[]> {
   const q = await embedQuery(query);
   if (!q.length) return [];
-
-  const keywords = extractKeywords(query);
-
   const scored = index.chunks
-    .map(c => {
-      const semantic = dot(q, c.vec);
-      // Keyword boost: mỗi từ khoá khớp +0.08 (tối đa +0.24)
-      let kwBoost = 0;
-      if (keywords.length > 0) {
-        const lowerText = c.text.toLowerCase();
-        for (const kw of keywords) {
-          if (lowerText.includes(kw)) kwBoost += 0.08;
-        }
-        kwBoost = Math.min(kwBoost, 0.24);
-      }
-      return { text: c.text, score: semantic + kwBoost };
-    })
+    .map(c => ({ text: c.text, score: dot(q, c.vec) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, k);
-
   return scored.map(s => s.text);
 }
