@@ -64,6 +64,9 @@ export default function AdminPage() {
   const [fileProgress, setFileProgress] = useState<Record<string, 'waiting' | 'processing' | 'done' | 'error'>>({});
   const [outputMarkdown, setOutputMarkdown] = useState('');
   const [copySuccess, setCopySuccess] = useState(false);
+  const [crawlMaxPages, setCrawlMaxPages] = useState(30);
+  const [crawlFilename, setCrawlFilename] = useState('');
+  const [embedStatus, setEmbedStatus] = useState('');
 
   function authHeaders() {
     return { 'x-admin-pass': pass };
@@ -295,26 +298,104 @@ export default function AdminPage() {
   async function crawl(wholeSite: boolean) {
     if (!url.trim()) return;
     setBusy(true);
-    setStatus(wholeSite ? `Đang lấy cả web ${url} (có thể mất ~1 phút)...` : `Đang lấy nội dung từ ${url}...`);
+    setOutputMarkdown(c => c);
     try {
-      const endpoint = wholeSite ? '/api/admin/crawl-site' : '/api/admin/crawl';
-      const res = await fetch(endpoint, {
+      if (!wholeSite) {
+        // Trích xuất 1 trang đơn
+        setStatus(`Đang lấy nội dung từ ${url}...`);
+        const res = await fetch('/api/admin/crawl', {
+          method: 'POST',
+          headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setOutputMarkdown(c => (c ? c + '\n\n---\n\n' : '') + data.markdown);
+          setStatus('✅ Đã lấy nội dung từ web thành công.');
+          setUrl('');
+        } else setStatus(data.error || 'Lấy nội dung thất bại');
+        return;
+      }
+
+      // --- Quét cả site: Batch crawl từ client ---
+      setStatus(`Đang khám phá các trang con của ${url}...`);
+
+      // Bước 1: Khám phá toàn bộ links từ trang chủ
+      const linksRes = await fetch('/api/admin/crawl-links', {
         method: 'POST',
         headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, maxPages: 30 }),
+        body: JSON.stringify({ url }),
+      });
+      const linksData = await linksRes.json();
+      if (!linksRes.ok) {
+        setStatus(linksData.error || 'Không lấy được danh sách trang');
+        return;
+      }
+
+      // Bước 2: Xây danh sách URLs cần crawl (giới hạn maxPages)
+      const allLinks: string[] = linksData.links || [];
+      const urlsToVisit = Array.from(new Set([url, ...allLinks])).slice(0, crawlMaxPages);
+
+      // Hiện nội dung trang chủ ngay lập tức nếu có
+      let collectedMarkdown = '';
+      if (linksData.homeText) {
+        collectedMarkdown = `## Nguồn: ${url}\n\n${linksData.homeText}`;
+        setOutputMarkdown(collectedMarkdown);
+      }
+
+      // Bước 3: Crawl từng batch 5 trang một
+      const BATCH = 5;
+      const remainingUrls = urlsToVisit.filter(u => u !== url);
+      let doneCount = linksData.homeText ? 1 : 0;
+      const total = urlsToVisit.length;
+
+      for (let i = 0; i < remainingUrls.length; i += BATCH) {
+        const batch = remainingUrls.slice(i, i + BATCH);
+        setStatus(`Đang quét trang ${doneCount + 1}–${Math.min(doneCount + BATCH, total)} / ${total}...`);
+
+        const batchRes = await fetch('/api/admin/crawl-site', {
+          method: 'POST',
+          headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ urls: batch }),
+        });
+        const batchData = await batchRes.json();
+        if (batchRes.ok && batchData.markdown) {
+          collectedMarkdown += '\n' + batchData.markdown;
+          setOutputMarkdown(collectedMarkdown);
+          doneCount += batchData.pages;
+        }
+      }
+
+      setStatus(`✅ Quét hoàn tất ${doneCount} trang (tìm thấy ${allLinks.length} trang con).`);
+      setUrl('');
+    } catch {
+      setStatus('Không kết nối được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function embedAndIndex() {
+    if (!outputMarkdown.trim()) return;
+    const name = crawlFilename.trim() || 'web-crawl';
+    setBusy(true);
+    setEmbedStatus('🔄 Đang tạo embedding và cập nhật index...');
+    try {
+      const res = await fetch('/api/admin/crawl-save-index', {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: name, markdown: outputMarkdown }),
       });
       const data = await res.json();
       if (res.ok) {
-        setOutputMarkdown(c => (c ? c + '\n\n---\n\n' : '') + data.markdown);
-        setStatus(
-          wholeSite
-            ? `Đã lấy ${data.pages} trang thành công.`
-            : 'Đã lấy nội dung từ web thành công.'
-        );
-        setUrl('');
-      } else setStatus(data.error || 'Lấy nội dung thất bại');
+        setEmbedStatus(`✅ Đã lưu file và nạp ${data.newChunks} chunk mới vào RAG (tổng: ${data.totalChunks} chunks).${
+          data.truncated ? ' ⚠️ Một số chunk bị bỏ do quá giới hạn.' : ''
+        }`);
+      } else {
+        setEmbedStatus(`❌ Lỗi: ${data.error}`);
+      }
     } catch {
-      setStatus('Không kết nối được');
+      setEmbedStatus('❌ Không kết nối được');
     } finally {
       setBusy(false);
     }
@@ -733,40 +814,6 @@ export default function AdminPage() {
                 )}
               </div>
 
-              {/* Web Crawler */}
-              <div className="bg-slate-900/30 border border-slate-900 rounded-2xl p-5 space-y-4">
-                <h2 className="font-bold text-sm text-slate-200 flex items-center gap-2">🌐 Trích xuất nội dung Website</h2>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Lấy toàn bộ nội dung văn bản từ một liên kết trang web hoặc toàn bộ trang web phụ (tối đa 30 trang).
-                </p>
-
-                <div className="space-y-3">
-                  <input 
-                    value={url} 
-                    onChange={e => setUrl(e.target.value)} 
-                    placeholder="Nhập đường dẫn trang web https://..." 
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all" 
-                  />
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => crawl(false)} 
-                      disabled={busy || !url.trim()} 
-                      className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/50 rounded-lg py-2 text-xs font-semibold transition-colors disabled:opacity-40"
-                    >
-                      Trích xuất 1 trang
-                    </button>
-                    <button 
-                      onClick={() => crawl(true)} 
-                      disabled={busy || !url.trim()} 
-                      className="flex-1 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white rounded-lg py-2 text-xs font-semibold transition-all disabled:opacity-40"
-                    >
-                      Quét cả site (≤30 trang)
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Markdown Output Area */}
             <div className="lg:col-span-7 bg-slate-900/30 border border-slate-900 rounded-2xl p-5 flex flex-col min-h-[400px]">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
@@ -775,15 +822,22 @@ export default function AdminPage() {
                   <h3 className="font-bold text-sm text-slate-200">Kết quả Markdown đầu ra</h3>
                 </div>
                 {outputMarkdown && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <button
+                      onClick={embedAndIndex}
+                      disabled={busy}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg shadow-emerald-500/10 transition-all disabled:opacity-50 flex items-center gap-1"
+                    >
+                      ⚡ Embed &amp; Nạp vào Bot
+                    </button>
                     <button
                       onClick={() => copyToClipboard(outputMarkdown)}
                       className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg shadow-blue-500/10 transition-all"
                     >
-                      {copySuccess ? '✅ Đã sao chép' : '📋 Sao chép nội dung'}
+                      {copySuccess ? '✅ Đã sao chép' : '📋 Sao chép'}
                     </button>
                     <button
-                      onClick={() => setOutputMarkdown('')}
+                      onClick={() => { setOutputMarkdown(''); setEmbedStatus(''); }}
                       className="bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs px-2.5 py-1.5 rounded-lg border border-slate-800 font-semibold"
                     >
                       Xóa
@@ -791,6 +845,30 @@ export default function AdminPage() {
                   </div>
                 )}
               </div>
+
+              {/* Tên file khi embed */}
+              {outputMarkdown && (
+                <div className="flex items-center gap-2 mt-3">
+                  <label className="text-xs text-slate-500 whitespace-nowrap">📁 Tên file:</label>
+                  <input
+                    value={crawlFilename}
+                    onChange={e => setCrawlFilename(e.target.value)}
+                    placeholder="vd: nhadat-company (không cần .md)"
+                    className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+              )}
+
+              {/* Trạng thái embed */}
+              {embedStatus && (
+                <div className={`mt-2 text-xs px-3 py-2 rounded-lg border ${
+                  embedStatus.startsWith('✅') ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400'
+                  : embedStatus.startsWith('❌') ? 'bg-red-500/5 border-red-500/20 text-red-400'
+                  : 'bg-blue-500/5 border-blue-500/20 text-blue-400'
+                }`}>
+                  {embedStatus}
+                </div>
+              )}
 
               <div className="flex-1 mt-4 relative bg-slate-950 border border-slate-900 rounded-xl overflow-hidden flex flex-col">
                 <div className="bg-slate-900/50 border-b border-slate-900 px-3 py-1.5 text-[10px] text-slate-500 font-mono flex justify-between">
