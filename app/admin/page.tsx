@@ -1,6 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import JSZip from 'jszip';
+
+const SUPPORTED_EXTS = new Set(['pdf','doc','docx','xls','xlsx','csv','txt','md','png','jpg','jpeg','webp','gif']);
+
+async function extractPdfClientSide(file: File, onProgress?: (page: number, total: number) => void): Promise<string> {
+  const pdfjsLib = await import('pdfjs-dist');
+  // Use bundled worker via public path to avoid CDN dependency
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  const pages: string[] = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    onProgress?.(i, pdf.numPages);
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const text = content.items.map((item) => ('str' in item ? item.str : '')).join(' ');
+    if (text.trim()) pages.push(text.trim());
+  }
+  return pages.join('\n\n');
+}
 
 const CATEGORIES = [
   'Villa Ny\'ah',
@@ -131,12 +151,48 @@ export default function AdminPage() {
     }
   }
 
-  function pickFiles(files: FileList | null) {
+  async function pickFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
     const arr = Array.from(files);
+    const extracted: File[] = [];
+
+    for (const file of arr) {
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+      if (ext === 'zip') {
+        setStatus(`Đang giải nén ${file.name}...`);
+        try {
+          const zip = await JSZip.loadAsync(file);
+          const zipFiles: File[] = [];
+          const tasks: Promise<void>[] = [];
+          zip.forEach((relPath, entry) => {
+            if (entry.dir) return;
+            if (relPath.includes('__MACOSX') || relPath.split('/').pop()?.startsWith('.')) return;
+            const entryExt = relPath.split('.').pop()?.toLowerCase() || '';
+            if (!SUPPORTED_EXTS.has(entryExt)) return;
+            // Use relPath as filename to preserve uniqueness across subdirs
+            const displayName = relPath.replace(/\//g, ' › ');
+            tasks.push(
+              entry.async('blob').then(blob => {
+                zipFiles.push(new File([blob], displayName, { type: blob.type }));
+              })
+            );
+          });
+          await Promise.all(tasks);
+          zipFiles.sort((a, b) => a.name.localeCompare(b.name));
+          extracted.push(...zipFiles);
+          setStatus(`Đã giải nén ${file.name}: ${zipFiles.length} file`);
+        } catch (e) {
+          setStatus(`Lỗi giải nén ${file.name}: ${String(e)}`);
+          extracted.push(file); // fallback: vẫn thêm ZIP gốc
+        }
+      } else {
+        extracted.push(file);
+      }
+    }
+
     setPendingFiles(prev => {
       const names = new Set(prev.map(f => f.name));
-      return [...prev, ...arr.filter(f => !names.has(f.name))];
+      return [...prev, ...extracted.filter(f => !names.has(f.name))];
     });
     setFileProgress({});
   }
@@ -155,10 +211,34 @@ export default function AdminPage() {
     let added = '';
     for (const file of pendingFiles) {
       setFileProgress(prev => ({ ...prev, [file.name]: 'processing' }));
-      setStatus(`Đang xử lý ${file.name}...`);
-      const form = new FormData();
-      form.append('file', file);
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
       try {
+        // PDF: extract client-side, only send text
+        if (ext === 'pdf') {
+          setStatus(`Đang đọc PDF ${file.name}...`);
+          const text = await extractPdfClientSide(file, (page, total) => {
+            setStatus(`${file.name}: trang ${page}/${total}...`);
+          });
+          const res = await fetch('/api/admin/convert', {
+            method: 'POST',
+            headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, name: file.name }),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            added += (added ? '\n\n---\n\n' : '') + data.markdown;
+            setFileProgress(prev => ({ ...prev, [file.name]: 'done' }));
+          } else {
+            setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
+            setStatus(`Lỗi ${file.name}: ${data.error}`);
+          }
+          continue;
+        }
+
+        // Các file khác: gửi binary như cũ
+        setStatus(`Đang xử lý ${file.name}...`);
+        const form = new FormData();
+        form.append('file', file);
         const res = await fetch('/api/admin/convert', { method: 'POST', headers: authHeaders(), body: form });
         const data = await res.json();
         if (res.ok) {
@@ -169,9 +249,9 @@ export default function AdminPage() {
           setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
           setStatus(`Lỗi ${file.name}: ${data.error}`);
         }
-      } catch {
+      } catch (e) {
         setFileProgress(prev => ({ ...prev, [file.name]: 'error' }));
-        setStatus(`Không xử lý được ${file.name}`);
+        setStatus(`Không xử lý được ${file.name}: ${String(e)}`);
       }
     }
     if (added) {
@@ -369,7 +449,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto space-y-5">
+      <div className="max-w-[1600px] mx-auto space-y-5">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h1 className="text-2xl font-bold text-gray-800">📊 Quản lý dữ liệu Bot</h1>
           <div className="flex gap-2">
@@ -633,7 +713,7 @@ export default function AdminPage() {
                     <span className={`text-xs font-bold rounded-full px-3 py-1 ${CAT_COLOR[cat]}`}>{cat}</span>
                     <span className="text-xs text-gray-400">{colEntries.length}</span>
                   </div>
-                  <div className="space-y-3 min-h-[40px]">
+                  <div className={`space-y-3 min-h-[40px] ${colEntries.length > 5 ? 'max-h-[780px] overflow-y-auto pr-1' : ''}`}>
                     {colEntries.length === 0 && (
                       <p className={`text-xs text-center py-4 ${isOver ? 'text-blue-400' : 'text-gray-400'}`}>
                         {isOver ? '⬇ Thả vào đây' : 'Trống'}
@@ -645,17 +725,18 @@ export default function AdminPage() {
                         draggable
                         onDragStart={() => setDragId(e.id)}
                         onDragEnd={() => { setDragId(null); setDragOver(null); }}
-                        className={`bg-white rounded-lg shadow-sm p-3 transition-opacity ${dragId === e.id ? 'opacity-40' : 'opacity-100'}`}
+                        className={`bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-opacity ${dragId === e.id ? 'opacity-30' : 'opacity-100'}`}
                       >
-                        <div className="flex items-center justify-between mb-2 gap-2">
-                          <span className="text-[11px] text-gray-400 cursor-grab active:cursor-grabbing select-none">⠿ {e.date}</span>
-                          <button onClick={() => deleteEntry(e.id)} className="text-xs text-red-400 hover:text-red-600">🗑</button>
+                        {/* Card header */}
+                        <div className={`flex items-center justify-between px-3 py-1.5 border-b border-gray-100 ${CAT_COLOR[cat]}`}>
+                          <span className="text-[11px] font-medium cursor-grab active:cursor-grabbing select-none opacity-70">⠿ {e.date}</span>
+                          <button onClick={() => deleteEntry(e.id)} className="text-[11px] opacity-50 hover:opacity-100 hover:text-red-600 transition-opacity">✕</button>
                         </div>
                         <textarea
                           value={e.content}
                           onChange={ev => updateEntry(e.id, { content: ev.target.value })}
-                          rows={Math.min(12, Math.max(3, e.content.split('\n').length))}
-                          className="w-full border border-gray-200 rounded-lg p-2 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          rows={Math.min(10, Math.max(3, e.content.split('\n').length))}
+                          className="w-full p-2.5 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
                         />
                       </div>
                     ))}

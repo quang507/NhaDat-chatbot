@@ -67,10 +67,12 @@ export async function POST(req: NextRequest) {
     }
 
     const contents = [
-      ...(history || []).slice(-10).map((m: { role: string; content: string }) => ({
-        role: m.role === 'user' ? 'user' : 'model',
-        parts: [{ text: m.content }],
-      })),
+      ...(Array.isArray(history) ? history : [])
+        .filter((m): m is { role: string; content: string } =>
+          m && typeof m.role === 'string' && typeof m.content === 'string' && m.content.trim() !== ''
+        )
+        .slice(-10)
+        .map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] })),
       { role: 'user', parts: [{ text: message }] },
     ];
 
