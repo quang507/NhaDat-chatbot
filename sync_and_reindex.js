@@ -79,15 +79,21 @@ async function parseFile(filePath) {
 // ---------- Copy thư mục đệ quy ----------
 function copyDir(src, dest) {
   if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
-  const entries = fs.readdirSync(src, { withFileTypes: true });
-  for (const entry of entries) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-    if (entry.isDirectory()) {
+  const entries = fs.readdirSync(src);
+  for (const name of entries) {
+    const srcPath = path.join(src, name);
+    const destPath = path.join(dest, name);
+    
+    let isDir = false;
+    try {
+      isDir = fs.statSync(srcPath).isDirectory();
+    } catch {}
+
+    if (isDir) {
       copyDir(srcPath, destPath);
     } else {
       // Bỏ qua các file rác hoặc file script trong OneDrive
-      if (entry.name.startsWith('.') || entry.name.startsWith('~') || entry.name === 'Thumbs.db' || entry.name.endsWith('.bat')) continue;
+      if (name.startsWith('.') || name.startsWith('~') || name === 'Thumbs.db' || name.endsWith('.bat')) continue;
       fs.copyFileSync(srcPath, destPath);
     }
   }
@@ -96,13 +102,19 @@ function copyDir(src, dest) {
 // ---------- Quét thư mục đệ quy thu thập files ----------
 function scanDir(dir, fileList = []) {
   if (!fs.existsSync(dir)) return fileList;
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
+  const entries = fs.readdirSync(dir);
+  for (const name of entries) {
+    const fullPath = path.join(dir, name);
+    
+    let isDir = false;
+    try {
+      isDir = fs.statSync(fullPath).isDirectory();
+    } catch {}
+
+    if (isDir) {
       scanDir(fullPath, fileList);
     } else {
-      const ext = path.extname(entry.name).toLowerCase();
+      const ext = path.extname(name).toLowerCase();
       if (['.md', '.txt', '.docx', '.xlsx', '.xls', '.csv'].includes(ext)) {
         fileList.push(fullPath);
       }
