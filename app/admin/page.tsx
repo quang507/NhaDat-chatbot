@@ -3,6 +3,25 @@
 import { useState } from 'react';
 import JSZip from 'jszip';
 
+const SUPPORTED_EXTS = new Set(['pdf','doc','docx','xls','xlsx','csv','txt','md','png','jpg','jpeg','webp','gif']);
+
+async function extractPdfClientSide(file: File, onProgress?: (page: number, total: number) => void): Promise<string> {
+  const pdfjsLib = await import('pdfjs-dist');
+  // Use bundled worker via public path to avoid CDN dependency
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  const pages: string[] = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    onProgress?.(i, pdf.numPages);
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const text = content.items.map((item) => ('str' in item ? item.str : '')).join(' ');
+    if (text.trim()) pages.push(text.trim());
+  }
+  return pages.join('\n\n');
+}
+
 const CATEGORIES = [
   'Villa Ny\'ah',
   'Ny\'ah Phú Định',
@@ -132,8 +151,6 @@ export default function AdminPage() {
     }
   }
 
-  const SUPPORTED_EXTS = new Set(['pdf','doc','docx','xls','xlsx','csv','txt','md','png','jpg','jpeg','webp','gif']);
-
   async function pickFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
     const arr = Array.from(files);
@@ -149,13 +166,14 @@ export default function AdminPage() {
           const tasks: Promise<void>[] = [];
           zip.forEach((relPath, entry) => {
             if (entry.dir) return;
-            const name = relPath.split('/').pop() || relPath;
-            if (name.startsWith('__MACOSX') || name.startsWith('.')) return;
-            const entryExt = name.split('.').pop()?.toLowerCase() || '';
+            if (relPath.includes('__MACOSX') || relPath.split('/').pop()?.startsWith('.')) return;
+            const entryExt = relPath.split('.').pop()?.toLowerCase() || '';
             if (!SUPPORTED_EXTS.has(entryExt)) return;
+            // Use relPath as filename to preserve uniqueness across subdirs
+            const displayName = relPath.replace(/\//g, ' › ');
             tasks.push(
               entry.async('blob').then(blob => {
-                zipFiles.push(new File([blob], name, { type: blob.type }));
+                zipFiles.push(new File([blob], displayName, { type: blob.type }));
               })
             );
           });
@@ -182,22 +200,6 @@ export default function AdminPage() {
   function removeFile(name: string) {
     setPendingFiles(prev => prev.filter(f => f.name !== name));
     setFileProgress(prev => { const n = { ...prev }; delete n[name]; return n; });
-  }
-
-  async function extractPdfClientSide(file: File, onProgress?: (page: number, total: number) => void): Promise<string> {
-    const pdfjsLib = await import('pdfjs-dist');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const pages: string[] = [];
-    for (let i = 1; i <= pdf.numPages; i++) {
-      onProgress?.(i, pdf.numPages);
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const text = content.items.map((item) => ('str' in item ? item.str : '')).join(' ');
-      if (text.trim()) pages.push(text.trim());
-    }
-    return pages.join('\n\n');
   }
 
   async function processFiles() {
