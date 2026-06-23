@@ -79,77 +79,163 @@ export async function POST(req: NextRequest) {
 
     const { text: systemText } = await buildPrompt(message, profile);
 
-    const reqBody = {
-      contents,
-      system_instruction: { parts: [{ text: systemText }] },
-      generationConfig: { temperature: 0.7, maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
-    };
+    const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 
-    const response = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reqBody),
-    });
+    if (GROQ_API_KEY) {
+      // 1) Sử dụng Groq (Llama-3.3-70b-versatile) nếu có key
+      const messages = [
+        { role: 'system', content: systemText },
+        ...contents.map(c => ({
+          role: c.role === 'model' ? 'assistant' : 'user',
+          content: c.parts[0].text,
+        })),
+      ];
 
-    if (!response.ok || !response.body) {
-      const errText = await response.text();
-      const status = response.status;
-      const friendly = status === 429
-        ? 'Hệ thống đang bận (quá nhiều yêu cầu cùng lúc). Anh/chị thử lại sau giây lát giúp em nhé 🙏'
-        : 'Có lỗi xảy ra, vui lòng thử lại.';
-      return NextResponse.json({ error: errText, friendly }, { status });
-    }
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages,
+          temperature: 0.7,
+          max_tokens: 4096,
+          stream: true,
+        }),
+      });
 
-    // Đọc SSE từ Gemini, đẩy text dần ra client; log lại sau khi xong
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    const encoder = new TextEncoder();
-    let full = '';
-    let buffer = '';
+      if (!response.ok || !response.body) {
+        const errText = await response.text();
+        const friendly = response.status === 429
+          ? 'Hệ thống đang bận (quá nhiều yêu cầu cùng lúc). Anh/chị thử lại sau giây lát giúp em nhé 🙏'
+          : 'Có lỗi xảy ra khi gọi Groq, vui lòng thử lại.';
+        return NextResponse.json({ error: errText, friendly }, { status: response.status });
+      }
 
-    const stream = new ReadableStream({
-      async pull(controller) {
-        const { done, value } = await reader.read();
-        if (done) {
-          controller.close();
-          const time = new Date().toISOString();
-          await writeLog('chats', { time, question: message, answer: full });
-          const phone = extractPhone(message);
-          if (phone) await writeLog('leads', { time, phone, message });
-          return;
-        }
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-          const t = line.trim();
-          if (!t.startsWith('data:')) continue;
-          const payload = t.slice(5).trim();
-          if (!payload || payload === '[DONE]') continue;
-          try {
-            const json = JSON.parse(payload);
-            const piece = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-            if (piece) {
-              full += piece;
-              controller.enqueue(encoder.encode(piece));
-            }
-          } catch {
-            // mảnh JSON chưa trọn -> bỏ qua, sẽ ghép ở vòng sau
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      const encoder = new TextEncoder();
+      let full = '';
+      let buffer = '';
+
+      const stream = new ReadableStream({
+        async pull(controller) {
+          const { done, value } = await reader.read();
+          if (done) {
+            controller.close();
+            const time = new Date().toISOString();
+            await writeLog('chats', { time, question: message, answer: full });
+            const phone = extractPhone(message);
+            if (phone) await writeLog('leads', { time, phone, message });
+            return;
           }
-        }
-      },
-      cancel() {
-        reader.cancel();
-      },
-    });
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            const t = line.trim();
+            if (!t.startsWith('data:')) continue;
+            const payload = t.slice(5).trim();
+            if (!payload || payload === '[DONE]') continue;
+            try {
+              const json = JSON.parse(payload);
+              const piece = json.choices?.[0]?.delta?.content || '';
+              if (piece) {
+                full += piece;
+                controller.enqueue(encoder.encode(piece));
+              }
+            } catch {
+              // Mảnh JSON chưa trọn vẹn
+            }
+          }
+        },
+        cancel() {
+          reader.cancel();
+        },
+      });
 
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-cache',
-        'X-Accel-Buffering': 'no',
-      },
-    });
+      return new Response(stream, {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'no-cache',
+          'X-Accel-Buffering': 'no',
+        },
+      });
+    } else {
+      // 2) Fallback: dùng Gemini nếu không cấu hình Groq
+      const reqBody = {
+        contents,
+        system_instruction: { parts: [{ text: systemText }] },
+        generationConfig: { temperature: 0.7, maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
+      };
+
+      const response = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqBody),
+      });
+
+      if (!response.ok || !response.body) {
+        const errText = await response.text();
+        const status = response.status;
+        const friendly = status === 429
+          ? 'Hệ thống đang bận (quá nhiều yêu cầu cùng lúc). Anh/chị thử lại sau giây lát giúp em nhé 🙏'
+          : 'Có lỗi xảy ra, vui lòng thử lại.';
+        return NextResponse.json({ error: errText, friendly }, { status });
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      const encoder = new TextEncoder();
+      let full = '';
+      let buffer = '';
+
+      const stream = new ReadableStream({
+        async pull(controller) {
+          const { done, value } = await reader.read();
+          if (done) {
+            controller.close();
+            const time = new Date().toISOString();
+            await writeLog('chats', { time, question: message, answer: full });
+            const phone = extractPhone(message);
+            if (phone) await writeLog('leads', { time, phone, message });
+            return;
+          }
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            const t = line.trim();
+            if (!t.startsWith('data:')) continue;
+            const payload = t.slice(5).trim();
+            if (!payload || payload === '[DONE]') continue;
+            try {
+              const json = JSON.parse(payload);
+              const piece = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+              if (piece) {
+                full += piece;
+                controller.enqueue(encoder.encode(piece));
+              }
+            } catch {
+              // Mảnh JSON chưa trọn vẹn
+            }
+          }
+        },
+        cancel() {
+          reader.cancel();
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'no-cache',
+          'X-Accel-Buffering': 'no',
+        },
+      });
+    }
   } catch (error) {
     return NextResponse.json({ error: String(error), friendly: 'Có lỗi xảy ra, vui lòng thử lại.' }, { status: 500 });
   }
