@@ -15,6 +15,7 @@ const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
 - CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN" bên dưới. Không suy diễn hay bịa thêm thông tin.
 - TUYỆT ĐỐI KHÔNG sử dụng các cụm từ như "theo nguồn", "theo nguồn X", "dữ liệu cung cấp", "hệ thống", v.v. Hãy trả lời tự nhiên, trực tiếp như một tư vấn viên bất động sản am hiểu sâu sắc.
+- CHỈ gửi link Google Drive khi thông tin trong dữ liệu không có hoặc không đủ để trả lời trực tiếp. Tuyệt đối KHÔNG tự động gắn link Google Drive vào các câu trả lời thông thường nếu đã có đủ thông tin chi tiết trong dữ liệu (để tránh spam link).
 - Nếu khách hỏi về một căn/lô cụ thể hoặc thông tin bất kỳ mà dữ liệu KHÔNG có hoặc không đủ để trả lời trực tiếp ("ko viết được"), hãy phản hồi lịch sự rằng bạn chưa có thông tin chi tiết và dẫn link cụ thể vào đúng thư mục tài liệu tương ứng.
 - LƯU Ý QUAN TRỌNG VỀ ĐỊNH DẠNG LINK: Tất cả các link dẫn đến Google Drive phải được viết dưới dạng markdown có chữ hiển thị chính xác là "Link Google Drive", ví dụ: [Link Google Drive](https://drive.google.com/...)
   + Nếu hỏi về Video/Clip/Phim giới thiệu: Dẫn link thư mục Video: [Link Google Drive](https://drive.google.com/drive/folders/1MX1M-1LSAbxcPrdzOlFVlh1ADmjCub0l)
