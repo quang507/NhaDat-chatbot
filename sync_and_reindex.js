@@ -309,8 +309,9 @@ async function main() {
       const relativePath = path.relative(LOCAL_DATA_DIR, file).replace(/\\/g, '/');
       const currentHash = getFileHash(file);
 
-      // Nếu file không thay đổi nội dung, dùng lại cache
-      if (cacheMap[relativePath] && cacheMap[relativePath].hash === currentHash) {
+      // Nếu file không thay đổi nội dung và không thuộc diện cần force reindex, dùng lại cache
+      const forceReindex = relativePath.startsWith('drive-extracted/') || relativePath.includes('05 - Ny\'ah Phú Định (Tổng quan).md');
+      if (!forceReindex && cacheMap[relativePath] && cacheMap[relativePath].hash === currentHash) {
         finalChunks.push(...cacheMap[relativePath].chunks);
         filesSkipped++;
         continue;
