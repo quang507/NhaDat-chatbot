@@ -184,11 +184,11 @@ function extractKeywords(query: string): RegExp[] {
   const q = query.toLowerCase();
   const patterns: RegExp[] = [];
 
-  // Số căn/lô cụ thể
+  // Số căn/lô cụ thể (Hỗ trợ định dạng "căn #3" và tìm kiếm dạng "#03" trong bảng)
   let m: RegExpExecArray | null;
-  const unitRe = /(?:căn|lô|ô|unit)\s*(?:số\s*)?([a-z]?\d+[a-z]?)/g;
+  const unitRe = /(?:căn|lô|ô|unit)\s*(?:số\s*|#\s*)?([a-z]?\d+[a-z]?)/g;
   while ((m = unitRe.exec(q)) !== null)
-    patterns.push(new RegExp(`(căn|lô|ô|unit)[^\\d]*${m[1]}\\b`, 'i'));
+    patterns.push(new RegExp(`(?:căn|lô|ô|unit)[^\\d]*${m[1]}\\b|#0*${m[1]}\\b`, 'i'));
 
   // Tên mẫu nhà
   const modelM = q.match(/\b(cosmo\s*gen\s*\d+|cosmo|fusion|opus|office|villa\s*ny[aâ]h|ny[aâ]h)\b/i);
