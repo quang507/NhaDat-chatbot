@@ -144,6 +144,21 @@ function chunkText(raw) {
   const chunks = [];
   let cur = '';
   for (const b of blocks) {
+    // Nếu block là bảng biểu markdown, tách riêng làm chunk độc lập để tránh bị chia cắt/gộp sai
+    const isTable = b.startsWith('|');
+    if (isTable) {
+      if (cur) { chunks.push(cur); cur = ''; }
+      if (b.length > CHUNK) {
+        // cắt cứng nếu bảng quá lớn
+        for (let i = 0; i < b.length; i += CHUNK - OVERLAP) {
+          chunks.push(b.slice(i, i + CHUNK));
+        }
+      } else {
+        chunks.push(b);
+      }
+      continue;
+    }
+
     if (b.length > CHUNK) {
       if (cur) { chunks.push(cur); cur = ''; }
       for (let i = 0; i < b.length; i += CHUNK - OVERLAP) {
@@ -325,11 +340,16 @@ async function main() {
       const fileText = await parseFile(item.file);
       if (!fileText.trim()) continue;
 
-      const parts = item.relativePath.split('/');
-      const category = parts.length > 1 ? parts[0] : 'Khác';
+      // Xây dựng breadcrumb đường dẫn chi tiết thân thiện với LLM
+      let cleanPath = item.relativePath;
+      cleanPath = cleanPath
+        .replace(/^00_NhaDat-CongTy/, 'Nhà Đất Company')
+        .replace(/^01_NyAh-PhuDinh/, "Ny'ah Phú Định")
+        .replace(/^02_Villa-NyAh/, "Villa Ny'ah")
+        .replace(/^drive-extracted\//, 'Tài liệu Google Drive > ');
 
       const rawChunks = chunkText(fileText);
-      const annotatedChunks = rawChunks.map(text => `## 🔖 [${category}] · OneDrive\n\n${text}`);
+      const annotatedChunks = rawChunks.map(text => `## 🔖 Thư mục: ${cleanPath}\n\n${text}`);
 
       if (annotatedChunks.length === 0) continue;
 

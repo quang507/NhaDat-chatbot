@@ -45,6 +45,21 @@ export function chunkText(raw: string): string[] {
   const chunks: string[] = [];
   let cur = '';
   for (const b of blocks) {
+    // Nếu block là bảng biểu markdown, tách riêng làm chunk độc lập để tránh bị chia cắt/gộp sai
+    const isTable = b.startsWith('|');
+    if (isTable) {
+      if (cur) { chunks.push(cur); cur = ''; }
+      if (b.length > CHUNK) {
+        // cắt cứng nếu bảng quá lớn
+        for (let i = 0; i < b.length; i += CHUNK - OVERLAP) {
+          chunks.push(b.slice(i, i + CHUNK));
+        }
+      } else {
+        chunks.push(b);
+      }
+      continue;
+    }
+
     if (b.length > CHUNK) {
       // block quá dài -> cắt cứng
       if (cur) { chunks.push(cur); cur = ''; }
