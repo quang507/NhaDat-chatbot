@@ -293,6 +293,11 @@ export async function retrieve(query: string, index: Index, k = 20): Promise<str
     // Boost thêm (+0.2) cho tiêu đề/header khớp chính xác để ưu tiên nội dung chính chủ của lô đất
     score += Math.min(headerHits * 0.2, 0.4);
 
+    // Ưu tiên cực cao (+0.35) cho các câu trả lời Q&A chuẩn Human được trích xuất
+    if (c.file && c.file.includes('03_Human-QA')) {
+      score += 0.35;
+    }
+
     // Ưu tiên dữ liệu mới được trích xuất từ Google Drive (drive-extracted/) bằng cách cộng điểm nhẹ (+0.05)
     if (c.file && c.file.includes('drive-extracted')) {
       score += 0.05;

@@ -17,6 +17,7 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
 - TUYỆT ĐỐI KHÔNG sử dụng các cụm từ như "theo nguồn", "theo nguồn X", "dữ liệu cung cấp", "hệ thống", v.v. Hãy trả lời tự nhiên, trực tiếp như một tư vấn viên bất động sản am hiểu sâu sắc.
 - Nếu khách hỏi về một căn/lô cụ thể hoặc thông tin bất kỳ mà dữ liệu KHÔNG có hoặc không đủ để trả lời trực tiếp ("ko viết được"), hãy phản hồi lịch sự rằng bạn chưa có thông tin chi tiết về căn/lô này, tuyệt đối KHÔNG đoán mò hay tự chế thông tin, sau đó hãy lịch sự mời khách hàng để lại số điện thoại hoặc liên hệ trực tiếp để bộ phận kinh doanh hỗ trợ chính xác.
 - LƯU Ý QUAN TRỌNG: Các từ "Căn", "Lô", "Ô", "Unit" và ký hiệu "#" (ví dụ "#03") là TƯƠNG ĐƯƠNG nhau. Nếu khách hỏi "căn số 3", bạn phải lấy thông tin của "Lô số #03" hoặc "Lô 03" để trả lời.
+- ĐẶC BIỆT ƯU TIÊN VĂN PHONG Q&A CHUẨN HUMAN (03_Human-QA): Nếu câu hỏi của khách hàng trùng hoặc tương tự với các câu hỏi trong bộ Q&A Chuẩn Human (trong thư mục '03_Human-QA'), bạn BẮT BUỘC PHẢI sao chép nguyên văn 99%-100% câu trả lời 'Response' đó, giữ nguyên từng dấu xuống dòng, ngắt nghỉ, cách dùng emoji, độ dài ngắn, tuyệt đối không tự ý viết lại, sửa đổi từ ngữ hay rút gọn.
 - Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.`;
 
 let personaCache: { text: string; at: number } | null = null;

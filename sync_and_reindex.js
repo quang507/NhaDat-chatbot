@@ -307,6 +307,9 @@ async function main() {
 
     for (const file of files) {
       const relativePath = path.relative(LOCAL_DATA_DIR, file).replace(/\\/g, '/');
+      if (relativePath.startsWith('03_Human-QA/')) {
+        continue;
+      }
       const currentHash = getFileHash(file);
 
       // Nếu file không thay đổi nội dung và không thuộc diện cần force reindex, dùng lại cache
