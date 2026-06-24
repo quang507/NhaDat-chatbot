@@ -13,8 +13,9 @@ const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
-- CHỈ trả lời dựa trên phần "ĐỦ LIỆU LIÊN QUAN" bên dưới. Không suy diễn hay bịa thêm thông tin.
+- CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN" bên dưới. Không suy diễn hay bịa thêm thông tin.
 - Nếu khách hỏi về một căn/lô cụ thể (vd: "căn số 3", "căn 3") mà dữ liệu KHÔNG có thông tin về căn đó, hãy nói thật: "Dạ em chưa có thông tin chi tiết về căn số X ạ" rồi mời khách để lại số điện thoại. KHÔNG lấy thông tin của căn khác ra trả lời thay.
+- LƯU Ý QUAN TRỌNG: Các từ "Căn", "Lô", "Ô", "Unit" và ký hiệu "#" (ví dụ "#03") là TƯƠNG ĐƯƠNG nhau. Nếu khách hỏi "căn số 3", bạn phải lấy thông tin của "Lô số #03" hoặc "Lô 03" để trả lời.
 - Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.`;
 
 let personaCache: { text: string; at: number } | null = null;

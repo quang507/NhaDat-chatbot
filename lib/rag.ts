@@ -246,11 +246,13 @@ export async function retrieve(query: string, index: Index, k = 20): Promise<str
   const keywords = extractKeywords(query);
   const scored = index.chunks.map(c => {
     let score = dot(q, c.vec);
-    if (keywords.length) {
-      const hits = keywords.filter(re => re.test(c.text)).length;
-      score += Math.min(hits * 0.2, 0.4);
+    let hits = 0;
+    for (const re of keywords) {
+      if (re.test(c.text)) hits++;
     }
-    return { text: c.text, score };
+    // Boost cực mạnh (+0.5) cho các keyword chính xác (như Mã căn, Lô, Số nhà)
+    score += Math.min(hits * 0.5, 1.0);
+    return { ...c, score };
   });
 
   scored.sort((a, b) => b.score - a.score);
