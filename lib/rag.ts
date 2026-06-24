@@ -256,5 +256,17 @@ export async function retrieve(query: string, index: Index, k = 20): Promise<str
   });
 
   scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, k).map(s => s.text);
+  
+  // Lọc trùng lặp văn bản để tránh gửi các đoạn giống hệt nhau làm loãng prompt
+  const uniqueTexts: string[] = [];
+  const seen = new Set<string>();
+  for (const item of scored) {
+    const normalized = item.text.trim().toLowerCase().replace(/\s+/g, ' ');
+    if (!seen.has(normalized)) {
+      seen.add(normalized);
+      uniqueTexts.push(item.text);
+      if (uniqueTexts.length >= k) break;
+    }
+  }
+  return uniqueTexts;
 }
