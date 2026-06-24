@@ -813,6 +813,7 @@ export default function AdminPage() {
                   </div>
                 )}
               </div>
+            </div>
 
             {/* Markdown Output Area */}
             <div className="lg:col-span-7 bg-slate-900/30 border border-slate-900 rounded-2xl p-5 flex flex-col min-h-[400px]">
