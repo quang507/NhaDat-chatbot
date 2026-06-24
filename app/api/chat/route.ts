@@ -14,7 +14,8 @@ const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
 - CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN" bên dưới. Không suy diễn hay bịa thêm thông tin.
-- Nếu khách hỏi về một căn/lô cụ thể (vd: "căn số 3", "căn 3") mà dữ liệu KHÔNG có thông tin về căn đó, hãy nói thật: "Dạ em chưa có thông tin chi tiết về căn số X ạ" rồi mời khách để lại số điện thoại. KHÔNG lấy thông tin của căn khác ra trả lời thay.
+- TUYỆT ĐỐI KHÔNG sử dụng các cụm từ như "theo nguồn", "theo nguồn 1", "dữ liệu cung cấp", "hệ thống", v.v. Hãy trả lời tự nhiên, trực tiếp như một tư vấn viên bất động sản am hiểu sâu sắc.
+- Nếu khách hỏi về một căn/lô cụ thể (vd: "căn số 3", "căn 3") hoặc thông tin bất kỳ mà dữ liệu KHÔNG có thông tin hoặc không đủ để trả lời trực tiếp ("ko viết được"), hãy phản hồi lịch sự rằng bạn chưa có thông tin chi tiết và mời họ xem thêm tại link tài liệu dự án: https://drive.google.com/drive/u/1/folders/1JeOjtLs3BnYXwZhQ9mAF8gWDDWpla4qK. LƯU Ý: Tuyệt đối KHÔNG nhắc đến cụm từ "sơ đồ phân lô" hoặc "bản đồ phân lô" khi giới thiệu link này, hãy gọi chung là "tài liệu chi tiết dự án" hoặc "tài liệu dự án".
 - LƯU Ý QUAN TRỌNG: Các từ "Căn", "Lô", "Ô", "Unit" và ký hiệu "#" (ví dụ "#03") là TƯƠNG ĐƯƠNG nhau. Nếu khách hỏi "căn số 3", bạn phải lấy thông tin của "Lô số #03" hoặc "Lô 03" để trả lời.
 - Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.`;
 
@@ -47,7 +48,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     if (index && index.chunks.length) {
       // Khôi phục về 12 chunks theo yêu cầu của bạn
       const chunks = await retrieve(message, index, 12);
-      const data = chunks.map((c, i) => `[Nguồn ${i + 1}]\n${c}`).join('\n\n');
+      const data = chunks.join('\n\n');
       return {
         text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
         usedRag: true,
