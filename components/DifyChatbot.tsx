@@ -19,6 +19,8 @@ function renderMarkdown(text: string) {
     .replace(/>/g, '&gt;');
   return escaped
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">$1</a>')
+    .replace(/(?<!href=")(https:\/\/drive\.google\.com\/[^\s\)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">Link Google Drive</a>')
     .replace(/^\s*[\*\-]\s+/gm, '• ');
 }
 
