@@ -273,10 +273,10 @@ async function main() {
       try { execSync('git checkout -f main'); } catch {}
     }
 
-    // 2. Đồng bộ thư mục OneDrive về Git local
+    // 2. Đồng bộ thư mục OneDrive về Git local (Gộp chung, KHÔNG xoá thư mục cũ để giữ data Web & Colab)
     console.log("2. Đang đồng bộ dữ liệu từ OneDrive vào Git local...");
-    if (fs.existsSync(LOCAL_DATA_DIR)) {
-      fs.rmSync(LOCAL_DATA_DIR, { recursive: true, force: true });
+    if (!fs.existsSync(LOCAL_DATA_DIR)) {
+      fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
     }
     copyDir(ONEDRIVE_DIR, LOCAL_DATA_DIR);
     console.log("Đồng bộ thư mục thành công!");
