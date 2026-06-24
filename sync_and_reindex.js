@@ -181,9 +181,9 @@ async function embedBatch(texts, taskType) {
   if (COHERE_API_KEY) {
     // 1) Dùng Cohere Multilingual Embedding
     const cohereTaskType = taskType === 'RETRIEVAL_DOCUMENT' ? 'search_document' : 'search_query';
-    const BATCH_SIZE = 96; // Cohere hỗ trợ lên tới 96 đoạn văn bản mỗi request
+    const BATCH_SIZE = 32; // Giảm xuống 32 để tránh quá tải token của key trial (100k TPM)
     for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-      if (i > 0) await sleep(2000); // Tránh rate limit của key trial (10 RPM)
+      if (i > 0) await sleep(20000); // Tăng sleep lên 20s giữa các batch để giữ mức sử dụng dưới 100k TPM
       const chunk = texts.slice(i, i + BATCH_SIZE);
       console.log(`[Cohere] Đang tạo vector embedding cho chunks ${i} đến ${Math.min(i + BATCH_SIZE, texts.length)}... (Tổng: ${texts.length})`);
       const res = await fetch('https://api.cohere.com/v1/embed', {
