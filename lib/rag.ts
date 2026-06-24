@@ -9,9 +9,9 @@ const INDEX_PATH = 'index.json';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const COHERE_API_KEY = process.env.COHERE_API_KEY || '';
 const EMBED_MODEL = 'gemini-embedding-001';
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-const DIMS = 3072;
 
 export interface Chunk {
   text: string;
@@ -70,39 +70,59 @@ function normalize(v: number[]): number[] {
   return v.map(x => +(x / n).toFixed(5));
 }
 
-async function embedOne(text: string, taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[]> {
-  const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:embedContent?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: `models/${EMBED_MODEL}`,
-      content: { parts: [{ text }] },
-      taskType,
-    }),
-  });
-  if (!res.ok) {
-    const errText = await res.text();
-    if (res.status === 404) throw new Error(`Embedding 404: model "${EMBED_MODEL}" không tìm thấy. Kiểm tra GEMINI_API_KEY trong Vercel có đúng key từ AI Studio không. Chi tiết: ${errText}`);
-    throw new Error(`Embedding lỗi ${res.status}: ${errText}`);
-  }
-  const data = await res.json();
-  return normalize(data.embedding?.values || []);
-}
-
-const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-
-// Embed song song theo batch nhỏ để nhanh hơn mà không vượt rate limit
-// Free tier gemini-embedding-001: ~1500 RPM -> batch 5 song song + 200ms gap an toàn
+// Embed batch
 async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[][]> {
-  const PARALLEL = 5;
-  const out: number[][] = new Array(texts.length);
-  for (let i = 0; i < texts.length; i += PARALLEL) {
-    if (i > 0) await sleep(200);
-    const slice = texts.slice(i, i + PARALLEL);
-    const vecs = await Promise.all(slice.map(t => embedOne(t, taskType)));
-    vecs.forEach((v, j) => { out[i + j] = v; });
+  if (texts.length === 0) return [];
+
+  if (COHERE_API_KEY) {
+    const cohereTaskType = taskType === 'RETRIEVAL_DOCUMENT' ? 'search_document' : 'search_query';
+    const res = await fetch('https://api.cohere.com/v1/embed', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${COHERE_API_KEY}`,
+        'Content-Type': 'application/json',
+        'accept': 'application/json'
+      },
+      body: JSON.stringify({
+        texts: texts,
+        model: 'embed-multilingual-v3.0',
+        input_type: cohereTaskType
+      })
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Cohere embedding lỗi ${res.status}: ${errText}`);
+    }
+    const data = await res.json();
+    return (data.embeddings || []).map((emb: number[]) => normalize(emb));
+  } else {
+    // Dùng Gemini Fallback
+    const PARALLEL = 5;
+    const out: number[][] = new Array(texts.length);
+    for (let i = 0; i < texts.length; i += PARALLEL) {
+      if (i > 0) await new Promise(r => setTimeout(r, 200));
+      const slice = texts.slice(i, i + PARALLEL);
+      const vecs = await Promise.all(slice.map(async t => {
+        const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:embedContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: `models/${EMBED_MODEL}`,
+            content: { parts: [{ text: t }] },
+            taskType,
+          }),
+        });
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`Gemini Embedding lỗi ${res.status}: ${errText}`);
+        }
+        const data = await res.json();
+        return normalize(data.embedding?.values || []);
+      }));
+      vecs.forEach((v, j) => { out[i + j] = v; });
+    }
+    return out;
   }
-  return out;
 }
 
 export async function embedQuery(text: string): Promise<number[]> {
@@ -147,8 +167,7 @@ let memIndexLoading: Promise<Index | null> | null = null;
 export async function loadIndex(): Promise<Index | null> {
   // cache trong RAM 5 phút
   if (memIndex && Date.now() - memIndexAt < 5 * 60 * 1000) {
-    // invalidate nếu index dùng dims cũ (text-embedding-004 = 768)
-    if (memIndex.chunks[0]?.vec?.length !== DIMS) { memIndex = null; memIndexAt = 0; }
+    if (!memIndex.chunks[0]?.vec?.length) { memIndex = null; memIndexAt = 0; }
     else return memIndex;
   }
   // dedup: nhiều request đồng thời chỉ tải 1 lần
@@ -217,6 +236,12 @@ function extractKeywords(query: string): RegExp[] {
 export async function retrieve(query: string, index: Index, k = 20): Promise<string[]> {
   const q = await embedQuery(query);
   if (!q.length) return [];
+
+  const indexDim = index.chunks[0]?.vec?.length || 0;
+  if (indexDim > 0 && q.length !== indexDim) {
+    console.error(`[RAG LỖI] Lệch số chiều Vector! Query có ${q.length} chiều, nhưng Database có ${indexDim} chiều. Vui lòng đồng bộ lại.`);
+    return [];
+  }
 
   const keywords = extractKeywords(query);
   const scored = index.chunks.map(c => {
