@@ -1,136 +1,148 @@
-# 2 - trình chiếu/2c - layout/NPD#22 PL B v4.pdf
+# 2 - trình chiếu/2c - layout/NPD#14 PL B v4.pdf
 
 ---
 
 ## Trang 1
 
 PHỤ LỤC B
-NHÀ SỐ 22
+NHÀ SỐ 14
 Ver. 4
-17.94(*)
-05 07 09 11 13 15
-WC1
-THA V N Ị G TR M Í ÁY 03 -0.320
-KHU VỰC ĐẬU XE 17
--0.450 01 18
-SÂN SAU -0.350
-KHU VĂN PHÒNG KHU VĂN PHÒNG
--0.300 -0.300
 TẦNG 1
-03 05 09 11 13 15
-THÔNG TẦNG
-VỊ TRÍ
-THANG MÁY
-01 1 1 7 8
-KHU VĂN PHÒNG
-+2.900
 TẦNG 2
-07 07 09 11 13 15 17
-05
-09 THA V N Ị G TR M Í ÁY
-03 WC 2
-+5.780
-11
-01
-BAN CÔNG PH + Ò 5 N .8 G 00 ĂN 13 15
-+5.750 PHÒNG BẾP & BAR PHÒNG KHÁCH
-+5.800 +5.800
 TẦNG 3
-Opus v4 Ghi chú: (*) Xây dựng với mật độ tối đa (xem Hợp đồng).
+Cosmo Gen 2 Ghi chú: (*) Xây dựng với mật độ tối đa (xem Hợp đồng).
+GOV
+storage
+15
+KHU VỰC ĐẬU XE ±0.000
+11 90
+01
+70 50
+03
+31
+SẢNH TẦNG
++0.020
+SẢNH ĐÓN ±0.000
+WC -0.020
+GOV
+15
+console table
+11 90
+01
+70 50
+03
+31
+OFFICE/ P. NGỦ 4
++2.900
+GOV
+góc piano
+PHÒNG KHÁCH +0.020
+11.49(*)
+BAN CÔNG
++5.750
+PHÒNG ĂN
++5.800 KHÔNG GIAN BẾP
+bar table +5.800
+SẢNH TẦNG
++5.800
+dishwasher
+g kế iặ t t h /s ợ ấ p y
+storage
+)*(00.4
+11.22(*)
+4.53(*)
+1.21(*)
+11.49(*)
+)*(00.4
+11.22(*)
+4.53(*)
+1.21(*)
+11.49(*)
+)*(00.4
+SÂN SAU ±0.000
+THÔNG TẦNG
+0.90 11.22(*)
+4.53(*)
+0.91
+1.21(*)
 Trang 01/03
-)*(00.4 4.14(*)
-19.01(*)
-15.94(*)
-)*(00.4
-4.14(*)
-17.01(*)
-1.20 15.94(*)
-4.14(*)
-1.20 17.01(*)
-)*(00.4
-2.00
-4.14(*)
-2.00
 
 ---
 
 ## Trang 2
 
+| +8.8 |
+| --- |
+|  |
+
+
 PHỤ LỤC B
-NHÀ SỐ 22
+NHÀ SỐ 14
 Ver. 4
-két nước âm
-07
-05
-góc thư giãn 09 THA V N Ị G TR M Í ÁY
-03 PHÒNG TẮM 1
-+8.880
-11
-BAN CÔNG P. NGỦ MASTER
-+8.850 +8.900
-13 15 16 17 SẢNH TẦNG
-+8.900
-Phòng thay đồ bench
-Working from home góc thư giãn
-01
-Tủ/kho
-03 05 07 Bồn cây
 TẦNG 4
-VỊ TRÍ
-THANG MÁY
-BAN CÔNG P + . 1 N 2 G .0 Ủ 00 2 PH + Ò 1 N 1. G 98 T 0 ẮM 2 SINH H + O 12 Ạ .0 T 0 C 0 HUNG P + . 1 N 2 G .0 Ủ 00 3
-+11.980
-Góc học tập Góc học tập
-01 03 05 11 13 15 17
 TẦNG 5
-VỊ TRÍ
-THANG MÁY
-PHÒNG THỜ
-+15.000
-SÂN TRƯỚC SÂN SAU
-+15.050 +15.050
-17
-MÁI KÍNH
-01 03 0055 07 09 11 13 15
-TẦNG SÂN THƯỢNG
-Opus v4 Ghi chú: (*) Xây dựng với mật độ tối đa (xem Hợp đồng).
+TẦNG 6
+Ghi chú: (*) Xây dựng với mật độ tối đa (xem Hợp đồng).
+GOV
+BAN CÔNG dressing table mini bar
++8.850
+walk-in closet
+P.TẮM MASTER
++8.900
+PHÒNG NGỦ MASTER
++8.900 SẢNH TẦNG
++8.900
+GOV
+PHÒNG NGỦ 3
++12.000
+P. TẮM 2
++11.980
+SẢNH TẦNG
+PHÒNG NGỦ 2 +12.000
++12.000
+góc
+học tập
+GOV
+SÂN THƯỢNG
++15.050
+SẢNH TẦNG
++15.100 SÂN THƯỢNG
++15.050
+)*(00.4
+0.90 11.22(*)
+4.53(*)
+11.49(*)
+1.21(*)
+11.49(*)
+)*(00.4
+11.22(*)
+4.53(*)
+1.21(*)
+11.49(*)
+)*(00.4
+11.22(*)
+4.53(*)
+1.21(*)
+Cosmo Gen 2
 Trang 02/03
-)*(00.4
-1.20 15.94(*)
-4.14(*)
-1.20 17.01(*)
-)*(00.4
-1.20 15.94(*)
-4.14(*)
-1.20 17.01(*)
-)*(00.4
-15.94(*)
-4.14(*)
-17.01(*)
 
 ---
 
 ## Trang 3
 
-|  |  | MÁI THANG MÁY
-+19.000
-MÁI BTCT
-+18.100 |
-| --- | --- | --- |
-|  |  |  |
-
-
 PHỤ LỤC B
-NHÀ SỐ 22
+NHÀ SỐ 14
 Ver. 4
-MÁI THANG MÁY
-+19.000
-MÁI BTCT
+SÀN MÁI
 +18.100
-TẦNG MÁI
-Opus v4 Ghi chú: (*) Xây dựng với mật độ tối đa (xem Hợp đồng).
-Trang 03/03
+MÁI KT THANG MÁY
++19.000
+11.49(*)
+TẦNG 7
+Ghi chú: (*) Xây dựng với mật độ tối đa (xem Hợp đồng).
 )*(00.4
-15.94(*)
-4.14(*)
-17.01(*)
+11.22(*)
+4.53(*)
+1.21(*)
+Cosmo Gen 2
+Trang 03/03
