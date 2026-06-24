@@ -16,6 +16,8 @@ const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
 export interface Chunk {
   text: string;
   vec: number[]; // đã chuẩn hóa (normalized) để cosine = dot product
+  file?: string;
+  hash?: string;
 }
 export interface Index {
   chunks: Chunk[];
@@ -212,6 +214,16 @@ function extractKeywords(query: string): RegExp[] {
   // Tên mẫu nhà
   const modelM = q.match(/\b(cosmo\s*gen\s*\d+|cosmo|fusion|opus|office|villa\s*ny[aâ]h|ny[aâ]h)\b/i);
   if (modelM) patterns.push(new RegExp(modelM[0].replace(/\s+/g, '\\s*'), 'i'));
+ 
+  // Số căn/lô đứng độc lập không đi kèm từ khoá "căn/lô" (vd: "diện tích 24", "giá 3")
+  const standaloneNumRe = /\b([1-9]\d?)\b(?![\s-]*(?:tỷ|tỉ|triệu|m|tr\b|m2|m²))/i;
+  const standaloneMatch = q.match(standaloneNumRe);
+  if (standaloneMatch) {
+    const val = standaloneMatch[1];
+    if (!patterns.some(pat => pat.test(`#0*${val}`))) {
+      patterns.push(new RegExp(`(?:căn|lô|ô|unit)[^\\d]*${val}\\b|#0*${val}\\b`, 'i'));
+    }
+  }
 
   // Người sáng lập / chức danh
   if (/founder|chủ\s*tịch|giám\s*đốc|sáng\s*lập|lãnh\s*đạo|CEO/i.test(q))
@@ -247,11 +259,30 @@ export async function retrieve(query: string, index: Index, k = 20): Promise<str
   const scored = index.chunks.map(c => {
     let score = dot(q, c.vec);
     let hits = 0;
+    let headerHits = 0;
+
     for (const re of keywords) {
-      if (re.test(c.text)) hits++;
+      if (re.test(c.text)) {
+        hits++;
+        // Boost thêm nếu khớp ngay ở dòng đầu tiên (thường là tiêu đề file/section)
+        const firstLine = c.text.split('\n')[0] || '';
+        if (re.test(firstLine)) {
+          headerHits++;
+        }
+      }
     }
+    
     // Boost cực mạnh (+0.5) cho các keyword chính xác (như Mã căn, Lô, Số nhà)
     score += Math.min(hits * 0.5, 1.0);
+
+    // Boost thêm (+0.2) cho tiêu đề/header khớp chính xác để ưu tiên nội dung chính chủ của lô đất
+    score += Math.min(headerHits * 0.2, 0.4);
+
+    // Ưu tiên dữ liệu mới được trích xuất từ Google Drive (drive-extracted/) bằng cách cộng điểm nhẹ (+0.05)
+    if (c.file && c.file.includes('drive-extracted')) {
+      score += 0.05;
+    }
+
     return { ...c, score };
   });
 
