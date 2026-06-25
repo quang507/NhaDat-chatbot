@@ -25,12 +25,13 @@ export default function VoicePage() {
   const isListeningLoopActive = useRef(false);
   const audioChunksBuffer = useRef<string>('');
 
-  const stateRef = useRef<ChatState>(state);
+  const chatStateRef = useRef<ChatState>('idle');
   
-  // Sync stateRef with state
-  useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
+  // Synchronous state update helper
+  const updateState = (newState: ChatState) => {
+    setState(newState);
+    chatStateRef.current = newState;
+  };
 
   // 1. Initialize Web APIs
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function VoicePage() {
         rec.lang = 'vi-VN';
         
         rec.onstart = () => {
-          setState('listening');
+          updateState('listening');
           setTranscript('Mời anh/chị nói chuyện ạ...');
           setErrorMsg('');
         };
@@ -51,7 +52,7 @@ export default function VoicePage() {
         rec.onresult = (event: any) => {
           const resultText = event.results[0][0].transcript;
           setTranscript(resultText);
-          setState('processing');
+          updateState('processing');
           handleUserSpeech(resultText);
         };
         
@@ -59,18 +60,18 @@ export default function VoicePage() {
           console.error('Speech recognition error', event.error);
           if (event.error === 'no-speech' || event.error === 'aborted') {
             // Quietly handle no-speech and aborted actions
-            if (isListeningLoopActive.current && stateRef.current === 'listening') {
+            if (isListeningLoopActive.current && chatStateRef.current === 'listening') {
               startListening();
             }
           } else {
             setErrorMsg(`Lỗi micro: ${event.error}`);
-            setState('error');
+            updateState('error');
           }
         };
         
         rec.onend = () => {
           // If we finished listening but didn't transition to processing or speaking, restart
-          if (isListeningLoopActive.current && stateRef.current === 'listening') {
+          if (isListeningLoopActive.current && chatStateRef.current === 'listening') {
             startListening();
           }
         };
@@ -78,7 +79,7 @@ export default function VoicePage() {
         recognitionRef.current = rec;
       } else {
         setErrorMsg('Trình duyệt của bạn không hỗ trợ nhận diện giọng nói (Web Speech API). Hãy thử Chrome hoặc Safari.');
-        setState('error');
+        updateState('error');
       }
     }
     
@@ -104,7 +105,7 @@ export default function VoicePage() {
   const toggleVoiceSession = () => {
     if (isListeningLoopActive.current) {
       stopAllVoiceActivities();
-      setState('idle');
+      updateState('idle');
       setTranscript('Đã dừng đàm thoại');
     } else {
       isListeningLoopActive.current = true;
@@ -199,7 +200,7 @@ export default function VoicePage() {
         if (isListeningLoopActive.current) {
           startListening();
         } else {
-          setState('idle');
+          updateState('idle');
         }
       }
       return;
@@ -219,7 +220,7 @@ export default function VoicePage() {
         if (isListeningLoopActive.current) {
           startListening();
         } else {
-          setState('idle');
+          updateState('idle');
         }
       }
       return;
@@ -227,7 +228,7 @@ export default function VoicePage() {
 
     const nextAudio = audioQueueRef.current.shift()!;
     isPlayingAudioRef.current = true;
-    setState('speaking');
+    updateState('speaking');
     setResponse(nextAudio.text);
 
     const audio = new Audio(nextAudio.url);
@@ -333,7 +334,7 @@ export default function VoicePage() {
           if (isListeningLoopActive.current) {
             startListening();
           } else {
-            setState('idle');
+            updateState('idle');
           }
         }
       }
@@ -348,7 +349,7 @@ export default function VoicePage() {
     } catch (err: any) {
       console.error(err);
       setErrorMsg('Không thể kết nối đến máy chủ.');
-      setState('error');
+      updateState('error');
       if (isListeningLoopActive.current) {
         setTimeout(startListening, 3000);
       }
