@@ -23,6 +23,13 @@ export default function VoicePage() {
   const isListeningLoopActive = useRef(false);
   const audioChunksBuffer = useRef<string>('');
 
+  const stateRef = useRef<ChatState>(state);
+  
+  // Sync stateRef with state
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   // 1. Initialize Web APIs
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -50,9 +57,9 @@ export default function VoicePage() {
         
         rec.onerror = (event: any) => {
           console.error('Speech recognition error', event.error);
-          if (event.error === 'no-speech') {
-            // If no speech detected, just restart listening quietly
-            if (isListeningLoopActive.current) {
+          if (event.error === 'no-speech' || event.error === 'aborted') {
+            // Quietly handle no-speech and aborted actions
+            if (isListeningLoopActive.current && stateRef.current === 'listening') {
               startListening();
             }
           } else {
@@ -63,7 +70,7 @@ export default function VoicePage() {
         
         rec.onend = () => {
           // If we finished listening but didn't transition to processing or speaking, restart
-          if (isListeningLoopActive.current && state === 'listening') {
+          if (isListeningLoopActive.current && stateRef.current === 'listening') {
             startListening();
           }
         };
@@ -78,7 +85,7 @@ export default function VoicePage() {
     return () => {
       stopAllVoiceActivities();
     };
-  }, [state]);
+  }, []);
 
   const stopAllVoiceActivities = () => {
     isListeningLoopActive.current = false;
