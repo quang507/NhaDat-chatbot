@@ -3,7 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const crypto = require('crypto');
 
-const ONEDRIVE_DIR = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBotData_Upload`;
+const ONEDRIVE_DIR = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide`;
 const LOCAL_DATA_DIR = path.join(__dirname, 'data');
 let GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 let COHERE_API_KEY = process.env.COHERE_API_KEY;
