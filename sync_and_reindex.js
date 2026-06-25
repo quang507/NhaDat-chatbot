@@ -3,7 +3,8 @@ const path = require('path');
 const { execSync } = require('child_process');
 const crypto = require('crypto');
 
-const ONEDRIVE_DIR = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide`;
+const ONEDRIVE_DIR = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide\\ChatBotData_Upload`;
+const ONEDRIVE_IMAGES_DIR_GLOBAL = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide\\ChatBotImages_Upload`;
 const LOCAL_DATA_DIR = path.join(__dirname, 'data');
 let GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 let COHERE_API_KEY = process.env.COHERE_API_KEY;
@@ -344,29 +345,11 @@ async function main() {
     console.log("Đồng bộ thư mục văn bản thành công!");
 
     // 2b. Đồng bộ hình ảnh từ OneDrive (nếu có)
-    const ONEDRIVE_IMAGES_DIR = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBotImages_Upload`;
+    const ONEDRIVE_IMAGES_DIR = ONEDRIVE_IMAGES_DIR_GLOBAL;
     const LOCAL_IMAGES_DIR = path.join(__dirname, 'public', 'images');
     const LOCAL_IMAGES_METADATA_FILE = path.join(LOCAL_DATA_DIR, 'generated_images_metadata.md');
+    // Bỏ qua đồng bộ ảnh từ OneDrive theo yêu cầu người dùng, ảnh sẽ được quản lý trực tiếp trong source code.
     
-    console.log("2b. Đang đồng bộ hình ảnh từ OneDrive vào thư mục public/images...");
-    if (!fs.existsSync(LOCAL_IMAGES_DIR)) {
-      fs.mkdirSync(LOCAL_IMAGES_DIR, { recursive: true });
-    }
-    
-    if (fs.existsSync(ONEDRIVE_IMAGES_DIR)) {
-      copyDir(ONEDRIVE_IMAGES_DIR, LOCAL_IMAGES_DIR);
-      console.log("Đã sao chép thư mục hình ảnh thành công!");
-    } else {
-      // Tạo thư mục mẫu trong OneDrive nếu chưa tồn tại
-      try {
-        fs.mkdirSync(ONEDRIVE_IMAGES_DIR, { recursive: true });
-        console.log(`Đã tạo thư mục mẫu chứa ảnh trên OneDrive: ${ONEDRIVE_IMAGES_DIR}`);
-      } catch (e) {}
-    }
-    
-    // Tạo file metadata tự động gắn tag cho các ảnh
-    generateImageMetadata(LOCAL_IMAGES_DIR, LOCAL_IMAGES_METADATA_FILE);
-
     // 3. Phân tích các file, phát hiện các file mới/thay đổi để gom chunks
     console.log("3. Đang phân tích files dữ liệu...");
     const files = scanDir(LOCAL_DATA_DIR);
