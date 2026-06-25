@@ -44,7 +44,7 @@ export default function VoicePage() {
         
         rec.onstart = () => {
           setState('listening');
-          setTranscript('Đang nghe...');
+          setTranscript('Mời anh/chị nói chuyện ạ...');
           setErrorMsg('');
         };
         
@@ -429,7 +429,7 @@ export default function VoicePage() {
               <span className="text-neutral-400 text-sm font-medium tracking-wide">Chạm để nói</span>
             )}
             {state === 'listening' && (
-              <span className="text-white text-lg font-bold tracking-wide animate-pulse">🎙️ Nói đi...</span>
+              <span className="text-white text-sm font-bold tracking-wide animate-pulse">🎙️ Mời anh/chị nói chuyện...</span>
             )}
             {state === 'processing' && (
               <div className="w-12 h-12 rounded-full border-4 border-purple-500/20 border-t-purple-400 animate-spin-orb" />
