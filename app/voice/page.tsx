@@ -330,8 +330,8 @@ export default function VoicePage() {
       // Update history
       chatHistoryRef.current = [
         ...history,
-        { role: 'user', content: speechText },
-        { role: 'assistant', content: accumulatedText }
+        { role: 'user' as const, content: speechText },
+        { role: 'assistant' as const, content: accumulatedText }
       ].slice(-20);
       
     } catch (err: any) {
