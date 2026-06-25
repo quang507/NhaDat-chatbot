@@ -256,6 +256,53 @@ async function embedBatch(texts, taskType) {
   return out;
 }
 
+// ---------- Tự động trích xuất tag từ tên file ảnh và sinh file markdown chỉ mục ----------
+function generateImageMetadata(imagesDir, outputMdPath) {
+  if (!fs.existsSync(imagesDir)) {
+    if (fs.existsSync(outputMdPath)) {
+      try { fs.unlinkSync(outputMdPath); } catch (e) {}
+    }
+    return;
+  }
+
+  const files = fs.readdirSync(imagesDir);
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  const entries = [];
+
+  for (const name of files) {
+    const ext = path.extname(name).toLowerCase();
+    if (!imageExtensions.includes(ext)) continue;
+
+    const baseName = path.basename(name, ext);
+    
+    // Tách từ theo ký hiệu gạch dưới hoặc gạch ngang để tạo từ khóa
+    // ví dụ: biet-thu-nyah_phoi-canh-mat-ngoai.jpg -> biet thu nyah, phoi canh mat ngoai
+    const parts = baseName.split('_');
+    const cleanParts = parts.map(p => p.replace(/-/g, ' ').trim());
+    
+    const title = cleanParts[cleanParts.length - 1]; // từ khóa cuối cùng làm tiêu đề/caption
+    const keywords = cleanParts.join(', ');
+    
+    const mdEntry = `## 🔖 [Ảnh Minh Họa] · ${baseName}
+Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: ${keywords}.
+Chi tiết: ${title}.
+Đường dẫn hình ảnh: ![${title}](/images/${name})
+
+---`;
+    entries.push(mdEntry);
+  }
+
+  if (entries.length > 0) {
+    const content = `# 📸 Danh Sách Ảnh Minh Họa Tự Động Sinh\n\nTài liệu này chứa thông tin và đường dẫn đến các hình ảnh dự án phục vụ cho RAG.\n\n${entries.join('\n\n')}\n`;
+    fs.writeFileSync(outputMdPath, content, 'utf-8');
+    console.log(`Đã tạo/cập nhật chỉ mục ảnh minh họa với ${entries.length} ảnh tại ${outputMdPath}.`);
+  } else {
+    if (fs.existsSync(outputMdPath)) {
+      try { fs.unlinkSync(outputMdPath); } catch (e) {}
+    }
+  }
+}
+
 async function main() {
   try {
     if (!fs.existsSync(ONEDRIVE_DIR)) {
@@ -288,13 +335,37 @@ async function main() {
       try { execSync('git checkout -f main'); } catch {}
     }
 
-    // 2. Đồng bộ thư mục OneDrive về Git local (Gộp chung, KHÔNG xoá thư mục cũ để giữ data Web & Colab)
-    console.log("2. Đang đồng bộ dữ liệu từ OneDrive vào Git local...");
+    // 2. Đồng bộ thư mục văn bản OneDrive về Git local
+    console.log("2. Đang đồng bộ dữ liệu văn bản từ OneDrive vào Git local...");
     if (!fs.existsSync(LOCAL_DATA_DIR)) {
       fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
     }
     copyDir(ONEDRIVE_DIR, LOCAL_DATA_DIR);
-    console.log("Đồng bộ thư mục thành công!");
+    console.log("Đồng bộ thư mục văn bản thành công!");
+
+    // 2b. Đồng bộ hình ảnh từ OneDrive (nếu có)
+    const ONEDRIVE_IMAGES_DIR = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBotImages_Upload`;
+    const LOCAL_IMAGES_DIR = path.join(__dirname, 'public', 'images');
+    const LOCAL_IMAGES_METADATA_FILE = path.join(LOCAL_DATA_DIR, 'generated_images_metadata.md');
+    
+    console.log("2b. Đang đồng bộ hình ảnh từ OneDrive vào thư mục public/images...");
+    if (!fs.existsSync(LOCAL_IMAGES_DIR)) {
+      fs.mkdirSync(LOCAL_IMAGES_DIR, { recursive: true });
+    }
+    
+    if (fs.existsSync(ONEDRIVE_IMAGES_DIR)) {
+      copyDir(ONEDRIVE_IMAGES_DIR, LOCAL_IMAGES_DIR);
+      console.log("Đã sao chép thư mục hình ảnh thành công!");
+    } else {
+      // Tạo thư mục mẫu trong OneDrive nếu chưa tồn tại
+      try {
+        fs.mkdirSync(ONEDRIVE_IMAGES_DIR, { recursive: true });
+        console.log(`Đã tạo thư mục mẫu chứa ảnh trên OneDrive: ${ONEDRIVE_IMAGES_DIR}`);
+      } catch (e) {}
+    }
+    
+    // Tạo file metadata tự động gắn tag cho các ảnh
+    generateImageMetadata(LOCAL_IMAGES_DIR, LOCAL_IMAGES_METADATA_FILE);
 
     // 3. Phân tích các file, phát hiện các file mới/thay đổi để gom chunks
     console.log("3. Đang phân tích files dữ liệu...");
@@ -435,14 +506,17 @@ async function main() {
     console.log("9. Đang trở về nhánh main...");
     execSync('git checkout -f main');
     
-    console.log("10. Đang push các file thư mục data lên GitHub...");
+    console.log("10. Đang push các file thư mục data và hình ảnh lên GitHub...");
     execSync('git add data/');
+    if (fs.existsSync(LOCAL_IMAGES_DIR)) {
+      execSync('git add public/images/');
+    }
     try {
-      execSync('git commit -m "Sync data folders from OneDrive"');
+      execSync('git commit -m "Sync data folders and images from OneDrive"');
       execSync('git push origin main');
-      console.log("Đã đẩy dữ liệu thư mục data lên main branch thành công!");
+      console.log("Đã đẩy dữ liệu và hình ảnh lên main branch thành công!");
     } catch (e) {
-      console.log("Không có thay đổi dữ liệu nào cần commit trên main branch.");
+      console.log("Không có thay đổi dữ liệu hay hình ảnh nào cần commit trên main branch.");
     }
 
     if (hitLimit) {

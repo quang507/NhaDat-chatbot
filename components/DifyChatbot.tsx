@@ -18,11 +18,25 @@ function renderMarkdown(text: string) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-  return escaped
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">$1</a>')
-    .replace(/(?<!href=")(https:\/\/drive\.google\.com\/[^\s\)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">Link Google Drive</a>')
-    .replace(/^\s*[\*\-]\s+/gm, '• ');
+
+  let html = escaped;
+  
+  // 1. Render markdown images: ![alt](url) (supports relative paths /images/... or full URLs)
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded-xl my-2 border border-gray-200 shadow-sm max-h-[250px] object-cover" />');
+  
+  // 2. Render normal links: [text](url) (not preceded by !)
+  html = html.replace(/(?<!!)\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">$1</a>');
+  
+  // 3. Render raw Google Drive links
+  html = html.replace(/(?<!href=")(https:\/\/drive\.google\.com\/[^\s\)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">Link Google Drive</a>');
+  
+  // 4. Render bold text: **text**
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  
+  // 5. Render bullet points
+  html = html.replace(/^\s*[\*\-]\s+/gm, '• ');
+  
+  return html;
 }
 
 // Trí nhớ phiên: rút thông tin khách từ hội thoại để bot không hỏi lại
