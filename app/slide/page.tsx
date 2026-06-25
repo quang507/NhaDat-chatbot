@@ -5,18 +5,20 @@ import React, { useState, useEffect, useRef } from 'react';
 type SlideState = 'idle' | 'listening' | 'processing' | 'speaking';
 
 interface SlideData {
-  layout_type?: 'split_image_right' | 'split_image_left' | 'full_background' | 'dark_minimal';
+  layout_type?: 'split_image_right' | 'split_image_left' | 'full_background' | 'dark_minimal' | 'text_only';
   title: string;
   points: string[];
   highlight_number?: string;
   speech_text: string;
-  image_url: string;
+  image_url?: string;
+  image_urls?: string[];
 }
 
 export default function SlideBotPage() {
   const [state, setState] = useState<SlideState>('idle');
   const [transcript, setTranscript] = useState('Nhấn nút Micro để bắt đầu');
   const [slide, setSlide] = useState<SlideData | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
   const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
@@ -163,55 +165,174 @@ export default function SlideBotPage() {
   const renderSlideContent = () => {
     if (!slide) return null;
     
-    const layout = slide.layout_type || 'split_image_right';
+    // Lấy tất cả ảnh
+    const images: string[] = [];
+    if (slide.image_urls && Array.isArray(slide.image_urls)) {
+      images.push(...slide.image_urls.filter(Boolean));
+    } else if (slide.image_url) {
+      images.push(slide.image_url);
+    }
 
-    // 1. SPLIT RIGHT (Chữ trái, Ảnh phải)
-    if (layout === 'split_image_right' || layout === 'split_image_left') {
-      const isLeft = layout === 'split_image_left';
+    const hasImages = images.length > 0;
+    // Nếu không có ảnh, tự động ép sang text_only để hiển thị đẹp nhất
+    const layout = hasImages ? (slide.layout_type || 'split_image_right') : 'text_only';
+
+    // Helper render grid ảnh cho split/dark layouts
+    const renderImageGrid = () => {
+      if (!hasImages) return null;
+      if (images.length === 1) {
+        return (
+          <div className="relative w-full h-full group/img overflow-hidden rounded-2xl">
+            <img 
+              src={images[0]} 
+              alt="Minh họa" 
+              className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+              onClick={() => setSelectedImage(images[0])}
+            />
+            <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none flex items-center gap-1">
+              🔍 Click để phóng to
+            </div>
+          </div>
+        );
+      }
+      if (images.length === 2) {
+        return (
+          <div className="grid grid-cols-2 gap-4 w-full h-full">
+            {images.map((img, idx) => (
+              <div key={idx} className="relative w-full h-full group/img overflow-hidden rounded-2xl">
+                <img 
+                  src={img} 
+                  alt={`Minh họa ${idx + 1}`} 
+                  className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+                  onClick={() => setSelectedImage(img)}
+                />
+                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  🔍 Phóng to
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      }
+      // >= 3 ảnh
       return (
-        <div className={`w-full max-w-6xl w-full h-[70vh] bg-[#000000] rounded-3xl shadow-2xl flex overflow-hidden transform transition-all duration-700 hover:shadow-[#e8b84b]/20 ${isLeft ? 'flex-row-reverse' : 'flex-row'}`}>
-          {/* Text Content */}
-          <div className="flex-1 p-14 flex flex-col justify-center animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-8 leading-tight text-white tracking-tight">
+        <div className="grid grid-cols-3 gap-4 w-full h-full">
+          <div className="col-span-2 h-full relative group/img overflow-hidden rounded-2xl">
+            <img 
+              src={images[0]} 
+              alt="Minh họa chính" 
+              className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+              onClick={() => setSelectedImage(images[0])}
+            />
+            <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
+              🔍 Phóng to
+            </div>
+          </div>
+          <div className="col-span-1 grid grid-rows-2 gap-4 h-full">
+            {images.slice(1, 3).map((img, idx) => (
+              <div key={idx} className="relative w-full h-full group/img overflow-hidden rounded-2xl">
+                <img 
+                  src={img} 
+                  alt={`Minh họa ${idx + 2}`} 
+                  className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+                  onClick={() => setSelectedImage(img)}
+                />
+                <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur px-2 py-1 rounded-[6px] text-[10px] text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  🔍 Phóng to
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    // Định nghĩa class container chuẩn 16:9 to lớn chiếm gần trọn màn hình
+    const containerClass = "w-full max-w-[95vw] md:max-w-[90vw] xl:max-w-[85vw] aspect-video max-h-[72vh] md:max-h-[75vh] xl:max-h-[78vh] bg-[#000000] rounded-3xl shadow-2xl border border-neutral-900/60 flex overflow-hidden transform transition-all duration-700 hover:shadow-[#e8b84b]/10";
+
+    // 1. TEXT ONLY (Chỉ có văn bản)
+    if (layout === 'text_only') {
+      return (
+        <div className={`${containerClass} flex-col justify-center items-center p-16 relative animate-fade-in`}>
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#e8b84b]/3 to-transparent pointer-events-none"></div>
+          
+          <div className="max-w-4xl text-center z-10 w-full flex flex-col justify-center items-center h-full">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 text-white tracking-tight leading-tight">
               {slide.title}
             </h2>
-            <div className="flex flex-col gap-6 flex-1 overflow-y-auto pr-4 custom-scrollbar">
+            
+            {slide.highlight_number && (
+              <div className="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#ffffff] to-[#a0a0a0] mb-8 tracking-tighter">
+                {slide.highlight_number}
+              </div>
+            )}
+            
+            <div className="flex flex-col gap-6 items-center w-full max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
               {slide.points.map((point, idx) => (
-                <div key={idx} className="flex gap-4 items-start group">
-                  <div className="w-2 h-2 mt-2.5 rounded-full bg-[#e8b84b] shrink-0 transition-transform group-hover:scale-150"></div>
-                  <p className="text-xl text-gray-300 leading-relaxed font-light">{point}</p>
+                <div key={idx} className="flex gap-4 items-start max-w-2xl text-left animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
+                  <div className="w-2.5 h-2.5 mt-2.5 rounded-full bg-[#e8b84b] shrink-0"></div>
+                  <p className="text-xl md:text-2xl text-gray-300 font-light leading-relaxed">{point}</p>
                 </div>
               ))}
             </div>
           </div>
-          {/* Image */}
-          <div className="flex-1 bg-[#111] relative flex items-center justify-center p-4">
-            {slide.image_url ? (
-              <img src={slide.image_url} alt="Minh họa" className="w-full h-full object-cover rounded-2xl opacity-90 hover:opacity-100 transition-opacity duration-500" />
-            ) : (
-              <div className="text-center opacity-30"><div className="text-8xl mb-4">🖼️</div></div>
-            )}
+        </div>
+      );
+    }
+
+    // 2. SPLIT RIGHT / SPLIT LEFT (Chữ một bên, Ảnh một bên)
+    if (layout === 'split_image_right' || layout === 'split_image_left') {
+      const isLeft = layout === 'split_image_left';
+      return (
+        <div className={`${containerClass} ${isLeft ? 'flex-row-reverse' : 'flex-row'} animate-fade-in`}>
+          {/* Text Content */}
+          <div className="flex-1 p-12 md:p-16 flex flex-col justify-center animate-fade-in-up">
+            <h2 className="text-3xl md:text-4.5xl font-extrabold mb-6 leading-tight text-white tracking-tight">
+              {slide.title}
+            </h2>
+            <div className="flex flex-col gap-5 flex-1 overflow-y-auto pr-4 custom-scrollbar">
+              {slide.points.map((point, idx) => (
+                <div key={idx} className="flex gap-4 items-start group animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
+                  <div className="w-2 h-2 mt-2.5 rounded-full bg-[#e8b84b] shrink-0 transition-transform group-hover:scale-150"></div>
+                  <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Image Grid Section */}
+          <div className="flex-1 bg-[#0a0a0a] relative flex items-center justify-center p-6 border-l border-neutral-900/40">
+            {renderImageGrid()}
           </div>
         </div>
       );
     }
 
-    // 2. FULL BACKGROUND (Nền toàn màn hình)
+    // 3. FULL BACKGROUND (Nền toàn màn hình)
     if (layout === 'full_background') {
+      const bgImg = images[0];
       return (
-        <div className="w-full max-w-6xl w-full h-[70vh] bg-black rounded-3xl shadow-2xl overflow-hidden relative group animate-fade-in">
-          {slide.image_url && (
-            <img src={slide.image_url} alt="Background" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-1000 ease-out" />
+        <div className={`${containerClass} flex-col overflow-hidden relative group animate-fade-in`}>
+          {bgImg && (
+            <div className="absolute inset-0 w-full h-full cursor-pointer overflow-hidden" onClick={() => setSelectedImage(bgImg)}>
+              <img 
+                src={bgImg} 
+                alt="Background" 
+                className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000 ease-out" 
+              />
+              <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                🔍 Click để xem ảnh gốc
+              </div>
+            </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none"></div>
           
-          <div className="absolute bottom-0 left-0 w-full p-16 flex flex-col">
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white tracking-tight drop-shadow-lg animate-slide-up">
+          <div className="absolute bottom-0 left-0 w-full p-12 md:p-16 flex flex-col z-10">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white tracking-tight drop-shadow-lg animate-slide-up">
               {slide.title}
             </h2>
-            <div className="flex flex-col gap-3 max-w-3xl animate-slide-up delay-100">
+            <div className="flex flex-col gap-4 max-w-3xl animate-slide-up delay-100">
               {slide.points.map((point, idx) => (
-                <p key={idx} className="text-2xl text-gray-200 font-light drop-shadow-md border-l-4 border-[#e8b84b] pl-4">{point}</p>
+                <p key={idx} className="text-xl md:text-2xl text-gray-200 font-light drop-shadow-md border-l-4 border-[#e8b84b] pl-4">{point}</p>
               ))}
             </div>
           </div>
@@ -219,33 +340,47 @@ export default function SlideBotPage() {
       );
     }
 
-    // 3. DARK MINIMAL (Tối giản, nhấn mạnh số liệu)
+    // 4. DARK MINIMAL (Tối giản, nhấn mạnh số liệu)
     if (layout === 'dark_minimal') {
       return (
-        <div className="w-full max-w-6xl w-full h-[70vh] bg-[#050505] rounded-3xl shadow-2xl flex overflow-hidden border border-[#222] relative animate-fade-in">
+        <div className={`${containerClass} animate-fade-in`}>
           {/* Text Content */}
-          <div className="flex-1 p-16 flex flex-col justify-center relative z-10">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-white tracking-tight opacity-90">
+          <div className="flex-1 p-12 md:p-16 flex flex-col justify-center relative z-10">
+            <h2 className="text-3xl md:text-4.5xl font-semibold mb-4 text-white tracking-tight opacity-90">
               {slide.title}
             </h2>
             {slide.highlight_number && (
-              <div className="text-7xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#ffffff] to-[#a0a0a0] mb-8 tracking-tighter">
+              <div className="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#ffffff] to-[#a0a0a0] mb-6 tracking-tighter">
                 {slide.highlight_number}
               </div>
             )}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 max-h-[35vh] overflow-y-auto pr-2 custom-scrollbar">
               {slide.points.map((point, idx) => (
-                <p key={idx} className="text-xl text-gray-400 font-light">{point}</p>
+                <p key={idx} className="text-lg md:text-xl text-gray-400 font-light leading-relaxed">{point}</p>
               ))}
             </div>
           </div>
           
-          {/* Subtle Image on right */}
-          <div className="flex-1 relative flex items-center justify-center p-12">
-            {slide.image_url && (
-              <div className="relative w-full h-full">
-                <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#050505] z-10"></div>
-                <img src={slide.image_url} alt="Minh họa" className="w-full h-full object-contain opacity-50 mix-blend-screen" />
+          {/* Image Section */}
+          <div className="flex-1 relative flex items-center justify-center p-6 border-l border-neutral-900/40 bg-[#070707]">
+            {hasImages && (
+              <div className="w-full h-full">
+                {images.length === 1 ? (
+                  <div className="relative w-full h-full group/img overflow-hidden rounded-2xl">
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-transparent to-transparent z-10 pointer-events-none"></div>
+                    <img 
+                      src={images[0]} 
+                      alt="Minh họa" 
+                      className="w-full h-full object-cover opacity-60 hover:opacity-80 transition-opacity duration-500 cursor-pointer"
+                      onClick={() => setSelectedImage(images[0])}
+                    />
+                    <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300">
+                      🔍 Phóng to
+                    </div>
+                  </div>
+                ) : (
+                  renderImageGrid()
+                )}
               </div>
             )}
           </div>
@@ -328,6 +463,26 @@ export default function SlideBotPage() {
         </button>
       </footer>
 
+      {/* Fullscreen Image Lightbox Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md cursor-zoom-out animate-fade-in"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button 
+            className="absolute top-6 right-6 text-white/70 hover:text-white text-4xl transition-colors font-light"
+            onClick={() => setSelectedImage(null)}
+          >
+            &times;
+          </button>
+          <img 
+            src={selectedImage} 
+            alt="Fullscreen" 
+            className="max-w-[95vw] max-h-[90vh] object-contain rounded-xl shadow-2xl border border-neutral-800/80 animate-scale-up"
+          />
+        </div>
+      )}
+
       {/* Global styles for animation & scrollbar */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes wave {
@@ -342,11 +497,18 @@ export default function SlideBotPage() {
           from { opacity: 0; }
           to { opacity: 1; }
         }
+        @keyframes scaleUp {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
         .animate-fade-in-up {
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .animate-fade-in {
-          animation: fadeIn 1s ease-out forwards;
+          animation: fadeIn 0.4s ease-out forwards;
+        }
+        .animate-scale-up {
+          animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .animate-slide-up {
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
