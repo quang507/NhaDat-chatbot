@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -150,8 +151,11 @@ export default function DifyChatbot() {
               <p className="font-semibold text-sm">nhadat.company</p>
               <p className="text-xs opacity-80">NyAh Phú Định · Villa NyAh</p>
             </div>
+            <Link href="/voice" className="text-xs bg-white/20 hover:bg-white/30 rounded-full px-2.5 py-1 flex items-center gap-1 font-semibold" title="Đàm thoại giọng nói">
+              🎧 Voice
+            </Link>
             {cfg.phone && (
-              <a href={`tel:${cfg.phone}`} className="text-xs bg-white/20 hover:bg-white/30 rounded-full px-2 py-1" title="Gọi tư vấn">📞</a>
+              <a href={`tel:${cfg.phone}`} className="text-xs bg-white/20 hover:bg-white/30 rounded-full px-2.5 py-1" title="Gọi tư vấn">📞</a>
             )}
           </div>
 

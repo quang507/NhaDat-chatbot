@@ -1,0 +1,17 @@
+{
+  "name": "NhaDat Chatbot",
+  "short_name": "NhaDat AI",
+  "description": "Tư vấn bất động sản thông minh",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

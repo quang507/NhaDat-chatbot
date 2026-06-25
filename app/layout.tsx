@@ -8,6 +8,15 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'NhaDat Chatbot',
   description: 'Tư vấn bất động sản thông minh',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: 'NhaDat AI',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    apple: '/icon.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
