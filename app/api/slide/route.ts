@@ -70,7 +70,19 @@ export async function POST(req: NextRequest) {
       generationConfig: { 
         temperature: 0.7, 
         maxOutputTokens: 2048,
-        responseMimeType: "application/json"
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            layout_type: { type: "STRING" },
+            title: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." },
+            points: { type: "ARRAY", items: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." } },
+            highlight_number: { type: "STRING", description: "Con số nổi bật (nếu có)" },
+            speech_text: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt. Kịch bản đọc." },
+            image_url: { type: "STRING" }
+          },
+          required: ["layout_type", "title", "points", "speech_text", "image_url"]
+        }
       },
     };
 
