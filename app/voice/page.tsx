@@ -255,7 +255,7 @@ export default function VoicePage() {
           buffer = buffer.substring(i + 1);
           i = 0; // Reset index
           if (sentence) {
-            sentences.append ? sentences.push(sentence) : sentences.push(sentence);
+            sentences.push(sentence);
           }
           continue;
         }
