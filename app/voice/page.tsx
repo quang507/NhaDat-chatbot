@@ -29,7 +29,7 @@ export default function VoicePage() {
   const [logFilter, setLogFilter] = useState<'ALL' | 'SPEECH' | 'API' | 'ERROR'>('ALL');
   
   const recognitionRef = useRef<any>(null);
-  const audioQueueRef = useRef<{ text: string; url: string }[]>([]);
+  const audioQueueRef = useRef<{ text: string; url: string; audio: HTMLAudioElement }[]>([]);
   const isPlayingAudioRef = useRef<boolean>(false);
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
   const isStreamFinishedRef = useRef<boolean>(false);
@@ -204,7 +204,7 @@ export default function VoicePage() {
     }
   };
 
-  // 2. Clean text for natural speech
+  // 2. Clean text for natural speech (Normalizer built like ChatGPT Voice)
   const cleanTextForTTS = (text: string): string => {
     if (!text) return '';
     
@@ -219,28 +219,51 @@ export default function VoicePage() {
     // Remove URLs
     clean = clean.replace(/https?:\/\/\S+|www\.\S+/g, '');
     
-    // Normalize m2 / m²
-    clean = clean.replace(/(\d+)\s*m²?2?\b/gi, '$1 mét vuông');
-    clean = clean.replace(/\bm²?2?\b/gi, 'mét vuông');
+    // 1. Normalize number ranges (e.g., 5-7 tỷ -> 5 đến 7 tỷ)
+    clean = clean.replace(/(\d+)\s*-\s*(\d+)/g, '$1 đến $2');
     
-    // Replacements
+    // 2. Normalize m2/m² preceded by a digit (prevents block codes like M2, A2 from turning into "mét vuông")
+    clean = clean.replace(/(\d+)\s*(m²|m2)\b/gi, '$1 mét vuông');
+    
+    // 3. Normalize currency symbols
+    clean = clean.replace(/(\d+)\s*(VNĐ|VND|đ)\b/gi, '$1 đồng');
+    
+    // 4. Normalize percentages
+    clean = clean.replace(/(\d+)\s*%/g, '$1 phần trăm');
+    
+    // 5. Format phone numbers to be read digit-by-digit (e.g. 090 123 4567 -> 0 9 0   1 2 3   4 5 6 7)
+    clean = clean.replace(/\b(0[35789]\d)[\s.-]?(\d{3})[\s.-]?(\d{3,4})\b/g, (match, p1, p2, p3) => {
+      const part1 = p1.split('').join(' ');
+      const part2 = p2.split('').join(' ');
+      const part3 = p3.split('').join(' ');
+      return `${part1}   ${part2}   ${part3}`;
+    });
+    
+    // 6. Brand Names & Abbreviations Replacements (Nhã Đạt Co.ltd -> công ty cổ phần nhã đạt)
     const replacements: [RegExp, string][] = [
+      [/\bNhã Đạt Co\.\s*Ltd\b/gi, 'công ty cổ phần nhã đạt'],
+      [/\bNhaDat Co\.\s*Ltd\b/gi, 'công ty cổ phần nhã đạt'],
+      [/\bNhã Đạt Co\.ltd\b/gi, 'công ty cổ phần nhã đạt'],
+      [/\bNhaDat Co\.ltd\b/gi, 'công ty cổ phần nhã đạt'],
+      [/\bNhã Đạt Co\b/gi, 'nhã đạt'],
+      [/\bNhaDat Co\b/gi, 'nhã đạt'],
+      [/\bCo\.\s*Ltd\b/gi, 'công ty cổ phần'],
+      [/\bCo\.ltd\b/gi, 'công ty cổ phần'],
+      [/\bLtd\.\b/gi, 'công ty cổ phần'],
+      [/\bCo\.\b/gi, 'công ty'],
       [/\bTP\.HCM\b/gi, 'Thành phố Hồ Chí Minh'],
       [/\bTpHCM\b/gi, 'Thành phố Hồ Chí Minh'],
       [/\bHCM\b/gi, 'Hồ Chí Minh'],
       [/\bQ\b\.(\d+)/gi, 'Quận $1'],
       [/\bđ\/c\b/gi, 'địa chỉ'],
       [/\bĐ\/c\b/gi, 'Địa chỉ'],
+      [/\bđ\/c\.\b/gi, 'địa chỉ'],
       [/\bNy'ah\b/gi, 'Ni a'],
       [/\bNyah\b/gi, 'Ni a'],
-      [/\bVilla\b/gi, 'Vi la'],
-      [/\bLtd\.\b/gi, 'công ty'],
-      [/\bCo\.\b/gi, 'công ty'],
+      [/\bVilla\b/gi, 'biệt thự'], // Real estate term normalization
       [/\bTS\.\b/gi, 'Tiến sĩ'],
       [/\banh\/chị\b/gi, 'anh chị'],
-      [/\banh chị\b/gi, 'anh chị'],
-      [/\bAnh\/Chị\b/gi, 'Anh chị'],
-      [/\bAnh Chị\b/gi, 'Anh chị']
+      [/\bAnh\/Chị\b/gi, 'Anh chị']
     ];
     
     replacements.forEach(([pattern, replacement]) => {
@@ -253,8 +276,8 @@ export default function VoicePage() {
     // Remove bullet points
     clean = clean.replace(/^\s*[-*+]\s+/gm, ' ');
     
-    // Clean all special characters except letters, digits, spaces, periods, and question marks
-    clean = clean.replace(/[^a-zA-Z0-9\s.?áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđĐ]/g, ' ');
+    // Clean all special characters EXCEPT letters, digits, spaces, and punctuation (.,;:?!)
+    clean = clean.replace(/[^a-zA-Z0-9\s.,;:?!áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđĐ]/g, ' ');
     
     // Trim multiple spaces
     return clean.replace(/\s+/g, ' ').trim();
@@ -282,7 +305,12 @@ export default function VoicePage() {
     
     const audioUrl = `/api/tts?text=${encodeURIComponent(cleanText)}`;
     addLog('SPEECH', `Thêm vào hàng đợi phát âm thanh: "${cleanText}"`);
-    audioQueueRef.current.push({ text: sentence, url: audioUrl });
+    
+    // Pre-create and preload the audio element to achieve near-zero latency playback (ChatGPT Voice style)
+    const audio = new Audio(audioUrl);
+    audio.preload = 'auto';
+    
+    audioQueueRef.current.push({ text: sentence, url: audioUrl, audio });
     
     playNextAudio();
   };
@@ -312,7 +340,7 @@ export default function VoicePage() {
     setResponse(nextAudio.text);
     addLog('SPEECH', `Bắt đầu phát âm thanh: "${nextAudio.text}"`);
 
-    const audio = new Audio(nextAudio.url);
+    const audio = nextAudio.audio;
     activeAudioRef.current = audio;
 
     audio.onended = () => {
@@ -343,14 +371,54 @@ export default function VoicePage() {
     const sentences: string[] = [];
     let i = 0;
     
+    const abbreviations = ['co', 'ltd', 'ts', 'tp', 'dc', 'đc'];
+    
     while (i < buffer.length) {
       const char = buffer[i];
       if (['.', '?', '!', '\n'].includes(char)) {
         let isEnding = true;
-        // Ignore decimal dots
-        if (char === '.' && i > 0 && i < buffer.length - 1) {
-          if (/\d/.test(buffer[i-1]) && /\d/.test(buffer[i+1])) {
-            isEnding = false;
+        
+        if (char === '.') {
+          // 1. Ignore decimal dots (e.g. 1.5 tỷ)
+          if (i > 0 && i < buffer.length - 1) {
+            if (/\d/.test(buffer[i-1]) && /\d/.test(buffer[i+1])) {
+              isEnding = false;
+            }
+          }
+          
+          // 2. Ignore periods inside abbreviations without spaces (e.g. TP.HCM, Co.ltd)
+          if (isEnding && i > 0 && i < buffer.length - 1) {
+            const prevChar = buffer[i-1];
+            const nextChar = buffer[i+1];
+            if (/[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđĐ]/.test(prevChar) && 
+                /[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđĐ]/.test(nextChar)) {
+              isEnding = false;
+            }
+          }
+          
+          // 3. Ignore periods followed by a lowercase letter (likely abbreviation followed by space)
+          if (isEnding) {
+            let nextIdx = i + 1;
+            while (nextIdx < buffer.length && /\s/.test(buffer[nextIdx])) {
+              nextIdx++;
+            }
+            if (nextIdx < buffer.length) {
+              const nextChar = buffer[nextIdx];
+              if (/[a-zàảãạăằẳẵặâấầẩẫậèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưừửữựýỳỷỹỵđ]/.test(nextChar)) {
+                isEnding = false;
+              }
+            }
+          }
+          
+          // 4. Ignore periods preceded by known abbreviations (e.g. Co., TS., Tp.)
+          if (isEnding) {
+            const textBefore = buffer.substring(0, i);
+            const words = textBefore.split(/[\s,;:?!\n]/);
+            const lastWord = words[words.length - 1] || '';
+            const cleanWord = lastWord.toLowerCase().replace(/[^a-zđ]/g, '');
+            if (abbreviations.includes(cleanWord)) {
+              isEnding = false;
+            }
           }
         }
         
