@@ -103,18 +103,12 @@ export default function VoicePage() {
             // Quietly handle no-speech and abort.
             // onend event will handle restarting if listening loop is active.
           } else if (event.error === 'network') {
-            // Web Speech API network error recovery (very common on Chrome/Safari when connection fluctuates)
-            setErrorMsg('Lỗi mạng micro (Đang tự động kết nối lại...)');
-            updateState('error');
-            if (isListeningLoopActive.current) {
-              addLog('WARN', 'Lỗi mạng SpeechRecognition, tự động thử khởi động lại sau 3 giây...');
-              setTimeout(() => {
-                if (isListeningLoopActive.current) {
-                  updateState('listening');
-                  startListening();
-                }
-              }, 3000);
-            }
+            // Web Speech API network error recovery (very common on Chrome/Safari when connection fluctuates or long silence)
+            // Lỗi này xảy ra rất thường xuyên, ta nên phục hồi ngầm thay vì nhá lỗi lên UI làm phiền user.
+            addLog('WARN', 'Lỗi mạng SpeechRecognition (network error), sẽ phục hồi ngầm...');
+            // KHÔNG gọi updateState('error') và setErrorMsg() ở đây.
+            // Do state vẫn là 'listening', sự kiện onend (chạy ngay sau onerror) sẽ tự động kích hoạt startListening() lại.
+            // Có thể thêm delay nhẹ ở onend nếu cần, nhưng thường tự động phục hồi ngay là tốt nhất.
           } else if (event.error === 'not-allowed') {
             setErrorMsg('Quyền truy cập Micro bị chặn. Hãy cấp quyền trong cài đặt trình duyệt.');
             updateState('error');
