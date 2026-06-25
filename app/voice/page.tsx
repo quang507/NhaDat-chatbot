@@ -101,11 +101,34 @@ export default function VoicePage() {
           
           if (event.error === 'no-speech' || event.error === 'aborted') {
             // Quietly handle no-speech and abort.
-            // Do not call startListening directly here to avoid double-starting.
-            // onend event will handle restarting.
+            // onend event will handle restarting if listening loop is active.
+          } else if (event.error === 'network') {
+            // Web Speech API network error recovery (very common on Chrome/Safari when connection fluctuates)
+            setErrorMsg('Lỗi mạng micro (Đang tự động kết nối lại...)');
+            updateState('error');
+            if (isListeningLoopActive.current) {
+              addLog('WARN', 'Lỗi mạng SpeechRecognition, tự động thử khởi động lại sau 3 giây...');
+              setTimeout(() => {
+                if (isListeningLoopActive.current) {
+                  updateState('listening');
+                  startListening();
+                }
+              }, 3000);
+            }
+          } else if (event.error === 'not-allowed') {
+            setErrorMsg('Quyền truy cập Micro bị chặn. Hãy cấp quyền trong cài đặt trình duyệt.');
+            updateState('error');
+            stopAllVoiceActivities();
           } else {
             setErrorMsg(`Lỗi micro: ${event.error}`);
             updateState('error');
+            if (isListeningLoopActive.current) {
+              setTimeout(() => {
+                if (isListeningLoopActive.current) {
+                  startListening();
+                }
+              }, 4000);
+            }
           }
         };
         
@@ -404,7 +427,7 @@ export default function VoicePage() {
             }
             if (nextIdx < buffer.length) {
               const nextChar = buffer[nextIdx];
-              if (/[a-zàảãạăằẳẵặâấầẩẫậèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưừửữựýỳỷỹỵđ]/.test(nextChar)) {
+              if (/[a-zàảãạăằẳẵặâấầẩẫậèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđ]/.test(nextChar)) {
                 isEnding = false;
               }
             }
