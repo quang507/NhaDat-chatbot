@@ -307,7 +307,7 @@ async function main() {
 
     for (const file of files) {
       const relativePath = path.relative(LOCAL_DATA_DIR, file).replace(/\\/g, '/');
-      if (relativePath.startsWith('03_Human-QA/')) {
+      if (relativePath.startsWith('03_Human-QA/') || relativePath.includes('Signature by Codinachs') || relativePath.includes('2c8a')) {
         continue;
       }
       const currentHash = getFileHash(file);
