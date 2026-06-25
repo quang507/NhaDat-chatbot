@@ -101,7 +101,11 @@ export async function POST(req: NextRequest) {
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
     let result = {};
     try {
-      result = JSON.parse(text);
+      let cleanText = text.trim();
+      if (cleanText.startsWith('```')) {
+        cleanText = cleanText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+      }
+      result = JSON.parse(cleanText);
     } catch (e) {
       console.error("Lỗi parse JSON từ Gemini:", text);
       result = { 

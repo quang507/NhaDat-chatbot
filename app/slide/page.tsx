@@ -22,6 +22,7 @@ export default function SlideBotPage() {
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const isListeningLoopActive = useRef(false);
   const stateRef = useRef<SlideState>('idle');
+  const activeAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Sync state to ref for callbacks
   useEffect(() => {
@@ -79,7 +80,7 @@ export default function SlideBotPage() {
     
     return () => {
       isListeningLoopActive.current = false;
-      if (synthRef.current) synthRef.current.cancel();
+      if (activeAudioRef.current) activeAudioRef.current.pause();
       if (recognitionRef.current) recognitionRef.current.abort();
     };
   }, []);
@@ -87,31 +88,27 @@ export default function SlideBotPage() {
   const toggleMic = () => {
     if (state === 'listening' || state === 'processing' || state === 'speaking') {
       isListeningLoopActive.current = false;
-      if (synthRef.current) synthRef.current.cancel();
+      if (activeAudioRef.current) activeAudioRef.current.pause();
       if (recognitionRef.current) recognitionRef.current.abort();
       setState('idle');
       setTranscript('Đã dừng. Nhấn nút Micro để bắt đầu lại.');
     } else {
       isListeningLoopActive.current = true;
-      if (synthRef.current) synthRef.current.cancel();
+      if (activeAudioRef.current) activeAudioRef.current.pause();
       try { recognitionRef.current?.start(); } catch(e){}
     }
   };
 
   const speakText = (text: string) => {
-    if (!synthRef.current) return;
-    synthRef.current.cancel();
+    if (activeAudioRef.current) {
+      activeAudioRef.current.pause();
+    }
     
-    const voices = synthRef.current.getVoices();
-    let viVoice = voices.find(v => v.lang.includes('vi'));
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    if (viVoice) utterance.voice = viVoice;
-    utterance.lang = 'vi-VN';
-    utterance.rate = 1.05;
-    utterance.pitch = 1.0;
+    const audioUrl = `/api/tts?text=${encodeURIComponent(text)}`;
+    const audio = new Audio(audioUrl);
+    activeAudioRef.current = audio;
 
-    utterance.onend = () => {
+    audio.onended = () => {
       if (isListeningLoopActive.current) {
         setState('listening');
         setTranscript('Tôi đang nghe...');
@@ -121,14 +118,14 @@ export default function SlideBotPage() {
       }
     };
     
-    utterance.onerror = () => {
+    audio.onerror = () => {
       if (isListeningLoopActive.current) {
         setState('listening');
         try { recognitionRef.current?.start(); } catch(e){}
       }
     };
 
-    synthRef.current.speak(utterance);
+    audio.play().catch(e => console.error("Audio play error", e));
   };
 
   const fetchSlideData = async (text: string) => {
