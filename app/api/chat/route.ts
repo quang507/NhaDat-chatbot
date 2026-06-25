@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
           })),
         ];
 
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -116,8 +116,8 @@ export async function POST(req: NextRequest) {
           }),
         });
 
-        if (response.ok && response.body) {
-          const reader = response.body.getReader();
+        if (groqResponse.ok && groqResponse.body) {
+          const reader = groqResponse.body.getReader();
           const decoder = new TextDecoder();
           const encoder = new TextEncoder();
           let full = '';
@@ -167,8 +167,8 @@ export async function POST(req: NextRequest) {
             },
           });
         } else {
-          const errText = await response.text();
-          console.warn(`Groq API error (status ${response.status}): ${errText}. Falling back to Gemini...`);
+          const errText = await groqResponse.text();
+          console.warn(`Groq API error (status ${groqResponse.status}): ${errText}. Falling back to Gemini...`);
         }
       } catch (err) {
         console.warn('Failed to call Groq API (network error). Falling back to Gemini...', err);
@@ -182,22 +182,22 @@ export async function POST(req: NextRequest) {
       generationConfig: { temperature: 0.7, maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
     };
 
-    const response = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
+    const geminiResponse = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reqBody),
     });
 
-    if (!response.ok || !response.body) {
-      const errText = await response.text();
-      const status = response.status;
+    if (!geminiResponse.ok || !geminiResponse.body) {
+      const errText = await geminiResponse.text();
+      const status = geminiResponse.status;
       const friendly = status === 429
         ? 'Hệ thống đang bận (quá nhiều yêu cầu cùng lúc). Anh/chị thử lại sau giây lát giúp em nhé 🙏'
         : 'Có lỗi xảy ra, vui lòng thử lại.';
       return NextResponse.json({ error: errText, friendly }, { status });
     }
 
-    const reader = response.body.getReader();
+    const reader = geminiResponse.body.getReader();
     const decoder = new TextDecoder();
     const encoder = new TextEncoder();
     let full = '';
