@@ -19,15 +19,7 @@ async function getTree(dir: string, baseDir: string): Promise<TreeNode[]> {
     const entries = await fs.readdir(dir, { withFileTypes: true });
     const nodes: TreeNode[] = [];
     for (const entry of entries) {
-      if (
-        entry.name.startsWith('.') || 
-        entry.name.startsWith('~') || 
-        entry.name === 'Thumbs.db' ||
-        entry.name === 'drive-extracted' ||
-        entry.name === '03_Human-QA' ||
-        entry.name === 'qa-generated.md' ||
-        entry.name.includes('BÁO CÁO CƠ SỞ DỮ LIỆU TỔNG LỰC')
-      ) {
+      if (entry.name.startsWith('.') || entry.name.startsWith('~') || entry.name === 'Thumbs.db') {
         continue;
       }
       const fullPath = path.join(dir, entry.name);
