@@ -21,7 +21,7 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT
   "title": "Tiêu đề ngắn gọn, ấn tượng (Tối đa 10 chữ)",
   "points": ["Ý chính 1 (Ngắn gọn để chiếu slide)", "Ý chính 2", "Ý chính 3"],
   "highlight_number": "Một con số nổi bật nhất trong đoạn văn (ví dụ '18 phút', '9,5 triệu lít', '5,19 tỷ'). Nếu không có số liệu nào ấn tượng, để trống ''. Chỉ dùng cho layout dark_minimal hoặc split.",
-  "speech_text": "Toàn bộ kịch bản chi tiết để MC (AI) đọc lên thành tiếng. Diễn đạt tự nhiên, lịch sự như chuyên viên tư vấn.",
+  "speech_text": "Kịch bản chi tiết để MC đọc. BẮT BUỘC KHÔNG DÙNG emoji, KHÔNG DÙNG ký tự đặc biệt (*, _, #), KHÔNG DÙNG ngoặc kép, viết tự nhiên như văn nói để máy đọc mượt mà.",
   "image_url": "Đường dẫn URL ảnh (Ví dụ: /images/01_NyAh-PhuDinh/mat_bang/anh1.jpg) NẾU CÓ trong dữ liệu. Trả về string rỗng '' nếu không có."
 }
 
