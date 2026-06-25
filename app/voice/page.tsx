@@ -17,8 +17,10 @@ export default function VoicePage() {
   const [errorMsg, setErrorMsg] = useState('');
   
   const recognitionRef = useRef<any>(null);
-  const synthRef = useRef<SpeechSynthesis | null>(null);
-  const activeUtterancesRef = useRef<SpeechSynthesisUtterance[]>([]);
+  const audioQueueRef = useRef<{ text: string; url: string }[]>([]);
+  const isPlayingAudioRef = useRef<boolean>(false);
+  const activeAudioRef = useRef<HTMLAudioElement | null>(null);
+  const isStreamFinishedRef = useRef<boolean>(false);
   const chatHistoryRef = useRef<Message[]>([]);
   const isListeningLoopActive = useRef(false);
   const audioChunksBuffer = useRef<string>('');
@@ -33,8 +35,6 @@ export default function VoicePage() {
   // 1. Initialize Web APIs
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      synthRef.current = window.speechSynthesis;
-      
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         const rec = new SpeechRecognition();
@@ -92,10 +92,13 @@ export default function VoicePage() {
     if (recognitionRef.current) {
       try { recognitionRef.current.abort(); } catch(e) {}
     }
-    if (synthRef.current) {
-      try { synthRef.current.cancel(); } catch(e) {}
+    if (activeAudioRef.current) {
+      try { activeAudioRef.current.pause(); } catch(e) {}
+      activeAudioRef.current = null;
     }
-    activeUtterancesRef.current = [];
+    audioQueueRef.current = [];
+    isPlayingAudioRef.current = false;
+    isStreamFinishedRef.current = false;
   };
 
   const toggleVoiceSession = () => {
@@ -110,10 +113,14 @@ export default function VoicePage() {
   };
 
   const startListening = () => {
-    if (synthRef.current) {
-      synthRef.current.cancel();
+    if (activeAudioRef.current) {
+      try { activeAudioRef.current.pause(); } catch(e) {}
+      activeAudioRef.current = null;
     }
-    activeUtterancesRef.current = [];
+    audioQueueRef.current = [];
+    isPlayingAudioRef.current = false;
+    isStreamFinishedRef.current = false;
+
     if (recognitionRef.current) {
       try {
         recognitionRef.current.start();
@@ -179,14 +186,16 @@ export default function VoicePage() {
     return clean.replace(/\s+/g, ' ').trim();
   };
 
-  // 3. Sentence-by-sentence TTS streaming playback
+  // 3. Sentence-by-sentence TTS streaming playback via Server API
   const speakSentence = (sentence: string, isLast = false) => {
-    if (!synthRef.current) return;
-    
+    if (isLast) {
+      isStreamFinishedRef.current = true;
+    }
+
     const cleanText = cleanTextForTTS(sentence);
     if (!cleanText) {
-      if (isLast && activeUtterancesRef.current.length === 0) {
-        // If it was the last chunk but empty, go back to listening
+      if (isLast && !isPlayingAudioRef.current && audioQueueRef.current.length === 0) {
+        // If it was the last chunk but empty, and we are not playing anything, go back to listening
         if (isListeningLoopActive.current) {
           startListening();
         } else {
@@ -196,50 +205,53 @@ export default function VoicePage() {
       return;
     }
     
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'vi-VN';
+    const audioUrl = `/api/tts?text=${encodeURIComponent(cleanText)}`;
+    audioQueueRef.current.push({ text: sentence, url: audioUrl });
     
-    // Set a good Vietnamese voice if available
-    const voices = synthRef.current.getVoices();
-    const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VI'));
-    if (viVoice) {
-      utterance.voice = viVoice;
+    playNextAudio();
+  };
+
+  const playNextAudio = () => {
+    if (isPlayingAudioRef.current) return;
+
+    if (audioQueueRef.current.length === 0) {
+      if (isStreamFinishedRef.current) {
+        if (isListeningLoopActive.current) {
+          startListening();
+        } else {
+          setState('idle');
+        }
+      }
+      return;
     }
-    
-    // Manage state during playback
-    utterance.onstart = () => {
-      setState('speaking');
-      setResponse(sentence);
+
+    const nextAudio = audioQueueRef.current.shift()!;
+    isPlayingAudioRef.current = true;
+    setState('speaking');
+    setResponse(nextAudio.text);
+
+    const audio = new Audio(nextAudio.url);
+    activeAudioRef.current = audio;
+
+    audio.onended = () => {
+      isPlayingAudioRef.current = false;
+      activeAudioRef.current = null;
+      playNextAudio();
     };
-    
-    utterance.onend = () => {
-      // Remove from active list
-      activeUtterancesRef.current = activeUtterancesRef.current.filter(u => u !== utterance);
-      
-      // If no utterances left and we reached the end of stream, resume listening
-      if (activeUtterancesRef.current.length === 0 && isLast) {
-        if (isListeningLoopActive.current) {
-          startListening();
-        } else {
-          setState('idle');
-        }
-      }
+
+    audio.onerror = (e) => {
+      console.error('Audio playback error', e);
+      isPlayingAudioRef.current = false;
+      activeAudioRef.current = null;
+      playNextAudio();
     };
-    
-    utterance.onerror = (e) => {
-      console.error('Speech synthesis error', e);
-      activeUtterancesRef.current = activeUtterancesRef.current.filter(u => u !== utterance);
-      if (activeUtterancesRef.current.length === 0 && isLast) {
-        if (isListeningLoopActive.current) {
-          startListening();
-        } else {
-          setState('idle');
-        }
-      }
-    };
-    
-    activeUtterancesRef.current.push(utterance);
-    synthRef.current.speak(utterance);
+
+    audio.play().catch(err => {
+      console.error('Audio autoplay error', err);
+      isPlayingAudioRef.current = false;
+      activeAudioRef.current = null;
+      playNextAudio();
+    });
   };
 
   const splitSentences = (buffer: string): { sentences: string[]; remaining: string } => {
@@ -316,20 +328,12 @@ export default function VoicePage() {
       if (sentenceBuffer.trim()) {
         speakSentence(sentenceBuffer.trim(), true);
       } else {
-        // Mark the last utterance to trigger microphone restart on end
-        if (activeUtterancesRef.current.length > 0) {
-          const lastUtt = activeUtterancesRef.current[activeUtterancesRef.current.length - 1];
-          const originalEnd = lastUtt.onend;
-          lastUtt.onend = (e) => {
-            if (originalEnd) originalEnd.call(lastUtt, e);
-            if (isListeningLoopActive.current && activeUtterancesRef.current.length === 0) {
-              startListening();
-            }
-          };
-        } else {
-          // No sentences spoken, restart immediately
+        isStreamFinishedRef.current = true;
+        if (!isPlayingAudioRef.current && audioQueueRef.current.length === 0) {
           if (isListeningLoopActive.current) {
             startListening();
+          } else {
+            setState('idle');
           }
         }
       }
