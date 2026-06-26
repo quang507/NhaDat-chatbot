@@ -37,9 +37,9 @@ if (!COHERE_API_KEY && !GEMINI_API_KEY) {
   process.exit(1);
 }
 
-const EMBED_MODEL = 'gemini-embedding-001';
+const EMBED_MODEL = 'gemini-embedding-2';
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-const DIMS = COHERE_API_KEY ? 1024 : 3072;
+const DIMS = 1024;
 const BRANCH = 'chatbot-logs';
 const INDEX_PATH = 'index.json';
 
@@ -240,6 +240,7 @@ async function embedBatch(texts, taskType) {
             model: `models/${EMBED_MODEL}`,
             content: { parts: [{ text }] },
             taskType,
+            outputDimensionality: 1024,
           })),
         }),
       });

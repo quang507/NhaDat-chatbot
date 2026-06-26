@@ -10,7 +10,7 @@ const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const COHERE_API_KEY = process.env.COHERE_API_KEY || '';
-const EMBED_MODEL = 'gemini-embedding-001';
+const EMBED_MODEL = 'gemini-embedding-2';
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 export interface Chunk {
@@ -88,10 +88,17 @@ function normalize(v: number[]): number[] {
 }
 
 // Embed batch
-async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'): Promise<number[][]> {
+async function embedBatch(
+  texts: string[],
+  taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY',
+  forceDim?: number
+): Promise<number[][]> {
   if (texts.length === 0) return [];
 
-  if (COHERE_API_KEY) {
+  // Tự động sử dụng Cohere nếu có key Cohere. Nếu không, fallback về Gemini (được cấu hình xuất 1024 chiều).
+  const useCohere = !!COHERE_API_KEY;
+
+  if (useCohere) {
     const cohereTaskType = taskType === 'RETRIEVAL_DOCUMENT' ? 'search_document' : 'search_query';
     const res = await fetch('https://api.cohere.com/v1/embed', {
       method: 'POST',
@@ -113,7 +120,7 @@ async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RET
     const data = await res.json();
     return (data.embeddings || []).map((emb: number[]) => normalize(emb));
   } else {
-    // Dùng Gemini Fallback
+    // Dùng Gemini Fallback (gemini-embedding-2 xuất 1024 chiều để đồng bộ)
     const PARALLEL = 5;
     const out: number[][] = new Array(texts.length);
     for (let i = 0; i < texts.length; i += PARALLEL) {
@@ -127,6 +134,7 @@ async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RET
             model: `models/${EMBED_MODEL}`,
             content: { parts: [{ text: t }] },
             taskType,
+            outputDimensionality: 1024, // Cố định 1024 chiều
           }),
         });
         if (!res.ok) {
@@ -142,8 +150,8 @@ async function embedBatch(texts: string[], taskType: 'RETRIEVAL_DOCUMENT' | 'RET
   }
 }
 
-export async function embedQuery(text: string): Promise<number[]> {
-  const [v] = await embedBatch([text], 'RETRIEVAL_QUERY');
+export async function embedQuery(text: string, forceDim?: number): Promise<number[]> {
+  const [v] = await embedBatch([text], 'RETRIEVAL_QUERY', forceDim);
   return v || [];
 }
 
@@ -261,12 +269,12 @@ function extractKeywords(query: string): RegExp[] {
 
 // Truy hồi top-K đoạn liên quan nhất — hybrid: vector similarity + keyword boost
 export async function retrieve(query: string, index: Index, k = 20): Promise<string[]> {
-  const q = await embedQuery(query);
+  const indexDim = index.chunks[0]?.vec?.length || 0;
+  const q = await embedQuery(query, indexDim);
   if (!q.length) return [];
 
-  const indexDim = index.chunks[0]?.vec?.length || 0;
   if (indexDim > 0 && q.length !== indexDim) {
-    console.error(`[RAG LỖI] Lệch số chiều Vector! Query có ${q.length} chiều, nhưng Database có ${indexDim} chiều. Vui lòng đồng bộ lại.`);
+    console.error(`[RAG LỖI] Lệch số chiều Vector! Query có ${q.length} chiều, nhưng Database có ${indexDim} chiều.`);
     return [];
   }
 

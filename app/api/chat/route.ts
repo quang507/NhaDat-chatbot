@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
@@ -59,9 +59,11 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     console.warn("RAG retrieval failed (possibly Cohere API limit/overload), falling back to data.md slice:", e);
   }
 
-  // Fallback: khôi phục về 40,000 ký tự
+  // Fallback: khôi phục về dung lượng an toàn (Groq giới hạn TPM thấp hơn Gemini)
+  const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
+  const limit = GROQ_API_KEY ? 15000 : 40000;
   const data = await readRepoFile('data.md');
-  const truncated = data.length > 40000 ? data.slice(0, 40000) + '\n\n[... dữ liệu đã được rút ngắn, hãy bấm "Lập lại chỉ mục" trong trang admin để có kết quả tốt hơn]' : data;
+  const truncated = data.length > limit ? data.slice(0, limit) + '\n\n[... dữ liệu đã được rút ngắn để tránh quá tải API ...]' : data;
   return {
     text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     usedRag: false,
@@ -176,10 +178,18 @@ export async function POST(req: NextRequest) {
     }
 
     // 2) Fallback: dùng Gemini nếu không cấu hình Groq hoặc Groq lỗi
+    const generationConfig: any = {
+      temperature: 0.7,
+      maxOutputTokens: 4096,
+    };
+    if (!MODEL.startsWith('gemini-1.5')) {
+      generationConfig.thinkingConfig = { thinkingBudget: 0 };
+    }
+
     const reqBody = {
       contents,
       system_instruction: { parts: [{ text: systemText }] },
-      generationConfig: { temperature: 0.7, maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
+      generationConfig,
     };
 
     const geminiResponse = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
