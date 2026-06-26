@@ -55,73 +55,103 @@ async function buildPrompt(message: string): Promise<string> {
   return `${persona}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`;
 }
 
+// Parse JSON slide từ text model trả về (xử lý cả khi bị bọc ```json)
+function parseSlide(text: string | null): Record<string, unknown> {
+  try {
+    let clean = (text || '').trim();
+    if (clean.startsWith('```')) {
+      clean = clean.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+    const parsed = JSON.parse(clean);
+    if (!parsed.image_urls) parsed.image_urls = parsed.image_url ? [parsed.image_url] : [];
+    return parsed;
+  } catch {
+    console.error("Lỗi parse JSON slide:", text);
+    return {
+      title: "Lỗi hiển thị",
+      points: ["Không thể phân tích dữ liệu thành slide."],
+      speech_text: "Xin lỗi anh chị, em không thể xử lý thông tin này. Anh chị vui lòng hỏi lại giúp em nhé.",
+      image_urls: [],
+    };
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { message } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
-    if (!GEMINI_API_KEY) {
-      return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
-    }
-    
+
     const systemText = await buildPrompt(message);
+    const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
+    let rawText: string | null = null;
 
-    const reqBody = {
-      contents: [{ role: 'user', parts: [{ text: message }] }],
-      system_instruction: { parts: [{ text: systemText }] },
-      generationConfig: { 
-        temperature: 0.7, 
-        maxOutputTokens: 2048,
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "OBJECT",
-          properties: {
-            layout_type: { type: "STRING" },
-            title: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." },
-            points: { type: "ARRAY", items: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." } },
-            highlight_number: { type: "STRING", description: "Con số nổi bật (nếu có)" },
-            speech_text: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt. Kịch bản đọc." },
-            image_urls: { type: "ARRAY", items: { type: "STRING" }, description: "Danh sách URL ảnh tìm thấy trong dữ liệu liên quan. Tối đa 3 ảnh. Nếu không có ảnh nào, trả về mảng rỗng []." }
-          },
-          required: ["layout_type", "title", "points", "speech_text", "image_urls"]
+    // 1) Ưu tiên Groq (free + nhanh) — JSON mode
+    if (GROQ_API_KEY) {
+      try {
+        const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              { role: 'system', content: systemText },
+              { role: 'user', content: message },
+            ],
+            temperature: 0.7,
+            max_tokens: 2048,
+            response_format: { type: 'json_object' },
+          }),
+        });
+        if (groqRes.ok) {
+          const d = await groqRes.json();
+          rawText = d.choices?.[0]?.message?.content || null;
+        } else {
+          console.warn(`Slide Groq lỗi ${groqRes.status}, chuyển sang Gemini...`);
         }
-      },
-    };
-
-    const geminiResponse = await fetch(`${BASE}/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reqBody),
-    });
-
-    if (!geminiResponse.ok) {
-      const errText = await geminiResponse.text();
-      return NextResponse.json({ error: errText }, { status: geminiResponse.status });
+      } catch (e) {
+        console.warn('Slide Groq network error, chuyển sang Gemini...', e);
+      }
     }
 
-    const data = await geminiResponse.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-    let result: any = {};
-    try {
-      let cleanText = text.trim();
-      if (cleanText.startsWith('```')) {
-        cleanText = cleanText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
-      }
-      const parsed = JSON.parse(cleanText);
-      if (!parsed.image_urls) {
-        parsed.image_urls = parsed.image_url ? [parsed.image_url] : [];
-      }
-      result = parsed;
-    } catch (e) {
-      console.error("Lỗi parse JSON từ Gemini:", text);
-      result = { 
-        title: "Lỗi hiển thị", 
-        points: ["Không thể phân tích dữ liệu thành slide."], 
-        speech_text: "Xin lỗi anh chị, em không thể xử lý thông tin này. Anh chị vui lòng hỏi lại giúp em nhé.",
-        image_urls: []
+    // 2) Fallback Gemini (responseSchema ép đúng cấu trúc)
+    if (!rawText) {
+      if (!GEMINI_API_KEY) return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
+      const reqBody = {
+        contents: [{ role: 'user', parts: [{ text: message }] }],
+        system_instruction: { parts: [{ text: systemText }] },
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 2048,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              layout_type: { type: "STRING" },
+              title: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." },
+              points: { type: "ARRAY", items: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." } },
+              highlight_number: { type: "STRING", description: "Con số nổi bật (nếu có)" },
+              speech_text: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt. Kịch bản đọc." },
+              image_urls: { type: "ARRAY", items: { type: "STRING" }, description: "Danh sách URL ảnh tìm thấy trong dữ liệu liên quan. Tối đa 3 ảnh. Nếu không có ảnh nào, trả về mảng rỗng []." }
+            },
+            required: ["layout_type", "title", "points", "speech_text", "image_urls"]
+          }
+        },
       };
+      const geminiResponse = await fetch(`${BASE}/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqBody),
+      });
+      if (!geminiResponse.ok) {
+        const errText = await geminiResponse.text();
+        console.error(`Slide Gemini lỗi ${geminiResponse.status}: ${errText}`);
+        return NextResponse.json({ error: 'Có lỗi xảy ra, vui lòng thử lại.' }, { status: geminiResponse.status });
+      }
+      const data = await geminiResponse.json();
+      rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json(parseSlide(rawText));
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
