@@ -7,7 +7,6 @@ const ONEDRIVE_DIR = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team
 const ONEDRIVE_IMAGES_DIR_GLOBAL = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide\\ChatBotImages_Upload`;
 const LOCAL_DATA_DIR = path.join(__dirname, 'data');
 let GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-let COHERE_API_KEY = process.env.COHERE_API_KEY;
 
 // Thử đọc từ .env.local
 if (fs.existsSync(path.join(__dirname, '.env.local'))) {
@@ -16,10 +15,6 @@ if (fs.existsSync(path.join(__dirname, '.env.local'))) {
   if (matchGemini) {
     GEMINI_API_KEY = matchGemini[1].trim().replace(/^['"]|['"]$/g, '');
   }
-  const matchCohere = envContent.match(/^COHERE_API_KEY\s*=\s*(.+)$/m);
-  if (matchCohere) {
-    COHERE_API_KEY = matchCohere[1].trim().replace(/^['"]|['"]$/g, '');
-  }
 }
 
 // Thử đọc từ api_key.txt
@@ -27,19 +22,14 @@ if (!GEMINI_API_KEY && fs.existsSync(path.join(__dirname, 'api_key.txt'))) {
   GEMINI_API_KEY = fs.readFileSync(path.join(__dirname, 'api_key.txt'), 'utf-8').trim();
 }
 
-// Thử đọc từ cohere_key.txt
-if (!COHERE_API_KEY && fs.existsSync(path.join(__dirname, 'cohere_key.txt'))) {
-  COHERE_API_KEY = fs.readFileSync(path.join(__dirname, 'cohere_key.txt'), 'utf-8').trim();
-}
-
-if (!COHERE_API_KEY && !GEMINI_API_KEY) {
-  console.error("Lỗi: Không tìm thấy COHERE_API_KEY hoặc GEMINI_API_KEY.");
+if (!GEMINI_API_KEY) {
+  console.error("Lỗi: Không tìm thấy GEMINI_API_KEY.");
   process.exit(1);
 }
 
-const EMBED_MODEL = 'gemini-embedding-2';
+const EMBED_MODEL = 'gemini-embedding-001'; // PHẢI khớp lib/rag.ts (runtime query) và index hiện tại
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-const DIMS = 1024;
+const DIMS = 3072; // gemini-embedding-001 mặc định 3072 chiều
 const BRANCH = 'chatbot-logs';
 const INDEX_PATH = 'index.json';
 
@@ -194,66 +184,33 @@ async function embedBatch(texts, taskType) {
   if (texts.length === 0) return [];
   const out = [];
 
-  if (COHERE_API_KEY) {
-    // 1) Dùng Cohere Multilingual Embedding
-    const cohereTaskType = taskType === 'RETRIEVAL_DOCUMENT' ? 'search_document' : 'search_query';
-    const BATCH_SIZE = 32; // Giảm xuống 32 để tránh quá tải token của key trial (100k TPM)
-    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-      if (i > 0) await sleep(20000); // Tăng sleep lên 20s giữa các batch để giữ mức sử dụng dưới 100k TPM
-      const chunk = texts.slice(i, i + BATCH_SIZE);
-      console.log(`[Cohere] Đang tạo vector embedding cho chunks ${i} đến ${Math.min(i + BATCH_SIZE, texts.length)}... (Tổng: ${texts.length})`);
-      const res = await fetch('https://api.cohere.com/v1/embed', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${COHERE_API_KEY}`,
-          'Content-Type': 'application/json',
-          'accept': 'application/json'
-        },
-        body: JSON.stringify({
-          texts: chunk,
-          model: 'embed-multilingual-v3.0',
-          input_type: cohereTaskType
-        })
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Cohere embedding lỗi ${res.status}: ${errText}`);
-      }
-      const data = await res.json();
-      const embeddings = data.embeddings || [];
-      for (const emb of embeddings) {
-        out.push(normalize(emb));
-      }
+  // Dùng Gemini Embedding (gemini-embedding-001, 3072 chiều) — khớp runtime lib/rag.ts
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+    if (i > 0) await sleep(3000);
+    const chunk = texts.slice(i, i + BATCH_SIZE);
+    console.log(`[Gemini] Đang tạo vector embedding cho chunks ${i} đến ${Math.min(i + BATCH_SIZE, texts.length)}... (Tổng: ${texts.length})`);
+    const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requests: chunk.map(text => ({
+          model: `models/${EMBED_MODEL}`,
+          content: { parts: [{ text }] },
+          taskType,
+          // KHÔNG ép outputDimensionality: gemini-embedding-001 mặc định 3072 chiều,
+          // phải khớp với query 3072 chiều trong lib/rag.ts, nếu không bot sẽ trả về rỗng.
+        })),
+      }),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Batch embedding lỗi ${res.status}: ${errText}`);
     }
-  } else {
-    // 2) Dùng Gemini Embedding (Fallback)
-    const BATCH_SIZE = 100;
-    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-      if (i > 0) await sleep(3000);
-      const chunk = texts.slice(i, i + BATCH_SIZE);
-      console.log(`[Gemini] Đang tạo vector embedding cho chunks ${i} đến ${Math.min(i + BATCH_SIZE, texts.length)}... (Tổng: ${texts.length})`);
-      const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          requests: chunk.map(text => ({
-            model: `models/${EMBED_MODEL}`,
-            content: { parts: [{ text }] },
-            taskType,
-            // KHÔNG ép outputDimensionality: gemini-embedding-001 mặc định 3072 chiều,
-            // phải khớp với query 3072 chiều trong lib/rag.ts, nếu không bot sẽ trả về rỗng.
-          })),
-        }),
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Batch embedding lỗi ${res.status}: ${errText}`);
-      }
-      const data = await res.json();
-      const embeddings = data.embeddings || [];
-      for (const emb of embeddings) {
-        out.push(normalize(emb.values || []));
-      }
+    const data = await res.json();
+    const embeddings = data.embeddings || [];
+    for (const emb of embeddings) {
+      out.push(normalize(emb.values || []));
     }
   }
   return out;

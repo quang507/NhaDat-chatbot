@@ -9,8 +9,10 @@ const INDEX_PATH = 'index.json';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const COHERE_API_KEY = process.env.COHERE_API_KEY || '';
-const EMBED_MODEL = 'gemini-embedding-2';
+// PHẢI khớp model dùng để build index (sync_and_reindex.js + crawl-save-index).
+// Index hiện tại build bằng gemini-embedding-001 (3072 chiều) — đổi model khác sẽ làm
+// vector lệch không gian -> retrieval sai dù cùng số chiều.
+const EMBED_MODEL = 'gemini-embedding-001';
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 export interface Chunk {
@@ -95,63 +97,37 @@ async function embedBatch(
 ): Promise<number[][]> {
   if (texts.length === 0) return [];
 
-  // Tự động sử dụng Cohere nếu có key Cohere. Nếu không, fallback về Gemini (được cấu hình xuất 1024 chiều).
-  const useCohere = !!COHERE_API_KEY;
-
-  if (useCohere) {
-    const cohereTaskType = taskType === 'RETRIEVAL_DOCUMENT' ? 'search_document' : 'search_query';
-    const res = await fetch('https://api.cohere.com/v1/embed', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${COHERE_API_KEY}`,
-        'Content-Type': 'application/json',
-        'accept': 'application/json'
-      },
-      body: JSON.stringify({
-        texts: texts,
-        model: 'embed-multilingual-v3.0',
-        input_type: cohereTaskType
-      })
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Cohere embedding lỗi ${res.status}: ${errText}`);
-    }
-    const data = await res.json();
-    return (data.embeddings || []).map((emb: number[]) => normalize(emb));
-  } else {
-    // Dùng Gemini Fallback (gemini-embedding-2 xuất 1024 chiều để đồng bộ)
-    const PARALLEL = 5;
-    const out: number[][] = new Array(texts.length);
-    for (let i = 0; i < texts.length; i += PARALLEL) {
-      if (i > 0) await new Promise(r => setTimeout(r, 200));
-      const slice = texts.slice(i, i + PARALLEL);
-      const vecs = await Promise.all(slice.map(async t => {
-        // Chiều của query PHẢI khớp chiều của index. retrieve() truyền indexDim vào forceDim.
-        // gemini-embedding-001 mặc định 3072 chiều; chỉ ép outputDimensionality khi forceDim
-        // được cung cấp (và khác mặc định) để tránh lệch chiều -> RAG trả về rỗng.
-        const body: Record<string, unknown> = {
-          model: `models/${EMBED_MODEL}`,
-          content: { parts: [{ text: t }] },
-          taskType,
-        };
-        if (forceDim) body.outputDimensionality = forceDim;
-        const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:embedContent?key=${GEMINI_API_KEY}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(`Gemini Embedding lỗi ${res.status}: ${errText}`);
-        }
-        const data = await res.json();
-        return normalize(data.embedding?.values || []);
-      }));
-      vecs.forEach((v, j) => { out[i + j] = v; });
-    }
-    return out;
+  // Dùng Gemini embedding (gemini-embedding-001). Gọi song song nhẹ để tránh rate limit.
+  const PARALLEL = 5;
+  const out: number[][] = new Array(texts.length);
+  for (let i = 0; i < texts.length; i += PARALLEL) {
+    if (i > 0) await new Promise(r => setTimeout(r, 200));
+    const slice = texts.slice(i, i + PARALLEL);
+    const vecs = await Promise.all(slice.map(async t => {
+      // Chiều của query PHẢI khớp chiều của index. retrieve() truyền indexDim vào forceDim.
+      // gemini-embedding-001 mặc định 3072 chiều; chỉ ép outputDimensionality khi forceDim
+      // được cung cấp để tránh lệch chiều -> RAG trả về rỗng.
+      const body: Record<string, unknown> = {
+        model: `models/${EMBED_MODEL}`,
+        content: { parts: [{ text: t }] },
+        taskType,
+      };
+      if (forceDim) body.outputDimensionality = forceDim;
+      const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:embedContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Gemini Embedding lỗi ${res.status}: ${errText}`);
+      }
+      const data = await res.json();
+      return normalize(data.embedding?.values || []);
+    }));
+    vecs.forEach((v, j) => { out[i + j] = v; });
   }
+  return out;
 }
 
 export async function embedQuery(text: string, forceDim?: number): Promise<number[]> {

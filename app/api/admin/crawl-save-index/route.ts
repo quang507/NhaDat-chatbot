@@ -9,11 +9,10 @@ export const maxDuration = 300;
 const OWNER = process.env.GITHUB_OWNER || 'quang507';
 const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
-const COHERE_API_KEY = process.env.COHERE_API_KEY || '';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const EMBED_MODEL = 'gemini-embedding-001';
+const EMBED_MODEL = 'gemini-embedding-001'; // khớp lib/rag.ts + sync_and_reindex.js
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-const DIMS = COHERE_API_KEY ? 1024 : 3072;
+const DIMS = 3072; // gemini-embedding-001 mặc định 3072 chiều
 
 function normalize(v: number[]): number[] {
   let n = 0;
@@ -26,60 +25,30 @@ const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 async function embedTexts(texts: string[]): Promise<number[][]> {
   if (texts.length === 0) return [];
+  if (!GEMINI_API_KEY) throw new Error('Chưa có GEMINI_API_KEY');
   const out: number[][] = [];
 
-  if (COHERE_API_KEY) {
-    // Cohere: tối đa 96 texts/request, giới hạn 100k TPM
-    const BATCH = 96;
-    for (let i = 0; i < texts.length; i += BATCH) {
-      if (i > 0) await sleep(2000);
-      const chunk = texts.slice(i, i + BATCH);
-      const res = await fetch('https://api.cohere.com/v1/embed', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${COHERE_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          texts: chunk,
-          model: 'embed-multilingual-v3.0',
-          input_type: 'search_document',
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`Cohere embed lỗi ${res.status}: ${err}`);
-      }
-      const data = await res.json();
-      for (const emb of (data.embeddings || [])) {
-        out.push(normalize(emb));
-      }
+  // Gemini embedding (gemini-embedding-001, 3072 chiều)
+  const BATCH = 5;
+  for (let i = 0; i < texts.length; i += BATCH) {
+    if (i > 0) await sleep(3000);
+    const chunk = texts.slice(i, i + BATCH);
+    const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requests: chunk.map(text => ({
+          model: `models/${EMBED_MODEL}`,
+          content: { parts: [{ text }] },
+          taskType: 'RETRIEVAL_DOCUMENT',
+        })),
+      }),
+    });
+    if (!res.ok) throw new Error(`Gemini embed lỗi ${res.status}: ${await res.text()}`);
+    const data = await res.json();
+    for (const emb of (data.embeddings || [])) {
+      out.push(normalize(emb.values || []));
     }
-  } else if (GEMINI_API_KEY) {
-    // Fallback: Gemini embedding
-    const BATCH = 5;
-    for (let i = 0; i < texts.length; i += BATCH) {
-      if (i > 0) await sleep(3000);
-      const chunk = texts.slice(i, i + BATCH);
-      const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          requests: chunk.map(text => ({
-            model: `models/${EMBED_MODEL}`,
-            content: { parts: [{ text }] },
-            taskType: 'RETRIEVAL_DOCUMENT',
-          })),
-        }),
-      });
-      if (!res.ok) throw new Error(`Gemini embed lỗi ${res.status}: ${await res.text()}`);
-      const data = await res.json();
-      for (const emb of (data.embeddings || [])) {
-        out.push(normalize(emb.values || []));
-      }
-    }
-  } else {
-    throw new Error('Chưa có COHERE_API_KEY hoặc GEMINI_API_KEY');
   }
   return out;
 }
