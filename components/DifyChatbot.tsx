@@ -90,11 +90,19 @@ export default function DifyChatbot() {
         body: JSON.stringify({ message: msg, history, profile: extractProfile([...history, { role: 'user', content: msg }]) }),
       });
 
-      // Lỗi -> đọc JSON thông báo thân thiện
+      // Lỗi -> đọc JSON thông báo chi tiết
       if (!res.ok || !res.body) {
         let friendly = 'Có lỗi xảy ra, vui lòng thử lại.';
-        try { friendly = (await res.json()).friendly || friendly; } catch {}
-        setMessages(prev => [...prev, { role: 'assistant', content: friendly }]);
+        let errorDetails = '';
+        try {
+          const data = await res.json();
+          friendly = data.friendly || friendly;
+          errorDetails = typeof data.error === 'object' ? JSON.stringify(data.error, null, 2) : String(data.error || '');
+        } catch {}
+        const content = errorDetails 
+          ? `${friendly}\n\n**Chi tiết kỹ thuật:**\n\`\`\`json\n${errorDetails}\n\`\`\``
+          : friendly;
+        setMessages(prev => [...prev, { role: 'assistant', content }]);
         return;
       }
 

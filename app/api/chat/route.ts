@@ -201,10 +201,14 @@ export async function POST(req: NextRequest) {
     if (!geminiResponse.ok || !geminiResponse.body) {
       const errText = await geminiResponse.text();
       const status = geminiResponse.status;
+      let errorObj: any = errText;
+      try {
+        errorObj = JSON.parse(errText);
+      } catch {}
       const friendly = status === 429
-        ? 'Hệ thống đang bận (quá nhiều yêu cầu cùng lúc). Anh/chị thử lại sau giây lát giúp em nhé 🙏'
-        : 'Có lỗi xảy ra, vui lòng thử lại.';
-      return NextResponse.json({ error: errText, friendly }, { status });
+        ? '⚠️ Lỗi 429 (Resource Exhausted): Tài khoản API đã vượt quá hạn mức (quota) hoặc tần suất gửi yêu cầu quá nhanh. Vui lòng thử lại sau ít phút hoặc nâng cấp lên gói Pay-as-you-go.'
+        : `⚠️ Lỗi kết nối API (Status ${status}).`;
+      return NextResponse.json({ error: errorObj, friendly }, { status });
     }
 
     const reader = geminiResponse.body.getReader();
