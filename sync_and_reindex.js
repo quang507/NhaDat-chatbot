@@ -240,7 +240,8 @@ async function embedBatch(texts, taskType) {
             model: `models/${EMBED_MODEL}`,
             content: { parts: [{ text }] },
             taskType,
-            outputDimensionality: 1024,
+            // KHÔNG ép outputDimensionality: gemini-embedding-001 mặc định 3072 chiều,
+            // phải khớp với query 3072 chiều trong lib/rag.ts, nếu không bot sẽ trả về rỗng.
           })),
         }),
       });
@@ -337,11 +338,19 @@ async function main() {
       try { execSync('git checkout -f main'); } catch {}
     }
 
-    // 2. Đồng bộ thư mục văn bản OneDrive về Git local
+    // 2. Đồng bộ thư mục văn bản OneDrive về Git local (MIRROR: xóa sạch data/ cũ trước khi copy)
     console.log("2. Đang đồng bộ dữ liệu văn bản từ OneDrive vào Git local...");
-    if (!fs.existsSync(LOCAL_DATA_DIR)) {
-      fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
+    // Đảm bảo nguồn OneDrive có dữ liệu trước khi xóa data/ (tránh xóa nhầm khi OneDrive trống/online-only)
+    const srcEntries = fs.readdirSync(ONEDRIVE_DIR);
+    if (srcEntries.length === 0) {
+      console.error('Lỗi: Thư mục nguồn OneDrive đang trống. Dừng để tránh xóa nhầm dữ liệu.');
+      process.exit(1);
     }
+    // Xóa data/ cũ để loại bỏ folder/file đã bị xóa/đổi tên bên OneDrive (vd: ChatBotData_Upload trùng lặp)
+    if (fs.existsSync(LOCAL_DATA_DIR)) {
+      fs.rmSync(LOCAL_DATA_DIR, { recursive: true, force: true });
+    }
+    fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
     copyDir(ONEDRIVE_DIR, LOCAL_DATA_DIR);
     console.log("Đồng bộ thư mục văn bản thành công!");
 
@@ -490,7 +499,7 @@ async function main() {
     execSync('git checkout -f main');
     
     console.log("10. Đang push các file thư mục data và hình ảnh lên GitHub...");
-    execSync('git add data/');
+    execSync('git add -A data/'); // -A để stage cả file/folder bị xóa (mirror)
     if (fs.existsSync(LOCAL_IMAGES_DIR)) {
       execSync('git add public/images/');
     }
