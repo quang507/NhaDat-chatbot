@@ -25,6 +25,11 @@ export default function SlideBotPage() {
   const isListeningLoopActive = useRef(false);
   const stateRef = useRef<SlideState>('idle');
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioQueueRef = useRef<HTMLAudioElement[]>([]);
+  const isPlayingRef = useRef(false);
+
+  // Tốc độ đọc slide (đọc nhanh hơn bình thường cho đỡ lê thê)
+  const SLIDE_TTS_RATE = '+15%';
 
   // Sync state to ref for callbacks
   useEffect(() => {
@@ -83,6 +88,8 @@ export default function SlideBotPage() {
     return () => {
       isListeningLoopActive.current = false;
       if (activeAudioRef.current) activeAudioRef.current.pause();
+      audioQueueRef.current = [];
+      isPlayingRef.current = false;
       if (recognitionRef.current) recognitionRef.current.abort();
     };
   }, []);
@@ -91,6 +98,8 @@ export default function SlideBotPage() {
     if (state === 'listening' || state === 'processing' || state === 'speaking') {
       isListeningLoopActive.current = false;
       if (activeAudioRef.current) activeAudioRef.current.pause();
+      audioQueueRef.current = [];
+      isPlayingRef.current = false;
       if (recognitionRef.current) recognitionRef.current.abort();
       setState('idle');
       setTranscript('Đã dừng. Nhấn nút Micro để bắt đầu lại.');
@@ -101,33 +110,59 @@ export default function SlideBotPage() {
     }
   };
 
-  const speakText = (text: string) => {
-    if (activeAudioRef.current) {
-      activeAudioRef.current.pause();
+  // Làm sạch nhẹ + chuẩn hóa cho giọng đọc tự nhiên (giống voice page)
+  const cleanSpeech = (s: string): string => {
+    return s
+      .replace(/#\s*0*(\d+)/g, 'số $1')           // #03 -> số 3
+      .replace(/(\d+)\s*[xX]\s*(\d+)/g, '$1 nhân $2') // 5x20 -> 5 nhân 20
+      .replace(/(\d+)\s*(m²|m2)\b/gi, '$1 mét vuông')
+      .replace(/\.{2,}/g, ', ')
+      .replace(/[*_`#]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
+  // Tách đoạn thành câu (yêu cầu có khoảng trắng sau dấu kết -> không cắt nhầm "5.19", "Q.8")
+  const toSentences = (text: string): string[] =>
+    text.split(/(?<=[.!?…])\s+/).map(s => cleanSpeech(s)).filter(Boolean);
+
+  // Khi đọc xong toàn bộ -> quay lại nghe (hands-free) hoặc idle
+  const onSpeakDone = () => {
+    if (isListeningLoopActive.current) {
+      setState('listening');
+      setTranscript('Tôi đang nghe...');
+      try { recognitionRef.current?.start(); } catch (e) {}
+    } else {
+      setState('idle');
     }
-    
-    const audioUrl = `/api/tts?text=${encodeURIComponent(text)}`;
-    const audio = new Audio(audioUrl);
+  };
+
+  const playNextSlideAudio = () => {
+    if (isPlayingRef.current) return;
+    const audio = audioQueueRef.current.shift();
+    if (!audio) { onSpeakDone(); return; }
+    isPlayingRef.current = true;
     activeAudioRef.current = audio;
+    audio.onended = () => { isPlayingRef.current = false; activeAudioRef.current = null; playNextSlideAudio(); };
+    audio.onerror = () => { isPlayingRef.current = false; activeAudioRef.current = null; playNextSlideAudio(); };
+    audio.play().catch(() => { isPlayingRef.current = false; playNextSlideAudio(); });
+  };
 
-    audio.onended = () => {
-      if (isListeningLoopActive.current) {
-        setState('listening');
-        setTranscript('Tôi đang nghe...');
-        try { recognitionRef.current?.start(); } catch(e){}
-      } else {
-        setState('idle');
-      }
-    };
-    
-    audio.onerror = () => {
-      if (isListeningLoopActive.current) {
-        setState('listening');
-        try { recognitionRef.current?.start(); } catch(e){}
-      }
-    };
+  // Đọc theo TỪNG CÂU: câu đầu phát ngay khi slide hiện, các câu sau preload song song -> hết trễ
+  const speakText = (text: string) => {
+    if (activeAudioRef.current) { try { activeAudioRef.current.pause(); } catch (e) {} }
+    audioQueueRef.current = [];
+    isPlayingRef.current = false;
 
-    audio.play().catch(e => console.error("Audio play error", e));
+    const sentences = toSentences(text || '');
+    if (sentences.length === 0) { onSpeakDone(); return; }
+
+    for (const s of sentences) {
+      const audio = new Audio(`/api/tts?rate=${encodeURIComponent(SLIDE_TTS_RATE)}&text=${encodeURIComponent(s)}`);
+      audio.preload = 'auto';
+      audioQueueRef.current.push(audio);
+    }
+    playNextSlideAudio();
   };
 
   const fetchSlideData = async (text: string) => {

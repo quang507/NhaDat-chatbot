@@ -19,9 +19,12 @@ export async function GET(req: NextRequest) {
     }
     
     const voice = searchParams.get('voice') || 'vi-VN-HoaiMyNeural';
-    
-    // Create the TTS instance
-    const tts = new UniversalEdgeTTS(text.trim(), voice);
+    // rate: tốc độ đọc, vd "+15%" (nhanh hơn), "-10%" (chậm hơn). Mặc định bình thường.
+    const rawRate = searchParams.get('rate') || '';
+    const rate = /^[+-]\d{1,3}%$/.test(rawRate) ? rawRate : '+0%';
+
+    // Create the TTS instance (kèm tốc độ đọc)
+    const tts = new UniversalEdgeTTS(text.trim(), voice, { rate });
     
     // Synthesize the text into audio and subtitles
     const result = await tts.synthesize();
