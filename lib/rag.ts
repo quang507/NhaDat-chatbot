@@ -279,10 +279,26 @@ export async function retrieve(query: string, index: Index, k = 20): Promise<str
   }
 
   const keywords = extractKeywords(query);
+
+  // Phát hiện số căn/lô cụ thể trong câu hỏi (vd "căn 24" → "24").
+  // Bảng "Danh sách các lô đất" là số liệu gốc nhưng độ tương đồng ngữ nghĩa thấp;
+  // chữ "căn" còn kéo embedding lệch sang chunk marketing. Vì vậy boost CỰC MẠNH
+  // mọi chunk chứa đúng lô được hỏi để chắc chắn nó lọt top, dù hỏi "căn" hay "lô".
+  const unitNums: string[] = [];
+  for (const mm of query.toLowerCase().matchAll(/(?:căn|lô|ô|unit|nhà)\s*(?:số\s*|#\s*)?(\d{1,3})\b/g)) {
+    unitNums.push(mm[1]);
+  }
+  const unitRes = unitNums.map(n => new RegExp(`#0*${n}\\b|(?:căn|lô|ô|unit|nhà)\\s*(?:số\\s*|#\\s*)?0*${n}\\b`, 'i'));
+
   const scored = index.chunks.map(c => {
     let score = dot(q, c.vec);
     let hits = 0;
     let headerHits = 0;
+
+    // Boost cực mạnh (+1.5) cho chunk chứa đúng số căn/lô khách hỏi
+    if (unitRes.length && unitRes.some(re => re.test(c.text))) {
+      score += 1.5;
+    }
 
     for (const re of keywords) {
       if (re.test(c.text)) {
