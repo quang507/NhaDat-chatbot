@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
@@ -210,14 +210,12 @@ export async function POST(req: NextRequest) {
     if (!geminiResponse.ok || !geminiResponse.body) {
       const errText = await geminiResponse.text();
       const status = geminiResponse.status;
-      let errorObj: any = errText;
-      try {
-        errorObj = JSON.parse(errText);
-      } catch {}
+      // Log đầy đủ cho dev (server-side), KHÔNG gửi JSON dài về cho khách
+      console.error(`Gemini API error (status ${status}): ${errText}`);
       const friendly = status === 429
-        ? '⚠️ Lỗi 429 (Resource Exhausted): Tài khoản API đã vượt quá hạn mức (quota) hoặc tần suất gửi yêu cầu quá nhanh. Vui lòng thử lại sau ít phút hoặc nâng cấp lên gói Pay-as-you-go.'
-        : `⚠️ Lỗi kết nối API (Status ${status}).`;
-      return NextResponse.json({ error: errorObj, friendly }, { status });
+        ? '⚠️ Lỗi 429: Hệ thống đang bận hoặc gửi yêu cầu quá nhanh. Anh/chị vui lòng thử lại sau ít phút giúp em nhé 🙏'
+        : 'Có lỗi xảy ra, vui lòng thử lại.';
+      return NextResponse.json({ friendly }, { status });
     }
 
     const reader = geminiResponse.body.getReader();
