@@ -227,7 +227,7 @@ async function embedBatch(texts, taskType) {
     }
   } else {
     // 2) Dùng Gemini Embedding (Fallback)
-    const BATCH_SIZE = 5;
+    const BATCH_SIZE = 100;
     for (let i = 0; i < texts.length; i += BATCH_SIZE) {
       if (i > 0) await sleep(3000);
       const chunk = texts.slice(i, i + BATCH_SIZE);
@@ -367,9 +367,8 @@ async function main() {
       }
       const currentHash = getFileHash(file);
 
-      // Nếu file không thay đổi nội dung và không thuộc diện cần force reindex, dùng lại cache
-      const forceReindex = relativePath.startsWith('drive-extracted/') || relativePath.includes('05 - Ny\'ah Phú Định (Tổng quan).md');
-      if (!forceReindex && cacheMap[relativePath] && cacheMap[relativePath].hash === currentHash) {
+      // Nếu file không thay đổi nội dung, dùng lại cache
+      if (cacheMap[relativePath] && cacheMap[relativePath].hash === currentHash) {
         finalChunks.push(...cacheMap[relativePath].chunks);
         filesSkipped++;
         continue;
@@ -444,8 +443,8 @@ async function main() {
         filesEmbeddedCount++;
         console.log(`-> Thành công sinh vector cho ${annotatedChunks.length} chunks.`);
         
-        // Sleep 1.5s giữa các file để tránh rate limits (RPM)
-        await sleep(1500);
+        // Sleep 2s giữa các file để tránh rate limits (RPM)
+        await sleep(2000);
       } else {
         console.error(`❌ Lỗi: Không thể sinh vector cho file: ${item.relativePath}. Dừng sinh vector mới để lưu tiến trình.`);
         hitLimit = true;
