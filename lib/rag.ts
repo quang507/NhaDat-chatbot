@@ -127,15 +127,19 @@ async function embedBatch(
       if (i > 0) await new Promise(r => setTimeout(r, 200));
       const slice = texts.slice(i, i + PARALLEL);
       const vecs = await Promise.all(slice.map(async t => {
+        // Chiều của query PHẢI khớp chiều của index. retrieve() truyền indexDim vào forceDim.
+        // gemini-embedding-001 mặc định 3072 chiều; chỉ ép outputDimensionality khi forceDim
+        // được cung cấp (và khác mặc định) để tránh lệch chiều -> RAG trả về rỗng.
+        const body: Record<string, unknown> = {
+          model: `models/${EMBED_MODEL}`,
+          content: { parts: [{ text: t }] },
+          taskType,
+        };
+        if (forceDim) body.outputDimensionality = forceDim;
         const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:embedContent?key=${GEMINI_API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: `models/${EMBED_MODEL}`,
-            content: { parts: [{ text: t }] },
-            taskType,
-            outputDimensionality: 1024, // Cố định 1024 chiều
-          }),
+          body: JSON.stringify(body),
         });
         if (!res.ok) {
           const errText = await res.text();
