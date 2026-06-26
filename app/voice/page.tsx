@@ -39,7 +39,16 @@ export default function VoicePage() {
 
   const chatStateRef = useRef<ChatState>('idle');
   const isRecognitionRunningRef = useRef<boolean>(false);
-  
+
+  // Barge-in (nói chèn lúc AI đang đọc) — dùng VAD trên stream có khử vọng (echoCancellation)
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const vadRafRef = useRef<number | null>(null);
+  const speakStartRef = useRef<number>(0); // mốc thời gian câu hiện tại bắt đầu đọc
+  const VAD_THRESHOLD = 0.06;  // ngưỡng âm lượng coi là "người dùng đang nói"
+  const VAD_FRAMES = 6;        // số khung liên tiếp vượt ngưỡng mới cắt lời (chống nhiễu)
+  const SPEAK_GRACE_MS = 400;  // bỏ qua 400ms đầu mỗi câu (tránh dư âm/echo)
+
   // Helper to store log function to avoid dependency cycles in useEffect
   const addLogRef = useRef<(type: LogItem['type'], message: string) => void>(() => {});
   
@@ -175,6 +184,66 @@ export default function VoicePage() {
     isPlayingAudioRef.current = false;
     isStreamFinishedRef.current = false;
     isRecognitionRunningRef.current = false;
+    teardownVAD();
+  };
+
+  // Cắt lời AI: dừng audio đang đọc + hàng đợi, chuyển sang nghe ngay (giống ChatGPT Voice)
+  const bargeIn = () => {
+    if (chatStateRef.current !== 'speaking') return;
+    addLog('SPEECH', 'Người dùng chèn lời (barge-in) → dừng đọc, chuyển sang nghe.');
+    if (activeAudioRef.current) {
+      try { activeAudioRef.current.pause(); } catch (e) {}
+      activeAudioRef.current = null;
+    }
+    audioQueueRef.current = [];
+    isPlayingAudioRef.current = false;
+    isStreamFinishedRef.current = false;
+    startListening();
+  };
+
+  // Thiết lập VAD: getUserMedia (khử vọng) + đo âm lượng để phát hiện người dùng nói lúc AI đang đọc
+  const setupVAD = async () => {
+    if (mediaStreamRef.current) return;
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
+      mediaStreamRef.current = stream;
+      const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      const ctx: AudioContext = new Ctx();
+      audioCtxRef.current = ctx;
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 512;
+      source.connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+      let loudFrames = 0;
+      const tick = () => {
+        vadRafRef.current = requestAnimationFrame(tick);
+        analyser.getByteTimeDomainData(data);
+        let sum = 0;
+        for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
+        const rms = Math.sqrt(sum / data.length);
+        // Chỉ xét cắt lời khi AI đang đọc và đã qua mốc grace (tránh dư âm chính câu vừa phát)
+        if (chatStateRef.current === 'speaking' && Date.now() - speakStartRef.current > SPEAK_GRACE_MS) {
+          if (rms > VAD_THRESHOLD) loudFrames++; else loudFrames = Math.max(0, loudFrames - 1);
+          if (loudFrames >= VAD_FRAMES) { loudFrames = 0; bargeIn(); }
+        } else {
+          loudFrames = 0;
+        }
+      };
+      tick();
+      addLog('INFO', 'Đã bật phát hiện chèn lời (VAD + khử vọng).');
+    } catch (e) {
+      addLog('WARN', 'Không bật được VAD (vẫn dùng được, chạm orb để cắt lời): ' + e);
+    }
+  };
+
+  const teardownVAD = () => {
+    if (vadRafRef.current != null) { cancelAnimationFrame(vadRafRef.current); vadRafRef.current = null; }
+    if (mediaStreamRef.current) { try { mediaStreamRef.current.getTracks().forEach(t => t.stop()); } catch (e) {} mediaStreamRef.current = null; }
+    if (audioCtxRef.current) { try { audioCtxRef.current.close(); } catch (e) {} audioCtxRef.current = null; }
   };
 
   const toggleVoiceSession = () => {
@@ -186,8 +255,15 @@ export default function VoicePage() {
     } else {
       addLog('INFO', 'Người dùng bấm nút: BẮT ĐẦU ĐÀM THOẠI.');
       isListeningLoopActive.current = true;
+      setupVAD();
       startListening();
     }
+  };
+
+  // Chạm orb: đang đọc -> cắt lời; còn lại -> bật/tắt đàm thoại
+  const onOrbClick = () => {
+    if (chatStateRef.current === 'speaking') { bargeIn(); return; }
+    toggleVoiceSession();
   };
 
   const startListening = () => {
@@ -367,6 +443,7 @@ export default function VoicePage() {
     const nextAudio = audioQueueRef.current.shift()!;
     isPlayingAudioRef.current = true;
     updateState('speaking');
+    speakStartRef.current = Date.now(); // mốc để VAD bỏ qua dư âm đầu câu
     setResponse(nextAudio.text);
     addLog('SPEECH', `Bắt đầu phát âm thanh: "${nextAudio.text}"`);
 
@@ -661,7 +738,7 @@ export default function VoicePage() {
 
         {/* The Main Glowing Orb */}
         <button
-          onClick={toggleVoiceSession}
+          onClick={onOrbClick}
           className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative overflow-hidden focus:outline-none shadow-2xl
             ${state === 'idle' ? 'bg-gradient-to-tr from-blue-900/80 to-sky-800/80 border border-blue-500/30 animate-pulse-orb' : ''}
             ${state === 'listening' ? 'bg-gradient-to-tr from-blue-600 to-sky-400 scale-105 border border-sky-300 shadow-sky-500/20 animate-pulse-orb' : ''}
@@ -706,9 +783,12 @@ export default function VoicePage() {
             <p className="text-purple-400 text-sm font-medium animate-pulse select-text">Robot đang suy nghĩ...</p>
           )}
           {state === 'speaking' && (
-            <p className="text-emerald-400 text-sm font-medium leading-relaxed max-w-sm mx-auto select-text">
-              {response}
-            </p>
+            <>
+              <p className="text-emerald-400 text-sm font-medium leading-relaxed max-w-sm mx-auto select-text">
+                {response}
+              </p>
+              <p className="text-neutral-500 text-xs mt-2">💬 Cứ nói để chen ngang, hoặc chạm quả cầu để cắt lời</p>
+            </>
           )}
           {state === 'idle' && (
             <p className="text-neutral-500 text-sm">Chạm vào quả cầu để bắt đầu đàm thoại rảnh tay</p>
