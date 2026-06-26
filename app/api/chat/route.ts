@@ -13,9 +13,10 @@ const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
-- CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN" bên dưới. Không suy diễn hay bịa thêm thông tin.
+- Đối với các câu hỏi về dự án, rổ hàng, giá cả, pháp lý, chính sách, hoặc bất kỳ thông tin bất động sản nào, bạn CHỈ được trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN" hoặc "DỮ LIỆU" bên dưới. Tuyệt đối không bịa đặt hoặc suy diễn thông tin.
+- Đối với các câu hỏi xã giao thông thường, chào hỏi, giới thiệu bản thân hoặc hỏi về ngày giờ/thời gian hiện tại, bạn được phép trả lời tự nhiên theo hiểu biết thông thường và sử dụng thông tin thời gian hiện tại được cung cấp.
 - TUYỆT ĐỐI KHÔNG sử dụng các cụm từ như "theo nguồn", "theo nguồn X", "dữ liệu cung cấp", "hệ thống", v.v. Hãy trả lời tự nhiên, trực tiếp như một tư vấn viên bất động sản am hiểu sâu sắc.
-- Nếu khách hỏi về một căn/lô cụ thể hoặc thông tin bất kỳ mà dữ liệu KHÔNG có hoặc không đủ để trả lời trực tiếp ("ko viết được"), hãy phản hồi lịch sự rằng bạn chưa có thông tin chi tiết về căn/lô này, tuyệt đối KHÔNG đoán mò hay tự chế thông tin, sau đó hãy lịch sự mời khách hàng để lại số điện thoại hoặc liên hệ trực tiếp để bộ phận kinh doanh hỗ trợ chính xác.
+- Nếu khách hỏi về một căn/lô cụ thể hoặc thông tin dự án mà dữ liệu KHÔNG có hoặc không đủ để trả lời trực tiếp ("ko viết được"), hãy phản hồi lịch sự rằng bạn chưa có thông tin chi tiết về căn/lô này, tuyệt đối KHÔNG đoán mò hay tự chế thông tin, sau đó hãy lịch sự mời khách hàng để lại số điện thoại hoặc liên hệ trực tiếp để bộ phận kinh doanh hỗ trợ chính xác.
 - LƯU Ý QUAN TRỌNG: Các từ "Căn", "Lô", "Ô", "Unit" và ký hiệu "#" (ví dụ "#03") là TƯƠNG ĐƯƠNG nhau. Nếu khách hỏi "căn số 3", bạn phải lấy thông tin của "Lô số #03" hoặc "Lô 03" để trả lời.
 - ĐẶC BIỆT ƯU TIÊN VĂN PHONG Q&A CHUẨN HUMAN (03_Human-QA): Nếu câu hỏi của khách hàng trùng hoặc tương tự với các câu hỏi trong bộ Q&A Chuẩn Human (trong thư mục '03_Human-QA'), bạn BẮT BUỘC PHẢI sao chép nguyên văn 99%-100% câu trả lời 'Response' đó, giữ nguyên từng dấu xuống dòng, ngắt nghỉ, cách dùng emoji, độ dài ngắn, tuyệt đối không tự ý viết lại, sửa đổi từ ngữ hay rút gọn.
 - Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.`;
@@ -44,6 +45,14 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     ? `\n\nTHÔNG TIN ĐÃ BIẾT VỀ KHÁCH (dùng để cá nhân hóa, đừng hỏi lại thứ đã biết):\n${profile.trim()}`
     : '';
 
+  // Inject thông tin thời gian thực tế ở Việt Nam (GMT+7)
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const vnTime = new Date(utc + (3600000 * 7));
+  const timeStr = vnTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  const dateStr = vnTime.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
+  const timeContext = `\n\nTHỜI GIAN HIỆN TẠI (GMT+7): ${timeStr}, ngày ${dateStr}. Bạn có thể dùng thông tin này để trả lời nếu khách hỏi giờ/ngày hiện tại.`;
+
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
@@ -51,7 +60,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
       const chunks = await retrieve(message, index, 12);
       const data = chunks.join('\n\n');
       return {
-        text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
+        text: `${persona}${profileNote}${timeContext}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
         usedRag: true,
       };
     }
@@ -65,7 +74,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   const data = await readRepoFile('data.md');
   const truncated = data.length > limit ? data.slice(0, limit) + '\n\n[... dữ liệu đã được rút ngắn để tránh quá tải API ...]' : data;
   return {
-    text: `${persona}${profileNote}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
+    text: `${persona}${profileNote}${timeContext}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     usedRag: false,
   };
 }
