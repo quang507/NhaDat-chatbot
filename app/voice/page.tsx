@@ -238,7 +238,16 @@ export default function VoicePage() {
     
     // 1. Normalize number ranges (e.g., 5-7 tỷ -> 5 đến 7 tỷ)
     clean = clean.replace(/(\d+)\s*-\s*(\d+)/g, '$1 đến $2');
-    
+
+    // 1b. Mã lô/căn: "#03" -> "số 3" (đọc tự nhiên, không thành "thăng không ba")
+    clean = clean.replace(/#\s*0*(\d+)/g, 'số $1');
+
+    // 1c. Kích thước "5x20", "5 x 9m" -> "5 nhân 20"
+    clean = clean.replace(/(\d+)\s*[xX]\s*(\d+)/g, '$1 nhân $2');
+
+    // 1d. Dấu ba chấm -> ngắt nghỉ nhẹ (tránh đọc lắp)
+    clean = clean.replace(/\.{2,}/g, ', ');
+
     // 2. Normalize m2/m² preceded by a digit (prevents block codes like M2, A2 from turning into "mét vuông")
     clean = clean.replace(/(\d+)\s*(m²|m2)\b/gi, '$1 mét vuông');
     
@@ -292,6 +301,10 @@ export default function VoicePage() {
     
     // Remove bullet points
     clean = clean.replace(/^\s*[-*+]\s+/gm, ' ');
+
+    // Bỏ số thứ tự đầu câu ("1. ", "2)") để không bị đọc thành "một", "hai".
+    // Yêu cầu có dấu cách hoặc hết chuỗi sau dấu chấm -> KHÔNG đụng tới "1.5 tỷ".
+    clean = clean.replace(/^\s*\d{1,2}[.)](\s+|$)/, ' ');
     
     // Clean all special characters EXCEPT letters, digits, spaces, and punctuation (.,;:?!)
     clean = clean.replace(/[^a-zA-Z0-9\s.,;:?!áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđĐ]/g, ' ');
@@ -401,6 +414,18 @@ export default function VoicePage() {
             if (/\d/.test(buffer[i-1]) && /\d/.test(buffer[i+1])) {
               isEnding = false;
             }
+          }
+
+          // 1b. Chữ cái + . + số (Q.8, P.16, A.1) -> viết tắt địa chỉ, KHÔNG phải hết câu
+          if (isEnding && i > 0 && i < buffer.length - 1) {
+            if (/[a-zA-ZÀ-ỹ]/.test(buffer[i-1]) && /\d/.test(buffer[i+1])) {
+              isEnding = false;
+            }
+          }
+
+          // 1c. Dấu ba chấm "..." -> không tách ở các dấu chấm liền nhau
+          if (isEnding && (buffer[i+1] === '.' || buffer[i-1] === '.')) {
+            isEnding = false;
           }
           
           // 2. Ignore periods inside abbreviations without spaces (e.g. TP.HCM, Co.ltd)
