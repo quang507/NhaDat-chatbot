@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { splitCleanSentences, ttsUrl } from '@/lib/speech';
+import { classifyAmbientIntent } from '@/lib/intent';
 
 function normalizeVietnameseSpeech(text: string): string {
   if (!text) return '';
@@ -63,22 +64,15 @@ export default function SlideBotPage() {
   const lastQueryRef = useRef('');         // query lần trước (tránh lặp)
   const suppressListenRef = useRef(false); // đang đọc to -> tạm ngắt nghe
   const isGeneratingRef = useRef(false);   // đang gọi API slide -> bỏ qua ambient trigger mới
+  const activeTopicRef = useRef<{topic: string, expiry: number} | null>(null);
+  const shortContextRef = useRef<string[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const instantFiredRef = useRef(false);   // đã bắn slide tức thì cho câu đang nói chưa
   const lastInstantRef = useRef(0);        // mốc lần bắn slide tức thì gần nhất
-  const AMBIENT_DEBOUNCE_MS = 1200;        // ngừng nói 1.2s mới xét tạo slide (nhanh hơn)
-  const AMBIENT_COOLDOWN_MS = 6000;        // tối thiểu 6s giữa 2 slide
   const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
-  // Từ khóa nghe được là bật slide LIỀN (không đợi hết câu)
-  const AMBIENT_TRIGGER_WORDS = [
-    'vị trí', 'bản đồ', 'địa chỉ', 'đường đi', 'ở đâu', 'bao xa', 'di chuyển',
-    'giá', 'bảng giá', 'thanh toán', 'chiết khấu', 'pháp lý', 'sổ hồng',
-    'mẫu nhà', 'opus', 'fusion', 'cosmo', 'signature', 'nội thất',
-    'diện tích', 'mặt tiền', 'bếp', 'phòng ngủ', 'phòng khách', 'master',
-    'gara', 'sân thượng', 'thang máy', 'tiện ích', 'công viên', 'tầng',
-    'căn số', 'lô số', 'căn ', 'lô ',
-  ];
+  const AMBIENT_DEBOUNCE_MS = 600;        // ngừng nói 0.6s mới xét tạo slide -> Rất nhanh!
+  const AMBIENT_COOLDOWN_MS = 5000;        // tối thiểu 5s giữa 2 slide
 
   useEffect(() => { ambientRef.current = ambientMode; }, [ambientMode]);
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
@@ -402,47 +396,106 @@ export default function SlideBotPage() {
     if (isGeneratingRef.current) return;          // đang tạo slide -> chờ
     const now = Date.now();
     if (now - lastInstantRef.current < INSTANT_COOLDOWN_MS) return;
-    const q = interim.toLowerCase();
-    if (!AMBIENT_TRIGGER_WORDS.some(w => q.includes(w))) return;
-    const query = interim.trim();
-    if (query.split(/\s+/).length < 2) return;    // quá ngắn, bỏ qua
+    
+    const intent = classifyAmbientIntent(interim);
+    if (!intent.shouldGenerate || intent.reason === 'too_short' || intent.reason === 'filler') return;
+    
+    // Kiểm tra xem topic này có bị trùng lặp không (chống spam)
+    const isSpam = intent.topic && activeTopicRef.current && activeTopicRef.current.topic === intent.topic && now < activeTopicRef.current.expiry && intent.reason !== 'explicit_slide_request';
+    if (isSpam) return;
+
     instantFiredRef.current = true;
     lastInstantRef.current = now;
     lastGenRef.current = now;                      // tính luôn vào cooldown chung
-    lastQueryRef.current = query;
-    fetchSlideData(normalizeVietnameseSpeech(query), true);
+    lastQueryRef.current = interim;
+    fetchSlideData(normalizeVietnameseSpeech(interim), true);
   };
 
   // ===== NGHE NGẦM (AMBIENT) =====
-  // Gom lời nói, ngừng 1 nhịp thì xét xem chủ đề có đáng tạo slide không
+  // Gom lời nói, có 2 logic kích hoạt:
+  // 1. Kích hoạt NGAY LẬP TỨC nếu có từ khóa rõ ràng (explicit request hoặc keyword dự án mạnh)
+  // 2. Chờ nghe hết câu (ngừng 0.6s) rồi mới xét tạo slide
   const handleAmbientSpeech = (text: string) => {
     const words = (bufferRef.current + ' ' + text).trim().split(/\s+/);
-    bufferRef.current = words.slice(-45).join(' '); // giữ ~45 từ gần nhất
-    setTranscript('🎧 Đang nghe: …' + bufferRef.current.slice(-90));
+    const fullText = words.slice(-45).join(' '); // giữ ~45 từ gần nhất
+    bufferRef.current = fullText;
+    setTranscript('🎧 Đang nghe: …' + fullText.slice(-90));
+
+    // Logic 1: Kích hoạt ngay lập tức nếu từ khóa mạnh
+    if (!isGeneratingRef.current && ambientRef.current && isListeningLoopActive.current) {
+      const intent = classifyAmbientIntent(fullText);
+      // Nếu là explicit request (vd: "mở slide", "cho xem") hoặc đã bắt được topic
+      if (intent.shouldGenerate && (intent.reason === 'explicit_slide_request' || intent.reason === 'has_project_topic')) {
+        // Kiểm tra xem topic này có bị trùng lặp không (chống spam liên tục cùng 1 topic khi đang nói dở)
+        const now = Date.now();
+        const isSpam = intent.topic && activeTopicRef.current && activeTopicRef.current.topic === intent.topic && now < activeTopicRef.current.expiry && intent.reason !== 'explicit_slide_request';
+        
+        if (!isSpam) {
+          console.log('[Ambient] Bắt được từ khóa mạnh -> Kích hoạt NGAY LẬP TỨC (không chờ hết câu):', intent.topic);
+          if (debounceRef.current) clearTimeout(debounceRef.current);
+          maybeGenerateAmbient(); // Trigger ngay!
+          return;
+        }
+      }
+    }
+
+    // Logic 2: Chờ hết câu (ngừng nói 0.6s)
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(maybeGenerateAmbient, AMBIENT_DEBOUNCE_MS);
   };
 
   const maybeGenerateAmbient = () => {
+    instantFiredRef.current = false; // Reset cờ bắn tức thì cho câu tiếp theo
     if (!ambientRef.current || !isListeningLoopActive.current) return;
-    // In-flight guard: nếu API đang xử lý request trước, bỏ qua trào mới
-    if (isGeneratingRef.current) {
-      console.log('[Ambient] Bỏ qua: đang generate slide.');
-      return;
+    if (isGeneratingRef.current) return;
+
+    const query = bufferRef.current.trim();
+    if (!query) return;
+
+    const intent = classifyAmbientIntent(query);
+    
+    // Nếu chỉ là filler hoặc quá ngắn -> Bỏ qua, clear buffer để không dồn ứ filler
+    if (!intent.shouldGenerate) {
+       if (intent.reason === 'filler' || intent.reason === 'too_short') {
+          bufferRef.current = ''; 
+       }
+       return;
     }
+
     const now = Date.now();
     const wait = AMBIENT_COOLDOWN_MS - (now - lastGenRef.current);
-    if (wait > 0) { // chưa hết cooldown -> hẹn lại
+    if (wait > 0 && intent.reason !== 'explicit_slide_request') {
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(maybeGenerateAmbient, wait);
       return;
     }
-    const query = bufferRef.current.trim();
-    if (query.split(/\s+/).length < 3) return;   // quá ngắn, bỏ qua
-    if (query === lastQueryRef.current) return;   // chưa có gì mới
-    lastQueryRef.current = query;
+
+    // Kiểm tra Topic trùng lặp (nếu user vẫn đang nói về chủ đề cũ, không cần đổi slide liên tục)
+    if (intent.topic && activeTopicRef.current) {
+      if (activeTopicRef.current.topic === intent.topic && now < activeTopicRef.current.expiry && intent.reason !== 'explicit_slide_request') {
+        console.log('[Ambient] Bỏ qua: cùng chủ đề đang nói:', intent.topic);
+        bufferRef.current = ''; // Đã xử lý xong intent này, clear buffer
+        activeTopicRef.current.expiry = now + 45000; // Gia hạn TTL
+        return;
+      }
+    }
+
+    // Chấp nhận tạo slide mới!
+    setTranscript('💡 Chuẩn bị slide...');
+    if (intent.topic) {
+       activeTopicRef.current = { topic: intent.topic, expiry: now + 45000 };
+    }
+    
+    // Cập nhật rolling context
+    shortContextRef.current.push(query);
+    if (shortContextRef.current.length > 3) shortContextRef.current.shift();
+    const fullQuery = shortContextRef.current.join('. ');
+
+    lastQueryRef.current = fullQuery;
     lastGenRef.current = now;
-    fetchSlideData(query, true);
+    bufferRef.current = ''; // Clear buffer ngay
+    
+    fetchSlideData(fullQuery, true);
   };
 
   // VAD: phát hiện người dùng nói lúc AI đang đọc (stream khử vọng + đo RMS)

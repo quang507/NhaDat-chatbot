@@ -3,8 +3,9 @@ const path = require('path');
 const { execSync } = require('child_process');
 const crypto = require('crypto');
 
-const ONEDRIVE_DIR = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide\\ChatBotData_Upload`;
-const ONEDRIVE_IMAGES_DIR_GLOBAL = `C:\\Users\\QuangLêBáDuy\\OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide\\ChatBotImages_Upload`;
+const DEFAULT_ONEDRIVE = path.join(process.env.USERPROFILE || 'C:\\Users\\Default', 'OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide');
+const ONEDRIVE_DIR = process.env.CHATBOT_UPLOAD_DIR || path.join(DEFAULT_ONEDRIVE, 'ChatBotData_Upload');
+const ONEDRIVE_IMAGES_DIR_GLOBAL = process.env.CHATBOT_IMAGES_DIR || path.join(DEFAULT_ONEDRIVE, 'ChatBotImages_Upload');
 const LOCAL_DATA_DIR = path.join(__dirname, 'data');
 let GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
