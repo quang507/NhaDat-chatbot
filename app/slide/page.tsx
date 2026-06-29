@@ -130,6 +130,7 @@ export default function SlideBotPage() {
   // Tăng mỗi lần có slide mới -> ép remount để animation vào lại mượt (kể cả khi chỉ đổi nội dung)
   const [slideKey, setSlideKey] = useState(0);
   const toggleMicRef = useRef<() => void>(() => {});
+  const volumeVisualRef = useRef<HTMLDivElement>(null);
 
   // Slideshow interval tự động chuyển ảnh mỗi 4.5 giây
   useEffect(() => {
@@ -550,6 +551,13 @@ export default function SlideBotPage() {
         let sum = 0;
         for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
         const rms = Math.sqrt(sum / data.length);
+        // Cập nhật vòng sáng VAD thời gian thực
+        if (volumeVisualRef.current) {
+          const scale = 1 + Math.min(rms * 5, 2.0);
+          volumeVisualRef.current.style.transform = `scale(${scale})`;
+          volumeVisualRef.current.style.backgroundColor = rms > 0.01 ? 'rgba(232, 184, 75, 0.25)' : 'rgba(239, 68, 68, 0.15)';
+        }
+
         if (stateRef.current === 'speaking' && Date.now() - speakStartRef.current > SPEAK_GRACE_MS) {
           if (rms > VAD_THRESHOLD) loudFrames++; else loudFrames = Math.max(0, loudFrames - 1);
           if (loudFrames >= VAD_FRAMES) { loudFrames = 0; bargeIn(); }
@@ -772,6 +780,14 @@ export default function SlideBotPage() {
         let sum = 0;
         for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
         const rms = Math.sqrt(sum / data.length);
+
+        // Cập nhật vòng sáng VAD thời gian thực
+        if (volumeVisualRef.current) {
+          const scale = 1 + Math.min(rms * 5, 2.0);
+          volumeVisualRef.current.style.transform = `scale(${scale})`;
+          volumeVisualRef.current.style.backgroundColor = rms > 0.01 ? 'rgba(232, 184, 75, 0.25)' : 'rgba(239, 68, 68, 0.15)';
+        }
+
         const speaking = rms > AM_THRESHOLD;
         if (suppressListenRef.current || stateRef.current === 'speaking') {
           if (amRecordingRef.current) stopSeg();
@@ -1388,16 +1404,26 @@ export default function SlideBotPage() {
           </button>
         </div>
 
-        <button
-          onClick={toggleMic}
-          className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-xl transition-all duration-300 ${
-            state !== 'idle'
-              ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20 animate-pulse'
-              : 'bg-[#e8b84b] hover:bg-[#c49a2a] shadow-[#e8b84b]/30 text-gray-900'
-          }`}
-        >
-          {state !== 'idle' ? '⏹️' : '🎤'}
-        </button>
+        <div className="relative">
+          {/* Vòng tròn lan tỏa sáng nhấp nháy theo âm lượng giọng nói thực tế (VAD RMS) kiểu ChatGPT Voice */}
+          {state !== 'idle' && (
+            <div 
+              ref={volumeVisualRef}
+              className="absolute inset-0 rounded-full transition-transform duration-75 pointer-events-none z-0"
+              style={{ transform: 'scale(1)', backgroundColor: 'rgba(239, 68, 68, 0.2)', willChange: 'transform' }}
+            />
+          )}
+          <button
+            onClick={toggleMic}
+            className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-xl transition-all duration-300 relative z-10 ${
+              state !== 'idle'
+                ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20'
+                : 'bg-[#e8b84b] hover:bg-[#c49a2a] shadow-[#e8b84b]/30 text-gray-900'
+            }`}
+          >
+            {state !== 'idle' ? '⏹️' : '🎤'}
+          </button>
+        </div>
 
         {ambientMode && (
           <p className="text-[11px] text-emerald-400/70 text-center max-w-md">
