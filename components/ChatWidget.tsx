@@ -170,14 +170,14 @@ export default function ChatWidget() {
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center text-2xl hover:bg-blue-700 transition overflow-hidden"
         aria-label={open ? 'Đóng chatbot' : 'Mở chatbot Nhã Đạt AI'}
       >
-        {open ? '✕' : <img src="/logo.svg" alt="Nhã Đạt AI" className="w-full h-full object-cover" />}
+        {open ? '✕' : <span className="w-full h-full bg-white flex items-center justify-center"><img src="/logo.svg" alt="Nhã Đạt AI" className="w-[78%] h-[78%] object-contain" /></span>}
       </button>
 
       {open && (
         <div className="fixed bottom-24 right-6 z-50 w-80 sm:w-96 h-[500px] flex flex-col rounded-2xl shadow-2xl bg-white border border-gray-200 overflow-hidden">
           {/* Header */}
           <div className="bg-blue-600 text-white px-4 py-3 flex items-center gap-1.5">
-            <img src="/logo.svg" alt="Nhã Đạt AI" className="w-7 h-7 rounded-md flex-shrink-0" />
+            <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0"><img src="/logo.svg" alt="Nhã Đạt AI" className="w-[80%] h-[80%] object-contain" /></span>
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-sm truncate">Nhã Đạt AI</p>
               <p className="text-xs opacity-80 truncate">NyAh Phú Định · Villa NyAh</p>
@@ -197,7 +197,7 @@ export default function ChatWidget() {
           <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
             {messages.length === 0 && (
               <div className="text-center text-gray-500 text-sm mt-4">
-                <img src="/logo.svg" alt="Nhã Đạt AI" className="w-14 h-14 rounded-xl mx-auto mb-3" />
+                <img src="/logo.svg" alt="Nhã Đạt AI" className="w-20 h-20 object-contain mx-auto mb-3" />
                 <p className="mb-3">Xin chào anh/chị! Em là trợ lý của <strong>nhadat.company</strong>, sẵn sàng tư vấn về dự án <strong>NyAh Phú Định</strong> và <strong>Villa NyAh</strong> ạ.</p>
                 {cfg.suggestions.length > 0 && (
                   <div className="space-y-2 text-left">

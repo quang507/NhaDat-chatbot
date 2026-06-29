@@ -834,10 +834,10 @@ export default function SlideBotPage() {
       <header className="px-6 md:px-8 py-4 md:py-5 z-10 flex justify-between items-center border-b border-[#1e2a45] bg-[#0a0f1e]/80 backdrop-blur-md">
         {/* Brand (logo placeholder 🏠 — sẽ thay bằng logo thật) */}
         <div className="flex items-center gap-3">
-          <img src="/logo.svg" alt="Nhã Đạt AI" className="w-10 h-10 rounded-xl shadow-lg" />
+          <span className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-lg shrink-0"><img src="/logo.svg" alt="Ny'ah Phú Định" className="w-[82%] h-[82%] object-contain" /></span>
           <div>
-            <h1 className="font-bold text-lg leading-tight">Nhã Đạt AI</h1>
-            <p className="text-xs text-gray-400">Trình chiếu thông minh</p>
+            <h1 className="font-bold text-lg leading-tight">Ny'ah Phú Định</h1>
+            <p className="text-xs text-gray-400">Trình chiếu thông minh · Nhã Đạt AI</p>
           </div>
         </div>
 
