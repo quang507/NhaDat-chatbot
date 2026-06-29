@@ -441,6 +441,29 @@ export default function AdminPage() {
     }
   }
 
+  // Build lại TOÀN BỘ index từ data.md (xóa sạch chunk cũ -> hết data lỗi/trùng).
+  async function rebuildFullIndex() {
+    if (!confirm('Build lại TOÀN BỘ index từ data.md? Thao tác này xóa hết chunk cũ và tạo mới (mất ~1-2 phút).')) return;
+    setBusy(true);
+    setEmbedStatus('🔄 Đang build lại toàn bộ index từ data.md (xóa sạch chunk cũ)...');
+    try {
+      const res = await fetch('/api/admin/reindex', {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setEmbedStatus(`✅ Đã build lại toàn bộ index. Tổng ${data.chunks} chunks (đã xóa hết chunk cũ).`);
+      } else {
+        setEmbedStatus(`❌ Lỗi: ${data.error}`);
+      }
+    } catch {
+      setEmbedStatus('❌ Không kết nối được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function saveSettings() {
     setBusy(true);
     setStatus('Đang lưu cấu hình lên GitHub...');
@@ -977,6 +1000,14 @@ export default function AdminPage() {
                 <div className="flex items-center gap-2">
                   <span className="text-lg">📝</span>
                   <h3 className="font-bold text-sm text-slate-200">Kết quả Markdown đầu ra</h3>
+                  <button
+                    onClick={rebuildFullIndex}
+                    disabled={busy}
+                    title="Build lại toàn bộ index từ data.md — xóa sạch chunk cũ/lỗi/trùng"
+                    className="ml-1 bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg shadow-orange-500/10 transition-all disabled:opacity-50 flex items-center gap-1"
+                  >
+                    🔁 Rebuild toàn bộ Index
+                  </button>
                 </div>
                 {outputMarkdown && (
                   <div className="flex items-center gap-2 flex-wrap">
