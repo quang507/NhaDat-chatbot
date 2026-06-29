@@ -85,6 +85,47 @@ export default function SlideBotPage() {
   useEffect(() => { slideRef.current = slide; }, [slide]);
   useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
 
+  // Preload toàn bộ ảnh tĩnh ngay khi load trang để tăng tốc đổi slide lên 0ms (no network delay)
+  useEffect(() => {
+    const staticImages = [
+      '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg',
+      '/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png',
+      '/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg',
+      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png',
+      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png',
+      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-wc.png',
+      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg',
+      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg',
+      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-3.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-2.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_wc.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tang-2.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_wc.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-hoc.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-ngu-con.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-3.png',
+    ];
+    staticImages.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   // Tăng mỗi lần có slide mới -> ép remount để animation vào lại mượt (kể cả khi chỉ đổi nội dung)
   const [slideKey, setSlideKey] = useState(0);
@@ -141,7 +182,7 @@ export default function SlideBotPage() {
   const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
   const AM_THRESHOLD = 0.060;     // ngưỡng RMS coi là có người nói (cao để im lặng/nhiễu không kích hoạt)
   const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
-  const AM_SILENCE_MS = 900;      // im lặng 0.9s -> chốt 1 câu, gửi phiên âm
+  const AM_SILENCE_MS = 650;      // im lặng 0.65s (nhạy bén hơn) -> chốt 1 câu, gửi phiên âm
   const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
   const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt để gửi phiên âm
 
@@ -263,7 +304,7 @@ export default function SlideBotPage() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       audioChunksRef.current = [];
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = new MediaRecorder(stream, { audioBitsPerSecond: 24000 });
       mediaRecorderRef.current = mediaRecorder;
       
       mediaRecorder.ondataavailable = (event) => {
@@ -696,7 +737,7 @@ export default function SlideBotPage() {
         if (amRecordingRef.current) return;
         amChunksRef.current = [];
         try {
-          const mr = new MediaRecorder(stream);
+          const mr = new MediaRecorder(stream, { audioBitsPerSecond: 24000 });
           amRecorderRef.current = mr;
           mr.ondataavailable = (e) => { if (e.data.size > 0) amChunksRef.current.push(e.data); };
           mr.onstop = () => {
@@ -909,6 +950,7 @@ export default function SlideBotPage() {
                 className={`absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-1000 ease-in-out ${
                   isActive ? 'opacity-95 scale-100 z-10' : 'opacity-0 scale-95 z-0 pointer-events-none'
                 }`}
+                style={{ willChange: 'opacity, transform', transform: 'translate3d(0,0,0)' }}
               >
                 <img 
                   src={img} 
@@ -916,6 +958,7 @@ export default function SlideBotPage() {
                   className={`w-full h-full cursor-pointer transition-transform duration-500 hover:scale-[1.01] ${
                     isMap ? 'object-contain bg-[#070707]' : 'object-cover'
                   }`}
+                  style={{ willChange: 'transform', transform: 'translate3d(0,0,0)' }}
                   onClick={() => setSelectedImage(img)}
                   onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
                 />
@@ -978,7 +1021,7 @@ export default function SlideBotPage() {
         <div className={`${containerClass} flex-col justify-center items-center p-16 relative animate-fade-in`}>
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#e8b84b]/3 to-transparent pointer-events-none"></div>
           
-          <div className="max-w-4xl text-center z-10 w-full flex flex-col justify-center items-center h-full">
+          <div key={slide.title} className="max-w-4xl text-center z-10 w-full flex flex-col justify-center items-center h-full animate-fade-in-up">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 text-white tracking-tight leading-tight">
               {slide.title}
             </h2>
@@ -1008,7 +1051,7 @@ export default function SlideBotPage() {
       return (
         <div className={`${containerClass} ${isLeft ? 'flex-row-reverse' : 'flex-row'} animate-fade-in`}>
           {/* Text Content — chiếm 40% */}
-          <div className="basis-[40%] shrink-0 p-10 md:p-12 flex flex-col justify-center animate-fade-in-up">
+          <div key={slide.title} className="basis-[40%] shrink-0 p-10 md:p-12 flex flex-col justify-center animate-fade-in-up">
             <h2 className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold mb-6 leading-[1.1] text-white tracking-tight">
               {slide.title}
             </h2>
@@ -1049,7 +1092,7 @@ export default function SlideBotPage() {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none"></div>
           
-          <div className="absolute bottom-0 left-0 w-full p-12 md:p-16 flex flex-col z-10">
+          <div key={slide.title} className="absolute bottom-0 left-0 w-full p-12 md:p-16 flex flex-col z-10 animate-fade-in-up">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white tracking-tight drop-shadow-lg animate-slide-up">
               {slide.title}
             </h2>
@@ -1068,7 +1111,7 @@ export default function SlideBotPage() {
       return (
         <div className={`${containerClass} animate-fade-in`}>
           {/* Text Content */}
-          <div className="flex-1 p-12 md:p-16 flex flex-col justify-center relative z-10">
+          <div key={slide.title} className="flex-1 p-12 md:p-16 flex flex-col justify-center relative z-10 animate-fade-in-up">
             <h2 className="text-3xl md:text-4.5xl font-semibold mb-4 text-white tracking-tight opacity-90">
               {slide.title}
             </h2>
@@ -1156,7 +1199,7 @@ export default function SlideBotPage() {
       {/* Main Content Area - The Slide */}
       <main className="flex-1 z-10 flex items-center justify-center p-8">
         {slide ? (
-          <div key={slideKey} className="w-full flex items-center justify-center">
+          <div className="w-full flex items-center justify-center">
             {renderSlideContent()}
           </div>
         ) : (
