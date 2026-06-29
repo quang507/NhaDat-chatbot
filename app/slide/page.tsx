@@ -70,6 +70,8 @@ export default function SlideBotPage() {
   const audioChunksRef = useRef<Blob[]>([]);
   const instantFiredRef = useRef(false);   // đã bắn slide tức thì cho câu đang nói chưa
   const lastInstantRef = useRef(0);        // mốc lần bắn slide tức thì gần nhất
+  const lastActivityRef = useRef(0);       // mốc hoạt động gần nhất của STT (onstart/onresult/audio) -> watchdog
+  const watchdogRef = useRef<any>(null);   // timer kiểm tra STT "chết câm" để khởi động lại
   const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
   const AMBIENT_DEBOUNCE_MS = 600;        // ngừng nói 0.6s mới xét tạo slide -> Rất nhanh!
   const AMBIENT_COOLDOWN_MS = 5000;        // tối thiểu 5s giữa 2 slide
@@ -145,11 +147,16 @@ export default function SlideBotPage() {
         rec.lang = 'vi-VN';
 
         rec.onstart = () => {
+          lastActivityRef.current = Date.now();
           setState('listening');
           setTranscript(ambientRef.current ? '🎧 Đang nghe…' : '🎤 Đang nghe, mời nói…');
         };
+        // Có tín hiệu âm thanh / có người nói -> đánh dấu STT còn sống (cho watchdog)
+        rec.onaudiostart = () => { lastActivityRef.current = Date.now(); };
+        rec.onspeechstart = () => { lastActivityRef.current = Date.now(); };
 
         rec.onresult = (event: any) => {
+          lastActivityRef.current = Date.now();
           // Gom kết quả: interim (tạm) hiện ngay; final mới đem đi xử lý
           let interim = '';
           let finalText = '';
@@ -208,6 +215,29 @@ export default function SlideBotPage() {
         };
 
         recognitionRef.current = rec;
+
+        // WATCHDOG: Web Speech (Chrome) đôi khi "chết câm" — vẫn báo đang nghe nhưng
+        // engine đã ngừng nhận audio và KHÔNG bắn onend. Cứ 3s kiểm tra: nếu đang ở chế độ
+        // nghe (ambient hoặc listening) mà >7s không có hoạt động nào -> ép abort + start lại.
+        watchdogRef.current = setInterval(() => {
+          if (!isListeningLoopActive.current) return;
+          if (suppressListenRef.current) return;            // đang đọc to -> bỏ qua
+          if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') return; // đang dùng Whisper
+          if (stateRef.current === 'processing' || stateRef.current === 'speaking') return;
+          if (!(ambientRef.current || stateRef.current === 'listening')) return;
+          const idle = Date.now() - lastActivityRef.current;
+          if (idle > 7000) {
+            lastActivityRef.current = Date.now();
+            try { recognitionRef.current?.abort(); } catch (e) {}
+            // onend sẽ tự restart; phòng khi onend không bắn -> ép start lại
+            setTimeout(() => {
+              if (!isListeningLoopActive.current) return;
+              if (ambientRef.current || stateRef.current === 'listening') {
+                try { recognitionRef.current?.start(); } catch (e) {}
+              }
+            }, 400);
+          }
+        }, 3000);
       } else {
         setTranscript('Trình duyệt không hỗ trợ Web Speech API. Hãy thử Chrome hoặc Safari.');
       }
@@ -218,6 +248,7 @@ export default function SlideBotPage() {
         window.removeEventListener('keydown', handleKeyDown);
       }
       isListeningLoopActive.current = false;
+      if (watchdogRef.current) clearInterval(watchdogRef.current);
       if (debounceRef.current) clearTimeout(debounceRef.current);
       if (activeAudioRef.current) activeAudioRef.current.pause();
       audioQueueRef.current = [];
@@ -971,7 +1002,30 @@ export default function SlideBotPage() {
         {/* Toggle: Nghe ngầm + Đọc to */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setAmbientMode(v => !v)}
+            onClick={() => {
+              const next = !ambientMode;
+              setAmbientMode(next);
+              ambientRef.current = next; // cập nhật ngay cho callback STT đọc đúng
+              // Nếu đang trong phiên nghe -> CHUYỂN CHẾ ĐỘ NGAY, không bắt bấm lại nút đỏ
+              if (isListeningLoopActive.current) {
+                // dừng nguồn âm thanh của chế độ cũ
+                if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+                  try { mediaRecorderRef.current.onstop = null; mediaRecorderRef.current.stop(); } catch (e) {}
+                }
+                try { recognitionRef.current?.abort(); } catch (e) {}
+                lastActivityRef.current = Date.now();
+                setTimeout(() => {
+                  if (!isListeningLoopActive.current) return;
+                  if (next) {
+                    setState('listening');
+                    setTranscript('🎧 Đang nghe ngầm…');
+                    try { recognitionRef.current?.start(); } catch (e) {}
+                  } else {
+                    startWhisperRecording();
+                  }
+                }, 300);
+              }
+            }}
             title="Tự lắng nghe hội thoại và pop slide khi chạm chủ đề có dữ liệu"
             className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 ${
               ambientMode
