@@ -259,7 +259,22 @@ export async function retrieve(query: string, index: Index, k = 20): Promise<str
   }
 
   const keywords = extractKeywords(query);
-  const scored = index.chunks.map(c => {
+
+  // Lọc bỏ toàn bộ dữ liệu thuộc dự án Villa Ny'ah
+  const phuDinhChunks = index.chunks.filter(c => {
+    const text = c.text.toLowerCase();
+    const file = (c.file || '').toLowerCase();
+    
+    const isVillaNyah = text.includes("villa ny'ah") || text.includes("villa ny’ah") || text.includes("villa nyah") || text.includes("cầu tràm") || text.includes("cần giuộc");
+    const isPhuDinh = text.includes("phú định") || text.includes("phu dinh") || text.includes("cosmo") || text.includes("fusion") || text.includes("opus");
+    
+    if (isVillaNyah && !isPhuDinh) return false;
+    if (file.includes('villa-nyah') || file.includes('villa_nyah') || file.includes('cau_tram') || file.includes('cau-tram')) return false;
+    
+    return true;
+  });
+
+  const scored = phuDinhChunks.map(c => {
     let score = dot(q, c.vec);
     let hits = 0;
     let headerHits = 0;
