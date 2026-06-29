@@ -11,6 +11,23 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
+// Bản đồ mẫu nhà cho cả 50 căn (theo sơ đồ phân lô Ny'ah Phú Định - mẫu nhà KHÔNG đổi).
+// Màu sơ đồ: vàng=Opus, xanh lá=Fusion Gen 5, hồng=Cosmo Gen 2, xanh tím=Signature by Codinachs.
+// Giá trị dùng để chọn thư mục ảnh: 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'.
+const UNIT_MODELS: Record<number, 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'> = (() => {
+  const m: Record<number, 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'> = {};
+  const opus = [1, 2, 23, 24];
+  const cosmo = [3, 4, 38, 39, 40, 41, 42, 45, 46, 47, 48, 49, 50];
+  // Signature by Codinachs (43, 44): chưa có bộ ảnh riêng -> tạm dùng ảnh Cosmo Gen 2 làm fallback.
+  const signatureFallback = [43, 44];
+  for (let i = 1; i <= 50; i++) {
+    if (opus.includes(i)) m[i] = 'opus';
+    else if (cosmo.includes(i) || signatureFallback.includes(i)) m[i] = 'cosmo_gen_2';
+    else m[i] = 'fusion_gen_5';
+  }
+  return m;
+})();
+
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):
 - CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN". Không bịa thêm thông tin.
 - Nếu câu hỏi KHÔNG có thông tin liên quan trong phần dữ liệu để trả lời -> BẮT BUỘC trả về {"skip": true} và để trống tất cả các trường khác.
@@ -239,19 +256,10 @@ export async function POST(req: NextRequest) {
       } else if (textToSearch.includes('opus') || textToSearch.includes('ô-pút') || textToSearch.includes('ô pút')) {
         model = 'opus';
       } else {
-        // Suy ra mẫu nhà theo SỐ CĂN khách hỏi (rổ hàng T6.2026)
-        // Opus: 01,02,23,24 | Cosmo Gen 2: 03,04,38-50 | Signature: 43,44 | còn lại Fusion Gen 5
+        // Suy ra mẫu nhà theo SỐ CĂN khách hỏi, tra trong bản đồ 50 căn
         const numMatch = message.match(/(?:căn|lô|ô|unit|nhà|#)\s*(?:số\s*)?#?\s*(\d{1,2})\b/i);
         const unitNo = numMatch ? parseInt(numMatch[1], 10) : 0;
-        if (unitNo > 0) {
-          const opusUnits = [1, 2, 23, 24];
-          const cosmoUnits = [3, 4, 38, 39, 40, 41, 42, 45, 46, 47, 48, 49, 50];
-          const signatureUnits = [43, 44];
-          if (opusUnits.includes(unitNo)) model = 'opus';
-          else if (cosmoUnits.includes(unitNo)) model = 'cosmo_gen_2';
-          else if (signatureUnits.includes(unitNo)) model = 'cosmo_gen_2'; // chưa có ảnh Signature riêng -> fallback
-          else model = 'fusion_gen_5';
-        }
+        if (unitNo >= 1 && unitNo <= 50) model = UNIT_MODELS[unitNo];
       }
 
       // 2. Kiểm tra từ khóa phòng / không gian
