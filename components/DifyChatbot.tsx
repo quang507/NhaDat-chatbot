@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 interface Message {
@@ -53,6 +54,7 @@ function extractProfile(messages: Message[]): string {
 }
 
 export default function DifyChatbot() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -148,6 +150,8 @@ export default function DifyChatbot() {
   }
 
   const showContact = (cfg.phone || cfg.zalo) && messages.length >= 2;
+
+  if (pathname === '/voice') return null;
 
   return (
     <>

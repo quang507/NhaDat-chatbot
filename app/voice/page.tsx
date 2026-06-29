@@ -260,10 +260,10 @@ export default function VoicePage() {
     }
   };
 
-  // Chạm orb: đang đọc -> cắt lời; còn lại -> bật/tắt đàm thoại
+  // Chạm orb: đang đọc -> cắt lời; đang idle -> bắt đầu; còn lại (listening/processing) -> no-op
   const onOrbClick = () => {
     if (chatStateRef.current === 'speaking') { bargeIn(); return; }
-    toggleVoiceSession();
+    if (!isListeningLoopActive.current) { toggleVoiceSession(); }
   };
 
   const startListening = () => {
@@ -701,23 +701,12 @@ export default function VoicePage() {
       {/* Background radial gradient glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.08)_0%,transparent_70%)] pointer-events-none" />
 
-      {/* Header */}
-      <div className="w-full max-w-md flex justify-between items-center z-10 pt-2">
-        <Link href="/" className="text-neutral-400 hover:text-white transition flex items-center gap-1 text-sm bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800">
-          <span>✕</span> Thoát đàm thoại
-        </Link>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setShowDebug(!showDebug)}
-            className="text-neutral-400 hover:text-white transition flex items-center gap-1 text-xs bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800"
-          >
-            ⚙️ {showDebug ? 'Ẩn Logs' : 'Xem Logs'}
-          </button>
-          <span className="text-xs uppercase tracking-widest text-neutral-500 font-semibold flex items-center gap-1.5 bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800">
-            <span className={`w-2 h-2 rounded-full ${isListeningLoopActive.current ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-600'}`} />
-            {isListeningLoopActive.current ? 'Đang bật' : 'Đã tắt'}
-          </span>
-        </div>
+      {/* Header — minimal, chỉ hiện trạng thái */}
+      <div className="w-full max-w-md flex justify-end items-center z-10 pt-2">
+        <span className="text-xs uppercase tracking-widest text-neutral-500 font-semibold flex items-center gap-1.5 bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800">
+          <span className={`w-2 h-2 rounded-full ${isListeningLoopActive.current ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-600'}`} />
+          {isListeningLoopActive.current ? 'Đang bật' : 'Đã tắt'}
+        </span>
       </div>
 
       {/* Center Animated Orb Section */}
@@ -799,20 +788,60 @@ export default function VoicePage() {
         </div>
       </div>
 
-      {/* Footer controls */}
-      <div className="w-full max-w-md z-10 flex flex-col items-center gap-4 pb-4">
-        {/* Toggle connection state */}
-        <button
-          onClick={toggleVoiceSession}
-          className={`w-full py-3.5 rounded-full font-bold tracking-wide transition shadow-md text-sm border
-            ${isListeningLoopActive.current 
-              ? 'bg-neutral-900 text-red-500 border-neutral-800 hover:bg-neutral-850' 
-              : 'bg-white text-black border-white hover:bg-neutral-200'}`}
-        >
-          {isListeningLoopActive.current ? '🔴 DỪNG CUỘC GỌI' : '🎙️ BẮT ĐẦU ĐÀM THOẠI'}
-        </button>
-        <p className="text-neutral-600 text-[10px] text-center max-w-xs">
-          Mẹo: Hãy cho phép truy cập Micro của bạn khi trình duyệt yêu cầu. Nên dùng trên Chrome hoặc Safari di động.
+      {/* Footer controls — kiểu ChatGPT Voice: [Logs] [Stop/Start] [Exit] */}
+      <div className="w-full max-w-md z-10 flex flex-col items-center gap-3 pb-6">
+        <div className="flex items-center justify-between w-full px-10">
+          {/* Trái: Logs */}
+          <button
+            onClick={() => setShowDebug(!showDebug)}
+            title={showDebug ? 'Ẩn nhật ký' : 'Xem nhật ký'}
+            className="w-12 h-12 rounded-full bg-neutral-800/80 hover:bg-neutral-700 flex items-center justify-center transition border border-neutral-700"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={showDebug ? '#a5b4fc' : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+            </svg>
+          </button>
+
+          {/* Giữa: Dừng / Bắt đầu phiên */}
+          <button
+            onClick={toggleVoiceSession}
+            title={isListeningLoopActive.current ? 'Dừng cuộc gọi' : 'Bắt đầu đàm thoại'}
+            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all shadow-lg
+              ${isListeningLoopActive.current
+                ? 'bg-neutral-900 border-2 border-neutral-600 hover:border-neutral-400'
+                : 'bg-white hover:bg-neutral-100 shadow-white/20'}`}
+          >
+            {isListeningLoopActive.current ? (
+              <span className="w-5 h-5 bg-red-500 rounded-sm block" />
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#000">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#000" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                <line x1="12" y1="19" x2="12" y2="23" stroke="#000" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="8" y1="23" x2="16" y2="23" stroke="#000" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            )}
+          </button>
+
+          {/* Phải: Thoát trang */}
+          <Link
+            href="/"
+            onClick={stopAllVoiceActivities}
+            title="Thoát đàm thoại"
+            className="w-12 h-12 rounded-full bg-neutral-800/80 hover:bg-neutral-700 flex items-center justify-center transition border border-neutral-700"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </Link>
+        </div>
+
+        <p className="text-neutral-600 text-[10px] text-center">
+          {isListeningLoopActive.current
+            ? 'Nói tự nhiên để chen lời · Chạm quả cầu khi AI đang đọc để cắt ngay'
+            : 'Chạm quả cầu hoặc nhấn nút micro để bắt đầu · Nên dùng Chrome / Safari'}
         </p>
       </div>
 
