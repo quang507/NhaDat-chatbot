@@ -166,17 +166,20 @@ export default function ChatWidget() {
       {open && (
         <div className="fixed bottom-24 right-6 z-50 w-80 sm:w-96 h-[500px] flex flex-col rounded-2xl shadow-2xl bg-white border border-gray-200 overflow-hidden">
           {/* Header */}
-          <div className="bg-blue-600 text-white px-4 py-3 flex items-center gap-2">
+          <div className="bg-blue-600 text-white px-4 py-3 flex items-center gap-1.5">
             <span className="text-xl">🏠</span>
-            <div className="flex-1">
-              <p className="font-semibold text-sm">nhadat.company</p>
-              <p className="text-xs opacity-80">NyAh Phú Định · Villa NyAh</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm truncate">Nhã Đạt AI</p>
+              <p className="text-xs opacity-80 truncate">NyAh Phú Định · Villa NyAh</p>
             </div>
-            <Link href="/voice" className="text-xs bg-white/20 hover:bg-white/30 rounded-full px-2.5 py-1 flex items-center gap-1 font-semibold" title="Đàm thoại giọng nói">
-              🎧 Voice
+            <Link href="/voice" className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Đàm thoại giọng nói">
+              🎧
+            </Link>
+            <Link href="/slide" className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Trình chiếu slide">
+              📊
             </Link>
             {cfg.phone && (
-              <a href={`tel:${cfg.phone}`} className="text-xs bg-white/20 hover:bg-white/30 rounded-full px-2.5 py-1" title="Gọi tư vấn">📞</a>
+              <a href={`tel:${cfg.phone}`} className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Gọi tư vấn">📞</a>
             )}
           </div>
 

@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { splitCleanSentences, ttsUrl } from '@/lib/speech';
 
 type SlideState = 'idle' | 'listening' | 'processing' | 'speaking';
 
@@ -21,7 +23,6 @@ export default function SlideBotPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
   const recognitionRef = useRef<any>(null);
-  const synthRef = useRef<SpeechSynthesis | null>(null);
   const isListeningLoopActive = useRef(false);
   const stateRef = useRef<SlideState>('idle');
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -31,6 +32,15 @@ export default function SlideBotPage() {
   // Tốc độ đọc slide (đọc nhanh hơn bình thường cho đỡ lê thê)
   const SLIDE_TTS_RATE = '+15%';
 
+  // Barge-in (nói chèn lúc đang đọc) — VAD trên stream có khử vọng, giống trang /voice
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const vadRafRef = useRef<number | null>(null);
+  const speakStartRef = useRef<number>(0);
+  const VAD_THRESHOLD = 0.06;
+  const VAD_FRAMES = 6;
+  const SPEAK_GRACE_MS = 400;
+
   // Sync state to ref for callbacks
   useEffect(() => {
     stateRef.current = state;
@@ -38,59 +48,57 @@ export default function SlideBotPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Setup TTS
-      synthRef.current = window.speechSynthesis;
-
-      // Setup STT
+      // Setup STT (Web Speech API). TTS dùng edge-tts qua /api/tts nên KHÔNG cần speechSynthesis.
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         const rec = new SpeechRecognition();
         rec.continuous = false;
         rec.interimResults = false;
         rec.lang = 'vi-VN';
-        
+
         rec.onstart = () => {
           setState('listening');
           setTranscript('Tôi đang nghe...');
         };
-        
+
         rec.onresult = (event: any) => {
           const text = event.results[0][0].transcript;
           setTranscript(`Bạn nói: "${text}"`);
           setState('processing');
           fetchSlideData(text);
         };
-        
+
         rec.onerror = (event: any) => {
-          if (event.error === 'network') {
-            // silent recovery
+          if (event.error === 'no-speech' || event.error === 'aborted' || event.error === 'network') {
+            // Im lặng phục hồi: onend sẽ tự khởi động lại nếu session còn mở.
           } else if (event.error === 'not-allowed') {
-             setState('idle');
-             setTranscript('Vui lòng cấp quyền micro.');
-             isListeningLoopActive.current = false;
+            setState('idle');
+            setTranscript('Vui lòng cấp quyền micro trong cài đặt trình duyệt.');
+            isListeningLoopActive.current = false;
           } else {
-             // other errors
+            setTranscript(`Lỗi micro: ${event.error}. Đang thử lại...`);
           }
         };
-        
+
         rec.onend = () => {
           if (isListeningLoopActive.current && stateRef.current === 'listening') {
              try { recognitionRef.current?.start(); } catch(e){}
           }
         };
-        
+
         recognitionRef.current = rec;
       } else {
-        setTranscript('Trình duyệt không hỗ trợ Web Speech API.');
+        setTranscript('Trình duyệt không hỗ trợ Web Speech API. Hãy thử Chrome hoặc Safari.');
       }
     }
-    
+
     return () => {
       isListeningLoopActive.current = false;
       if (activeAudioRef.current) activeAudioRef.current.pause();
       audioQueueRef.current = [];
       isPlayingRef.current = false;
       if (recognitionRef.current) recognitionRef.current.abort();
+      teardownVAD();
     };
   }, []);
 
@@ -101,30 +109,73 @@ export default function SlideBotPage() {
       audioQueueRef.current = [];
       isPlayingRef.current = false;
       if (recognitionRef.current) recognitionRef.current.abort();
+      teardownVAD();
       setState('idle');
       setTranscript('Đã dừng. Nhấn nút Micro để bắt đầu lại.');
     } else {
       isListeningLoopActive.current = true;
       if (activeAudioRef.current) activeAudioRef.current.pause();
+      setupVAD();
       try { recognitionRef.current?.start(); } catch(e){}
     }
   };
 
-  // Làm sạch nhẹ + chuẩn hóa cho giọng đọc tự nhiên (giống voice page)
-  const cleanSpeech = (s: string): string => {
-    return s
-      .replace(/#\s*0*(\d+)/g, 'số $1')           // #03 -> số 3
-      .replace(/(\d+)\s*[xX]\s*(\d+)/g, '$1 nhân $2') // 5x20 -> 5 nhân 20
-      .replace(/(\d+)\s*(m²|m2)\b/gi, '$1 mét vuông')
-      .replace(/\.{2,}/g, ', ')
-      .replace(/[*_`#]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
+  // Cắt lời khi đang đọc -> dừng audio + chuyển sang nghe (giống ChatGPT Voice)
+  const bargeIn = () => {
+    if (stateRef.current !== 'speaking') return;
+    if (activeAudioRef.current) { try { activeAudioRef.current.pause(); } catch (e) {} activeAudioRef.current = null; }
+    audioQueueRef.current = [];
+    isPlayingRef.current = false;
+    setState('listening');
+    setTranscript('Tôi đang nghe...');
+    try { recognitionRef.current?.start(); } catch (e) {}
   };
 
-  // Tách đoạn thành câu (yêu cầu có khoảng trắng sau dấu kết -> không cắt nhầm "5.19", "Q.8")
-  const toSentences = (text: string): string[] =>
-    text.split(/(?<=[.!?…])\s+/).map(s => cleanSpeech(s)).filter(Boolean);
+  // VAD: phát hiện người dùng nói lúc AI đang đọc (stream khử vọng + đo RMS)
+  const setupVAD = async () => {
+    if (mediaStreamRef.current) return;
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
+      mediaStreamRef.current = stream;
+      const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      const ctx: AudioContext = new Ctx();
+      audioCtxRef.current = ctx;
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 512;
+      source.connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+      let loudFrames = 0;
+      const tick = () => {
+        vadRafRef.current = requestAnimationFrame(tick);
+        analyser.getByteTimeDomainData(data);
+        let sum = 0;
+        for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
+        const rms = Math.sqrt(sum / data.length);
+        if (stateRef.current === 'speaking' && Date.now() - speakStartRef.current > SPEAK_GRACE_MS) {
+          if (rms > VAD_THRESHOLD) loudFrames++; else loudFrames = Math.max(0, loudFrames - 1);
+          if (loudFrames >= VAD_FRAMES) { loudFrames = 0; bargeIn(); }
+        } else {
+          loudFrames = 0;
+        }
+      };
+      tick();
+    } catch (e) {
+      // Không bật được VAD thì vẫn dùng bình thường (chỉ là không cắt lời bằng giọng được)
+    }
+  };
+
+  const teardownVAD = () => {
+    if (vadRafRef.current != null) { cancelAnimationFrame(vadRafRef.current); vadRafRef.current = null; }
+    if (mediaStreamRef.current) { try { mediaStreamRef.current.getTracks().forEach(t => t.stop()); } catch (e) {} mediaStreamRef.current = null; }
+    if (audioCtxRef.current) { try { audioCtxRef.current.close(); } catch (e) {} audioCtxRef.current = null; }
+  };
+
+  // Làm sạch + tách câu: dùng chung splitCleanSentences từ lib/speech.ts
+  //   -> slide giờ đọc chuẩn y hệt trang /voice (SĐT, brand, %, tiền, Q.8, #03...)
 
   // Khi đọc xong toàn bộ -> quay lại nghe (hands-free) hoặc idle
   const onSpeakDone = () => {
@@ -143,6 +194,7 @@ export default function SlideBotPage() {
     if (!audio) { onSpeakDone(); return; }
     isPlayingRef.current = true;
     activeAudioRef.current = audio;
+    speakStartRef.current = Date.now(); // mốc để VAD bỏ qua dư âm đầu câu
     audio.onended = () => { isPlayingRef.current = false; activeAudioRef.current = null; playNextSlideAudio(); };
     audio.onerror = () => { isPlayingRef.current = false; activeAudioRef.current = null; playNextSlideAudio(); };
     audio.play().catch(() => { isPlayingRef.current = false; playNextSlideAudio(); });
@@ -154,11 +206,11 @@ export default function SlideBotPage() {
     audioQueueRef.current = [];
     isPlayingRef.current = false;
 
-    const sentences = toSentences(text || '');
+    const sentences = splitCleanSentences(text || '');
     if (sentences.length === 0) { onSpeakDone(); return; }
 
     for (const s of sentences) {
-      const audio = new Audio(`/api/tts?rate=${encodeURIComponent(SLIDE_TTS_RATE)}&text=${encodeURIComponent(s)}`);
+      const audio = new Audio(ttsUrl(s, SLIDE_TTS_RATE));
       audio.preload = 'auto';
       audioQueueRef.current.push(audio);
     }
@@ -435,33 +487,53 @@ export default function SlideBotPage() {
       </div>
 
       {/* Header */}
-      <header className="px-8 py-6 z-10 flex justify-between items-center border-b border-[#1e2a45] bg-[#0a0f1e]/80 backdrop-blur-md">
+      <header className="px-6 md:px-8 py-4 md:py-5 z-10 flex justify-between items-center border-b border-[#1e2a45] bg-[#0a0f1e]/80 backdrop-blur-md">
+        {/* Brand (logo placeholder 🏠 — sẽ thay bằng logo thật) */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#e8b84b] to-[#c49a2a] flex items-center justify-center text-xl shadow-lg shadow-[#e8b84b]/20">
             🏠
           </div>
           <div>
             <h1 className="font-bold text-lg leading-tight">Nhã Đạt AI</h1>
-            <p className="text-xs text-gray-400">Presentation Bot</p>
+            <p className="text-xs text-gray-400">Trình chiếu thông minh</p>
           </div>
         </div>
-        
-        {/* Status Indicator */}
-        <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-[#161d30] border border-[#1e2a45]">
-          <div className="text-sm font-medium">
-            {state === 'idle' && <span className="text-gray-400">Đang chờ</span>}
-            {state === 'listening' && <span className="text-green-400 animate-pulse">Đang nghe...</span>}
-            {state === 'processing' && <span className="text-blue-400">Đang suy nghĩ...</span>}
-            {state === 'speaking' && <span className="text-[#e8b84b]">Đang trả lời</span>}
-          </div>
-          {state === 'speaking' && (
-            <div className="flex items-end gap-[2px] h-4">
-              <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite] h-[30%]"></div>
-              <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.2s] h-[70%]"></div>
-              <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.4s] h-[100%]"></div>
-              <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.6s] h-[50%]"></div>
+
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* Status Indicator */}
+          <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-[#161d30] border border-[#1e2a45]">
+            <div className="text-sm font-medium">
+              {state === 'idle' && <span className="text-gray-400">Đang chờ</span>}
+              {state === 'listening' && <span className="text-green-400 animate-pulse">Đang nghe...</span>}
+              {state === 'processing' && <span className="text-blue-400">Đang suy nghĩ...</span>}
+              {state === 'speaking' && <span className="text-[#e8b84b]">Đang trả lời</span>}
             </div>
-          )}
+            {state === 'speaking' && (
+              <div className="flex items-end gap-[2px] h-4">
+                <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite] h-[30%]"></div>
+                <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.2s] h-[70%]"></div>
+                <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.4s] h-[100%]"></div>
+                <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.6s] h-[50%]"></div>
+              </div>
+            )}
+          </div>
+
+          {/* Điều hướng: sang Voice / thoát về trang chủ */}
+          <Link
+            href="/voice"
+            title="Chuyển sang đàm thoại giọng nói"
+            className="hidden sm:flex items-center gap-1.5 text-sm px-3 py-2 rounded-full bg-[#161d30] border border-[#1e2a45] text-gray-300 hover:text-white hover:border-[#e8b84b]/50 transition"
+          >
+            🎧 <span className="hidden md:inline">Voice</span>
+          </Link>
+          <Link
+            href="/"
+            onClick={() => { isListeningLoopActive.current = false; if (activeAudioRef.current) activeAudioRef.current.pause(); if (recognitionRef.current) recognitionRef.current.abort(); teardownVAD(); }}
+            title="Thoát về trang chủ"
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-[#161d30] border border-[#1e2a45] text-gray-400 hover:text-white hover:border-red-500/50 transition"
+          >
+            ✕
+          </Link>
         </div>
       </header>
 

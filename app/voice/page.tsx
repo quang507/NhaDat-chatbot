@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { cleanTextForTTS, splitSentences, ttsUrl } from '@/lib/speech';
 
 type ChatState = 'idle' | 'listening' | 'processing' | 'speaking' | 'error';
 
@@ -297,99 +298,8 @@ export default function VoicePage() {
     }
   };
 
-  // 2. Clean text for natural speech (Normalizer built like ChatGPT Voice)
-  const cleanTextForTTS = (text: string): string => {
-    if (!text) return '';
-    
-    // Remove lines containing Google Maps or links
-    let lines = text.split('\n');
-    let cleanedLines = lines.filter(line => {
-      const l = line.toLowerCase();
-      return !(l.includes('google maps') || l.includes('link') || l.includes('website') || l.includes('bản đồ'));
-    });
-    let clean = cleanedLines.join('\n');
-    
-    // Remove URLs
-    clean = clean.replace(/https?:\/\/\S+|www\.\S+/g, '');
-    
-    // 1. Normalize number ranges (e.g., 5-7 tỷ -> 5 đến 7 tỷ)
-    clean = clean.replace(/(\d+)\s*-\s*(\d+)/g, '$1 đến $2');
-
-    // 1b. Mã lô/căn: "#03" -> "số 3" (đọc tự nhiên, không thành "thăng không ba")
-    clean = clean.replace(/#\s*0*(\d+)/g, 'số $1');
-
-    // 1c. Kích thước "5x20", "5 x 9m" -> "5 nhân 20"
-    clean = clean.replace(/(\d+)\s*[xX]\s*(\d+)/g, '$1 nhân $2');
-
-    // 1d. Dấu ba chấm -> ngắt nghỉ nhẹ (tránh đọc lắp)
-    clean = clean.replace(/\.{2,}/g, ', ');
-
-    // 2. Normalize m2/m² preceded by a digit (prevents block codes like M2, A2 from turning into "mét vuông")
-    clean = clean.replace(/(\d+)\s*(m²|m2)\b/gi, '$1 mét vuông');
-    
-    // 3. Normalize currency symbols
-    clean = clean.replace(/(\d+)\s*(VNĐ|VND|đ)\b/gi, '$1 đồng');
-    
-    // 4. Normalize percentages
-    clean = clean.replace(/(\d+)\s*%/g, '$1 phần trăm');
-    
-    // 5. Format phone numbers to be read digit-by-digit (e.g. 090 123 4567 -> 0 9 0   1 2 3   4 5 6 7)
-    clean = clean.replace(/\b(0[35789]\d)[\s.-]?(\d{3})[\s.-]?(\d{3,4})\b/g, (match, p1, p2, p3) => {
-      const part1 = p1.split('').join(' ');
-      const part2 = p2.split('').join(' ');
-      const part3 = p3.split('').join(' ');
-      return `${part1}   ${part2}   ${part3}`;
-    });
-    
-    // 6. Brand Names & Abbreviations Replacements (Nhã Đạt Co.ltd -> công ty cổ phần nhã đạt)
-    const replacements: [RegExp, string][] = [
-      [/\bNhã Đạt Co\.\s*Ltd\b/gi, 'công ty cổ phần nhã đạt'],
-      [/\bNhaDat Co\.\s*Ltd\b/gi, 'công ty cổ phần nhã đạt'],
-      [/\bNhã Đạt Co\.ltd\b/gi, 'công ty cổ phần nhã đạt'],
-      [/\bNhaDat Co\.ltd\b/gi, 'công ty cổ phần nhã đạt'],
-      [/\bNhã Đạt Co\b/gi, 'nhã đạt'],
-      [/\bNhaDat Co\b/gi, 'nhã đạt'],
-      [/\bCo\.\s*Ltd\b/gi, 'công ty cổ phần'],
-      [/\bCo\.ltd\b/gi, 'công ty cổ phần'],
-      [/\bLtd\.\b/gi, 'công ty cổ phần'],
-      [/\bCo\.\b/gi, 'công ty'],
-      [/\bTP\.HCM\b/gi, 'Thành phố Hồ Chí Minh'],
-      [/\bTpHCM\b/gi, 'Thành phố Hồ Chí Minh'],
-      [/\bHCM\b/gi, 'Hồ Chí Minh'],
-      [/\bQ\b\.(\d+)/gi, 'Quận $1'],
-      [/\bđ\/c\b/gi, 'địa chỉ'],
-      [/\bĐ\/c\b/gi, 'Địa chỉ'],
-      [/\bđ\/c\.\b/gi, 'địa chỉ'],
-      [/\bNy'ah\b/gi, 'Ni a'],
-      [/\bNyah\b/gi, 'Ni a'],
-      [/\bVilla\b/gi, 'biệt thự'], // Real estate term normalization
-      [/\bTS\.\b/gi, 'Tiến sĩ'],
-      [/\banh\/chị\b/gi, 'anh chị'],
-      [/\bAnh\/Chị\b/gi, 'Anh chị']
-    ];
-    
-    replacements.forEach(([pattern, replacement]) => {
-      clean = clean.replace(pattern, replacement);
-    });
-    
-    // Remove markdown formatting
-    clean = clean.replace(/\*\*/g, '').replace(/__/g, '').replace(/\*/g, '').replace(/`/g, '');
-    
-    // Remove bullet points
-    clean = clean.replace(/^\s*[-*+]\s+/gm, ' ');
-
-    // Bỏ số thứ tự đầu câu ("1. ", "2)") để không bị đọc thành "một", "hai".
-    // Yêu cầu có dấu cách hoặc hết chuỗi sau dấu chấm -> KHÔNG đụng tới "1.5 tỷ".
-    clean = clean.replace(/^\s*\d{1,2}[.)](\s+|$)/, ' ');
-    
-    // Clean all special characters EXCEPT letters, digits, spaces, and punctuation (.,;:?!)
-    clean = clean.replace(/[^a-zA-Z0-9\s.,;:?!áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđĐ]/g, ' ');
-    
-    // Trim multiple spaces
-    return clean.replace(/\s+/g, ' ').trim();
-  };
-
-  // 3. Sentence-by-sentence TTS streaming playback via Server API
+  // 2-3. Làm sạch chữ + tách câu: dùng chung từ lib/speech.ts (xem import ở đầu file)
+  //      Sentence-by-sentence TTS streaming playback via Server API
   const speakSentence = (sentence: string, isLast = false) => {
     if (isLast) {
       isStreamFinishedRef.current = true;
@@ -409,7 +319,7 @@ export default function VoicePage() {
       return;
     }
     
-    const audioUrl = `/api/tts?text=${encodeURIComponent(cleanText)}`;
+    const audioUrl = ttsUrl(cleanText);
     addLog('SPEECH', `Thêm vào hàng đợi phát âm thanh: "${cleanText}"`);
     
     // Pre-create and preload the audio element to achieve near-zero latency playback (ChatGPT Voice style)
@@ -472,88 +382,6 @@ export default function VoicePage() {
       activeAudioRef.current = null;
       playNextAudio();
     });
-  };
-
-  const splitSentences = (buffer: string): { sentences: string[]; remaining: string } => {
-    const sentences: string[] = [];
-    let i = 0;
-    
-    const abbreviations = ['co', 'ltd', 'ts', 'tp', 'dc', 'đc'];
-    
-    while (i < buffer.length) {
-      const char = buffer[i];
-      if (['.', '?', '!', '\n'].includes(char)) {
-        let isEnding = true;
-        
-        if (char === '.') {
-          // 1. Ignore decimal dots (e.g. 1.5 tỷ)
-          if (i > 0 && i < buffer.length - 1) {
-            if (/\d/.test(buffer[i-1]) && /\d/.test(buffer[i+1])) {
-              isEnding = false;
-            }
-          }
-
-          // 1b. Chữ cái + . + số (Q.8, P.16, A.1) -> viết tắt địa chỉ, KHÔNG phải hết câu
-          if (isEnding && i > 0 && i < buffer.length - 1) {
-            if (/[a-zA-ZÀ-ỹ]/.test(buffer[i-1]) && /\d/.test(buffer[i+1])) {
-              isEnding = false;
-            }
-          }
-
-          // 1c. Dấu ba chấm "..." -> không tách ở các dấu chấm liền nhau
-          if (isEnding && (buffer[i+1] === '.' || buffer[i-1] === '.')) {
-            isEnding = false;
-          }
-          
-          // 2. Ignore periods inside abbreviations without spaces (e.g. TP.HCM, Co.ltd)
-          if (isEnding && i > 0 && i < buffer.length - 1) {
-            const prevChar = buffer[i-1];
-            const nextChar = buffer[i+1];
-            if (/[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđĐ]/.test(prevChar) && 
-                /[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđĐ]/.test(nextChar)) {
-              isEnding = false;
-            }
-          }
-          
-          // 3. Ignore periods followed by a lowercase letter (likely abbreviation followed by space)
-          if (isEnding) {
-            let nextIdx = i + 1;
-            while (nextIdx < buffer.length && /\s/.test(buffer[nextIdx])) {
-              nextIdx++;
-            }
-            if (nextIdx < buffer.length) {
-              const nextChar = buffer[nextIdx];
-              if (/[a-zàảãạăằẳẵặâấầẩẫậèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđ]/.test(nextChar)) {
-                isEnding = false;
-              }
-            }
-          }
-          
-          // 4. Ignore periods preceded by known abbreviations (e.g. Co., TS., Tp.)
-          if (isEnding) {
-            const textBefore = buffer.substring(0, i);
-            const words = textBefore.split(/[\s,;:?!\n]/);
-            const lastWord = words[words.length - 1] || '';
-            const cleanWord = lastWord.toLowerCase().replace(/[^a-zđ]/g, '');
-            if (abbreviations.includes(cleanWord)) {
-              isEnding = false;
-            }
-          }
-        }
-        
-        if (isEnding) {
-          const sentence = buffer.substring(0, i + 1).trim();
-          buffer = buffer.substring(i + 1);
-          i = 0; // Reset index
-          if (sentence) {
-            sentences.push(sentence);
-          }
-          continue;
-        }
-      }
-      i++;
-    }
-    return { sentences, remaining: buffer };
   };
 
   // 4. Handle sending speech to Vercel API and stream response
@@ -701,8 +529,16 @@ export default function VoicePage() {
       {/* Background radial gradient glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.08)_0%,transparent_70%)] pointer-events-none" />
 
-      {/* Header — minimal, chỉ hiện trạng thái */}
-      <div className="w-full max-w-md flex justify-end items-center z-10 pt-2">
+      {/* Header — minimal: link sang Slide + trạng thái */}
+      <div className="w-full max-w-md flex justify-between items-center z-10 pt-2">
+        <Link
+          href="/slide"
+          onClick={stopAllVoiceActivities}
+          title="Chuyển sang chế độ trình chiếu slide"
+          className="text-xs text-neutral-400 hover:text-white font-semibold flex items-center gap-1.5 bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800 transition"
+        >
+          📊 Slide
+        </Link>
         <span className="text-xs uppercase tracking-widest text-neutral-500 font-semibold flex items-center gap-1.5 bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800">
           <span className={`w-2 h-2 rounded-full ${isListeningLoopActive.current ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-600'}`} />
           {isListeningLoopActive.current ? 'Đang bật' : 'Đã tắt'}
