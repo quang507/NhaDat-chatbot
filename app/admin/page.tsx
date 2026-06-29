@@ -56,6 +56,7 @@ export default function AdminPage() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [uploadFolder, setUploadFolder] = useState('01_NyAh-PhuDinh');
   const [uploadStatus, setUploadStatus] = useState('');
+  const [dragOverFolder, setDragOverFolder] = useState<string | null>(null);
 
   // Tab Dạy Bot (fine-tune online)
   const [teachQuestion, setTeachQuestion] = useState('');
@@ -238,10 +239,10 @@ export default function AdminPage() {
   }
 
   // Upload ảnh online -> commit vào public/images/<folder> trên GitHub
-  async function uploadImages(files: FileList | null) {
+  async function uploadImages(files: FileList | null, overrideFolder?: string) {
     if (!files || files.length === 0) return;
     setBusy(true);
-    const folder = uploadFolder.trim() || '01_NyAh-PhuDinh';
+    const folder = (overrideFolder || uploadFolder).trim() || '01_NyAh-PhuDinh';
     let ok = 0; const errs: string[] = [];
     for (let i = 0; i < files.length; i++) {
       setUploadStatus(`🔄 Đang xử lý ${i + 1}/${files.length}: ${files[i].name}...`);
@@ -256,6 +257,7 @@ export default function AdminPage() {
       } catch { errs.push(`${f.name}: lỗi mạng`); }
     }
     setUploadStatus(`✅ Đã upload ${ok}/${files.length} ảnh vào public/images/${folder}. ⏳ Vercel cần ~1-2 phút build lại để ảnh hiển thị.${errs.length ? ' ❌ Lỗi: ' + errs.join('; ') : ''}`);
+    loadImages(); // Tải lại danh sách ảnh ngay lập tức sau khi upload
     setBusy(false);
   }
 
@@ -807,8 +809,34 @@ export default function AdminPage() {
         return (
           <div key={node.path} className="select-none">
             <div
-              onClick={() => setOpenImageDirs(p => ({ ...p, [node.path]: !p[node.path] }))}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-slate-800/40 transition-colors text-slate-300 font-medium my-0.5 group"
+              onClick={() => {
+                setOpenImageDirs(p => ({ ...p, [node.path]: !p[node.path] }));
+                setUploadFolder(node.path);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!busy) setDragOverFolder(node.path);
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDragOverFolder(null);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDragOverFolder(null);
+                if (busy) return;
+                const files = e.dataTransfer.files;
+                if (files && files.length > 0) {
+                  setUploadFolder(node.path);
+                  uploadImages(files, node.path);
+                }
+              }}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-slate-800/40 transition-all text-slate-300 font-medium my-0.5 group border border-transparent ${
+                dragOverFolder === node.path ? 'bg-emerald-600/10 border-emerald-500 scale-[1.01]' : ''
+              }`}
               style={{ paddingLeft: `${depth * 16 + 12}px` }}
             >
               <span className={`text-slate-500 text-[10px] transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}>▶</span>
