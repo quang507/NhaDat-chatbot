@@ -629,9 +629,10 @@ export default function SlideBotPage() {
     recognitionRef.current = rec;
     try { rec.start(); } catch (e) { /* InvalidState: instance khác đang chạy -> bỏ */ }
     // WATCHDOG: nếu sau 6s vẫn KHÔNG có hoạt động nào (chết câm / bị chặn) -> rớt sang Whisper.
-    if (wsWatchdogRef.current) clearTimeout(wsWatchdogRef.current);
-    if (firstGestureRef.current) { // Chỉ bật watchdog sau khi đã có cử chỉ đầu tiên
+    // Tránh clear/reschedule liên tục khi crash-loop; chỉ set nếu chưa có watchdog nào đang chạy
+    if (!wsWatchdogRef.current) {
       wsWatchdogRef.current = setTimeout(() => {
+        wsWatchdogRef.current = null;
         if (!amEngineOnRef.current || useWhisperAmbientRef.current) return;
         if (suppressListenRef.current || stateRef.current === 'speaking') return;
         if (Date.now() - wsActivityRef.current > 5500) {
@@ -921,15 +922,17 @@ export default function SlideBotPage() {
                 {isMap && isActive && (() => {
                   const qrUrl = slide.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
                   return (
-                    <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur px-3 py-3 rounded-2xl border border-white/10 flex flex-col items-center gap-1 shadow-2xl animate-scale-up z-20">
-                      <a href={qrUrl} target="_blank" rel="noopener noreferrer">
+                    <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur p-3 rounded-2xl border border-white/10 flex flex-col items-center gap-1.5 shadow-2xl animate-scale-up z-20">
+                      <a href={qrUrl} target="_blank" rel="noopener noreferrer" className="block">
                         <img
                           src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}`}
                           alt="QR Vị Trí"
                           className="w-[100px] h-[100px] rounded-lg bg-white p-1 hover:scale-105 transition-transform"
                         />
                       </a>
-                      <span className="text-[10px] text-gray-200 font-bold mt-1 tracking-wide">📱 Quét xem Google Maps</span>
+                      <span className="text-[9px] text-gray-300 font-bold tracking-tight text-center max-w-[100px] leading-normal">
+                        Quét bản đồ
+                      </span>
                     </div>
                   );
                 })()}
@@ -988,7 +991,7 @@ export default function SlideBotPage() {
               {slide.points.map((point, idx) => (
                 <div key={idx} className="flex gap-4 items-start max-w-2xl text-left animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
                   <div className="w-2.5 h-2.5 mt-2.5 rounded-full bg-[#e8b84b] shrink-0"></div>
-                  <p className="text-xl md:text-2xl text-gray-300 font-light leading-relaxed">{point}</p>
+                  <p className="text-lg md:text-xl lg:text-[21px] text-gray-300 font-light leading-relaxed">{point}</p>
                 </div>
               ))}
             </div>
@@ -1011,7 +1014,7 @@ export default function SlideBotPage() {
               {slide.points.map((point, idx) => (
                 <div key={idx} className="flex gap-3.5 items-start group animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
                   <div className="w-2.5 h-2.5 mt-[0.7rem] rounded-full bg-[#e8b84b] shrink-0 transition-transform group-hover:scale-150"></div>
-                  <p className="text-xl md:text-2xl text-gray-200 leading-relaxed font-light">{point}</p>
+                  <p className="text-lg md:text-xl lg:text-[21px] text-gray-200 leading-relaxed font-light">{point}</p>
                 </div>
               ))}
             </div>
@@ -1050,7 +1053,7 @@ export default function SlideBotPage() {
             </h2>
             <div className="flex flex-col gap-4 max-w-3xl animate-slide-up delay-100">
               {slide.points.map((point, idx) => (
-                <p key={idx} className="text-xl md:text-2xl text-gray-200 font-light drop-shadow-md border-l-4 border-[#e8b84b] pl-4">{point}</p>
+                <p key={idx} className="text-lg md:text-xl lg:text-[21px] text-gray-200 font-light drop-shadow-md border-l-4 border-[#e8b84b] pl-4">{point}</p>
               ))}
             </div>
           </div>
@@ -1074,7 +1077,7 @@ export default function SlideBotPage() {
             )}
             <div className="flex flex-col gap-4 max-h-[35vh] overflow-y-auto pr-2 custom-scrollbar">
               {slide.points.map((point, idx) => (
-                <p key={idx} className="text-lg md:text-xl text-gray-400 font-light leading-relaxed">{point}</p>
+                <p key={idx} className="text-[16px] md:text-[18px] text-gray-400 font-light leading-relaxed">{point}</p>
               ))}
             </div>
           </div>
