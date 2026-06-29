@@ -247,8 +247,15 @@ function extractKeywords(query: string): RegExp[] {
   return patterns;
 }
 
+export interface ScoredChunk {
+  text: string;
+  score: number;
+  file?: string;
+}
+
 // Truy hồi top-K đoạn liên quan nhất — hybrid: vector similarity + keyword boost
-export async function retrieve(query: string, index: Index, k = 20): Promise<string[]> {
+// Trả kèm score để caller có thể áp ngưỡng confidence (tránh slide sai khi query mơ hồ)
+export async function retrieve(query: string, index: Index, k = 20, minScore = 0): Promise<string[]> {
   const indexDim = index.chunks[0]?.vec?.length || 0;
   const q = await embedQuery(query, indexDim);
   if (!q.length) return [];
@@ -310,6 +317,14 @@ export async function retrieve(query: string, index: Index, k = 20): Promise<str
   });
 
   scored.sort((a, b) => b.score - a.score);
+
+  // Nếu có minScore, kiểm tra top item trước — nếu tất cả rất thấp thì trả rỗng
+  // (tránh ambient mode tạo slide từ câu nghe mơ hồ như "ừ cái đó đẹp")
+  const topScore = scored[0]?.score ?? 0;
+  if (minScore > 0 && topScore < minScore) {
+    console.log(`[RAG] Top score ${topScore.toFixed(3)} < minScore ${minScore} → bỏ qua (query quá mơ hồ)`);
+    return [];
+  }
   
   // Lọc trùng lặp văn bản để tránh gửi các đoạn giống hệt nhau làm loãng prompt
   const uniqueTexts: string[] = [];

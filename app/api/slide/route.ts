@@ -41,20 +41,32 @@ async function getPersona(): Promise<string> {
   return (await readRepoFile('persona.md')).trim() || DEFAULT_PERSONA;
 }
 
-async function buildPrompt(message: string): Promise<string> {
+async function buildPrompt(message: string, ambient = false): Promise<{ prompt: string; hasChunks: boolean }> {
   const persona = await getPersona();
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
-      const chunks = await retrieve(message, index, 12);
-      return `${persona}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${chunks.join('\n\n')}`;
+      // Ambient mode dùng ngưỡng score cao hơn (0.35) — chỉ cầm kết quả kém khi câu hỏi mơ hồ
+      const minScore = ambient ? 0.35 : 0;
+      const chunks = await retrieve(message, index, 12, minScore);
+      if (chunks.length > 0) {
+        return {
+          prompt: `${persona}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${chunks.join('\n\n')}`,
+          hasChunks: true,
+        };
+      }
+      // Ambient + rỗng chunks — signal để route tự trả skip:true không cần gọi model
+      return { prompt: '', hasChunks: false };
     }
   } catch (e) {
     console.warn("RAG retrieval failed in slide API:", e);
   }
   const data = await readRepoFile('data.md');
   const truncated = data.length > 40000 ? data.slice(0, 40000) : data;
-  return `${persona}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`;
+  return {
+    prompt: `${persona}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
+    hasChunks: true,
+  };
 }
 
 // Parse JSON slide từ text model trả về (xử lý cả khi bị bọc ```json)
@@ -87,8 +99,15 @@ export async function POST(req: NextRequest) {
     const { message, ambient } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
 
-    let systemText = await buildPrompt(message);
-    if (ambient) systemText += AMBIENT_RULE;
+    const { prompt: systemText, hasChunks } = await buildPrompt(message, ambient);
+
+    // Ambient + RAG rỗng (query mơ hồ) → trả skip ngay, không tốn API call
+    if (ambient && !hasChunks) {
+      console.log(`[Slide] Ambient skip (no RAG match): "${message.slice(0, 60)}"`);
+      return NextResponse.json({ skip: true });
+    }
+
+    const systemWithAmbient = ambient ? systemText + AMBIENT_RULE : systemText;
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
     let rawText: string | null = null;
 
@@ -101,7 +120,7 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify({
             model: 'llama-3.3-70b-versatile',
             messages: [
-              { role: 'system', content: systemText },
+              { role: 'system', content: systemWithAmbient },
               { role: 'user', content: message },
             ],
             temperature: 0.7,
@@ -111,7 +130,20 @@ export async function POST(req: NextRequest) {
         });
         if (groqRes.ok) {
           const d = await groqRes.json();
-          rawText = d.choices?.[0]?.message?.content || null;
+          const candidate = d.choices?.[0]?.message?.content || null;
+          // Validate: phải có title + points + speech_text mới dùng; nếu thiếu thì fallback Gemini
+          if (candidate) {
+            try {
+              const parsed = JSON.parse(candidate);
+              if (parsed.skip === true || (parsed.title && parsed.speech_text && parsed.points)) {
+                rawText = candidate;
+              } else {
+                console.warn('[Slide] Groq JSON thiếu field bắt buộc, fallback Gemini...');
+              }
+            } catch {
+              console.warn('[Slide] Groq JSON parse lỗi, fallback Gemini...');
+            }
+          }
         } else {
           console.warn(`Slide Groq lỗi ${groqRes.status}, chuyển sang Gemini...`);
         }
@@ -125,7 +157,7 @@ export async function POST(req: NextRequest) {
       if (!GEMINI_API_KEY) return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
       const reqBody = {
         contents: [{ role: 'user', parts: [{ text: message }] }],
-        system_instruction: { parts: [{ text: systemText }] },
+        system_instruction: { parts: [{ text: systemWithAmbient }] },
         generationConfig: {
           temperature: 0.7,
           maxOutputTokens: 8192,

@@ -61,6 +61,7 @@ export default function SlideBotPage() {
   const lastGenRef = useRef(0);            // mốc lần tạo slide gần nhất (cooldown)
   const lastQueryRef = useRef('');         // query lần trước (tránh lặp)
   const suppressListenRef = useRef(false); // đang đọc to -> tạm ngắt nghe
+  const isGeneratingRef = useRef(false);   // đang gọi API slide -> bỏ qua ambient trigger mới
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const AMBIENT_DEBOUNCE_MS = 1800;        // ngừng nói 1.8s mới xét tạo slide
@@ -369,6 +370,11 @@ export default function SlideBotPage() {
 
   const maybeGenerateAmbient = () => {
     if (!ambientRef.current || !isListeningLoopActive.current) return;
+    // In-flight guard: nếu API đang xử lý request trước, bỏ qua trào mới
+    if (isGeneratingRef.current) {
+      console.log('[Ambient] Bỏ qua: đang generate slide.');
+      return;
+    }
     const now = Date.now();
     const wait = AMBIENT_COOLDOWN_MS - (now - lastGenRef.current);
     if (wait > 0) { // chưa hết cooldown -> hẹn lại
@@ -480,6 +486,7 @@ export default function SlideBotPage() {
 
   const fetchSlideData = async (text: string, ambient = false) => {
     try {
+      isGeneratingRef.current = true;
       if (!ambient) setState('processing');
       const res = await fetch('/api/slide', {
         method: 'POST',
@@ -535,6 +542,9 @@ export default function SlideBotPage() {
       } else {
         setState('idle');
       }
+    } finally {
+      // Luôn reset in-flight guard dù thành công hay thất bại
+      isGeneratingRef.current = false;
     }
   };
 
@@ -842,7 +852,20 @@ export default function SlideBotPage() {
             🎧 Nghe ngầm: {ambientMode ? 'BẬT' : 'Tắt'}
           </button>
           <button
-            onClick={() => setVoiceOn(v => !v)}
+            onClick={() => {
+              const newVal = !voiceOn;
+              setVoiceOn(newVal);
+              // Khi tắt đọc: dừng audio đang phát ngay lập tức
+              if (!newVal) {
+                if (activeAudioRef.current) {
+                  try { activeAudioRef.current.onended = null; activeAudioRef.current.pause(); } catch (e) {}
+                  activeAudioRef.current = null;
+                }
+                audioQueueRef.current = [];
+                isPlayingRef.current = false;
+                onSpeakDone();
+              }
+            }}
             title="Bật/tắt giọng đọc khi slide hiện"
             className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 ${
               voiceOn
