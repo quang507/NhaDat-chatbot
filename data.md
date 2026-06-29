@@ -22964,6 +22964,29 @@ Các câu hỏi Highlight ( dành cho KH NPD #27) dùng để hỏi khi PV
 - 🟦 Xanh tím = Signature by Codinachs
 
 **Nguồn:** Sơ đồ phân lô rổ hàng tháng 6/2026
+
+---
+
+### BỐ TRÍ CÔNG NĂNG CÁC TẦNG (chuẩn Ny'ah Phú Định)
+
+Nhà phố Ny'ah Phú Định có **6 tầng** (1 trệt, 1 lửng, 3 lầu, sân thượng), bố trí công năng theo chiều dọc như sau:
+
+| Tầng | Công năng |
+|---|---|
+| **Tầng 1 (trệt)** | Gara để xe + Phòng khách |
+| **Tầng 2 (lửng)** | Phòng ngủ ông bà |
+| **Tầng 3** | Bếp + Phòng ăn + Khu giặt sấy |
+| **Tầng 4** | Phòng ngủ Master (phòng ngủ lớn của gia chủ) |
+| **Tầng 5** | Phòng ngủ cho trẻ con |
+| **Tầng 6** | Sân thượng |
+
+**Riêng mẫu nhà Opus:** **2 tầng dưới (tầng 1 + tầng 2) là tầng văn phòng/thương mại** (mặt tiền trưng bày, góc livestream, văn phòng làm việc) — phù hợp người khởi nghiệp. 4 tầng trên là không gian ở như một căn hộ sân vườn cao cấp.
+→ **Vì căn #23 và #24 là mẫu Opus**, nên bếp và khu ở của 2 căn này nằm ở các tầng trên (do 2 tầng dưới dành cho văn phòng).
+
+**Hệ thang & thang máy:**
+- **Thang máy (Lift):** chạy lên **tận sân thượng** — tiện cho người lớn tuổi, vận chuyển đồ đạc, biến sân thượng thành sân vườn trên cao.
+- **Thang biến hóa** (tiết kiệm diện tích): bố trí cho **tầng 1 → 2 → 3**, giúp giải phóng mặt bằng cho bếp full-size và phòng khách rộng rãi.
+- **Thang xoắn:** bố trí cho **tầng 4 → 5** và **tầng 5 → 6**, thiết kế "treo" độc đáo, nhường tối đa diện tích cho phòng ngủ Master.
 | | | | | | | | | | | | |
 | | | | | | | | | | | | |
 | | | | | | | | | | | | |
