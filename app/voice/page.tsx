@@ -529,20 +529,26 @@ export default function VoicePage() {
       {/* Background radial gradient glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.08)_0%,transparent_70%)] pointer-events-none" />
 
-      {/* Header — minimal: link sang Slide + trạng thái */}
-      <div className="w-full max-w-md flex justify-between items-center z-10 pt-2">
-        <Link
-          href="/slide"
-          onClick={stopAllVoiceActivities}
-          title="Chuyển sang chế độ trình chiếu slide"
-          className="text-xs text-neutral-400 hover:text-white font-semibold flex items-center gap-1.5 bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800 transition"
-        >
-          📊 Slide
-        </Link>
-        <span className="text-xs uppercase tracking-widest text-neutral-500 font-semibold flex items-center gap-1.5 bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800">
-          <span className={`w-2 h-2 rounded-full ${isListeningLoopActive.current ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-600'}`} />
-          {isListeningLoopActive.current ? 'Đang bật' : 'Đã tắt'}
-        </span>
+      {/* Header — brand + link sang Slide + trạng thái */}
+      <div className="w-full max-w-md flex justify-between items-center z-10 pt-2 gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <img src="/logo.svg" alt="Nhã Đạt AI" className="w-7 h-7 rounded-md flex-shrink-0" />
+          <span className="text-sm font-semibold text-neutral-200 hidden sm:inline truncate">Nhã Đạt AI</span>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link
+            href="/slide"
+            onClick={stopAllVoiceActivities}
+            title="Chuyển sang chế độ trình chiếu slide"
+            className="text-xs text-neutral-400 hover:text-white font-semibold flex items-center gap-1.5 bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800 transition"
+          >
+            📊 Slide
+          </Link>
+          <span className="text-xs uppercase tracking-widest text-neutral-500 font-semibold flex items-center gap-1.5 bg-neutral-900/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-neutral-800">
+            <span className={`w-2 h-2 rounded-full ${isListeningLoopActive.current ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-600'}`} />
+            {isListeningLoopActive.current ? 'Bật' : 'Tắt'}
+          </span>
+        </div>
       </div>
 
       {/* Center Animated Orb Section */}
