@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
-import { detectUnit, unitContext } from '@/lib/units';
+import { detectUnit, unitContext, unitModel } from '@/lib/units';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -12,22 +12,12 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
-// Bản đồ mẫu nhà cho cả 50 căn (theo sơ đồ phân lô Ny'ah Phú Định - mẫu nhà KHÔNG đổi).
-// Màu sơ đồ: vàng=Opus, xanh lá=Fusion Gen 5, hồng=Cosmo Gen 2, xanh tím=Signature by Codinachs.
-// Giá trị dùng để chọn thư mục ảnh: 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'.
-const UNIT_MODELS: Record<number, 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'> = (() => {
-  const m: Record<number, 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'> = {};
-  const opus = [1, 2, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
-  const fusion = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
-  // Signature by Codinachs (43, 44): chưa có bộ ảnh riêng -> tạm dùng ảnh Cosmo Gen 2 làm fallback.
-  // Phần còn lại (3, 38-42, 45-50, 43, 44) là Cosmo Gen 2.
-  for (let i = 1; i <= 50; i++) {
-    if (opus.includes(i)) m[i] = 'opus';
-    else if (fusion.includes(i)) m[i] = 'fusion_gen_5';
-    else m[i] = 'cosmo_gen_2';
-  }
-  return m;
-})();
+// Chọn thư mục ảnh theo mẫu nhà của 1 căn. Dùng CHUNG nguồn unitModel() ở lib/units (1 nguồn duy nhất).
+// Signature (43,44) chưa có bộ ảnh riêng -> tạm fallback ảnh Cosmo Gen 2.
+function imageModelForUnit(n: number): 'opus' | 'fusion_gen_5' | 'cosmo_gen_2' {
+  const mk = unitModel(n);
+  return mk === 'signature' ? 'cosmo_gen_2' : mk;
+}
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):
 - CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN". Không bịa thêm thông tin.
@@ -275,10 +265,9 @@ export async function POST(req: NextRequest) {
       } else if (textToSearch.includes('opus') || textToSearch.includes('ô-pút') || textToSearch.includes('ô pút')) {
         model = 'opus';
       } else {
-        // Suy ra mẫu nhà theo SỐ CĂN khách hỏi, tra trong bản đồ 50 căn
-        const numMatch = message.match(/(?:căn|lô|ô|unit|nhà|#)\s*(?:số\s*)?#?\s*(\d{1,2})\b/i);
-        const unitNo = numMatch ? parseInt(numMatch[1], 10) : 0;
-        if (unitNo >= 1 && unitNo <= 50) model = UNIT_MODELS[unitNo];
+        // Suy ra mẫu nhà theo SỐ CĂN khách hỏi (nhận cả "căn 23" lẫn "căn hai ba" qua detectUnit)
+        const unitNo = detectUnit(message);
+        if (unitNo) model = imageModelForUnit(unitNo);
       }
 
       // 2. Kiểm tra từ khóa phòng / không gian
