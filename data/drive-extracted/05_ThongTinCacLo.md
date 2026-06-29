@@ -1,7 +1,7 @@
 # Thông Tin Chuẩn Từng Lô Đất - Ny'ah Phú Định
 
 > ⚠️ ĐÂY LÀ NGUỒN DUY NHẤT, CHÍNH XÁC về danh sách lô đất, mẫu nhà, diện tích, trạng thái bán. Mọi bảng phân lô khác trong dữ liệu (nếu có) đều CŨ/SAI, bỏ qua.
-> Cập nhật theo rổ hàng T6.2026. Các từ "Căn", "Lô", "Ô", "Unit", "#" (vd #03, #3) là tương đương.
+> Diện tích đọc từ sơ đồ phân lô chính thức. Cập nhật rổ hàng T6.2026. "Căn"/"Lô"/"Ô"/"Unit"/"#" (vd #03, #3) là tương đương.
 
 ## Mẫu nhà theo căn (cố định, không đổi)
 - **Opus**: #01, #02, #15–#26
@@ -16,56 +16,56 @@
 
 | Mã Lô | Mẫu Nhà | Diện Tích Đất (m²) | Trạng Thái |
 | :--- | :--- | :--- | :--- |
-| #01 | Opus | 57.24 | Còn trống |
-| #02 | Opus | 57.19 | Còn trống |
-| #03 | Cosmo Gen 2 | 56.37 | Còn trống |
+| #01 | Opus | 67.24 | Còn trống |
+| #02 | Opus | 65.15 | Còn trống |
+| #03 | Cosmo Gen 2 | 49.37 | Còn trống |
 | #04 | Fusion Gen 5 | 43.32 | Đã bán |
-| #05 | Fusion Gen 5 | 56.20 | Đã bán |
-| #06 | Fusion Gen 5 | 56.82 | Đã bán |
-| #07 | Fusion Gen 5 | 54.93 | Đã bán |
-| #08 | Fusion Gen 5 | 44.11 | Đã bán |
+| #05 | Fusion Gen 5 | 43.70 | Đã bán |
+| #06 | Fusion Gen 5 | 43.82 | Đã bán |
+| #07 | Fusion Gen 5 | 43.94 | Đã bán |
+| #08 | Fusion Gen 5 | 44.10 | Đã bán |
 | #09 | Fusion Gen 5 | 44.17 | Đã bán |
 | #10 | Fusion Gen 5 | 44.32 | Đã bán |
-| #11 | Fusion Gen 5 | 44.21 | Đã bán |
-| #12 | Fusion Gen 5 | 44.75 | Đã bán |
+| #11 | Fusion Gen 5 | 44.51 | Đã bán |
+| #12 | Fusion Gen 5 | 44.73 | Đã bán |
 | #13 | Fusion Gen 5 | 44.94 | Đã bán |
-| #14 | Fusion Gen 5 | 54.98 | Đã bán |
-| #15 | Opus | 57.46 | Đã bán |
+| #14 | Fusion Gen 5 | 54.96 | Đã bán |
+| #15 | Opus | 77.46 | Đã bán |
 | #16 | Opus | 74.68 | Đã bán |
-| #17 | Opus | 71.86 | Đã bán |
-| #18 | Opus | 91.43 | Đã bán |
-| #19 | Opus | 56.92 | Đã bán |
-| #20 | Opus | 61.89 | Đã bán |
-| #21 | Opus | 57.51 | Đã bán |
-| #22 | Opus | 57.91 | Đã bán |
+| #17 | Opus | 71.89 | Đã bán |
+| #18 | Opus | 55.51 | Đã bán |
+| #19 | Opus | 65.92 | Đã bán |
+| #20 | Opus | 61.80 | Đã bán |
+| #21 | Opus | 67.51 | Đã bán |
+| #22 | Opus | 73.91 | Đã bán |
 | #23 | Opus | 69.61 | Còn trống |
 | #24 | Opus | 73.52 | Còn trống |
-| #25 | Opus | 64.59 | Đã bán |
-| #26 | Opus | 91.43 | Đã bán |
-| #27 | Fusion Gen 5 | 42.34 | Đã bán |
+| #25 | Opus | 64.56 | Đã bán |
+| #26 | Opus | 91.83 | Đã bán |
+| #27 | Fusion Gen 5 | 49.24 | Đã bán |
 | #28 | Fusion Gen 5 | 47.27 | Đã bán |
-| #29 | Fusion Gen 5 | 44.55 | Đã bán |
+| #29 | Fusion Gen 5 | 45.35 | Đã bán |
 | #30 | Fusion Gen 5 | 44.52 | Đã bán |
 | #31 | Fusion Gen 5 | 44.28 | Đã bán |
 | #32 | Fusion Gen 5 | 44.04 | Đã bán |
-| #33 | Fusion Gen 5 | 43.92 | Đã bán |
-| #34 | Fusion Gen 5 | 43.55 | Đã bán |
+| #33 | Fusion Gen 5 | 43.80 | Đã bán |
+| #34 | Fusion Gen 5 | 43.59 | Đã bán |
 | #35 | Fusion Gen 5 | 43.33 | Đã bán |
 | #36 | Fusion Gen 5 | 43.11 | Đã bán |
 | #37 | Fusion Gen 5 | 47.12 | Đã bán |
-| #38 | Cosmo Gen 2 | 43.76 | Đã bán |
+| #38 | Cosmo Gen 2 | 43.75 | Đã bán |
 | #39 | Cosmo Gen 2 | 43.75 | Đã bán |
 | #40 | Cosmo Gen 2 | 43.75 | Đã bán |
 | #41 | Cosmo Gen 2 | 43.75 | Đã bán |
-| #42 | Cosmo Gen 2 | 43.75 | Còn trống |
+| #42 | Cosmo Gen 2 | 43.76 | Còn trống |
 | #43 | Signature by Codinachs | 55.87 | Đã bán |
 | #44 | Signature by Codinachs | 55.87 | Đã bán |
 | #45 | Cosmo Gen 2 | 43.75 | Đã bán |
-| #46 | Cosmo Gen 2 | 43.76 | Đã bán |
+| #46 | Cosmo Gen 2 | 43.75 | Đã bán |
 | #47 | Cosmo Gen 2 | 43.75 | Đã bán |
 | #48 | Cosmo Gen 2 | 43.75 | Đã bán |
 | #49 | Cosmo Gen 2 | 43.75 | Đã bán |
-| #50 | Cosmo Gen 2 | 42.92 | Còn trống |
+| #50 | Cosmo Gen 2 | 57.21 | Còn trống |
 
 ## Bố trí công năng các tầng (chuẩn Ny'ah Phú Định)
 
