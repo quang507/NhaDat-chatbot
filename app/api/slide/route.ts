@@ -173,6 +173,220 @@ export async function POST(req: NextRequest) {
     const { message, ambient } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
 
+    // --- BỘ ĐỆM SLIDE TĨNH: Trả slide ngay lập tức trong 0.1ms nếu khớp từ khóa trực tiếp, bypass AI hoàn toàn ---
+    const cleanMsg = message.toLowerCase();
+    let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' = 'cosmo_gen_2';
+    if (cleanMsg.includes('fusion') || cleanMsg.includes('gen 5') || cleanMsg.includes('gen5') || cleanMsg.includes('phiêu dân') || cleanMsg.includes('phiêu-dân')) {
+      model = 'fusion_gen_5';
+    } else if (cleanMsg.includes('opus') || cleanMsg.includes('ô-pút') || cleanMsg.includes('ô pút') || cleanMsg.includes('o pút')) {
+      model = 'opus';
+    } else if (cleanMsg.includes('cosmo') || cleanMsg.includes('cót mô') || cleanMsg.includes('cót-mô') || cleanMsg.includes('cốt mô')) {
+      model = 'cosmo_gen_2';
+    } else {
+      const unitNo = detectUnit(message);
+      if (unitNo) model = imageModelForUnit(unitNo);
+    }
+
+    let staticSlide: any = null;
+
+    if (cleanMsg.includes('vị trí') || cleanMsg.includes('bản đồ') || cleanMsg.includes('maps') || cleanMsg.includes('địa chỉ') || cleanMsg.includes('đường đi') || cleanMsg.includes('ở đâu')) {
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: "Vị trí dự án",
+        points: [
+          "Mặt tiền Trương Đình Hội, Quận 8",
+          "Kết nối trực tiếp Đại lộ Võ Văn Kiệt",
+          "Chỉ mất 18 phút di chuyển đến Quận 1"
+        ],
+        speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút qua đại lộ Võ Văn Kiệt.",
+        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'],
+        maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A'
+      };
+    } else if (cleanMsg.includes('tiện ích') || cleanMsg.includes('công viên') || cleanMsg.includes(' landmark coffee') || cleanMsg.includes('sân chơi') || cleanMsg.includes('tiện nghi')) {
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: "Hệ thống Tiện ích",
+        points: [
+          "Công viên cây xanh nội khu mát mẻ",
+          "Khu vui chơi trẻ em an toàn",
+          "Sân thể thao đa năng và Landmark Coffee"
+        ],
+        speech_text: "Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.",
+        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png']
+      };
+    } else if (cleanMsg.includes('bếp') || cleanMsg.includes('nhà ăn') || cleanMsg.includes('nấu ăn') || cleanMsg.includes('phòng ăn')) {
+      if (model === 'cosmo_gen_2') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng bếp Cosmo",
+          points: [
+            "Hệ tủ bếp hiện đại, tối ưu",
+            "Mặt bếp đá thạch anh cao cấp",
+            "Không gian bàn ăn ấm cúng"
+          ],
+          speech_text: "Khu vực bếp và bàn ăn của căn nhà Cosmo được thiết kế ấm cúng, trang bị hệ tủ bếp hiện đại.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png']
+        };
+      } else if (model === 'fusion_gen_5') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng bếp Fusion",
+          points: [
+            "Bố trí bếp đảo hiện đại",
+            "Thiết kế mở kết nối phòng khách",
+            "Trang bị thiết bị bếp cao cấp"
+          ],
+          speech_text: "Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png']
+        };
+      } else {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng bếp Opus",
+          points: [
+            "Khu vực bếp nấu biệt lập",
+            "Bố trí bàn ăn sang trọng",
+            "Kết nối ban công thoáng mát"
+          ],
+          speech_text: "Không gian bếp của mẫu nhà Opus sang trọng, thoáng đãng nhờ kết nối trực tiếp với ban công ngoài trời.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg']
+        };
+      }
+    } else if (cleanMsg.includes('gara') || cleanMsg.includes('xe hơi') || cleanMsg.includes('đỗ xe') || cleanMsg.includes('ô tô') || cleanMsg.includes('đậu xe') || cleanMsg.includes('xe ô tô')) {
+      if (model === 'cosmo_gen_2') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Gara Ô tô Cosmo",
+          points: [
+            "Sức chứa lớn cho ô tô và xe máy",
+            "Tích hợp lối đi thang máy kính",
+            "Hệ thống thông gió hiện đại"
+          ],
+          speech_text: "Mẫu nhà Cosmo thiết kế gara rộng rãi với sức chứa ô tô lớn, kết nối trực tiếp đến thang máy kính lên các tầng.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png']
+        };
+      } else if (model === 'fusion_gen_5') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Gara Ô tô Fusion",
+          points: [
+            "Thiết kế gara đỗ xe bán tải rộng",
+            "Lối vào nhà thông thoáng",
+            "Bố trí hộp kỹ thuật âm tường"
+          ],
+          speech_text: "Gara mẫu nhà Fusion được tối ưu không gian, đỗ vừa xe bán tải lớn và có thiết kế thông thoáng.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png']
+        };
+      } else {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Gara Ô tô Opus",
+          points: [
+            "Gara đỗ xe hơi thoải mái",
+            "Cửa cuốn tự động an toàn",
+            "Bố trí tủ giày và tủ dụng cụ"
+          ],
+          speech_text: "Mẫu nhà thương mại Opus sở hữu gara ô tô riêng biệt tại tầng trệt, kết nối thuận tiện lên khu vực kinh doanh.",
+          image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
+        };
+      }
+    } else if (cleanMsg.includes('phòng khách') || cleanMsg.includes('sofa') || cleanMsg.includes('tiếp khách') || cleanMsg.includes('sinh hoạt chung')) {
+      if (model === 'cosmo_gen_2') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng khách Cosmo",
+          points: [
+            "Thiết kế kính tràn rộng mở",
+            "Trần cao thông thoáng",
+            "Nội thất sofa hiện đại"
+          ],
+          speech_text: "Phòng khách Cosmo Gen 2 ngập tràn ánh sáng tự nhiên nhờ hệ kính lớn và trần cao thoáng đãng.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png']
+        };
+      } else if (model === 'fusion_gen_5') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng khách Fusion",
+          points: [
+            "Không gian sinh hoạt rộng lớn",
+            "Thiết kế lệch tầng độc đáo",
+            "Tối ưu góc nhìn ra sân vườn"
+          ],
+          speech_text: "Phòng khách mẫu nhà Fusion mang phong cách hiện đại với thiết kế lệch tầng tạo không gian rộng mở.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png']
+        };
+      } else {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng khách Opus",
+          points: [
+            "Sảnh đón tiếp khách sang trọng",
+            "Tông màu gỗ ấm áp, lịch lãm",
+            "Bố trí ánh sáng gián tiếp tinh tế"
+          ],
+          speech_text: "Không gian phòng khách Opus lịch lãm với gỗ tự nhiên, thiết kế lý tưởng để tiếp các đối tác kinh doanh.",
+          image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png']
+        };
+      }
+    } else if (cleanMsg.includes('phòng ngủ') || cleanMsg.includes('giường') || cleanMsg.includes('ngủ con') || cleanMsg.includes('ngủ master') || cleanMsg.includes('phòng ngủ chính')) {
+      if (model === 'cosmo_gen_2') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng ngủ Master Cosmo",
+          points: [
+            "Phòng ngủ master rộng lớn",
+            "Bố trí giường king-size thoải mái",
+            "Hệ tủ quần áo kính sang trọng"
+          ],
+          speech_text: "Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png']
+        };
+      } else if (model === 'fusion_gen_5') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng ngủ Master Fusion",
+          points: [
+            "Thiết kế ấm cúng, sang trọng",
+            "Tích hợp phòng thay đồ riêng",
+            "Cửa sổ hướng công viên nội khu"
+          ],
+          speech_text: "Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png']
+        };
+      } else {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Phòng ngủ Master Opus",
+          points: [
+            "Không gian nghỉ ngơi đẳng cấp",
+            "Ban công đón gió tự nhiên",
+            "Thiết kế chuẩn khách sạn 5 sao"
+          ],
+          speech_text: "Phòng ngủ master của mẫu nhà Opus mang phong cách resort đẳng cấp với ban công rộng đón gió tự nhiên.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg']
+        };
+      }
+    } else if (cleanMsg.includes('thang máy') || cleanMsg.includes('elevator') || cleanMsg.includes('thang kính')) {
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: "Thiết kế Thang máy kính",
+        points: [
+          "Bố trí thang máy kính sang trọng",
+          "Tầm nhìn 360 độ thoáng đãng",
+          "Kết nối thuận tiện từ gara xe"
+        ],
+        speech_text: "Các căn nhà được trang bị thang máy kính quan sát sang trọng, di chuyển êm ái kết nối từ khu vực gara đỗ xe lên các tầng.",
+        image_urls: model === 'fusion_gen_5' 
+          ? ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png']
+          : ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png']
+      };
+    }
+
+    if (staticSlide) {
+      console.log(`[Slide] Static bypass triggered for query: "${message}"`);
+      return NextResponse.json(staticSlide);
+    }
+
     const { prompt: systemText, hasChunks } = await buildPrompt(message, ambient);
 
     // Ambient + RAG rỗng (query mơ hồ) → trả skip ngay, không tốn API call
