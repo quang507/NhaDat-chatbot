@@ -22,7 +22,7 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT
   "points": ["Ý chính 1 (Ngắn gọn để chiếu slide)", "Ý chính 2", "Ý chính 3"],
   "highlight_number": "Một con số nổi bật nhất trong đoạn văn (ví dụ '18 phút', '9,5 triệu lít', '5,19 tỷ'). Nếu không có số liệu nào ấn tượng, để trống ''. Chỉ dùng cho layout dark_minimal hoặc split.",
   "speech_text": "Kịch bản chi tiết để MC đọc. BẮT BUỘC KHÔNG DÙNG emoji, KHÔNG DÙNG ký tự đặc biệt (*, _, #), KHÔNG DÙNG ngoặc kép, viết tự nhiên như văn nói để máy đọc mượt mà.",
-  "image_urls": ["Đường dẫn URL ảnh 1", "Đường dẫn URL ảnh 2", ...] (Mảng chứa tất cả các đường dẫn URL ảnh tìm thấy trong phần dữ liệu liên quan. Tối đa 3 ảnh. Nếu không có ảnh nào liên quan trong dữ liệu, trả về mảng rỗng []).
+  "image_urls": ["Đường dẫn ảnh 1", "Đường dẫn ảnh 2", ...] (Mảng chứa các đường dẫn hình ảnh tìm thấy trong phần dữ liệu liên quan. CHỈ được chọn các đường dẫn bắt đầu bằng "/images/" như "/images/01_NyAh-PhuDinh/...", TUYỆT ĐỐI KHÔNG lấy các đường dẫn bắt đầu bằng "2 - trình chiếu" hoặc các file PowerPoint local. Nếu không có ảnh nào bắt đầu bằng "/images/", trả về mảng rỗng []).
 }
 
 CÁCH CHỌN LAYOUT_TYPE:
@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
               points: { type: "ARRAY", items: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." } },
               highlight_number: { type: "STRING", description: "Con số nổi bật (nếu có)" },
               speech_text: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt. Kịch bản đọc." },
-              image_urls: { type: "ARRAY", items: { type: "STRING" }, description: "Danh sách URL ảnh tìm thấy trong dữ liệu liên quan. Tối đa 3 ảnh. Nếu không có ảnh nào, trả về mảng rỗng []." }
+              image_urls: { type: "ARRAY", items: { type: "STRING" }, description: "Danh sách URL hình ảnh. CHỈ được chọn các đường dẫn bắt đầu bằng '/images/'. BẮT BUỘC bỏ qua các đường dẫn bắt đầu bằng '2 - trình chiếu' hoặc không bắt đầu bằng '/images/'. Tối đa 3 ảnh. Nếu không có, trả về mảng rỗng []." }
             },
             required: ["layout_type", "title", "points", "speech_text", "image_urls"]
           }
@@ -157,7 +157,56 @@ export async function POST(req: NextRequest) {
       rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
     }
 
-    return NextResponse.json(parseSlide(rawText));
+    const parsed: any = parseSlide(rawText);
+
+    // Lọc bỏ mọi đường dẫn không hợp lệ không bắt đầu bằng /images/
+    if (parsed.image_urls && Array.isArray(parsed.image_urls)) {
+      parsed.image_urls = parsed.image_urls.filter((url: string) => url.startsWith('/images/'));
+    } else {
+      parsed.image_urls = [];
+    }
+
+    const textToSearch = (message + ' ' + (parsed.title || '') + ' ' + (parsed.points || []).join(' ') + ' ' + (parsed.speech_text || '')).toLowerCase();
+
+    // Điểm kích hoạt ảnh cố định (Fixed Trigger Points) cho Sale Gallery
+    if (parsed.image_urls.length === 0) {
+      if (textToSearch.includes('vị trí') || textToSearch.includes('bản đồ') || textToSearch.includes('maps') || textToSearch.includes('địa chỉ') || textToSearch.includes('đường đi') || textToSearch.includes('ở đâu')) {
+        parsed.image_urls = [
+          '/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg',
+          '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'
+        ];
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('tiện ích') || textToSearch.includes('công viên') || textToSearch.includes(' landmark coffee') || textToSearch.includes('sân chơi') || textToSearch.includes('sân cầu lông') || textToSearch.includes('bóng rổ')) {
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('cosmo') || textToSearch.includes('siêu sáng')) {
+        parsed.image_urls = [
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'
+        ];
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('thang máy')) {
+        parsed.image_urls = [
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'
+        ];
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('mặt bằng') || textToSearch.includes('tầng') || textToSearch.includes('thiết kế') || textToSearch.includes('bố cục')) {
+        parsed.image_urls = [
+          '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg',
+          '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg',
+          '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-3.jpg'
+        ];
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('pháp lý') || textToSearch.includes('sổ hồng') || textToSearch.includes('hợp đồng') || textToSearch.includes('cam kết')) {
+        // Cho pháp lý, hiển thị hình ảnh bản đồ hoặc vị trí dự án làm nền để tạo sự uy tín
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg'];
+        parsed.layout_type = 'split_image_right';
+      }
+    }
+
+    return NextResponse.json(parsed);
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
