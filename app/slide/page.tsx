@@ -136,6 +136,9 @@ export default function SlideBotPage() {
   const amEngineOnRef = useRef(false);   // ý định: nghe ngầm ĐANG bật
   const amRunningRef = useRef(false);    // Web Speech instance đang chạy thật sự
   const firstGestureRef = useRef(false); // đã ép restart bằng cử chỉ đầu tiên chưa
+  const useWhisperAmbientRef = useRef(false); // đã rớt sang Whisper cho phiên này (Web Speech chết/bị chặn)
+  const wsActivityRef = useRef(0);       // mốc Web Speech có hoạt động gần nhất (audio/speech/result)
+  const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
   const AM_THRESHOLD = 0.060;     // ngưỡng RMS coi là có người nói (cao để im lặng/nhiễu không kích hoạt)
   const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
   const AM_SILENCE_MS = 900;      // im lặng 0.9s -> chốt 1 câu, gửi phiên âm
@@ -555,11 +558,15 @@ export default function SlideBotPage() {
 
     rec.onstart = () => {
       amRunningRef.current = true;
+      wsActivityRef.current = Date.now();
       setState('listening');
       setTranscript('🎧 Đang nghe ngầm…');
     };
+    rec.onaudiostart = () => { wsActivityRef.current = Date.now(); };
+    rec.onspeechstart = () => { wsActivityRef.current = Date.now(); };
 
     rec.onresult = (event: any) => {
+      wsActivityRef.current = Date.now();
       let interim = '';
       let finalText = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -581,47 +588,159 @@ export default function SlideBotPage() {
     };
 
     rec.onerror = (event: any) => {
-      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+      // Web Speech bị chặn/lỗi dịch vụ (mạng công ty chặn server Google là phổ biến) -> rớt sang Whisper.
+      if (event.error === 'network' || event.error === 'service-not-allowed' || event.error === 'audio-capture') {
+        fallbackToWhisper(`Web Speech lỗi (${event.error})`);
+      } else if (event.error === 'not-allowed') {
         amEngineOnRef.current = false;
         amRunningRef.current = false;
         setState('idle');
         setTranscript('Vui lòng cấp quyền micro cho trang rồi bấm nút mic.');
       }
-      // các lỗi khác (no-speech/aborted/network): để onend tự tạo instance mới chạy tiếp
+      // no-speech/aborted: để onend tự tạo instance mới chạy tiếp
     };
 
     rec.onend = () => {
       amRunningRef.current = false;
       if (!amEngineOnRef.current) return;          // đã chủ động dừng
+      if (useWhisperAmbientRef.current) return;     // đã chuyển sang Whisper
       if (!isListeningLoopActive.current) return;
       if (!ambientRef.current) return;
       if (suppressListenRef.current) return;       // đang đọc to -> onSpeakDone sẽ mở lại
-      // tạo instance MỚI và chạy tiếp (không tái dùng instance vừa kết thúc)
-      restartAmbientRecognition();
+      restartAmbientRecognition();                 // tạo instance MỚI chạy tiếp
     };
     return rec;
   };
 
   const restartAmbientRecognition = () => {
     const rec = buildRecognition();
-    if (!rec) { setTranscript('Trình duyệt không hỗ trợ nhận giọng nói. Hãy dùng Chrome.'); return; }
+    if (!rec) { fallbackToWhisper('Trình duyệt không hỗ trợ Web Speech'); return; }
     recognitionRef.current = rec;
     try { rec.start(); } catch (e) { /* InvalidState: instance khác đang chạy -> bỏ */ }
+    // WATCHDOG: nếu sau 6s vẫn KHÔNG có hoạt động nào (chết câm / bị chặn) -> rớt sang Whisper.
+    if (wsWatchdogRef.current) clearTimeout(wsWatchdogRef.current);
+    wsWatchdogRef.current = setTimeout(() => {
+      if (!amEngineOnRef.current || useWhisperAmbientRef.current) return;
+      if (suppressListenRef.current || stateRef.current === 'speaking') return;
+      if (Date.now() - wsActivityRef.current > 5500) {
+        fallbackToWhisper('Web Speech không phản hồi 6s');
+      }
+    }, 6000);
   };
 
-  // Bật nghe ngầm (Web Speech). Idempotent: đang chạy thì thôi.
+  // Bật nghe ngầm. Idempotent. Ưu tiên Web Speech; nếu đã rớt thì dùng Whisper.
   const startAmbientListening = () => {
     amEngineOnRef.current = true;
     setState('listening');
     setTranscript('🎧 Đang nghe ngầm…');
+    if (useWhisperAmbientRef.current) { startWhisperAmbient(); return; }
     if (amRunningRef.current) return;
+    wsActivityRef.current = Date.now();
     restartAmbientRecognition();
+  };
+
+  // Chuyển hẳn sang Whisper cho phiên này (giữ trạng thái — không thử lại Web Speech nữa).
+  const fallbackToWhisper = (reason: string) => {
+    if (useWhisperAmbientRef.current) return;
+    console.warn('[Ambient] Rớt sang Whisper:', reason);
+    useWhisperAmbientRef.current = true;
+    if (wsWatchdogRef.current) { clearTimeout(wsWatchdogRef.current); wsWatchdogRef.current = null; }
+    try { recognitionRef.current?.abort(); } catch (e) {}
+    amRunningRef.current = false;
+    if (amEngineOnRef.current && !suppressListenRef.current) startWhisperAmbient();
   };
 
   const stopAmbientListening = () => {
     amEngineOnRef.current = false;
     amRunningRef.current = false;
+    if (wsWatchdogRef.current) { clearTimeout(wsWatchdogRef.current); wsWatchdogRef.current = null; }
     try { recognitionRef.current?.abort(); } catch (e) {}
+    stopWhisperAmbient();
+  };
+
+  // ===== ENGINE WHISPER (fallback): MediaRecorder + VAD, gửi /api/transcribe =====
+  const startWhisperAmbient = async () => {
+    if (amEngineOnRef.current && amStreamRef.current) { setState('listening'); return; } // đang chạy
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
+      amStreamRef.current = stream;
+      const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      const ctx: AudioContext = new Ctx();
+      amCtxRef.current = ctx;
+      try { if (ctx.state === 'suspended') ctx.resume(); } catch (e) {}
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 512;
+      source.connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+      setState('listening');
+      setTranscript('🎧 Đang nghe ngầm… (Whisper)');
+
+      const startSeg = () => {
+        if (amRecordingRef.current) return;
+        amChunksRef.current = [];
+        try {
+          const mr = new MediaRecorder(stream);
+          amRecorderRef.current = mr;
+          mr.ondataavailable = (e) => { if (e.data.size > 0) amChunksRef.current.push(e.data); };
+          mr.onstop = () => {
+            amRecordingRef.current = false;
+            const dur = Date.now() - amSpeechStartRef.current;
+            const blob = new Blob(amChunksRef.current, { type: mr.mimeType || 'audio/webm' });
+            if (dur >= AM_MIN_SPEECH_MS) transcribeAmbientSegment(blob);
+          };
+          mr.start();
+          amRecordingRef.current = true;
+          amSpeechStartRef.current = Date.now();
+        } catch (e) {}
+      };
+      const stopSeg = () => {
+        if (amRecorderRef.current && amRecorderRef.current.state !== 'inactive') {
+          try { amRecorderRef.current.stop(); } catch (e) {}
+        }
+      };
+      let startFrames = 0;
+      const tick = () => {
+        amRafRef.current = requestAnimationFrame(tick);
+        analyser.getByteTimeDomainData(data);
+        let sum = 0;
+        for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
+        const rms = Math.sqrt(sum / data.length);
+        const speaking = rms > AM_THRESHOLD;
+        if (suppressListenRef.current || stateRef.current === 'speaking') {
+          if (amRecordingRef.current) stopSeg();
+          startFrames = 0;
+          return;
+        }
+        if (speaking) {
+          amSilenceStartRef.current = 0;
+          if (!amRecordingRef.current) { startFrames++; if (startFrames >= AM_START_FRAMES) { startFrames = 0; startSeg(); } }
+        } else {
+          startFrames = 0;
+          if (amRecordingRef.current) {
+            if (!amSilenceStartRef.current) amSilenceStartRef.current = Date.now();
+            else if (Date.now() - amSilenceStartRef.current > AM_SILENCE_MS) stopSeg();
+          }
+        }
+      };
+      tick();
+    } catch (e) {
+      setTranscript('Không truy cập được mic. Cấp quyền mic rồi thử lại.');
+    }
+  };
+
+  const stopWhisperAmbient = () => {
+    if (amRafRef.current != null) { cancelAnimationFrame(amRafRef.current); amRafRef.current = null; }
+    if (amRecorderRef.current && amRecorderRef.current.state !== 'inactive') {
+      try { amRecorderRef.current.onstop = null; amRecorderRef.current.stop(); } catch (e) {}
+    }
+    amRecorderRef.current = null;
+    amRecordingRef.current = false;
+    if (amStreamRef.current) { try { amStreamRef.current.getTracks().forEach(t => t.stop()); } catch (e) {} amStreamRef.current = null; }
+    if (amCtxRef.current) { try { amCtxRef.current.close(); } catch (e) {} amCtxRef.current = null; }
   };
 
   // Làm sạch + tách câu: dùng chung splitCleanSentences từ lib/speech.ts
