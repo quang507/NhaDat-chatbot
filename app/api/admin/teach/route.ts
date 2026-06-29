@@ -100,6 +100,31 @@ export async function POST(req: NextRequest) {
     const merged: Index = { chunks: [...kept, ...newChunks], builtAt: new Date().toISOString() };
     await saveIndex(merged);
 
+    // 4. Append Q&A vào data.md để Rebuild về sau không mất
+    try {
+      const DATA_PATH = 'data.md';
+      const dataRes = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DATA_PATH}?ref=${BRANCH}`, {
+        headers: ghHeaders(), cache: 'no-store',
+      });
+      const dataJson = dataRes.ok ? await dataRes.json() : null;
+      const existingData = dataJson ? Buffer.from(dataJson.content || '', 'base64').toString('utf-8') : '';
+      const dataSha = dataJson?.sha || null;
+      const qaBlock = `\n\n---\n<!-- teach-bot -->\n## Câu hỏi: ${question.trim()}\n\n**Response:**\n${answer.trim()}\n`;
+      const newData = existingData.trimEnd() + qaBlock;
+      await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DATA_PATH}`, {
+        method: 'PUT',
+        headers: ghHeaders(),
+        body: JSON.stringify({
+          message: `Dạy bot → data.md: ${question.trim().slice(0, 50)}`,
+          content: Buffer.from(newData, 'utf-8').toString('base64'),
+          branch: BRANCH,
+          ...(dataSha ? { sha: dataSha } : {}),
+        }),
+      });
+    } catch (e2) {
+      console.warn('Append data.md failed (non-fatal):', e2);
+    }
+
     return NextResponse.json({ ok: true, totalChunks: merged.chunks.length });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });

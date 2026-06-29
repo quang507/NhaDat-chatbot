@@ -149,6 +149,31 @@ export async function POST(req: NextRequest) {
     // Bước 4: Lưu index mới lên chatbot-logs
     await saveIndex(mergedIndex);
 
+    // Bước 5: Append vào data.md để Rebuild về sau luôn giữ nội dung này
+    try {
+      const DATA_PATH = 'data.md';
+      const dataSha = await getFileSha(DATA_PATH);
+      const dataRes = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DATA_PATH}?ref=${BRANCH}`, {
+        headers: ghHeaders(), cache: 'no-store',
+      });
+      const dataJson = dataRes.ok ? await dataRes.json() : null;
+      const existingData = dataJson ? Buffer.from(dataJson.content || '', 'base64').toString('utf-8') : '';
+      const appendBlock = `\n\n---\n<!-- web-crawl: ${safeName} -->\n${markdown.trim()}\n`;
+      const newData = existingData.trimEnd() + appendBlock;
+      await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DATA_PATH}`, {
+        method: 'PUT',
+        headers: ghHeaders(),
+        body: JSON.stringify({
+          message: `Append web crawl vào data.md: ${safeName}`,
+          content: Buffer.from(newData, 'utf-8').toString('base64'),
+          branch: BRANCH,
+          ...(dataSha ? { sha: dataSha } : {}),
+        }),
+      });
+    } catch (e2) {
+      console.warn('Append data.md failed (non-fatal):', e2);
+    }
+
     return NextResponse.json({
       ok: true,
       file: filePath,

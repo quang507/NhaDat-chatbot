@@ -40,14 +40,24 @@ function ghHeaders() {
 }
 
 // Đọc 1 file trên GitHub -> { content, sha }. File không tồn tại -> content rỗng, sha null.
+// File > 1MB: GitHub Contents API trả content rỗng -> fallback sang raw URL + git/blobs để lấy sha.
 export async function getFile(filePath: string): Promise<{ content: string; sha: string | null }> {
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}?ref=${BRANCH}`;
-  const res = await fetch(url, { headers: ghHeaders(), cache: 'no-store' });
-  if (res.status === 404) return { content: '', sha: null };
-  if (!res.ok) throw new Error(`GitHub đọc file lỗi: ${res.status} ${await res.text()}`);
-  const data = await res.json();
-  const content = Buffer.from(data.content || '', 'base64').toString('utf-8');
-  return { content, sha: data.sha };
+  const metaUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}?ref=${BRANCH}`;
+  const metaRes = await fetch(metaUrl, { headers: ghHeaders(), cache: 'no-store' });
+  if (metaRes.status === 404) return { content: '', sha: null };
+  if (!metaRes.ok) throw new Error(`GitHub đọc file lỗi: ${metaRes.status} ${await metaRes.text()}`);
+  const meta = await metaRes.json();
+  const sha: string | null = meta.sha || null;
+
+  // GitHub Contents API trả content rỗng khi file > 1MB — dùng raw URL thay thế
+  let content = '';
+  if (meta.content) {
+    content = Buffer.from(meta.content, 'base64').toString('utf-8');
+  } else if (meta.download_url) {
+    const rawRes = await fetch(meta.download_url, { cache: 'no-store' });
+    if (rawRes.ok) content = await rawRes.text();
+  }
+  return { content, sha };
 }
 
 // Ghi đè 1 file trên GitHub — tự retry 1 lần nếu SHA lệch (409)
