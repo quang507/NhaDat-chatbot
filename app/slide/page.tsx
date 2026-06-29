@@ -1141,10 +1141,101 @@ export default function SlideBotPage() {
   return (
     <div className="min-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Google Sans', 'Product Sans', 'Be Vietnam Pro', sans-serif" }}>
 
-      {/* Background Decor (bokeh glow nhẹ) */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[-15%] left-[-8%] w-[45%] h-[45%] bg-[radial-gradient(circle,rgba(232,184,75,0.06)_0%,transparent_70%)] rounded-full blur-3xl"></div>
-        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-[radial-gradient(circle,rgba(120,140,200,0.05)_0%,transparent_70%)] rounded-full blur-3xl"></div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes floatSlow1 {
+          0% { transform: translate(-10%, -10%) scale(1); }
+          50% { transform: translate(15%, 20%) scale(1.15); }
+          100% { transform: translate(-10%, -10%) scale(1); }
+        }
+        @keyframes floatSlow2 {
+          0% { transform: translate(20%, 30%) scale(1.1); }
+          50% { transform: translate(-5%, -10%) scale(0.9); }
+          100% { transform: translate(20%, 30%) scale(1.1); }
+        }
+        @keyframes particleFloat1 {
+          0% { transform: translate(15vw, 105vh) scale(0.8); opacity: 0; }
+          10% { opacity: 0.15; }
+          90% { opacity: 0.15; }
+          100% { transform: translate(25vw, -5vh) scale(1.2); opacity: 0; }
+        }
+        @keyframes particleFloat2 {
+          0% { transform: translate(75vw, 105vh) scale(1.2); opacity: 0; }
+          10% { opacity: 0.12; }
+          90% { opacity: 0.12; }
+          100% { transform: translate(65vw, -5vh) scale(0.8); opacity: 0; }
+        }
+        @keyframes particleFloat3 {
+          0% { transform: translate(45vw, 105vh) scale(1); opacity: 0; }
+          10% { opacity: 0.18; }
+          90% { opacity: 0.18; }
+          100% { transform: translate(55vw, -5vh) scale(1.3); opacity: 0; }
+        }
+        @keyframes particleFloat4 {
+          0% { transform: translate(5vw, 105vh) scale(1.1); opacity: 0; }
+          10% { opacity: 0.1; }
+          90% { opacity: 0.1; }
+          100% { transform: translate(15vw, -5vh) scale(0.7); opacity: 0; }
+        }
+        @keyframes particleFloat5 {
+          0% { transform: translate(90vw, 105vh) scale(0.7); opacity: 0; }
+          10% { opacity: 0.15; }
+          90% { opacity: 0.15; }
+          100% { transform: translate(80vw, -5vh) scale(1.1); opacity: 0; }
+        }
+        @keyframes particleFloat6 {
+          0% { transform: translate(30vw, 105vh) scale(1); opacity: 0; }
+          10% { opacity: 0.16; }
+          90% { opacity: 0.16; }
+          100% { transform: translate(40vw, -5vh) scale(1.2); opacity: 0; }
+        }
+        @keyframes particleFloat7 {
+          0% { transform: translate(60vw, 105vh) scale(1.3); opacity: 0; }
+          10% { opacity: 0.1; }
+          90% { opacity: 0.1; }
+          100% { transform: translate(50vw, -5vh) scale(0.9); opacity: 0; }
+        }
+        @keyframes particleFloat8 {
+          0% { transform: translate(80vw, 105vh) scale(0.9); opacity: 0; }
+          10% { opacity: 0.14; }
+          90% { opacity: 0.14; }
+          100% { transform: translate(85vw, -5vh) scale(1.1); opacity: 0; }
+        }
+
+        .animate-float-slow-1 {
+          animation: floatSlow1 35s ease-in-out infinite;
+          top: -20%; left: -10%;
+          will-change: transform;
+        }
+        .animate-float-slow-2 {
+          animation: floatSlow2 40s ease-in-out infinite;
+          bottom: -15%; right: -10%;
+          will-change: transform;
+        }
+        .animate-particle-1 { animation: particleFloat1 25s linear infinite; }
+        .animate-particle-2 { animation: particleFloat2 30s linear infinite; animation-delay: 3s; }
+        .animate-particle-3 { animation: particleFloat3 22s linear infinite; animation-delay: 7s; }
+        .animate-particle-4 { animation: particleFloat4 28s linear infinite; animation-delay: 11s; }
+        .animate-particle-5 { animation: particleFloat5 35s linear infinite; animation-delay: 5s; }
+        .animate-particle-6 { animation: particleFloat6 24s linear infinite; animation-delay: 15s; }
+        .animate-particle-7 { animation: particleFloat7 32s linear infinite; animation-delay: 9s; }
+        .animate-particle-8 { animation: particleFloat8 20s linear infinite; animation-delay: 18s; }
+      ` }} />
+
+      {/* Background Decor (bokeh glow + floating particles) */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0 bg-[#060b16]">
+        {/* Lớp mây sáng lớn di chuyển chậm */}
+        <div className="absolute w-[65vw] h-[65vh] bg-[radial-gradient(circle,rgba(232,184,75,0.025)_0%,transparent_70%)] rounded-full blur-[100px] animate-float-slow-1"></div>
+        <div className="absolute w-[55vw] h-[55vh] bg-[radial-gradient(circle,rgba(30,58,138,0.05)_0%,transparent_70%)] rounded-full blur-[100px] animate-float-slow-2"></div>
+        
+        {/* Các hạt bụi vàng (bokeh particles) bay lơ lửng */}
+        <div className="absolute w-2.5 h-2.5 rounded-full bg-[#e8b84b] blur-[0.5px] animate-particle-1"></div>
+        <div className="absolute w-3 h-3 rounded-full bg-[#e8b84b] blur-[1px] animate-particle-2"></div>
+        <div className="absolute w-1.5 h-1.5 rounded-full bg-[#e8b84b] blur-[0.5px] animate-particle-3"></div>
+        <div className="absolute w-2 h-2 rounded-full bg-[#e8b84b] blur-[1px] animate-particle-4"></div>
+        <div className="absolute w-3.5 h-3.5 rounded-full bg-[#e8b84b] blur-[1.5px] animate-particle-5"></div>
+        <div className="absolute w-2 h-2 rounded-full bg-[#e8b84b] blur-[0.5px] animate-particle-6"></div>
+        <div className="absolute w-3.5 h-3.5 rounded-full bg-[#e8b84b] blur-[1px] animate-particle-7"></div>
+        <div className="absolute w-1.5 h-1.5 rounded-full bg-[#e8b84b] blur-[0.5px] animate-particle-8"></div>
       </div>
 
       {/* Header */}
