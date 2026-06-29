@@ -172,7 +172,7 @@ export async function POST(req: NextRequest) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: ambient ? 'llama-3.1-8b-instant' : 'llama-3.3-70b-versatile',
             messages: [
               { role: 'system', content: systemWithAmbient },
               { role: 'user', content: message },
