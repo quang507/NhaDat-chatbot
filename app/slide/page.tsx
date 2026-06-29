@@ -572,8 +572,8 @@ export default function SlideBotPage() {
       setState('listening');
       setTranscript('🎧 Đang nghe ngầm…');
     };
-    rec.onaudiostart = () => { wsActivityRef.current = Date.now(); };
-    rec.onspeechstart = () => { wsActivityRef.current = Date.now(); };
+    rec.onaudiostart = () => {};
+    rec.onspeechstart = () => {};
 
     rec.onresult = (event: any) => {
       wsActivityRef.current = Date.now();

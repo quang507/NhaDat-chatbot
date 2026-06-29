@@ -99,7 +99,11 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
         console.log(`[Slide] Ambient SKIP (no keyword): "${message.slice(0, 60)}"`);
         return { prompt: '', hasChunks: false };
       }
-      const minScore = ambient ? 0.71 : 0;
+      const hasModelKeyword = message.toLowerCase().includes('opus') || 
+                              message.toLowerCase().includes('cosmo') || 
+                              message.toLowerCase().includes('fusion');
+      const hasUnit = detectUnit(message) !== null;
+      const minScore = (ambient && !hasModelKeyword && !hasUnit) ? 0.71 : 0;
       const chunks = await retrieve(ragQuery, index, 12, minScore);
       // Có facts của căn cụ thể -> luôn tạo slide kể cả khi RAG rỗng (đã có dữ liệu chính xác)
       if (chunks.length > 0 || unitFacts) {
@@ -382,7 +386,7 @@ export async function POST(req: NextRequest) {
         }
         parsed.layout_type = 'split_image_right';
       } else if (textToSearch.includes('sảnh') || textToSearch.includes('lounge') || textToSearch.includes('phòng chờ') || textToSearch.includes('reception')) {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_sanh-master.jpg'];
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg'];
         parsed.layout_type = 'split_image_right';
       } else if (textToSearch.includes('tầng 1') || textToSearch.includes('tầng một') || textToSearch.includes('tầng trệt') || textToSearch.includes('trệt') || textToSearch.includes('lầu trệt')) {
         if (model === 'opus') {
@@ -433,7 +437,7 @@ export async function POST(req: NextRequest) {
           ];
         } else {
           parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_sanh-master.jpg',
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg',
             '/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg',
             '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg'
           ];
