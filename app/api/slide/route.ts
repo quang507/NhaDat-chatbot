@@ -241,12 +241,15 @@ export async function POST(req: NextRequest) {
       }
 
       // 2. Kiểm tra từ khóa phòng / không gian
-      if (textToSearch.includes('vị trí') || textToSearch.includes('bản đồ') || textToSearch.includes('maps') || textToSearch.includes('địa chỉ') || textToSearch.includes('đường đi') || textToSearch.includes('ở đâu')) {
+      if (textToSearch.includes('vị trí') || textToSearch.includes('bản đồ') || textToSearch.includes('maps') || textToSearch.includes('địa chỉ') || textToSearch.includes('đường đi') || textToSearch.includes('ở đâu') || textToSearch.includes('bao xa') || textToSearch.includes('bao lâu') || textToSearch.includes('di chuyển') || textToSearch.includes('đi từ') || textToSearch.includes('cách')) {
         parsed.image_urls = [
           '/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg',
           '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'
         ];
         parsed.layout_type = 'split_image_right';
+        // Inject maps_url để slide hiện QR động
+        const mapsMatch = (parsed.speech_text || '').match(/https:\/\/maps\.(?:app\.goo\.gl|google\.com)\/\S+/);
+        parsed.maps_url = mapsMatch ? mapsMatch[0] : 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
       } else if (textToSearch.includes('tiện ích') || textToSearch.includes('công viên') || textToSearch.includes(' landmark coffee') || textToSearch.includes('sân chơi') || textToSearch.includes('sân cầu lông') || textToSearch.includes('bóng rổ') || textToSearch.includes('tiện nghi')) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
         parsed.layout_type = 'split_image_right';

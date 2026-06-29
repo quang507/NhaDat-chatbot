@@ -32,6 +32,7 @@ interface SlideData {
   speech_text: string;
   image_url?: string;
   image_urls?: string[];
+  maps_url?: string;
   skip?: boolean;   // nghe ngầm: true = đoạn nói không liên quan, bỏ qua
 }
 
@@ -596,16 +597,21 @@ export default function SlideBotPage() {
                 />
                 
                 {/* Lồng mã QR Code Google Maps ngay góc nếu ảnh này là bản đồ */}
-                {isMap && isActive && (
-                  <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur px-3 py-3 rounded-2xl border border-white/10 flex flex-col items-center gap-1 shadow-2xl animate-scale-up z-20">
-                    <img 
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://maps.app.goo.gl/qwf4XibyMCL9sEX6A" 
-                      alt="QR Vị Trí" 
-                      className="w-[100px] h-[100px] rounded-lg bg-white p-1"
-                    />
-                    <span className="text-[10px] text-gray-200 font-bold mt-1 tracking-wide">📱 Quét xem Google Maps</span>
-                  </div>
-                )}
+                {isMap && isActive && (() => {
+                  const qrUrl = slide.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
+                  return (
+                    <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur px-3 py-3 rounded-2xl border border-white/10 flex flex-col items-center gap-1 shadow-2xl animate-scale-up z-20">
+                      <a href={qrUrl} target="_blank" rel="noopener noreferrer">
+                        <img
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}`}
+                          alt="QR Vị Trí"
+                          className="w-[100px] h-[100px] rounded-lg bg-white p-1 hover:scale-105 transition-transform"
+                        />
+                      </a>
+                      <span className="text-[10px] text-gray-200 font-bold mt-1 tracking-wide">📱 Quét xem Google Maps</span>
+                    </div>
+                  );
+                })()}
               </div>
             );
           })}
