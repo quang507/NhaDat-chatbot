@@ -626,7 +626,7 @@ export default function SlideBotPage() {
       if (!hasImages) return null;
       
       return (
-        <div className="relative w-full h-full group/img overflow-hidden rounded-2xl bg-[#070707] flex items-center justify-center">
+        <div className="relative w-full h-full group/img overflow-hidden bg-[#070707] flex items-center justify-center">
           {/* Render các ảnh đè lên nhau, chỉ hiển thị ảnh active bằng transition mờ dần */}
           {images.map((img, idx) => {
             const isActive = idx === (currentImageIndex % images.length);
@@ -696,7 +696,7 @@ export default function SlideBotPage() {
     };
 
     // Định nghĩa class container chuẩn 16:9 to lớn chiếm gần trọn màn hình
-    const containerClass = "w-full max-w-[95vw] md:max-w-[90vw] xl:max-w-[85vw] aspect-video max-h-[72vh] md:max-h-[75vh] xl:max-h-[78vh] bg-[#000000] rounded-3xl shadow-2xl border border-neutral-900/60 flex overflow-hidden transform transition-all duration-700 hover:shadow-[#e8b84b]/10";
+    const containerClass = "slide-stage w-full max-w-[95vw] md:max-w-[90vw] xl:max-w-[85vw] aspect-video max-h-[72vh] md:max-h-[75vh] xl:max-h-[78vh] rounded-3xl shadow-2xl border border-white/5 flex overflow-hidden transform transition-all duration-700 hover:shadow-[#e8b84b]/10";
 
     // 1. TEXT ONLY (Chỉ có văn bản)
     if (layout === 'text_only') {
@@ -733,22 +733,22 @@ export default function SlideBotPage() {
       const isLeft = layout === 'split_image_left';
       return (
         <div className={`${containerClass} ${isLeft ? 'flex-row-reverse' : 'flex-row'} animate-fade-in`}>
-          {/* Text Content */}
-          <div className="flex-1 p-12 md:p-16 flex flex-col justify-center animate-fade-in-up">
-            <h2 className="text-3xl md:text-4.5xl font-extrabold mb-6 leading-tight text-white tracking-tight">
+          {/* Text Content — chiếm 40% */}
+          <div className="basis-[40%] shrink-0 p-10 md:p-12 flex flex-col justify-center animate-fade-in-up">
+            <h2 className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold mb-6 leading-[1.1] text-white tracking-tight">
               {slide.title}
             </h2>
-            <div className="flex flex-col gap-5 flex-1 overflow-y-auto pr-4 custom-scrollbar">
+            <div className="flex flex-col gap-5 flex-1 overflow-y-auto pr-3 custom-scrollbar">
               {slide.points.map((point, idx) => (
-                <div key={idx} className="flex gap-4 items-start group animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
-                  <div className="w-2 h-2 mt-2.5 rounded-full bg-[#e8b84b] shrink-0 transition-transform group-hover:scale-150"></div>
-                  <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">{point}</p>
+                <div key={idx} className="flex gap-3.5 items-start group animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
+                  <div className="w-2.5 h-2.5 mt-[0.7rem] rounded-full bg-[#e8b84b] shrink-0 transition-transform group-hover:scale-150"></div>
+                  <p className="text-xl md:text-2xl text-gray-200 leading-relaxed font-light">{point}</p>
                 </div>
               ))}
             </div>
           </div>
-          {/* Image Grid Section */}
-          <div className="flex-1 bg-[#0a0a0a] relative flex items-center justify-center p-6 border-l border-neutral-900/40">
+          {/* Image Section — chiếm 60%, ảnh tràn viền (không chừa khoảng) */}
+          <div className="basis-[60%] shrink-0 relative flex items-stretch justify-center border-l border-white/5">
             {renderImageGrid()}
           </div>
         </div>
@@ -822,11 +822,12 @@ export default function SlideBotPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] text-white overflow-hidden flex flex-col relative" style={{ fontFamily: "'Google Sans', 'Product Sans', 'Be Vietnam Pro', sans-serif" }}>
-      
-      {/* Background Decor (Subtle glow) */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0 opacity-40">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[radial-gradient(circle,rgba(232,184,75,0.05)_0%,transparent_70%)] rounded-full blur-3xl"></div>
+    <div className="min-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Google Sans', 'Product Sans', 'Be Vietnam Pro', sans-serif" }}>
+
+      {/* Background Decor (bokeh glow nhẹ) */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-15%] left-[-8%] w-[45%] h-[45%] bg-[radial-gradient(circle,rgba(232,184,75,0.06)_0%,transparent_70%)] rounded-full blur-3xl"></div>
+        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-[radial-gradient(circle,rgba(120,140,200,0.05)_0%,transparent_70%)] rounded-full blur-3xl"></div>
       </div>
 
       {/* Header */}
@@ -1029,6 +1030,18 @@ export default function SlideBotPage() {
         .animate-sound-wave {
           animation: wave 0.9s ease-in-out infinite;
           will-change: height;
+        }
+        /* Nền trang: tối sang, hơi ngả navy/charcoal như ảnh bokeh */
+        .slide-page-bg {
+          background:
+            radial-gradient(120% 80% at 50% 0%, #14161f 0%, #0b0c12 45%, #06070b 100%);
+        }
+        /* Khung slide: gradient charcoal đậm + ánh sáng nhẹ ở góc */
+        .slide-stage {
+          background:
+            radial-gradient(90% 120% at 15% 10%, rgba(40,44,60,0.55) 0%, transparent 55%),
+            radial-gradient(80% 100% at 100% 100%, rgba(60,50,80,0.30) 0%, transparent 60%),
+            linear-gradient(140deg, #101218 0%, #0a0b10 50%, #0c0d14 100%);
         }
         .animate-slide-up {
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
