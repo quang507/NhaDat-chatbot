@@ -351,6 +351,7 @@ export default function SlideBotPage() {
 
       if (text && text.trim()) {
         setTranscript(`Bạn nói: "${text}"`);
+        setSlide(null); // Xóa slide cũ ngay lập tức
         fetchSlideData(text, false);
       } else {
         setTranscript('Không nghe rõ lời bạn nói, vui lòng thử lại.');
@@ -521,18 +522,15 @@ export default function SlideBotPage() {
        activeTopicRef.current = { topic: intent.topic, expiry: now + 45000 };
     }
     
-    // Cập nhật rolling context (nếu đổi chủ đề thì xóa sạch context cũ để tránh bị lẫn lộn)
-    if (isNewTopic) {
-      shortContextRef.current = [query];
-    } else {
-      shortContextRef.current.push(query);
-      if (shortContextRef.current.length > 3) shortContextRef.current.shift();
-    }
-    const fullQuery = shortContextRef.current.join('. ');
+    // Cập nhật rolling context (luôn xóa sạch bộ nhớ cũ để tạo slide mới tức thì và tránh lẫn lộn)
+    shortContextRef.current = [query];
+    const fullQuery = query;
 
     lastQueryRef.current = fullQuery;
     bufferRef.current = ''; // Clear buffer ngay
     
+    // Xóa sạch slide cũ ngay lập tức để màn hình chuyển sang trạng thái chờ mượt mà
+    setSlide(null);
     fetchSlideData(fullQuery, true);
   };
 
