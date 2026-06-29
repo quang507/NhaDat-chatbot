@@ -30,6 +30,9 @@ function renderMarkdown(text: string) {
   
   // 3. Render raw Google Drive links
   html = html.replace(/(?<!href=")(https:\/\/drive\.google\.com\/[^\s\)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">Link Google Drive</a>');
+
+  // 3b. Render raw Google Maps links
+  html = html.replace(/(?<!href=")(https:\/\/maps\.(?:app\.goo\.gl|google\.com)\/[^\s\)\]"]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">📍 Xem đường đi trên Google Maps</a>');
   
   // 4. Render bold text: **text**
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
