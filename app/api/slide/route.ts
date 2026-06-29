@@ -3,6 +3,7 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
+import { detectUnit, unitContext } from '@/lib/units';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -83,6 +84,20 @@ async function getPersona(): Promise<string> {
 
 async function buildPrompt(message: string, ambient = false): Promise<{ prompt: string; hasChunks: boolean }> {
   const persona = await getPersona();
+
+  // Khách hỏi 1 căn cụ thể -> nhét THÔNG TIN CHÍNH XÁC (mẫu nhà, diện tích, mặt tiền, tầng)
+  // thẳng từ bảng tra cứu, không phụ thuộc may rủi của RAG. Đồng thời tăng cường query.
+  let unitFacts = '';
+  let ragQuery = message;
+  try {
+    const unit = detectUnit(message);
+    if (unit) {
+      const { facts, modelKeywords } = unitContext(unit);
+      unitFacts = `\n\n=== ${facts} ===`;
+      ragQuery = `${message} ${modelKeywords}`;
+    }
+  } catch (e) { console.warn('Slide unit lookup failed:', e); }
+
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
@@ -95,10 +110,11 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
         return { prompt: '', hasChunks: false };
       }
       const minScore = ambient ? 0.71 : 0;
-      const chunks = await retrieve(message, index, 12, minScore);
-      if (chunks.length > 0) {
+      const chunks = await retrieve(ragQuery, index, 12, minScore);
+      // Có facts của căn cụ thể -> luôn tạo slide kể cả khi RAG rỗng (đã có dữ liệu chính xác)
+      if (chunks.length > 0 || unitFacts) {
         return {
-          prompt: `${persona}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${chunks.join('\n\n')}`,
+          prompt: `${persona}${unitFacts}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${chunks.join('\n\n')}`,
           hasChunks: true,
         };
       }
@@ -111,7 +127,7 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
   const data = await readRepoFile('data.md');
   const truncated = data.length > 40000 ? data.slice(0, 40000) : data;
   return {
-    prompt: `${persona}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
+    prompt: `${persona}${unitFacts}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     hasChunks: true,
   };
 }

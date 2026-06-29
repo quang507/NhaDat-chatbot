@@ -58,13 +58,52 @@ const MODEL_FEATURES: Record<ModelKey, string> = {
 // Bố trí công năng chuẩn (nhà phố 6 tầng)
 const FLOORS = 'Bố trí tầng: Tầng 1 (trệt) gara + phòng khách; Tầng 2 (lửng) phòng ngủ ông bà; Tầng 3 bếp + phòng ăn + giặt sấy; Tầng 4 phòng ngủ Master; Tầng 5 phòng ngủ trẻ con; Tầng 6 sân thượng. (Riêng Opus: 2 tầng dưới là văn phòng/thương mại.)';
 
-// Phát hiện số căn trong câu hỏi: "căn 40", "lô #03", "unit 23", "căn số 12"...
+// Đổi số tiếng Việt dạng CHỮ -> SỐ (vì voice-to-text đôi khi ghi "ba mươi ba" thay vì "33").
+// Hỗ trợ 1..50: "ba mươi ba"=33, "hai mươi"=20, "mười lăm"=15, "linh ba"/"lẻ ba"=3, "mốt"=1, "tư"=4, "lăm/nhăm"=5.
+function vietnameseWordsToNumber(raw: string): number | null {
+  let s = ' ' + raw.toLowerCase().trim() + ' ';
+  s = s.replace(/\blinh\b|\blẻ\b/g, ' ').replace(/\s+/g, ' ');
+  const units: Record<string, number> = {
+    'không': 0, 'một': 1, 'mốt': 1, 'hai': 2, 'ba': 3, 'bốn': 4, 'tư': 4,
+    'năm': 5, 'lăm': 5, 'nhăm': 5, 'sáu': 6, 'bảy': 7, 'bẩy': 7, 'tám': 8, 'chín': 9,
+  };
+  const words = s.trim().split(' ').filter(Boolean);
+  // "mười" / "mười X"
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] === 'mười') {
+      const next = words[i + 1] ? units[words[i + 1]] : undefined;
+      return 10 + (next !== undefined ? next : 0);
+    }
+  }
+  // "X mươi" / "X mươi Y"
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] === 'mươi' && i > 0 && units[words[i - 1]] !== undefined) {
+      const tens = units[words[i - 1]] * 10;
+      const next = words[i + 1] ? units[words[i + 1]] : undefined;
+      return tens + (next !== undefined ? next : 0);
+    }
+  }
+  for (const w of words) if (units[w] !== undefined) return units[w];
+  return null;
+}
+
+// Phát hiện số căn trong câu hỏi: "căn 40", "lô #03", "unit 23", "căn số 12", "căn ba mươi ba"...
 export function detectUnit(message: string): number | null {
-  const m = (message || '').match(/(?:căn|lô|ô|unit|nhà)\s*(?:số\s*)?#?\s*(\d{1,2})\b/i)
-    || (message || '').match(/#\s*(\d{1,2})\b/);
-  if (!m) return null;
-  const n = parseInt(m[1], 10);
-  return n >= 1 && n <= 50 ? n : null;
+  const msg = message || '';
+  // 1) Dạng chữ số
+  const m = msg.match(/(?:căn|lô|ô|unit|nhà)\s*(?:số\s*)?#?\s*(\d{1,2})\b/i)
+    || msg.match(/#\s*(\d{1,2})\b/);
+  if (m) {
+    const n = parseInt(m[1], 10);
+    if (n >= 1 && n <= 50) return n;
+  }
+  // 2) Dạng chữ tiếng Việt: "căn ba mươi ba", "lô số mười lăm"
+  const wm = msg.match(/(?:căn|lô|ô|unit|nhà)\s*(?:số\s*)?((?:không|một|mốt|hai|ba|bốn|tư|năm|lăm|nhăm|sáu|bảy|bẩy|tám|chín|mười|mươi|linh|lẻ)(?:\s+(?:không|một|mốt|hai|ba|bốn|tư|năm|lăm|nhăm|sáu|bảy|bẩy|tám|chín|mười|mươi|linh|lẻ))*)/i);
+  if (wm) {
+    const n = vietnameseWordsToNumber(wm[1]);
+    if (n !== null && n >= 1 && n <= 50) return n;
+  }
+  return null;
 }
 
 // Khối "facts" chính xác để nhét vào prompt + từ khóa mẫu nhà để tăng cường RAG.
