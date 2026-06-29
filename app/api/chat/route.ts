@@ -4,6 +4,7 @@ import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { writeLog, extractPhone } from '@/lib/logs';
 import { loadIndex, retrieve } from '@/lib/rag';
+import { detectRouteIntent, getDrivingRoute, routeSummaryToPrompt } from '@/lib/maps';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -19,7 +20,8 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
 - Nếu khách hỏi về một căn/lô cụ thể hoặc thông tin dự án mà dữ liệu KHÔNG có hoặc không đủ để trả lời trực tiếp ("ko viết được"), hãy phản hồi lịch sự rằng bạn chưa có thông tin chi tiết về căn/lô này, tuyệt đối KHÔNG đoán mò hay tự chế thông tin, sau đó hãy lịch sự mời khách hàng để lại số điện thoại hoặc liên hệ trực tiếp để bộ phận kinh doanh hỗ trợ chính xác.
 - LƯU Ý QUAN TRỌNG: Các từ "Căn", "Lô", "Ô", "Unit" và ký hiệu "#" (ví dụ "#03") là TƯƠNG ĐƯƠNG nhau. Nếu khách hỏi "căn số 3", bạn phải lấy thông tin của "Lô số #03" hoặc "Lô 03" để trả lời.
 - ĐẶC BIỆT ƯU TIÊN VĂN PHONG Q&A CHUẨN HUMAN (03_Human-QA): Nếu câu hỏi của khách hàng trùng hoặc tương tự với các câu hỏi trong bộ Q&A Chuẩn Human (trong thư mục '03_Human-QA'), bạn BẮT BUỘC PHẢI sao chép nguyên văn 99%-100% câu trả lời 'Response' đó, giữ nguyên từng dấu xuống dòng, ngắt nghỉ, cách dùng emoji, độ dài ngắn, tuyệt đối không tự ý viết lại, sửa đổi từ ngữ hay rút gọn.
-- Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.`;
+- Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.
+- VỀ ĐƯỜNG ĐI / THỜI GIAN DI CHUYỂN: Nếu CÓ phần "DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ", hãy dùng ĐÚNG số quãng đường và thời gian trong đó. Nếu KHÔNG có phần đó, TUYỆT ĐỐI KHÔNG được bịa số phút/km cụ thể — chỉ mô tả hướng đi chung chung (vd: đi theo Võ Văn Kiệt, An Dương Vương...) và mời khách mở Google Maps để xem thời gian chính xác theo thời điểm thực tế.`;
 
 let personaCache: { text: string; at: number } | null = null;
 
@@ -53,6 +55,18 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   const dateStr = vnTime.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
   const timeContext = `\n\nTHỜI GIAN HIỆN TẠI (GMT+7): ${timeStr}, ngày ${dateStr}. Bạn có thể dùng thông tin này để trả lời nếu khách hỏi giờ/ngày hiện tại.`;
 
+  // Nếu khách hỏi đường / khoảng cách / thời gian -> gọi Google Maps lấy số liệu THẬT
+  let routeContext = '';
+  try {
+    const { isRoute, origin } = detectRouteIntent(message);
+    if (isRoute && origin) {
+      const route = await getDrivingRoute(origin);
+      if (route) routeContext = routeSummaryToPrompt(route);
+    }
+  } catch (e) {
+    console.warn('Route lookup failed:', e);
+  }
+
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
@@ -60,7 +74,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
       const chunks = await retrieve(message, index, 12);
       const data = chunks.join('\n\n');
       return {
-        text: `${persona}${profileNote}${timeContext}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
+        text: `${persona}${profileNote}${timeContext}${routeContext}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
         usedRag: true,
       };
     }
@@ -74,7 +88,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   const data = await readRepoFile('data.md');
   const truncated = data.length > limit ? data.slice(0, limit) + '\n\n[... dữ liệu đã được rút ngắn để tránh quá tải API ...]' : data;
   return {
-    text: `${persona}${profileNote}${timeContext}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
+    text: `${persona}${profileNote}${timeContext}${routeContext}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     usedRag: false,
   };
 }
