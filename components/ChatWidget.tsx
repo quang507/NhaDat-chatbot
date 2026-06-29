@@ -53,7 +53,7 @@ function extractProfile(messages: Message[]): string {
   return facts.join('\n');
 }
 
-export default function DifyChatbot() {
+export default function ChatWidget() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);

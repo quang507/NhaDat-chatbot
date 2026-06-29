@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import DifyChatbot from '@/components/DifyChatbot';
+import ChatWidget from '@/components/ChatWidget';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="vi">
       <body className={inter.className}>
         {children}
-        <DifyChatbot />
+        <ChatWidget />
       </body>
     </html>
   );
