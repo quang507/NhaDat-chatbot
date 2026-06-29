@@ -5,22 +5,41 @@ import Link from 'next/link';
 import { splitCleanSentences, ttsUrl } from '@/lib/speech';
 import { classifyAmbientIntent } from '@/lib/intent';
 
+// Boundary "từ" cho tiếng Việt: KHÔNG dùng \b (JS \b sai cạnh chữ có dấu ô/ố/ư...).
+// Tự định nghĩa: vị trí không nằm giữa 2 ký tự chữ/số tiếng Việt.
+const vnWord = (core: string) =>
+  new RegExp(`(?<![a-zà-ỹ0-9])(?:${core})(?![a-zà-ỹ0-9])`, 'g');
+
+// Sửa từ NGỌNG / STT nghe nhầm -> đúng từ khóa (cho cả Web Speech lẫn Whisper/Gemini).
+const VN_SPEECH_FIXES: [RegExp, string][] = [
+  // Tên dự án Ny'ah Phú Định
+  [vnWord('ph[ốôuú]\\s*(?:đêm|định|đỉnh|đính|dinh|đin)'), 'phú định'],
+  [vnWord("ny[\\s']*ah|nia|niah"), "ny'ah"],
+  // Mẫu nhà
+  [vnWord('c[ốôo]t[\\s-]*m[ôoơ]|cosmos'), 'cosmo'],
+  [vnWord('ph(?:iu|iêu|i u)\\s*(?:giần|dân|gân|giàn)|fiu\\s*s[ầừ]n|phu\\s*sần'), 'fusion'],
+  [vnWord('ô\\s*p(?:út|ut|ức)|o\\s*pút|ốp\\s*pút|ô\\s*bút|opút'), 'opus'],
+  [vnWord('si\\s*nha\\s*t[ơưa]|sích\\s*na\\s*ch[ơo]|xi\\s*nha\\s*chơ'), 'signature'],
+  // Thương hiệu / địa danh
+  [vnWord('nha\\s*dat|da\\s*đạt'), 'nhã đạt'],
+  [vnWord('ch[ưu]ơng\\s*đình\\s*hội'), 'trương đình hội'],
+  // Tiện ích / phòng ốc (để bắt từ khóa -> ra ảnh đúng)
+  [vnWord('ga[\\s-]*ra'), 'gara'],
+  [vnWord('thang\\s*má[yi]'), 'thang máy'],
+  [vnWord('sân\\s*th[ưu]ợng'), 'sân thượng'],
+  [vnWord('mặt\\s*t[iềêiê]+n'), 'mặt tiền'],
+  [vnWord('diện\\s*t(?:ích|ịt|ít)'), 'diện tích'],
+  [vnWord('ph(?:áp|át)\\s*l[ýí]'), 'pháp lý'],
+  [vnWord('sổ\\s*h(?:ồng|ông)'), 'sổ hồng'],
+  [vnWord('chiế[tc]\\s*khấu'), 'chiết khấu'],
+  [vnWord('phòng\\s*ng[ủu]\\s*ma[sx]tơ'), 'phòng ngủ master'],
+];
+
 function normalizeVietnameseSpeech(text: string): string {
   if (!text) return '';
-  let clean = text.toLowerCase();
-  
-  // Khắc phục lỗi trình duyệt và AI nghe nhầm tên dự án/thương hiệu Nhã Đạt
-  clean = clean.replace(/\bphố đêm\b/g, 'phú định');
-  clean = clean.replace(/\bphố định\b/g, 'phú định');
-  clean = clean.replace(/\bphú định\b/g, 'phú định');
-  clean = clean.replace(/\bcốt mô\b/g, 'cosmo');
-  clean = clean.replace(/\bcốt-mô\b/g, 'cosmo');
-  clean = clean.replace(/\bô pút\b/g, 'opus');
-  clean = clean.replace(/\bô-pút\b/g, 'opus');
-  clean = clean.replace(/\bphiu giần\b/g, 'fusion');
-  clean = clean.replace(/\bphiu dân\b/g, 'fusion');
-  
-  return clean;
+  let clean = ' ' + text.toLowerCase() + ' ';
+  for (const [re, to] of VN_SPEECH_FIXES) clean = clean.replace(re, to);
+  return clean.trim();
 }
 
 type SlideState = 'idle' | 'listening' | 'processing' | 'speaking';
