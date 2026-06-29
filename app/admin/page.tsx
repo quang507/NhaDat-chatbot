@@ -46,7 +46,7 @@ export default function AdminPage() {
   const [busy, setBusy] = useState(false);
 
   // Tabs: 'tree' | 'images' | 'crawl' | 'settings' | 'logs'
-  const [activeTab, setActiveTab] = useState<'tree' | 'images' | 'crawl' | 'settings' | 'logs'>('tree');
+  const [activeTab, setActiveTab] = useState<'tree' | 'images' | 'crawl' | 'teach' | 'settings' | 'logs'>('tree');
 
   // Tab Hình ảnh (cây public/images)
   const [imageTree, setImageTree] = useState<TreeNode[]>([]);
@@ -56,6 +56,13 @@ export default function AdminPage() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [uploadFolder, setUploadFolder] = useState('01_NyAh-PhuDinh');
   const [uploadStatus, setUploadStatus] = useState('');
+
+  // Tab Dạy Bot (fine-tune online)
+  const [teachQuestion, setTeachQuestion] = useState('');
+  const [teachBotAnswer, setTeachBotAnswer] = useState('');
+  const [teachAnswer, setTeachAnswer] = useState('');
+  const [teachStatus, setTeachStatus] = useState('');
+  const [teachAsking, setTeachAsking] = useState(false);
 
   // Logs & Leads
   const [leads, setLeads] = useState<Record<string, string>[]>([]);
@@ -199,6 +206,32 @@ export default function AdminPage() {
     }
   }
 
+  // Resize ảnh client-side về tối đa 1920px (giữ tỉ lệ), nén JPEG ~0.85 cho nhẹ.
+  // PNG có nền trong suốt giữ nguyên PNG; SVG/GIF không đụng.
+  async function resizeImage(file: File): Promise<File> {
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    if (ext === 'svg' || ext === 'gif') return file;
+    try {
+      const bmp = await createImageBitmap(file);
+      const MAX = 1920;
+      if (bmp.width <= MAX && bmp.height <= MAX && file.size < 1_500_000) return file;
+      const scale = Math.min(1, MAX / Math.max(bmp.width, bmp.height));
+      const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return file;
+      ctx.drawImage(bmp, 0, 0, w, h);
+      const isPng = ext === 'png' || ext === 'webp';
+      const mime = isPng ? 'image/png' : 'image/jpeg';
+      const blob: Blob | null = await new Promise(r => canvas.toBlob(r, mime, 0.85));
+      if (!blob) return file;
+      return new File([blob], file.name, { type: mime });
+    } catch {
+      return file; // lỗi resize -> dùng file gốc
+    }
+  }
+
   // Upload ảnh online -> commit vào public/images/<folder> trên GitHub
   async function uploadImages(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -206,8 +239,8 @@ export default function AdminPage() {
     const folder = uploadFolder.trim() || '01_NyAh-PhuDinh';
     let ok = 0; const errs: string[] = [];
     for (let i = 0; i < files.length; i++) {
-      const f = files[i];
-      setUploadStatus(`🔄 Đang upload ${i + 1}/${files.length}: ${f.name}...`);
+      setUploadStatus(`🔄 Đang xử lý ${i + 1}/${files.length}: ${files[i].name}...`);
+      const f = await resizeImage(files[i]);
       try {
         const fd = new FormData();
         fd.append('file', f);
@@ -219,6 +252,46 @@ export default function AdminPage() {
     }
     setUploadStatus(`✅ Đã upload ${ok}/${files.length} ảnh vào public/images/${folder}. ⏳ Vercel cần ~1-2 phút build lại để ảnh hiển thị.${errs.length ? ' ❌ Lỗi: ' + errs.join('; ') : ''}`);
     setBusy(false);
+  }
+
+  // Dạy Bot: hỏi thử để xem bot đang trả lời gì
+  async function teachAsk() {
+    if (!teachQuestion.trim()) return;
+    setTeachAsking(true); setTeachBotAnswer(''); setTeachStatus('');
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: teachQuestion.trim() }),
+      });
+      // /api/chat trả về stream text/plain
+      const reader = res.body?.getReader();
+      if (reader) {
+        const dec = new TextDecoder(); let full = '';
+        for (;;) { const { done, value } = await reader.read(); if (done) break; full += dec.decode(value, { stream: true }); setTeachBotAnswer(full); }
+        if (!teachAnswer.trim()) setTeachAnswer(full); // prefill để mày sửa
+      } else {
+        const d = await res.json(); setTeachBotAnswer(d.friendly || d.error || '(không có phản hồi)');
+      }
+    } catch { setTeachBotAnswer('(lỗi kết nối)'); }
+    finally { setTeachAsking(false); }
+  }
+
+  // Dạy Bot: lưu cặp Q&A chuẩn + embed ngay
+  async function teachSave() {
+    if (!teachQuestion.trim() || !teachAnswer.trim()) { setTeachStatus('❌ Cần cả câu hỏi và câu trả lời chuẩn'); return; }
+    setBusy(true); setTeachStatus('🔄 Đang dạy bot (lưu + embed)...');
+    try {
+      const res = await fetch('/api/admin/teach', {
+        method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: teachQuestion.trim(), answer: teachAnswer.trim() }),
+      });
+      const d = await res.json();
+      if (res.ok) {
+        setTeachStatus(`✅ Đã dạy bot! Lần sau khách hỏi câu này, bot sẽ trả lời đúng như vậy. (Index: ${d.totalChunks} chunks)`);
+        setTeachQuestion(''); setTeachAnswer(''); setTeachBotAnswer('');
+      } else setTeachStatus(`❌ Lỗi: ${d.error}`);
+    } catch { setTeachStatus('❌ Không kết nối được'); }
+    finally { setBusy(false); }
   }
 
   // Tự tải hình ảnh lần đầu mở tab
@@ -739,6 +812,12 @@ export default function AdminPage() {
               🌐 Nạp dữ liệu
             </button>
             <button
+              onClick={() => setActiveTab('teach')}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all ${activeTab === 'teach' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              🎓 Dạy Bot
+            </button>
+            <button
               onClick={() => setActiveTab('settings')}
               className={`rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all ${activeTab === 'settings' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' : 'text-slate-400 hover:text-slate-200'}`}
             >
@@ -1110,6 +1189,54 @@ export default function AdminPage() {
                   placeholder="Nội dung Markdown được sinh ra từ các file hoặc website tải lên sẽ xuất hiện ở đây để bạn xem trước, chỉnh sửa và copy..."
                   className="flex-1 w-full bg-slate-950 p-4 font-mono text-xs text-slate-300 leading-relaxed resize-none focus:outline-none scrollbar-thin"
                 />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: Dạy Bot (fine-tune online bằng chat) */}
+        {activeTab === 'teach' && (
+          <div className="max-w-3xl mx-auto w-full space-y-5">
+            <div className="bg-slate-900/30 border border-slate-900 rounded-2xl p-5">
+              <h3 className="font-bold text-slate-200 flex items-center gap-2 mb-1">🎓 Dạy Bot</h3>
+              <p className="text-[12px] text-slate-400 leading-relaxed">Gõ câu khách hay hỏi → bấm <b>Hỏi thử</b> xem bot đang trả lời gì → sửa lại câu trả lời cho chuẩn → bấm <b>Dạy bot</b>. Lần sau khách hỏi câu tương tự, bot sẽ trả lời đúng như mày dạy (lưu vào 03_Human-QA + embed ngay).</p>
+            </div>
+
+            <div className="bg-slate-900/30 border border-slate-900 rounded-2xl p-5 space-y-3">
+              <label className="text-xs font-semibold text-slate-300">Câu hỏi của khách</label>
+              <div className="flex gap-2">
+                <input
+                  value={teachQuestion}
+                  onChange={e => setTeachQuestion(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') teachAsk(); }}
+                  placeholder="vd: Căn 23 giá bao nhiêu?"
+                  className="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500"
+                />
+                <button onClick={teachAsk} disabled={teachAsking || !teachQuestion.trim()} className="bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-white text-xs font-semibold px-4 rounded-lg whitespace-nowrap">
+                  {teachAsking ? '⏳...' : '💬 Hỏi thử'}
+                </button>
+              </div>
+
+              {teachBotAnswer && (
+                <div className="bg-slate-950/60 border border-slate-800 rounded-lg p-3">
+                  <p className="text-[10px] text-slate-500 mb-1">Bot hiện trả lời:</p>
+                  <p className="text-[13px] text-slate-300 whitespace-pre-wrap leading-relaxed">{teachBotAnswer}</p>
+                </div>
+              )}
+
+              <label className="text-xs font-semibold text-slate-300 pt-1 block">Câu trả lời CHUẨN (bot sẽ bê nguyên văn)</label>
+              <textarea
+                value={teachAnswer}
+                onChange={e => setTeachAnswer(e.target.value)}
+                rows={6}
+                placeholder="Nhập câu trả lời đúng mà mày muốn bot dùng..."
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500 leading-relaxed"
+              />
+              <div className="flex items-center gap-3">
+                <button onClick={teachSave} disabled={busy || !teachQuestion.trim() || !teachAnswer.trim()} className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-semibold px-5 py-2 rounded-lg">
+                  🎓 Dạy bot câu này
+                </button>
+                {teachStatus && <p className="text-[12px] text-slate-400 flex-1">{teachStatus}</p>}
               </div>
             </div>
           </div>
