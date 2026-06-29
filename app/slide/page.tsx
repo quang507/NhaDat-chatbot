@@ -209,10 +209,11 @@ export default function SlideBotPage() {
         rec.onend = () => {
           if (!isListeningLoopActive.current) return;
           if (suppressListenRef.current) return; // đang đọc to -> chờ onSpeakDone mở lại
-          // Ambient: luôn nghe lại liên tục; turn-based: nghe lại khi đang ở trạng thái listening
-          if (ambientRef.current || stateRef.current === 'listening') {
-            try { recognitionRef.current?.start(); } catch(e){}
-          }
+          // Web Speech CHỈ dùng cho chế độ nghe ngầm. Turn-based (tắt nghe ngầm) dùng Whisper,
+          // nên KHÔNG được tự restart Web Speech ở đây — nếu không nó sẽ giành mic của Whisper.
+          if (!ambientRef.current) return;
+          if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') return;
+          try { recognitionRef.current?.start(); } catch(e){}
         };
 
         recognitionRef.current = rec;
@@ -225,7 +226,7 @@ export default function SlideBotPage() {
           if (suppressListenRef.current) return;            // đang đọc to -> bỏ qua
           if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') return; // đang dùng Whisper
           if (stateRef.current === 'processing' || stateRef.current === 'speaking') return;
-          if (!(ambientRef.current || stateRef.current === 'listening')) return;
+          if (!ambientRef.current) return; // watchdog chỉ áp dụng cho Web Speech ở chế độ nghe ngầm
           const idle = Date.now() - lastActivityRef.current;
           if (idle > 7000) {
             lastActivityRef.current = Date.now();
