@@ -536,7 +536,10 @@ export default function SlideBotPage() {
       const fd = new FormData();
       fd.append('file', blob, 'audio.webm');
       const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
-      if (!res.ok) return;
+      if (!res.ok) {
+        console.error('[Ambient] Transcribe API error:', res.status, await res.text());
+        return;
+      }
       const data = await res.json();
       const text = normalizeVietnameseSpeech((data.text || '').trim());
       if (!text || text.replace(/[^a-zà-ỹ0-9]/gi, '').length < 2) return;
@@ -547,7 +550,9 @@ export default function SlideBotPage() {
       // nó tự xét kích hoạt tức thì (Logic 1) + debounce (Logic 2). KHÔNG gọi maybeInstantTrigger
       // ở đây nữa để tránh bắn slide 2 lần cho cùng 1 câu.
       handleAmbientSpeech(text);
-    } catch (e) { /* bỏ qua, vòng sau thu tiếp */ }
+    } catch (e) {
+      console.error('[Ambient] Transcribe exception:', e);
+    }
   };
 
   // ===== NGHE NGẦM = Web Speech API (chữ chạy LIVE từng từ + bắt từ khóa tức thì) =====
