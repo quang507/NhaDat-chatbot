@@ -521,9 +521,13 @@ export default function SlideBotPage() {
        activeTopicRef.current = { topic: intent.topic, expiry: now + 45000 };
     }
     
-    // Cập nhật rolling context
-    shortContextRef.current.push(query);
-    if (shortContextRef.current.length > 3) shortContextRef.current.shift();
+    // Cập nhật rolling context (nếu đổi chủ đề thì xóa sạch context cũ để tránh bị lẫn lộn)
+    if (isNewTopic) {
+      shortContextRef.current = [query];
+    } else {
+      shortContextRef.current.push(query);
+      if (shortContextRef.current.length > 3) shortContextRef.current.shift();
+    }
     const fullQuery = shortContextRef.current.join('. ');
 
     lastQueryRef.current = fullQuery;
