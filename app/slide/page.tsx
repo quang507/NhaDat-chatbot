@@ -134,9 +134,21 @@ export default function SlideBotPage() {
   const amSilenceStartRef = useRef(0);
   const amSpeechStartRef = useRef(0);
   const amEngineOnRef = useRef(false);
-  const AM_THRESHOLD = 0.035;     // ngưỡng RMS coi là có người nói
+  const AM_THRESHOLD = 0.060;     // ngưỡng RMS coi là có người nói (cao để im lặng/nhiễu không kích hoạt)
+  const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
   const AM_SILENCE_MS = 900;      // im lặng 0.9s -> chốt 1 câu, gửi phiên âm
-  const AM_MIN_SPEECH_MS = 350;   // câu < 0.35s -> bỏ (nhiễu)
+  const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
+
+  // Whisper tiếng Việt hay "ảo giác" câu outro YouTube khi thu phải im lặng/nhiễu -> chặn.
+  const WHISPER_HALLUCINATIONS = [
+    'ghiền mì gõ', 'hãy subscribe', 'đăng ký kênh', 'cảm ơn các bạn đã theo dõi',
+    'cảm ơn đã theo dõi', 'hẹn gặp lại các bạn', 'trong video tiếp theo', 'like và đăng ký',
+    'đừng quên like', 'bỏ lỡ những video', 'cảm ơn các bạn đã xem', 'phụ đề', 'subscribe',
+  ];
+  const isHallucination = (t: string) => {
+    const low = t.toLowerCase();
+    return WHISPER_HALLUCINATIONS.some(h => low.includes(h));
+  };
 
   // Sync state to ref for callbacks
   useEffect(() => {
@@ -586,6 +598,7 @@ export default function SlideBotPage() {
       const data = await res.json();
       const text = normalizeVietnameseSpeech((data.text || '').trim());
       if (!text || text.replace(/[^a-zà-ỹ0-9]/gi, '').length < 2) return;
+      if (isHallucination(text)) { console.log('[Ambient] Bỏ câu Whisper bịa:', text); return; }
       if (handleVoiceCommands(text)) return;
       setTranscript('🎧 Nghe: …' + text.slice(-90));
       // Whisper trả nguyên câu hoàn chỉnh -> đưa vào handleAmbientSpeech;
@@ -646,6 +659,7 @@ export default function SlideBotPage() {
       };
 
       let bargeFrames = 0;
+      let startFrames = 0;
       const tick = () => {
         amRafRef.current = requestAnimationFrame(tick);
         analyser.getByteTimeDomainData(data);
@@ -666,10 +680,17 @@ export default function SlideBotPage() {
 
         if (speaking) {
           amSilenceStartRef.current = 0;
-          if (!amRecordingRef.current) startSeg();
-        } else if (amRecordingRef.current) {
-          if (!amSilenceStartRef.current) amSilenceStartRef.current = Date.now();
-          else if (Date.now() - amSilenceStartRef.current > AM_SILENCE_MS) stopSeg();
+          if (!amRecordingRef.current) {
+            // phải đủ AM_START_FRAMES frame liên tiếp đủ to mới thu (chống blip nhiễu -> Whisper bịa)
+            startFrames++;
+            if (startFrames >= AM_START_FRAMES) { startFrames = 0; startSeg(); }
+          }
+        } else {
+          startFrames = 0;
+          if (amRecordingRef.current) {
+            if (!amSilenceStartRef.current) amSilenceStartRef.current = Date.now();
+            else if (Date.now() - amSilenceStartRef.current > AM_SILENCE_MS) stopSeg();
+          }
         }
       };
       tick();
