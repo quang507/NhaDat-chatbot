@@ -76,12 +76,17 @@ function parseSlide(text: string | null): Record<string, unknown> {
   }
 }
 
+const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM (AMBIENT): Đoạn dưới đây là HỘI THOẠI đang diễn ra (tư vấn viên nói chuyện với khách), KHÔNG phải câu hỏi trực tiếp cho bạn.
+- Nếu đoạn vừa nghe KHÔNG nhắm tới một chủ đề RÕ RÀNG về dự án, HOẶC không có dữ liệu liên quan trong phần dưới (vd: chào hỏi, tám chuyện, nói nửa câu) → BẮT BUỘC trả về {"skip": true} và để mọi field khác rỗng. TUYỆT ĐỐI không bịa slide.
+- CHỈ tạo slide khi hội thoại chạm tới một chủ đề CỤ THỂ có dữ liệu (mặt bằng, giá, pháp lý, tiện ích, mẫu nhà, chính sách, vị trí...). Khi đó đặt "skip": false.`;
+
 export async function POST(req: NextRequest) {
   try {
-    const { message } = await req.json();
+    const { message, ambient } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
 
-    const systemText = await buildPrompt(message);
+    let systemText = await buildPrompt(message);
+    if (ambient) systemText += AMBIENT_RULE;
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
     let rawText: string | null = null;
 
@@ -126,6 +131,7 @@ export async function POST(req: NextRequest) {
           responseSchema: {
             type: "OBJECT",
             properties: {
+              skip: { type: "BOOLEAN", description: "true nếu chế độ nghe ngầm và đoạn nói không có chủ đề/dữ liệu liên quan." },
               layout_type: { type: "STRING" },
               title: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." },
               points: { type: "ARRAY", items: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." } },

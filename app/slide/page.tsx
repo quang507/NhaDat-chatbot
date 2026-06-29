@@ -14,6 +14,7 @@ interface SlideData {
   speech_text: string;
   image_url?: string;
   image_urls?: string[];
+  skip?: boolean;   // nghe ngầm: true = đoạn nói không liên quan, bỏ qua
 }
 
 export default function SlideBotPage() {
@@ -21,13 +22,31 @@ export default function SlideBotPage() {
   const [transcript, setTranscript] = useState('Nhấn nút Micro để bắt đầu');
   const [slide, setSlide] = useState<SlideData | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  
+
+  // Chế độ nghe ngầm (ambient) + bật/tắt đọc to
+  const [ambientMode, setAmbientMode] = useState(false);
+  const [voiceOn, setVoiceOn] = useState(true);
+
   const recognitionRef = useRef<any>(null);
   const isListeningLoopActive = useRef(false);
   const stateRef = useRef<SlideState>('idle');
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioQueueRef = useRef<HTMLAudioElement[]>([]);
   const isPlayingRef = useRef(false);
+
+  // Refs cho ambient (đọc trong callback STT đã set 1 lần lúc mount)
+  const ambientRef = useRef(false);
+  const voiceOnRef = useRef(true);
+  const bufferRef = useRef('');            // gom lời nói gần đây
+  const debounceRef = useRef<any>(null);   // hẹn giờ sau khi ngừng nói
+  const lastGenRef = useRef(0);            // mốc lần tạo slide gần nhất (cooldown)
+  const lastQueryRef = useRef('');         // query lần trước (tránh lặp)
+  const suppressListenRef = useRef(false); // đang đọc to -> tạm ngắt nghe
+  const AMBIENT_DEBOUNCE_MS = 1800;        // ngừng nói 1.8s mới xét tạo slide
+  const AMBIENT_COOLDOWN_MS = 6000;        // tối thiểu 6s giữa 2 slide
+
+  useEffect(() => { ambientRef.current = ambientMode; }, [ambientMode]);
+  useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
 
   // Tốc độ đọc slide (đọc nhanh hơn bình thường cho đỡ lê thê)
   const SLIDE_TTS_RATE = '+15%';
@@ -63,9 +82,13 @@ export default function SlideBotPage() {
 
         rec.onresult = (event: any) => {
           const text = event.results[0][0].transcript;
-          setTranscript(`Bạn nói: "${text}"`);
-          setState('processing');
-          fetchSlideData(text);
+          if (ambientRef.current) {
+            handleAmbientSpeech(text);
+          } else {
+            setTranscript(`Bạn nói: "${text}"`);
+            setState('processing');
+            fetchSlideData(text, false);
+          }
         };
 
         rec.onerror = (event: any) => {
@@ -81,8 +104,11 @@ export default function SlideBotPage() {
         };
 
         rec.onend = () => {
-          if (isListeningLoopActive.current && stateRef.current === 'listening') {
-             try { recognitionRef.current?.start(); } catch(e){}
+          if (!isListeningLoopActive.current) return;
+          if (suppressListenRef.current) return; // đang đọc to -> chờ onSpeakDone mở lại
+          // Ambient: luôn nghe lại liên tục; turn-based: nghe lại khi đang ở trạng thái listening
+          if (ambientRef.current || stateRef.current === 'listening') {
+            try { recognitionRef.current?.start(); } catch(e){}
           }
         };
 
@@ -94,6 +120,7 @@ export default function SlideBotPage() {
 
     return () => {
       isListeningLoopActive.current = false;
+      if (debounceRef.current) clearTimeout(debounceRef.current);
       if (activeAudioRef.current) activeAudioRef.current.pause();
       audioQueueRef.current = [];
       isPlayingRef.current = false;
@@ -105,6 +132,8 @@ export default function SlideBotPage() {
   const toggleMic = () => {
     if (state === 'listening' || state === 'processing' || state === 'speaking') {
       isListeningLoopActive.current = false;
+      suppressListenRef.current = false;
+      if (debounceRef.current) { clearTimeout(debounceRef.current); debounceRef.current = null; }
       if (activeAudioRef.current) activeAudioRef.current.pause();
       audioQueueRef.current = [];
       isPlayingRef.current = false;
@@ -114,6 +143,10 @@ export default function SlideBotPage() {
       setTranscript('Đã dừng. Nhấn nút Micro để bắt đầu lại.');
     } else {
       isListeningLoopActive.current = true;
+      suppressListenRef.current = false;
+      bufferRef.current = '';
+      lastQueryRef.current = '';
+      lastGenRef.current = 0;
       if (activeAudioRef.current) activeAudioRef.current.pause();
       setupVAD();
       try { recognitionRef.current?.start(); } catch(e){}
@@ -126,9 +159,37 @@ export default function SlideBotPage() {
     if (activeAudioRef.current) { try { activeAudioRef.current.pause(); } catch (e) {} activeAudioRef.current = null; }
     audioQueueRef.current = [];
     isPlayingRef.current = false;
+    suppressListenRef.current = false;
     setState('listening');
-    setTranscript('Tôi đang nghe...');
+    setTranscript(ambientRef.current ? '🎧 Đang nghe ngầm…' : 'Tôi đang nghe...');
     try { recognitionRef.current?.start(); } catch (e) {}
+  };
+
+  // ===== NGHE NGẦM (AMBIENT) =====
+  // Gom lời nói, ngừng 1 nhịp thì xét xem chủ đề có đáng tạo slide không
+  const handleAmbientSpeech = (text: string) => {
+    const words = (bufferRef.current + ' ' + text).trim().split(/\s+/);
+    bufferRef.current = words.slice(-45).join(' '); // giữ ~45 từ gần nhất
+    setTranscript('🎧 Đang nghe: …' + bufferRef.current.slice(-90));
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(maybeGenerateAmbient, AMBIENT_DEBOUNCE_MS);
+  };
+
+  const maybeGenerateAmbient = () => {
+    if (!ambientRef.current || !isListeningLoopActive.current) return;
+    const now = Date.now();
+    const wait = AMBIENT_COOLDOWN_MS - (now - lastGenRef.current);
+    if (wait > 0) { // chưa hết cooldown -> hẹn lại
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(maybeGenerateAmbient, wait);
+      return;
+    }
+    const query = bufferRef.current.trim();
+    if (query.split(/\s+/).length < 3) return;   // quá ngắn, bỏ qua
+    if (query === lastQueryRef.current) return;   // chưa có gì mới
+    lastQueryRef.current = query;
+    lastGenRef.current = now;
+    fetchSlideData(query, true);
   };
 
   // VAD: phát hiện người dùng nói lúc AI đang đọc (stream khử vọng + đo RMS)
@@ -179,9 +240,10 @@ export default function SlideBotPage() {
 
   // Khi đọc xong toàn bộ -> quay lại nghe (hands-free) hoặc idle
   const onSpeakDone = () => {
+    suppressListenRef.current = false;
     if (isListeningLoopActive.current) {
       setState('listening');
-      setTranscript('Tôi đang nghe...');
+      setTranscript(ambientRef.current ? '🎧 Đang nghe ngầm…' : 'Tôi đang nghe...');
       try { recognitionRef.current?.start(); } catch (e) {}
     } else {
       setState('idle');
@@ -217,25 +279,47 @@ export default function SlideBotPage() {
     playNextSlideAudio();
   };
 
-  const fetchSlideData = async (text: string) => {
+  const fetchSlideData = async (text: string, ambient = false) => {
     try {
+      if (!ambient) setState('processing');
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ message: text, ambient })
       });
-      
+
       if (!res.ok) throw new Error('API lỗi');
       const data: SlideData = await res.json();
-      
+
+      // Nghe ngầm + không liên quan -> giữ slide cũ, tiếp tục nghe (không pop bừa)
+      if (ambient && (data.skip || !data.speech_text || data.title === 'Lỗi hiển thị')) {
+        setTranscript('🎧 Đang nghe ngầm… (chưa có chủ đề rõ ràng)');
+        return;
+      }
+
       // Mặc định layout nếu AI không chọn
       if (!data.layout_type) data.layout_type = 'split_image_right';
-      
       setSlide(data);
-      setState('speaking');
-      speakText(data.speech_text);
-      
+
+      if (voiceOnRef.current) {
+        // Có đọc to: tạm ngắt mic khi đang đọc (tránh thu lại tiếng máy), mở lại ở onSpeakDone
+        if (ambientRef.current) {
+          suppressListenRef.current = true;
+          try { recognitionRef.current?.abort(); } catch (e) {}
+        }
+        setState('speaking');
+        speakText(data.speech_text);
+      } else {
+        // Im lặng: chỉ hiện slide
+        if (ambientRef.current) {
+          setState('listening');
+          setTranscript('🎧 Đang nghe ngầm…');
+        } else {
+          onSpeakDone();
+        }
+      }
     } catch (e) {
+      if (ambient) { setTranscript('🎧 Đang nghe ngầm…'); return; }
       setTranscript('Xin lỗi, có lỗi xảy ra khi xử lý.');
       if (isListeningLoopActive.current) {
         setTimeout(() => {
@@ -555,17 +639,49 @@ export default function SlideBotPage() {
         <div className="text-sm text-center font-medium bg-[#161d30]/80 backdrop-blur px-6 py-3 rounded-2xl border border-[#1e2a45] text-gray-300 min-w-[300px] max-w-2xl">
           {transcript}
         </div>
-        
-        <button 
+
+        {/* Toggle: Nghe ngầm + Đọc to */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setAmbientMode(v => !v)}
+            title="Tự lắng nghe hội thoại và pop slide khi chạm chủ đề có dữ liệu"
+            className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+              ambientMode
+                ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300'
+                : 'bg-[#161d30] border-[#1e2a45] text-gray-400 hover:text-gray-200'
+            }`}
+          >
+            🎧 Nghe ngầm: {ambientMode ? 'BẬT' : 'Tắt'}
+          </button>
+          <button
+            onClick={() => setVoiceOn(v => !v)}
+            title="Bật/tắt giọng đọc khi slide hiện"
+            className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+              voiceOn
+                ? 'bg-[#e8b84b]/15 border-[#e8b84b]/50 text-[#e8b84b]'
+                : 'bg-[#161d30] border-[#1e2a45] text-gray-400 hover:text-gray-200'
+            }`}
+          >
+            {voiceOn ? '🔊 Đọc: Bật' : '🔇 Đọc: Tắt'}
+          </button>
+        </div>
+
+        <button
           onClick={toggleMic}
           className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-xl transition-all duration-300 ${
-            state !== 'idle' 
-              ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20 animate-pulse' 
+            state !== 'idle'
+              ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20 animate-pulse'
               : 'bg-[#e8b84b] hover:bg-[#c49a2a] shadow-[#e8b84b]/30 text-gray-900'
           }`}
         >
           {state !== 'idle' ? '⏹️' : '🎤'}
         </button>
+
+        {ambientMode && (
+          <p className="text-[11px] text-emerald-400/70 text-center max-w-md">
+            Chế độ nghe ngầm: bot tự lắng nghe và chỉ hiện slide khi câu chuyện chạm chủ đề có dữ liệu. Tám chuyện linh tinh sẽ được bỏ qua.
+          </p>
+        )}
       </footer>
 
       {/* Fullscreen Image Lightbox Modal */}
