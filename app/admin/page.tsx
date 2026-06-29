@@ -259,6 +259,83 @@ export default function AdminPage() {
     setBusy(false);
   }
 
+  // Xóa 1 ảnh trên GitHub
+  async function deleteFile(path: string) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa ảnh: ${path}?`)) return;
+    setBusy(true);
+    setUploadStatus(`🔄 Đang xóa ${path}...`);
+    try {
+      const res = await fetch('/api/admin/upload-image', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...authHeaders()
+        },
+        body: JSON.stringify({ path }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUploadStatus(`✅ Đã xóa ${path}. ⏳ Vercel cần ~1-2 phút build lại để đồng bộ.`);
+        loadImages();
+        setSelectedImage(null);
+      } else {
+        setUploadStatus(`❌ Lỗi xóa: ${data.error}`);
+      }
+    } catch {
+      setUploadStatus(`❌ Lỗi mạng khi xóa`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Xóa thư mục (xóa đệ quy toàn bộ file trong thư mục)
+  async function deleteDirectory(node: TreeNode) {
+    const files: string[] = [];
+    const collectFiles = (n: TreeNode) => {
+      if (n.type === 'file') {
+        files.push(n.path);
+      } else if (n.children) {
+        n.children.forEach(collectFiles);
+      }
+    };
+    collectFiles(node);
+
+    if (files.length === 0) {
+      alert('Thư mục rỗng.');
+      return;
+    }
+
+    if (!confirm(`Xác nhận xóa thư mục "${node.name}" và toàn bộ ${files.length} ảnh bên trong? Thao tác này sẽ commit xóa lên GitHub.`)) return;
+
+    setBusy(true);
+    let ok = 0;
+    const errs: string[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const path = files[i];
+      setUploadStatus(`🔄 Đang xóa ${i + 1}/${files.length}: ${path}...`);
+      try {
+        const res = await fetch('/api/admin/upload-image', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            ...authHeaders()
+          },
+          body: JSON.stringify({ path }),
+        });
+        const data = await res.json();
+        if (res.ok) ok++; else errs.push(`${path}: ${data.error}`);
+      } catch {
+        errs.push(`${path}: lỗi mạng`);
+      }
+    }
+
+    setUploadStatus(`✅ Đã xóa ${ok}/${files.length} ảnh trong thư mục "${node.name}". ⏳ Vercel cần ~1-2 phút build để cập nhật.${errs.length ? ' ❌ Lỗi: ' + errs.join('; ') : ''}`);
+    loadImages();
+    setSelectedImage(null);
+    setBusy(false);
+  }
+
   // Dạy Bot: hỏi thử để xem bot đang trả lời gì
   async function teachAsk() {
     if (!teachQuestion.trim()) return;
@@ -737,9 +814,17 @@ export default function AdminPage() {
               <span className={`text-slate-500 text-[10px] transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}>▶</span>
               <span className="text-amber-500 text-lg">📂</span>
               <span className="truncate flex-1 text-slate-200 group-hover:text-white">{node.name}</span>
-              <span className="text-[10px] bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full font-normal group-hover:bg-slate-700">
+              <span className="text-[10px] bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full font-normal group-hover:bg-slate-700 mr-2">
                 {node.children?.length || 0}
               </span>
+              <button 
+                onClick={(e) => { e.stopPropagation(); deleteDirectory(node); }}
+                disabled={busy}
+                className="hidden group-hover:block text-slate-500 hover:text-red-400 text-xs px-1.5 py-0.5 rounded hover:bg-slate-800"
+                title="Xóa thư mục"
+              >
+                🗑️
+              </button>
             </div>
             {isOpen && node.children && (
               <div className="mt-0.5 border-l border-slate-800/50 ml-5">
@@ -753,7 +838,7 @@ export default function AdminPage() {
         <div
           key={node.path}
           onClick={() => setSelectedImage(node)}
-          className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm my-0.5 border-l-2 ${
+          className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm my-0.5 border-l-2 group ${
             isSelected
               ? 'bg-blue-600/10 text-blue-400 border-blue-500 font-semibold'
               : 'hover:bg-slate-800/30 text-slate-400 hover:text-slate-200 border-transparent'
@@ -765,8 +850,16 @@ export default function AdminPage() {
             : <span className="text-sky-400 text-base">🖼️</span>}
           <span className="truncate flex-1">{node.name}</span>
           {node.size !== undefined && (
-            <span className="text-[10px] text-slate-600 font-normal">{(node.size / 1024).toFixed(1)} KB</span>
+            <span className="text-[10px] text-slate-600 font-normal mr-2">{(node.size / 1024).toFixed(1)} KB</span>
           )}
+          <button 
+            onClick={(e) => { e.stopPropagation(); deleteFile(node.path); }}
+            disabled={busy}
+            className="hidden group-hover:block text-slate-500 hover:text-red-400 text-xs px-1.5 py-0.5 rounded hover:bg-slate-800"
+            title="Xóa ảnh"
+          >
+            🗑️
+          </button>
         </div>
       );
     });

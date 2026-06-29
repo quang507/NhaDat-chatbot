@@ -90,3 +90,44 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
+
+// Xóa 1 ảnh trên GitHub
+export async function DELETE(req: NextRequest) {
+  if (!checkAuth(req)) {
+    return NextResponse.json({ error: 'Sai mật khẩu' }, { status: 401 });
+  }
+  try {
+    const { path: relPath } = await req.json();
+    if (!relPath) return NextResponse.json({ error: 'Thiếu đường dẫn file' }, { status: 400 });
+
+    const repoPath = `public/images/${relPath}`;
+
+    // Lấy sha để xóa
+    let sha: string | undefined;
+    const check = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURI(repoPath)}?ref=${BRANCH}`, {
+      headers: ghHeaders(), cache: 'no-store',
+    });
+    if (!check.ok) {
+      return NextResponse.json({ error: 'Không tìm thấy ảnh trên GitHub' }, { status: 404 });
+    }
+    sha = (await check.json()).sha;
+
+    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURI(repoPath)}`, {
+      method: 'DELETE',
+      headers: ghHeaders(),
+      body: JSON.stringify({
+        message: `Xóa ảnh: ${relPath}`,
+        sha,
+        branch: BRANCH,
+      }),
+    });
+
+    if (!res.ok) {
+      return NextResponse.json({ error: `GitHub lỗi khi xóa: ${res.status} ${await res.text()}` }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true, note: 'Đã xóa ảnh trên GitHub.' });
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
+  }
+}
