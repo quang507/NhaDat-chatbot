@@ -22,6 +22,9 @@ export function cleanTextForTTS(text: string): string {
   // Khoảng số: "5-7 tỷ" -> "5 đến 7 tỷ"
   clean = clean.replace(/(\d+)\s*-\s*(\d+)/g, '$1 đến $2');
 
+  // Phân số: "2/3", "1/2" -> "2 phần 3", "1 phần 2"
+  clean = clean.replace(/(\d+)\s*\/\s*(\d+)/g, '$1 phần $2');
+
   // Mã lô/căn: "#03" -> "số 3" (tránh đọc thành "thăng không ba")
   clean = clean.replace(/#\s*0*(\d+)/g, 'số $1');
 
