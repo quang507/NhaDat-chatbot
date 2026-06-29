@@ -3,7 +3,7 @@ import { checkAuth, getFile } from '@/lib/admin';
 import { buildIndex, saveIndex } from '@/lib/rag';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+export const maxDuration = 300; // data.md lớn (gồm cả QA) -> cần lâu hơn để embed lại toàn bộ
 
 // Tạo lại chỉ mục tìm kiếm (RAG) từ data.md hiện tại trên GitHub.
 // Có thể nhận content trực tiếp từ admin (data vừa chỉnh) để tạo chỉ mục ngay,
