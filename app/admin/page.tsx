@@ -74,6 +74,11 @@ export default function AdminPage() {
   const [fileContent, setFileContent] = useState<string>('');
   const [loadingFile, setLoadingFile] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  // Sửa file trực tiếp trong cây thư mục
+  const [editing, setEditing] = useState(false);
+  const [editContent, setEditContent] = useState('');
+  const [savingFile, setSavingFile] = useState(false);
+  const [saveFileStatus, setSaveFileStatus] = useState('');
 
   // Crawl & Convert States
   const [url, setUrl] = useState('');
@@ -305,6 +310,8 @@ export default function AdminPage() {
     setSelectedFile(node);
     setLoadingFile(true);
     setFileContent('');
+    setEditing(false);
+    setSaveFileStatus('');
     try {
       const res = await fetch('/api/admin/data/file', {
         method: 'POST',
@@ -558,6 +565,42 @@ export default function AdminPage() {
       setEmbedStatus('❌ Không kết nối được');
     } finally {
       setBusy(false);
+    }
+  }
+
+  // Lưu nội dung file đã sửa -> GitHub + vá data.md, rồi rebuild index để áp dụng ngay.
+  async function saveFileEdit() {
+    if (!selectedFile) return;
+    if (!confirm('Lưu file này và embed lại? Hệ thống sẽ ghi file lên GitHub, vá data.md rồi build lại toàn bộ index (~1-2 phút).')) return;
+    setSavingFile(true);
+    setSaveFileStatus('💾 Đang lưu file lên GitHub...');
+    try {
+      const res = await fetch('/api/admin/data/save-embed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ path: selectedFile.path, oldContent: fileContent, newContent: editContent }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setSaveFileStatus(`❌ Lỗi lưu: ${data.error}`); setSavingFile(false); return; }
+
+      setSaveFileStatus(`✅ Đã lưu file${data.dataMdPatched ? ' + vá data.md' : ' (data.md không khớp để vá — sẽ vẫn được build lại)'}. 🔄 Đang embed lại toàn bộ...`);
+      // Embed lại toàn bộ để thay đổi có hiệu lực với bot
+      const r2 = await fetch('/api/admin/reindex', {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+      });
+      const d2 = await r2.json();
+      if (r2.ok) {
+        setSaveFileStatus(`✅ Hoàn tất! Đã lưu, vá data.md và embed lại ${d2.chunks} chunks. Bot đã dùng nội dung mới.`);
+        setFileContent(editContent);
+        setEditing(false);
+      } else {
+        setSaveFileStatus(`⚠️ Đã lưu file nhưng embed lỗi: ${d2.error}. Vào tab "Nạp dữ liệu" bấm Rebuild lại.`);
+      }
+    } catch (e) {
+      setSaveFileStatus(`❌ Lỗi kết nối: ${String(e)}`);
+    } finally {
+      setSavingFile(false);
     }
   }
 
@@ -920,15 +963,23 @@ export default function AdminPage() {
                           {(selectedFile.size / 1024).toFixed(1)} KB
                         </span>
                       )}
-                      {fileContent && (
+                      {fileContent && !editing && (
                         <>
+                          {/\.(md|txt)$/i.test(selectedFile.name) && (
+                            <button
+                              onClick={() => { setEditContent(fileContent); setEditing(true); setSaveFileStatus(''); }}
+                              className="bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-amber-500/40 transition-colors flex items-center gap-1.5"
+                            >
+                              ✏️ Sửa
+                            </button>
+                          )}
                           <button
                             onClick={() => copyToClipboard(fileContent)}
                             className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/50 transition-colors flex items-center gap-1.5"
                           >
                             {copySuccess ? '✅ Đã sao chép' : '📋 Sao chép'}
                           </button>
-                          
+
                           {/* Download as file */}
                           <a
                             href={`data:text/plain;charset=utf-8,${encodeURIComponent(fileContent)}`}
@@ -937,6 +988,24 @@ export default function AdminPage() {
                           >
                             ⬇️ Tải về
                           </a>
+                        </>
+                      )}
+                      {editing && (
+                        <>
+                          <button
+                            onClick={saveFileEdit}
+                            disabled={savingFile || editContent === fileContent}
+                            className="bg-emerald-500/20 hover:bg-emerald-500/30 disabled:opacity-40 text-emerald-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-emerald-500/40 transition-colors flex items-center gap-1.5"
+                          >
+                            {savingFile ? '⏳ Đang lưu & embed...' : '💾 Lưu & Embed'}
+                          </button>
+                          <button
+                            onClick={() => { setEditing(false); setSaveFileStatus(''); }}
+                            disabled={savingFile}
+                            className="bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/50 transition-colors"
+                          >
+                            ✖ Huỷ
+                          </button>
                         </>
                       )}
                     </div>
@@ -953,17 +1022,21 @@ export default function AdminPage() {
                         
                         {/* Word count status bar */}
                         <div className="bg-slate-900/50 border-b border-slate-900 px-3 py-1.5 flex justify-between items-center text-[10px] text-slate-500 font-mono">
-                          <span>ĐỊNH DẠNG: {selectedFile.name.split('.').pop()?.toUpperCase()}</span>
-                          <span>ĐỘ DÀI: {fileContent.length} ký tự (khoảng {fileContent.split(/\s+/).filter(Boolean).length} từ)</span>
+                          <span>{editing ? '✏️ ĐANG SỬA' : 'ĐỊNH DẠNG'}: {selectedFile.name.split('.').pop()?.toUpperCase()}</span>
+                          <span>ĐỘ DÀI: {(editing ? editContent : fileContent).length} ký tự (khoảng {(editing ? editContent : fileContent).split(/\s+/).filter(Boolean).length} từ)</span>
                         </div>
 
-                        {/* File Textarea Viewer */}
+                        {/* File Textarea Viewer / Editor */}
                         <textarea
-                          readOnly
-                          value={fileContent}
+                          readOnly={!editing}
+                          value={editing ? editContent : fileContent}
+                          onChange={editing ? (e) => setEditContent(e.target.value) : undefined}
                           placeholder="File này không có nội dung văn bản."
-                          className="flex-1 w-full bg-slate-950 p-4 font-mono text-xs text-slate-300 leading-relaxed resize-none focus:outline-none scrollbar-thin select-text cursor-default"
+                          className={`flex-1 w-full p-4 font-mono text-xs leading-relaxed resize-none focus:outline-none scrollbar-thin select-text ${editing ? 'bg-slate-900 text-amber-50 cursor-text ring-1 ring-amber-500/30' : 'bg-slate-950 text-slate-300 cursor-default'}`}
                         />
+                        {saveFileStatus && (
+                          <div className="bg-slate-900/70 border-t border-slate-800 px-3 py-2 text-[11px] text-slate-300">{saveFileStatus}</div>
+                        )}
                       </div>
                     )}
                   </div>
