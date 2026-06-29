@@ -407,8 +407,7 @@ export default function SlideBotPage() {
 
       if (text && text.trim()) {
         setTranscript(`Bạn nói: "${text}"`);
-        setSlide(null); // Xóa slide cũ ngay lập tức
-        fetchSlideData(text, false);
+        fetchSlideData(text, false); // giữ slide cũ tới khi slide mới sẵn sàng
       } else {
         setTranscript('Không nghe rõ lời bạn nói, vui lòng thử lại.');
         setState('idle');
@@ -584,9 +583,9 @@ export default function SlideBotPage() {
 
     lastQueryRef.current = fullQuery;
     bufferRef.current = ''; // Clear buffer ngay
-    
-    // Xóa sạch slide cũ ngay lập tức để màn hình chuyển sang trạng thái chờ mượt mà
-    setSlide(null);
+
+    // GIỮ slide cũ hiển thị cho tới khi slide mới sẵn sàng (setSlide trong fetchSlideData),
+    // đồng thời vẫn tiếp tục nghe/phân tích âm thanh trong lúc tạo slide kế tiếp.
     fetchSlideData(fullQuery, true);
   };
 
