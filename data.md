@@ -22935,32 +22935,33 @@ Các câu hỏi Highlight ( dành cho KH NPD #27) dùng để hỏi khi PV
 
 | Lô | Diện Tích (m²) | Mẫu Nhà | Trạng Thái | Lô | Diện Tích (m²) | Mẫu Nhà | Trạng Thái | Lô | Diện Tích (m²) | Mẫu Nhà | Trạng Thái |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| #01 | 48.15 | - | ❌ Còn | #14 | 54.94 | - | - | #27 | - | - | - |
-| #02 | 48.15 | - | ❌ Còn | #15 | 36.57 | - | - | #28 | 47.27 | - | - |
-| #03 | 48.37 | - | ❌ Còn | #16 | 74.66 | - | - | #29 | 48.28 | - | - |
-| #04 | 43.08 | - | ✅ Đã bán | #17 | 55.51 | - | - | #30 | 44.50 | - | - |
-| #05 | 43.17 | - | ✅ Đã bán | #18 | - | - | - | #31 | 42.08 | - | - |
-| #06 | 45.80 | - | ✅ Đã bán | #19 | 56.92 | - | - | #32 | 44.04 | - | - |
-| #07 | 45.04 | - | ✅ Đã bán | #20 | 63.10 | - | - | #33 | 43.90 | - | - |
-| #08 | 45.17 | - | ✅ Đã bán | #21 | - | - | - | #34 | 43.50 | - | - |
-| #09 | 44.17 | - | ✅ Đã bán | #22 | 71.00 | - | - | #35 | - | - | - |
-| #10 | 41.32 | - | ✅ Đã bán | #23 | **69.61** | **Opus** | ❌ Còn | #36 | 43.11 | - | - |
-| #11 | 44.51 | - | ✅ Đã bán | #24 | - | **Opus** | ❌ Còn | #37 | 47.12 | - | - |
-| #12 | 44.94 | - | ✅ Đã bán | #25 | 64.56 | - | ✅ Đã bán | #38-#50 | - | Hộp thương mại | - |
-| #13 | - | - | ✅ Đã bán | #26 | 61.83 | - | ✅ Đã bán | CXCV | 86.37 | Công viên chung | - |
+| #01 | 48.15 | Opus | ❌ Còn | #14 | 54.94 | Fusion Gen 5 | ❌ Còn | #27 | - | Fusion Gen 5 | ❌ Còn |
+| #02 | 48.15 | Opus | ❌ Còn | #15 | 36.57 | Fusion Gen 5 | ❌ Còn | #28 | 47.27 | Fusion Gen 5 | ❌ Còn |
+| #03 | 48.37 | Cosmo Gen 2 | ✅ Đã bán | #16 | 74.66 | Fusion Gen 5 | ❌ Còn | #29 | 48.28 | Fusion Gen 5 | ❌ Còn |
+| #04 | 43.08 | Cosmo Gen 2 | ❌ Còn | #17 | 55.51 | Fusion Gen 5 | ❌ Còn | #30 | 44.50 | Fusion Gen 5 | ❌ Còn |
+| #05 | 43.17 | Fusion Gen 5 | ❌ Còn | #18 | - | Fusion Gen 5 | ❌ Còn | #31 | 42.08 | Fusion Gen 5 | ❌ Còn |
+| #06 | 45.80 | Fusion Gen 5 | ❌ Còn | #19 | 56.92 | Fusion Gen 5 | ❌ Còn | #32 | 44.04 | Fusion Gen 5 | ❌ Còn |
+| #07 | 45.04 | Fusion Gen 5 | ❌ Còn | #20 | 63.10 | Fusion Gen 5 | ❌ Còn | #33 | 43.90 | Fusion Gen 5 | ❌ Còn |
+| #08 | 45.17 | Fusion Gen 5 | ❌ Còn | #21 | - | Fusion Gen 5 | ❌ Còn | #34 | 43.50 | Fusion Gen 5 | ❌ Còn |
+| #09 | 44.17 | Fusion Gen 5 | ❌ Còn | #22 | 71.00 | Fusion Gen 5 | ❌ Còn | #35 | - | Fusion Gen 5 | ❌ Còn |
+| #10 | 41.32 | Fusion Gen 5 | ❌ Còn | #23 | **69.61** | **Opus** | ❌ Còn | #36 | 43.11 | Fusion Gen 5 | ❌ Còn |
+| #11 | 44.51 | Fusion Gen 5 | ❌ Còn | #24 | - | **Opus** | ❌ Còn | #37 | 47.12 | Fusion Gen 5 | ❌ Còn |
+| #12 | 44.94 | Fusion Gen 5 | ❌ Còn | #25 | 64.56 | Fusion Gen 5 | ❌ Còn | #38 | - | Cosmo Gen 2 | ❌ Còn |
+| #13 | - | Fusion Gen 5 | ❌ Còn | #26 | 61.83 | Fusion Gen 5 | ❌ Còn | #39-#50 | - | Mixed | - |
 
-**Rổ hàng T5.2026 — Còn trống (chưa bán):**
-- **#01, #02, #03, #23, #24, #42, #50**
-- **Căn #23**: 69.61 m², **Opus** 🟨, chưa bán
-- **Căn #24**: **Opus** 🟨, chưa bán
+**Rổ hàng T6.2026 — Trạng thái mới:**
+- **Đã bán (LOCK)**: #03, #42, #50
+- **Còn trống**: Tất cả căn khác
+- **Căn #23**: 69.61 m², **Opus** 🟨
+- **Căn #24**: **Opus** 🟨
 
 **Mã màu mẫu nhà:**
-- 🟨 Vàng = Opus
-- 🟦 Xanh = Fusion Gen 5
+- 🟨 Kem/Vàng = Opus
+- 🟦 Xanh nhạt = Fusion Gen 5
 - 🟥 Hồng = Cosmo Gen 2
-- 🟪 Tím = Signature by Codinachs
+- 🟪 Xanh tím = Signature by Codinachs
 
-**Nguồn:** File rổ hàng cập nhật tháng 5/2026 trên GitHub
+**Nguồn:** Sơ đồ phân lô rổ hàng tháng 6/2026
 | | | | | | | | | | | | |
 | | | | | | | | | | | | |
 | | | | | | | | | | | | |
