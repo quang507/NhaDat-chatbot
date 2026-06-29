@@ -76,6 +76,8 @@ export default function SlideBotPage() {
   useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // Tăng mỗi lần có slide mới -> ép remount để animation vào lại mượt (kể cả khi chỉ đổi nội dung)
+  const [slideKey, setSlideKey] = useState(0);
   const toggleMicRef = useRef<() => void>(() => {});
 
   // Slideshow interval tự động chuyển ảnh mỗi 4.5 giây
@@ -512,6 +514,7 @@ export default function SlideBotPage() {
       if (!data.layout_type) data.layout_type = 'split_image_right';
       setBrokenImages({});
       setCurrentImageIndex(0);
+      setSlideKey(k => k + 1);
       setSlide(data);
 
       if (voiceOnRef.current) {
@@ -820,7 +823,9 @@ export default function SlideBotPage() {
       {/* Main Content Area - The Slide */}
       <main className="flex-1 z-10 flex items-center justify-center p-8">
         {slide ? (
-          renderSlideContent()
+          <div key={slideKey} className="w-full flex items-center justify-center">
+            {renderSlideContent()}
+          </div>
         ) : (
           <div className="text-center p-12 max-w-2xl mx-auto">
             <div className="w-24 h-24 mx-auto bg-gradient-to-br from-[#e8b84b] to-[#c49a2a] rounded-full flex items-center justify-center text-4xl mb-8 shadow-[0_0_50px_rgba(232,184,75,0.3)] animate-bounce-slow">
@@ -935,9 +940,17 @@ export default function SlideBotPage() {
         }
         .animate-fade-in-up {
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          will-change: transform, opacity;
         }
         .animate-fade-in {
-          animation: fadeIn 0.4s ease-out forwards;
+          animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          will-change: opacity;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-fade-in-up, .animate-fade-in, .animate-scale-up, .animate-slide-up, .animate-bounce-slow {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+          }
         }
         .animate-scale-up {
           animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
