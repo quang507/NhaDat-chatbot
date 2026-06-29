@@ -283,8 +283,8 @@ export async function POST(req: NextRequest) {
 
       // 2. Kiểm tra từ khóa phòng / không gian
       if (textToSearch.includes('vị trí') || textToSearch.includes('bản đồ') || textToSearch.includes('maps') || textToSearch.includes('địa chỉ') || textToSearch.includes('đường đi') || textToSearch.includes('ở đâu') || textToSearch.includes('bao xa') || textToSearch.includes('bao lâu') || textToSearch.includes('di chuyển') || textToSearch.includes('đi từ') || textToSearch.includes('cách bao') || textToSearch.includes('cách trung tâm') || textToSearch.includes('cách dự án') || textToSearch.includes('cách quận')) {
+        // Dùng bản đồ minh hoạ đẹp (vi_tri.jpg là ảnh đồng hồ stock -> bỏ)
         parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg',
           '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'
         ];
         parsed.layout_type = 'split_image_right';
@@ -426,7 +426,7 @@ export async function POST(req: NextRequest) {
         ];
         parsed.layout_type = 'split_image_right';
       } else if (textToSearch.includes('pháp lý') || textToSearch.includes('sổ hồng') || textToSearch.includes('hợp đồng') || textToSearch.includes('cam kết')) {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg'];
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'];
         parsed.layout_type = 'split_image_right';
       } else if (textToSearch.includes('cosmo') || textToSearch.includes('fusion') || textToSearch.includes('opus') || textToSearch.includes('mẫu nhà') || textToSearch.includes('nhà phố') || textToSearch.includes('nội thất') || textToSearch.includes('hình ảnh')) {
         // Hỏi chung về mẫu nhà → hiện slideshow nhiều góc nhìn đẹp nhất

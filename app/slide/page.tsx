@@ -654,14 +654,12 @@ export default function SlideBotPage() {
         const rms = Math.sqrt(sum / data.length);
         const speaking = rms > AM_THRESHOLD;
 
-        // Bot đang đọc to: chỉ phát hiện để CẮT LỜI (barge-in), KHÔNG thu (tránh ghi lại tiếng máy).
-        // Dùng ngưỡng cao hơn + nhiều frame liên tiếp để tiếng loa (echo) không tự cắt lời bot.
+        // Bot đang đọc to: NGỪNG HẲN nghe. Lý do: dùng loa ngoài/speakerphone (Jabra) thì tiếng
+        // bot phát ra bị chính mic thu lại -> nếu vẫn dò barge-in sẽ tự cắt lời bot -> đọc giật cục.
+        // Muốn chèn lời thì người dùng chạm nút (đỡ phải đánh đổi với tiếng loa).
         if (suppressListenRef.current || stateRef.current === 'speaking') {
-          if (Date.now() - speakStartRef.current > SPEAK_GRACE_MS) {
-            if (rms > VAD_THRESHOLD) bargeFrames++; else bargeFrames = Math.max(0, bargeFrames - 1);
-            if (bargeFrames >= VAD_FRAMES) { bargeFrames = 0; bargeIn(); }
-          }
           if (amRecordingRef.current) stopSeg();
+          bargeFrames = 0;
           return;
         }
         bargeFrames = 0;
