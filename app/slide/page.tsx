@@ -74,8 +74,8 @@ export default function SlideBotPage() {
   useEffect(() => { slideRef.current = slide; }, [slide]);
   useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
 
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const toggleMicRef = useRef<() => void>(() => {});
-  useEffect(() => { toggleMicRef.current = toggleMic; }, [toggleMic]);
 
   // Slideshow interval tự động chuyển ảnh mỗi 4.5 giây
   useEffect(() => {
@@ -114,8 +114,9 @@ export default function SlideBotPage() {
   }, [state]);
 
   useEffect(() => {
+    let handleKeyDown: (e: KeyboardEvent) => void;
     if (typeof window !== 'undefined') {
-      const handleKeyDown = (e: KeyboardEvent) => {
+      handleKeyDown = (e: KeyboardEvent) => {
         if (e.code === 'Space') {
           e.preventDefault();
           toggleMicRef.current();
@@ -181,7 +182,9 @@ export default function SlideBotPage() {
     }
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      if (typeof window !== 'undefined' && handleKeyDown) {
+        window.removeEventListener('keydown', handleKeyDown);
+      }
       isListeningLoopActive.current = false;
       if (debounceRef.current) clearTimeout(debounceRef.current);
       if (activeAudioRef.current) activeAudioRef.current.pause();
@@ -326,6 +329,8 @@ export default function SlideBotPage() {
       }
     }
   };
+
+  useEffect(() => { toggleMicRef.current = toggleMic; }, [toggleMic]);
 
   // Cắt lời khi đang đọc -> dừng audio + chuyển sang nghe (giống ChatGPT Voice)
   const bargeIn = () => {
