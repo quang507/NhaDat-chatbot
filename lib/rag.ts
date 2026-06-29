@@ -156,7 +156,16 @@ export async function embedQuery(text: string, forceDim?: number): Promise<numbe
 export async function buildIndex(dataText: string): Promise<Index> {
   const texts = chunkText(dataText);
   const vecs = await embedBatch(texts, 'RETRIEVAL_DOCUMENT');
-  const chunks: Chunk[] = texts.map((text, i) => ({ text, vec: vecs[i] || [] }));
+  // GẮN file cho từng chunk dựa trên marker "## 🔖 [folder] · tên-file" có sẵn trong data.md.
+  // Quan trọng: retrieve() cộng điểm ưu tiên theo c.file (03_Human-QA +0.35, drive-extracted +0.05).
+  // Nếu không gắn -> các boost này chết, Q&A chuẩn không được ưu tiên. Chunk không có marker thì
+  // kế thừa file của marker gần nhất phía trên (file dài bị cắt thành nhiều chunk).
+  let currentFile = '';
+  const chunks: Chunk[] = texts.map((text, i) => {
+    const m = text.match(/##\s*🔖\s*\[([^\]]*)\]\s*·\s*([^\n]+)/);
+    if (m) currentFile = `${m[1].trim()}/${m[2].trim()}`;
+    return { text, vec: vecs[i] || [], file: currentFile || undefined };
+  });
   return { chunks, builtAt: new Date().toISOString() };
 }
 
@@ -236,7 +245,9 @@ function extractKeywords(query: string): RegExp[] {
   if (modelM) patterns.push(new RegExp(modelM[0].replace(/\s+/g, '\\s*'), 'i'));
  
   // Số căn/lô đứng độc lập không đi kèm từ khoá "căn/lô" (vd: "diện tích 24", "giá 3")
-  const standaloneNumRe = /\b([1-9]\d?)\b(?![\s-]*(?:tỷ|tỉ|triệu|m|tr\b|m2|m²))/i;
+  // Loại trừ số đi kèm đơn vị (không phải số căn): tỷ/triệu/m²/phút/giờ/km/năm/% /tầng/phòng...
+  // và loại trừ số đứng SAU "quận/q/phường/p/tầng/lầu/năm" (vd "quận 1", "phường 7" KHÔNG phải căn).
+  const standaloneNumRe = /(?<!\b(?:quận|q|phường|p|tầng|lầu|năm|lúc|khoảng|q\.|p\.)\s?)\b([1-9]\d?)\b(?![\s-]*(?:tỷ|tỉ|triệu|m|tr\b|m2|m²|phút|giờ|km|năm|tuổi|%|tầng|lầu|phòng|người|giây|ngày|tháng))/i;
   const standaloneMatch = q.match(standaloneNumRe);
   if (standaloneMatch) {
     const val = standaloneMatch[1];
