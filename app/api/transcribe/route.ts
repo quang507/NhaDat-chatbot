@@ -19,6 +19,8 @@ export async function POST(req: NextRequest) {
     const ext = type.includes('ogg') ? 'ogg' : type.includes('wav') ? 'wav' : type.includes('mp4') || type.includes('m4a') ? 'm4a' : type.includes('mpeg') ? 'mp3' : 'webm';
     const mimeType = type.includes('webm') ? 'audio/webm' : type;
 
+    const STT_PROMPT = "Dự án nhà phố Ny'ah Phú Định, nhà phát triển Nhã Đạt (Nyah Co Ltd). Các mẫu nhà phố liên kế: Cosmo Gen 2 (Cót mô, Cốt mô, Cotmo), Fusion Gen 5 (Phiêu dân, Phiêu-dân, Phiu dân, Fusion), Opus (Ô pút, Ô-pút, Opút). Vị trí đường Trương Đình Hội, Quận 8, TP.HCM. Các tiện ích và thiết kế: công viên, gara ô tô, xe bán tải, thang máy, giếng trời, ban công, thông tầng, lệch tầng, lửng, phòng ngủ master, phòng ngủ con, nhà vệ sinh, wc, phòng bếp, phòng khách, phòng học, sân thượng, mặt bằng tầng 1, tầng 2, tầng 3, vị trí, bản đồ Google Maps, quét mã QR. Thông tin pháp lý và giá bán: sổ hồng, bàn giao, tiến độ xây dựng, thanh toán, căn hộ số 23, căn số 23, giá bán từ 5 đến 7 tỷ. Khẩu lệnh điều khiển slide: xin chào, mở slide, cho xem căn, phóng to hình ảnh, thu nhỏ lại, đóng ảnh, quay lại.";
+
     // 1) Thử phiên âm bằng Groq Whisper
     if (GROQ_API_KEY) {
       try {
@@ -27,6 +29,7 @@ export async function POST(req: NextRequest) {
         fd.append('model', 'whisper-large-v3-turbo');
         fd.append('language', 'vi');
         fd.append('response_format', 'json');
+        fd.append('prompt', STT_PROMPT); // Bias từ vựng dự án cho Whisper
 
         const res = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
           method: 'POST',
@@ -64,7 +67,13 @@ export async function POST(req: NextRequest) {
                   }
                 },
                 {
-                  text: "Hãy viết lại chính xác toàn bộ lời thoại bằng tiếng Việt trong đoạn ghi âm trên, giữ đúng các số hiệu căn hộ nếu có. Chỉ trả về văn bản đã dịch, không thêm bất kỳ lời dẫn hay bình luận nào."
+                  text: `Bạn là trợ lý dịch giọng nói tiếng Việt chuyên nghiệp cho dự án nhà phố Ny'ah Phú Định (Nhã Đạt). 
+Hãy viết lại chính xác toàn bộ lời thoại bằng tiếng Việt trong đoạn ghi âm trên.
+Đặc biệt chú ý sửa đúng các tên riêng và thuật ngữ của dự án:
+- Mẫu nhà: Cosmo Gen 2 (nếu đọc là Cót mô, Cốt mô), Fusion Gen 5 (nếu đọc là Phiêu dân, Phiêu-dân), Opus (nếu đọc là Ô pút, Ô-pút).
+- Địa danh: Ny'ah Phú Định, Nhã Đạt, đường Trương Đình Hội, Quận 8.
+- Các từ liên quan: căn số 23, gara ô tô, thang máy, công viên, bản đồ Google Maps, quét mã QR.
+Chỉ trả về văn bản đã dịch chính xác, không thêm bất kỳ lời dẫn, giải thích hay bình luận nào.`
                 }
               ]
             }],
