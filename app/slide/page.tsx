@@ -74,6 +74,9 @@ export default function SlideBotPage() {
   useEffect(() => { slideRef.current = slide; }, [slide]);
   useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
 
+  const toggleMicRef = useRef<() => void>(() => {});
+  useEffect(() => { toggleMicRef.current = toggleMic; }, [toggleMic]);
+
   // Tốc độ đọc slide (đọc nhanh hơn bình thường cho đỡ lê thê)
   const SLIDE_TTS_RATE = '+22%';
 
@@ -93,6 +96,16 @@ export default function SlideBotPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.code === 'Space') {
+          e.preventDefault();
+          toggleMicRef.current();
+        } else if (e.key === 'Escape') {
+          setSelectedImage(null);
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+
       // Setup STT (Web Speech API). TTS dùng edge-tts qua /api/tts nên KHÔNG cần speechSynthesis.
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
@@ -149,6 +162,7 @@ export default function SlideBotPage() {
     }
 
     return () => {
+      window.removeEventListener('keydown', handleKeyDown);
       isListeningLoopActive.current = false;
       if (debounceRef.current) clearTimeout(debounceRef.current);
       if (activeAudioRef.current) activeAudioRef.current.pause();
