@@ -175,12 +175,18 @@ export async function POST(req: NextRequest) {
 
     // --- BỘ ĐỆM SLIDE TĨNH: Trả slide ngay lập tức trong 0.1ms nếu khớp từ khóa trực tiếp, bypass AI hoàn toàn ---
     const cleanMsg = message.toLowerCase();
+    // Hàm bỏ dấu tiếng Việt để so khớp cả khi STT trả về không dấu
+    const removeDiacritics = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    const noD = removeDiacritics(cleanMsg); // bản không dấu
+    // Hàm kiểm tra: khớp nếu có dấu HOẶC không dấu
+    const has = (...keywords: string[]) => keywords.some(k => cleanMsg.includes(k) || noD.includes(removeDiacritics(k)));
+
     let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' = 'cosmo_gen_2';
-    if (cleanMsg.includes('fusion') || cleanMsg.includes('gen 5') || cleanMsg.includes('gen5') || cleanMsg.includes('phiêu dân') || cleanMsg.includes('phiêu-dân')) {
+    if (has('fusion', 'gen 5', 'gen5', 'phiêu dân', 'phiêu-dân')) {
       model = 'fusion_gen_5';
-    } else if (cleanMsg.includes('opus') || cleanMsg.includes('ô-pút') || cleanMsg.includes('ô pút') || cleanMsg.includes('o pút')) {
+    } else if (has('opus', 'ô-pút', 'ô pút', 'o pút')) {
       model = 'opus';
-    } else if (cleanMsg.includes('cosmo') || cleanMsg.includes('cót mô') || cleanMsg.includes('cót-mô') || cleanMsg.includes('cốt mô')) {
+    } else if (has('cosmo', 'cót mô', 'cót-mô', 'cốt mô')) {
       model = 'cosmo_gen_2';
     } else {
       const unitNo = detectUnit(message);
@@ -189,7 +195,7 @@ export async function POST(req: NextRequest) {
 
     let staticSlide: any = null;
 
-    if (cleanMsg.includes('vị trí') || cleanMsg.includes('bản đồ') || cleanMsg.includes('maps') || cleanMsg.includes('địa chỉ') || cleanMsg.includes('đường đi') || cleanMsg.includes('ở đâu')) {
+    if (has('vị trí', 'bản đồ', 'maps', 'địa chỉ', 'đường đi', 'ở đâu')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Vị trí dự án",
@@ -202,7 +208,7 @@ export async function POST(req: NextRequest) {
         image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'],
         maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A'
       };
-    } else if (cleanMsg.includes('tiện ích') || cleanMsg.includes('công viên') || cleanMsg.includes(' landmark coffee') || cleanMsg.includes('sân chơi') || cleanMsg.includes('tiện nghi')) {
+    } else if (has('tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Hệ thống Tiện ích",
@@ -214,7 +220,7 @@ export async function POST(req: NextRequest) {
         speech_text: "Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.",
         image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png']
       };
-    } else if (cleanMsg.includes('bếp') || cleanMsg.includes('nhà ăn') || cleanMsg.includes('nấu ăn') || cleanMsg.includes('phòng ăn')) {
+    } else if (has('bếp', 'nhà ăn', 'nấu ăn', 'phòng ăn')) {
       if (model === 'cosmo_gen_2') {
         staticSlide = {
           layout_type: 'split_image_right',
@@ -252,7 +258,7 @@ export async function POST(req: NextRequest) {
           image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg']
         };
       }
-    } else if (cleanMsg.includes('gara') || cleanMsg.includes('xe hơi') || cleanMsg.includes('đỗ xe') || cleanMsg.includes('ô tô') || cleanMsg.includes('đậu xe') || cleanMsg.includes('xe ô tô')) {
+    } else if (has('gara', 'xe hơi', 'đỗ xe', 'ô tô', 'đậu xe', 'xe ô tô')) {
       if (model === 'cosmo_gen_2') {
         staticSlide = {
           layout_type: 'split_image_right',
@@ -290,7 +296,7 @@ export async function POST(req: NextRequest) {
           image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
         };
       }
-    } else if (cleanMsg.includes('phòng khách') || cleanMsg.includes('sofa') || cleanMsg.includes('tiếp khách') || cleanMsg.includes('sinh hoạt chung')) {
+    } else if (has('phòng khách', 'sofa', 'tiếp khách', 'sinh hoạt chung')) {
       if (model === 'cosmo_gen_2') {
         staticSlide = {
           layout_type: 'split_image_right',
@@ -328,7 +334,7 @@ export async function POST(req: NextRequest) {
           image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png']
         };
       }
-    } else if (cleanMsg.includes('phòng ngủ') || cleanMsg.includes('giường') || cleanMsg.includes('ngủ con') || cleanMsg.includes('ngủ master') || cleanMsg.includes('phòng ngủ chính')) {
+    } else if (has('phòng ngủ', 'giường', 'ngủ con', 'ngủ master', 'phòng ngủ chính')) {
       if (model === 'cosmo_gen_2') {
         staticSlide = {
           layout_type: 'split_image_right',
@@ -366,7 +372,7 @@ export async function POST(req: NextRequest) {
           image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg']
         };
       }
-    } else if (cleanMsg.includes('pháp lý') || cleanMsg.includes('sổ hồng') || cleanMsg.includes('phê duyệt') || cleanMsg.includes('giấy phép') || cleanMsg.includes('sở hữu')) {
+    } else if (has('pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Pháp lý dự án",
@@ -378,7 +384,7 @@ export async function POST(req: NextRequest) {
         speech_text: "Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.",
         image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg']
       };
-    } else if (cleanMsg.includes('thanh toán') || cleanMsg.includes('tiến độ thanh toán') || cleanMsg.includes('lịch thanh toán') || cleanMsg.includes('chiết khấu') || cleanMsg.includes('chính sách')) {
+    } else if (has('thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Tiến độ Thanh toán",
@@ -390,7 +396,7 @@ export async function POST(req: NextRequest) {
         speech_text: "Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.",
         image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg']
       };
-    } else if (cleanMsg.includes('giá bán') || cleanMsg.includes('giá') || cleanMsg.includes('bao nhiêu tiền') || cleanMsg.includes('bao nhiêu tỷ') || cleanMsg.includes('mấy tỷ')) {
+    } else if (has('giá bán', 'giá', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Giá bán hấp dẫn",
@@ -402,7 +408,7 @@ export async function POST(req: NextRequest) {
         speech_text: "Giá bán các căn nhà phố thương mại tại dự án cực kỳ hấp dẫn, chỉ từ năm đến bảy tỷ đồng tùy theo diện tích và mẫu nhà.",
         image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
       };
-    } else if (cleanMsg.includes('mẫu nhà') || cleanMsg.includes('thiết kế nhà') || cleanMsg.includes('kiến trúc nhà')) {
+    } else if (has('mẫu nhà', 'thiết kế nhà', 'kiến trúc nhà')) {
       if (model === 'cosmo_gen_2') {
         staticSlide = {
           layout_type: 'split_image_right',
@@ -440,7 +446,7 @@ export async function POST(req: NextRequest) {
           image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg']
         };
       }
-    } else if (cleanMsg.includes('phối cảnh') || cleanMsg.includes('cảnh quan') || cleanMsg.includes('toàn cảnh') || cleanMsg.includes('tổng thể') || cleanMsg.includes('ngoại thất')) {
+    } else if (has('phối cảnh', 'cảnh quan', 'toàn cảnh', 'tổng thể', 'ngoại thất')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Kiến trúc Phối cảnh",
@@ -452,7 +458,7 @@ export async function POST(req: NextRequest) {
         speech_text: "Dự án được quy hoạch đồng bộ với hạ tầng ngầm, đường nội khu rộng rãi và thiết kế mặt ngoài sang trọng.",
         image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
       };
-    } else if (cleanMsg.includes('chủ đầu tư') || cleanMsg.includes('nhã đạt') || cleanMsg.includes('nhà phát triển') || cleanMsg.includes('nhà đạt')) {
+    } else if (has('chủ đầu tư', 'nhã đạt', 'nhà phát triển', 'nhà đạt')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Nhà phát triển Nhã Đạt",
