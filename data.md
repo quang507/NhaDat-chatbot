@@ -22933,26 +22933,28 @@ Các câu hỏi Highlight ( dành cho KH NPD #27) dùng để hỏi khi PV
 
 ### Thông Tin Diện Tích Chi Tiết
 
-| Lô | Diện Tích (m²) | Mô Hình | Lô | Diện Tích (m²) | Mô Hình | Lô | Diện Tích (m²) | Mô Hình |
-|---|---|---|---|---|---|---|---|---|
-| #01 | 48.15 | Townhouse | #14 | 54.94 | Townhouse | #27 | - | Shophouse |
-| #02 | 48.15 | Townhouse | #15 | 36.57 | Townhouse | #28 | 47.27 | Townhouse |
-| #03 | 48.37 | Townhouse | #16 | 74.66 | Townhouse | #29 | 48.28 | Townhouse |
-| #04 | 43.08 | Townhouse | #17 | 55.51 | Townhouse | #30 | 44.50 | Townhouse |
-| #05 | 43.17 | Townhouse | #18 | - | Townhouse | #31 | 42.08 | Townhouse |
-| #06 | 45.80 | Townhouse | #19 | 56.92 | Townhouse | #32 | 44.04 | Townhouse |
-| #07 | 45.04 | Townhouse | #20 | 63.10 | Townhouse | #33 | 43.90 | Townhouse |
-| #08 | 45.17 | Townhouse | #21 | - | Townhouse | #34 | 43.50 | Townhouse |
-| #09 | 44.17 | Townhouse | #22 | 71.00 | Townhouse | #35 | - | Townhouse |
-| #10 | 41.32 | Townhouse | #23 | **69.61** | Townhouse | #36 | 43.11 | Townhouse |
-| #11 | 44.51 | Townhouse | #24 | - | Townhouse | #37 | 47.12 | Townhouse |
-| #12 | 44.94 | Townhouse | #25 | 64.56 | Townhouse | #38-#50 | - | Hộp thương mại |
-| #13 | - | Townhouse | #26 | 61.83 | Townhouse | CXCV | 86.37 | Công viên chung |
+| Lô | Diện Tích (m²) | Mẫu Nhà | Trạng Thái | Lô | Diện Tích (m²) | Mẫu Nhà | Trạng Thái | Lô | Diện Tích (m²) | Mẫu Nhà | Trạng Thái |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| #01 | 48.15 | - | ❌ Còn | #14 | 54.94 | - | - | #27 | - | - | - |
+| #02 | 48.15 | - | ❌ Còn | #15 | 36.57 | - | - | #28 | 47.27 | - | - |
+| #03 | 48.37 | - | ❌ Còn | #16 | 74.66 | - | - | #29 | 48.28 | - | - |
+| #04 | 43.08 | - | ✅ Đã bán | #17 | 55.51 | - | - | #30 | 44.50 | - | - |
+| #05 | 43.17 | - | ✅ Đã bán | #18 | - | - | - | #31 | 42.08 | - | - |
+| #06 | 45.80 | - | ✅ Đã bán | #19 | 56.92 | - | - | #32 | 44.04 | - | - |
+| #07 | 45.04 | - | ✅ Đã bán | #20 | 63.10 | - | - | #33 | 43.90 | - | - |
+| #08 | 45.17 | - | ✅ Đã bán | #21 | - | - | - | #34 | 43.50 | - | - |
+| #09 | 44.17 | - | ✅ Đã bán | #22 | 71.00 | - | - | #35 | - | - | - |
+| #10 | 41.32 | - | ✅ Đã bán | #23 | **69.61** | **Fusion Gen 5** | ❌ Còn | #36 | 43.11 | - | - |
+| #11 | 44.51 | - | ✅ Đã bán | #24 | - | **Fusion Gen 5** | ❌ Còn | #37 | 47.12 | - | - |
+| #12 | 44.94 | - | ✅ Đã bán | #25 | 64.56 | - | ✅ Đã bán | #38-#50 | - | Hộp thương mại | - |
+| #13 | - | - | ✅ Đã bán | #26 | 61.83 | - | ✅ Đã bán | CXCV | 86.37 | Công viên chung | - |
 
-**Lưu ý:**
-- Căn #23: 4.16m (ngang) × 16.86m (sâu) = **69.61 m²**
-- Các ô "-" là những lô có thông tin chưa rõ hoặc chỉ có bản vẽ kỹ thuật
-- Diện tích sàn xây dựng có thể khác tùy mẫu nhà (Cosmo Gen 2, Fusion Gen 5, Opus)
+**Rổ hàng T5.2026 — Còn trống (chưa bán):**
+- **#01, #02, #03, #23, #24, #42, #50**
+- **Căn #23**: 69.61 m², **Fusion Gen 5**
+- **Căn #24**: **Fusion Gen 5**
+
+**Nguồn:** File rổ hàng cập nhật tháng 5/2026 trên GitHub
 | | | | | | | | | | | | |
 | | | | | | | | | | | | |
 | | | | | | | | | | | | |
