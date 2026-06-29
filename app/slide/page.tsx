@@ -54,6 +54,7 @@ export default function SlideBotPage() {
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioQueueRef = useRef<HTMLAudioElement[]>([]);
   const isPlayingRef = useRef(false);
+  const nextSentenceTimeoutRef = useRef<any>(null);
 
   // Refs cho ambient (đọc trong callback STT đã set 1 lần lúc mount)
   const ambientRef = useRef(false);
@@ -399,6 +400,10 @@ export default function SlideBotPage() {
   // Cắt lời khi đang đọc -> dừng audio + chuyển sang nghe (giống ChatGPT Voice)
   const bargeIn = () => {
     if (stateRef.current !== 'speaking') return;
+    if (nextSentenceTimeoutRef.current) {
+      clearTimeout(nextSentenceTimeoutRef.current);
+      nextSentenceTimeoutRef.current = null;
+    }
     if (activeAudioRef.current) {
       try {
         activeAudioRef.current.onended = null;
@@ -848,19 +853,32 @@ export default function SlideBotPage() {
   };
 
   const playNextSlideAudio = () => {
+    if (nextSentenceTimeoutRef.current) {
+      clearTimeout(nextSentenceTimeoutRef.current);
+      nextSentenceTimeoutRef.current = null;
+    }
     if (isPlayingRef.current) return;
     const audio = audioQueueRef.current.shift();
     if (!audio) { onSpeakDone(); return; }
     isPlayingRef.current = true;
     activeAudioRef.current = audio;
     speakStartRef.current = Date.now(); // mốc để VAD bỏ qua dư âm đầu câu
-    audio.onended = () => { isPlayingRef.current = false; activeAudioRef.current = null; playNextSlideAudio(); };
+    audio.onended = () => { 
+      isPlayingRef.current = false; 
+      activeAudioRef.current = null; 
+      // Nghỉ 450ms giữa 2 câu để tạo nhịp thở tự nhiên giống người thật!
+      nextSentenceTimeoutRef.current = setTimeout(playNextSlideAudio, 450); 
+    };
     audio.onerror = () => { isPlayingRef.current = false; activeAudioRef.current = null; playNextSlideAudio(); };
     audio.play().catch(() => { isPlayingRef.current = false; playNextSlideAudio(); });
   };
 
   // Đọc theo TỪNG CÂU: câu đầu phát ngay khi slide hiện, các câu sau preload song song -> hết trễ
   const speakText = (text: string) => {
+    if (nextSentenceTimeoutRef.current) {
+      clearTimeout(nextSentenceTimeoutRef.current);
+      nextSentenceTimeoutRef.current = null;
+    }
     if (activeAudioRef.current) { try { activeAudioRef.current.pause(); } catch (e) {} }
     audioQueueRef.current = [];
     isPlayingRef.current = false;
