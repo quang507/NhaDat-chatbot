@@ -46,7 +46,7 @@ export default function SlideBotPage() {
 
   // Chế độ nghe ngầm (ambient) + bật/tắt đọc to
   const [ambientMode, setAmbientMode] = useState(true); // mặc định BẬT nghe ngầm ngay khi vào trang
-  const [voiceOn, setVoiceOn] = useState(true);
+  const [voiceOn, setVoiceOn] = useState(false);
 
   const recognitionRef = useRef<any>(null);
   const isListeningLoopActive = useRef(false);
@@ -58,7 +58,7 @@ export default function SlideBotPage() {
 
   // Refs cho ambient (đọc trong callback STT đã set 1 lần lúc mount)
   const ambientRef = useRef(false);
-  const voiceOnRef = useRef(true);
+  const voiceOnRef = useRef(false);
   const bufferRef = useRef('');            // gom lời nói gần đây
   const debounceRef = useRef<any>(null);   // hẹn giờ sau khi ngừng nói
   const lastGenRef = useRef(0);            // mốc lần tạo slide gần nhất (cooldown)
