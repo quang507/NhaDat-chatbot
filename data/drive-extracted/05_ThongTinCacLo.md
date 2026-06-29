@@ -1,17 +1,85 @@
-# Thông Tin Chi Tiết Từng Lô Đất & Mẫu Nhà - Ny'ah Phú Định
+# Thông Tin Chuẩn Từng Lô Đất - Ny'ah Phú Định
 
-Tài liệu tổng hợp thông số chi tiết (mẫu nhà, diện tích đất, diện tích sử dụng, kết cấu, giá bán) của từng căn/lô đất trong rổ hàng dự án Ny'ah Phú Định để chatbot tra cứu nhanh và trả lời chính xác.
+> ⚠️ ĐÂY LÀ NGUỒN DUY NHẤT, CHÍNH XÁC về danh sách lô đất, mẫu nhà, diện tích, trạng thái bán. Mọi bảng phân lô khác trong dữ liệu (nếu có) đều CŨ/SAI, bỏ qua.
+> Cập nhật theo rổ hàng T6.2026. Các từ "Căn", "Lô", "Ô", "Unit", "#" (vd #03, #3) là tương đương.
 
-| Mã Lô | Mẫu Nhà | Kích Thước / Diện Tích Đất (m²) | Diện Tích Sàn Sử Dụng (m²) | Kết Cấu & Đặc Điểm | Giá Bán (Chưa NT) | Giá Bán (Gói Air) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **#1** | Office 1 | Thửa 438/103: **67.3 m²** | **472.53 m²** | Shophouse văn phòng: 3 tầng chuyên dụng (hầm - trệt - lửng cho phòng gym/kd) + 4 tầng căn hộ dịch vụ (24 căn) + Sân thượng BBQ. | 14,443,000,000 đ | Kèm giá NT mẫu Opus |
-| **#2** | Office 1 | Thửa 13/103: **62.9 m²** | **396.07 m²** | Shophouse văn phòng: 3 tầng chuyên dụng (hầm - trệt - lửng) + 4 tầng căn hộ dịch vụ + Sân thượng BBQ. | 12,791,000,000 đ | Kèm giá NT mẫu Opus |
-| **#3** | Cosmo | **5 m x 8.75 m** (Diện tích đất: **43.75 m²**) | **175 m²** | Mẫu nhà phố cao cấp: Mặt tiền rộng 5m, Phòng ngủ Master rộng 35m². Kết cấu: Trệt + lửng + 2 lầu + sân thượng. | 9,710,000,000 đ | 9,957,800,000 đ |
-| **#23** | Cashmere | **73.8 m²** | **334.92 m²** | Mẫu nhà dòng tiền cao cấp: Thiết kế 12 căn hộ dịch vụ cho thuê có gác lửng, thang máy lên tận sân thượng chill, hệ thống khí tươi AirTop. | 10,498,000,000 đ | - |
-| **#24** | Opus v3 | **4 m x 12.5 m** (Diện tích đất: **50.0 m²**) | **270 m²** | Shophouse thương mại hạng A "2 trong 1": Tối ưu kinh doanh/văn phòng khởi nghiệp với 2 tầng chuyên dụng. Kết cấu: Trệt + lửng + 3 lầu + sân thượng. | 12,751,000,000 đ | 13,136,350,000 đ |
-| **#25** | Office 2 | Diện tích đất tương tự Office | - | Shophouse văn phòng thương mại thế hệ mới. | 10,766,000,000 đ | - |
-| **#26** | Office 2 | Diện tích đất tương tự Office | - | Shophouse văn phòng thương mại thế hệ mới. | 16,566,000,000 đ | - |
-| **#42** | Cosmo Gen 2 | **5 m x 9 m** (Diện tích đất: **45.0 m²**) | **250 m²** | Mẫu nhà phố cao cấp Gen 2: Mặt tiền rộng 5m, Phòng ngủ Master rộng 35m². Kết cấu: Trệt + lửng + 3 lầu + sân thượng (6 tầng). | 8,981,000,000 đ | 9,277,100,000 đ |
-| **#50** | Cosmo Gen 2 | **5 m x 9 m** (Diện tích đất: **45.0 m²**) | **250 m²** | Mẫu nhà phố cao cấp Gen 2: Mặt tiền rộng 5m, Phòng ngủ Master rộng 35m². Kết cấu: Trệt + lửng + 3 lầu + sân thượng (6 tầng). | 11,470,000,000 đ | 11,797,600,000 đ |
+## Mẫu nhà theo căn (cố định, không đổi)
+- **Opus**: #01, #02, #15–#26
+- **Fusion Gen 5**: #04–#14, #27–#37
+- **Signature by Codinachs**: #43, #44
+- **Cosmo Gen 2**: #03, #38–#42, #45–#50
 
-*Chú thích: Các từ "Căn", "Lô", "Ô", "Unit" và ký hiệu "#" (ví dụ "#03", "#3") được hiểu tương đương nhau.*
+## Các căn CÒN TRỐNG (chưa bán) — rổ hàng T6.2026
+**#01, #02, #03, #23, #24, #42, #50**. Tất cả căn còn lại đã bán.
+
+## Bảng chi tiết 50 lô
+
+| Mã Lô | Mẫu Nhà | Diện Tích Đất (m²) | Trạng Thái |
+| :--- | :--- | :--- | :--- |
+| #01 | Opus | 57.24 | Còn trống |
+| #02 | Opus | 57.19 | Còn trống |
+| #03 | Cosmo Gen 2 | 56.37 | Còn trống |
+| #04 | Fusion Gen 5 | 43.32 | Đã bán |
+| #05 | Fusion Gen 5 | 56.20 | Đã bán |
+| #06 | Fusion Gen 5 | 56.82 | Đã bán |
+| #07 | Fusion Gen 5 | 54.93 | Đã bán |
+| #08 | Fusion Gen 5 | 44.11 | Đã bán |
+| #09 | Fusion Gen 5 | 44.17 | Đã bán |
+| #10 | Fusion Gen 5 | 44.32 | Đã bán |
+| #11 | Fusion Gen 5 | 44.21 | Đã bán |
+| #12 | Fusion Gen 5 | 44.75 | Đã bán |
+| #13 | Fusion Gen 5 | 44.94 | Đã bán |
+| #14 | Fusion Gen 5 | 54.98 | Đã bán |
+| #15 | Opus | 57.46 | Đã bán |
+| #16 | Opus | 74.68 | Đã bán |
+| #17 | Opus | 71.86 | Đã bán |
+| #18 | Opus | 91.43 | Đã bán |
+| #19 | Opus | 56.92 | Đã bán |
+| #20 | Opus | 61.89 | Đã bán |
+| #21 | Opus | 57.51 | Đã bán |
+| #22 | Opus | 57.91 | Đã bán |
+| #23 | Opus | 69.61 | Còn trống |
+| #24 | Opus | 73.52 | Còn trống |
+| #25 | Opus | 64.59 | Đã bán |
+| #26 | Opus | 91.43 | Đã bán |
+| #27 | Fusion Gen 5 | 42.34 | Đã bán |
+| #28 | Fusion Gen 5 | 47.27 | Đã bán |
+| #29 | Fusion Gen 5 | 44.55 | Đã bán |
+| #30 | Fusion Gen 5 | 44.52 | Đã bán |
+| #31 | Fusion Gen 5 | 44.28 | Đã bán |
+| #32 | Fusion Gen 5 | 44.04 | Đã bán |
+| #33 | Fusion Gen 5 | 43.92 | Đã bán |
+| #34 | Fusion Gen 5 | 43.55 | Đã bán |
+| #35 | Fusion Gen 5 | 43.33 | Đã bán |
+| #36 | Fusion Gen 5 | 43.11 | Đã bán |
+| #37 | Fusion Gen 5 | 47.12 | Đã bán |
+| #38 | Cosmo Gen 2 | 43.76 | Đã bán |
+| #39 | Cosmo Gen 2 | 43.75 | Đã bán |
+| #40 | Cosmo Gen 2 | 43.75 | Đã bán |
+| #41 | Cosmo Gen 2 | 43.75 | Đã bán |
+| #42 | Cosmo Gen 2 | 43.75 | Còn trống |
+| #43 | Signature by Codinachs | 55.87 | Đã bán |
+| #44 | Signature by Codinachs | 55.87 | Đã bán |
+| #45 | Cosmo Gen 2 | 43.75 | Đã bán |
+| #46 | Cosmo Gen 2 | 43.76 | Đã bán |
+| #47 | Cosmo Gen 2 | 43.75 | Đã bán |
+| #48 | Cosmo Gen 2 | 43.75 | Đã bán |
+| #49 | Cosmo Gen 2 | 43.75 | Đã bán |
+| #50 | Cosmo Gen 2 | 42.92 | Còn trống |
+
+## Bố trí công năng các tầng (chuẩn Ny'ah Phú Định)
+
+Nhà phố 6 tầng (1 trệt, 1 lửng, 3 lầu, sân thượng):
+- **Tầng 1 (trệt)**: Gara để xe + Phòng khách
+- **Tầng 2 (lửng)**: Phòng ngủ ông bà
+- **Tầng 3**: Bếp + Phòng ăn + Khu giặt sấy
+- **Tầng 4**: Phòng ngủ Master (phòng ngủ lớn)
+- **Tầng 5**: Phòng ngủ cho trẻ con
+- **Tầng 6**: Sân thượng
+
+Riêng mẫu **Opus**: 2 tầng dưới (tầng 1+2) là tầng văn phòng/thương mại; 4 tầng trên là không gian ở.
+
+**Hệ thang & thang máy:**
+- Thang máy chạy lên tận sân thượng.
+- Thang biến hóa (tiết kiệm diện tích): tầng 1 → 2 → 3.
+- Thang xoắn: tầng 4 → 5 và tầng 5 → 6.
