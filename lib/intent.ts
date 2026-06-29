@@ -14,13 +14,43 @@ const EXPLICIT_TRIGGERS = [
 ];
 
 const TOPIC_KEYWORDS = {
-  price: ['giá', 'bao nhiêu tiền', 'thanh toán', 'đặt cọc', 'chiết khấu', 'vay', 'ngân hàng'],
-  location: ['vị trí', 'địa chỉ', 'bản đồ', 'quận', 'đường', 'bình chánh', 'an dương vương', 'quận 8'],
-  unit: ['căn số', 'lô', 'diện tích', 'tầng', 'gara', 'thang máy', 'sân thượng', 'phòng ngủ', 'phòng khách', 'phòng tắm', 'bếp', 'phòng học'],
-  legal: ['pháp lý', 'sổ hồng', 'hợp đồng', 'cam kết', 'qsdđ'],
-  amenity: ['tiện ích', 'công viên', 'hồ bơi', 'cầu lông', 'bóng rổ', 'sinh thái', 'xanh', 'trung tâm thương mại', 'metro', 'landmark'],
-  design: ['mặt bằng', 'mẫu nhà', 'thiết kế', 'nội thất', 'phối cảnh', 'nhà phố'],
-  general: ['phú định', "ny'ah", 'nyah', 'niah', 'cosmo', 'fusion', 'opus', 'office', 'cashmere', 'nhà đạt', 'nha dat', 'công ty', 'chủ đầu tư', 'founder']
+  price: [
+    'giá', 'bao nhiêu tiền', 'thanh toán', 'đặt cọc', 'chiết khấu', 'vay', 'ngân hàng', 
+    'lãi suất', 'tỷ', 'triệu', 'bảng giá', 'giá bán', 'booking', 'chính sách', 'pttt', 
+    'trả góp', 'ân hạn', 'vốn tự có', 'nợ gốc', 'tài chính', 'báo giá', 'giá rumor', 'giá trần'
+  ],
+  location: [
+    'vị trí', 'địa chỉ', 'bản đồ', 'quận', 'đường', 'bình chánh', 'an dương vương', 'quận 8', 
+    'đi lại', 'di chuyển', 'kết nối', 'mặt tiền', 'hẻm', 'cách bao xa', 'km', 'phút', 
+    'hướng đi', 'quận 6', 'võ văn kiệt', 'quốc lộ', 'giao thông', 'ngập nước', 'triều cường'
+  ],
+  unit: [
+    'căn số', 'lô', 'diện tích', 'tầng', 'gara', 'thang máy', 'sân thượng', 'phòng ngủ', 
+    'phòng khách', 'phòng tắm', 'bếp', 'phòng học', 'toilet', 'wc', 'ban công', 'ngang', 
+    'dài', 'trệt', 'lầu', 'lửng', 'áp mái', 'm2', 'mét vuông', 'hướng cửa', 'hướng nhà', 
+    'hướng ban công', 'tây tứ trạch', 'đông tứ trạch'
+  ],
+  legal: [
+    'pháp lý', 'sổ hồng', 'hợp đồng', 'cam kết', 'qsdđ', 'sổ đỏ', 'quy hoạch', 'giấy phép', 
+    'xây dựng', 'gpxd', 'hoàn công', 'sở hữu', 'lâu dài', 'thời hạn', 'sang tên', 
+    'công chứng', 'hdmb', 'văn bản thỏa thuận', 'phê duyệt'
+  ],
+  amenity: [
+    'tiện ích', 'công viên', 'hồ bơi', 'cầu lông', 'bóng rổ', 'sinh thái', 'xanh', 
+    'trung tâm thương mại', 'metro', 'landmark', 'bảo vệ', 'an ninh', 'camera', 
+    'chỗ đậu xe', 'bãi giữ xe', 'gym', 'spa', 'bbq', 'trường học', 'bệnh viện', 
+    'siêu thị', 'chợ', 'khu dân cư', 'compound', 'biệt lập'
+  ],
+  design: [
+    'mặt bằng', 'mẫu nhà', 'thiết kế', 'nội thất', 'phối cảnh', 'nhà phố', 'layout', 
+    'kiến trúc', 'phong cách', 'cảnh quan', 'hoàn thiện', 'giao thô', 'vật liệu', 
+    'chuẩn', 'hiện đại', 'cổ điển', 'tân cổ điển', 'không gian', 'giếng trời', 'thông tầng'
+  ],
+  general: [
+    'phú định', "ny'ah", 'nyah', 'niah', 'cosmo', 'fusion', 'opus', 'office', 'cashmere', 
+    'nhà đạt', 'nha dat', 'công ty', 'chủ đầu tư', 'founder', 'nhà mẫu', 'sa bàn', 
+    'tiến độ', 'khởi công', 'bàn giao', 'chủ thầu', 'đơn vị thi công', 'phát triển', 'dự án'
+  ]
 };
 
 export function classifyAmbientIntent(text: string): AmbientIntent {
