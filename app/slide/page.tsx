@@ -121,6 +121,23 @@ export default function SlideBotPage() {
   const VAD_FRAMES = 6;
   const SPEAK_GRACE_MS = 400;
 
+  // ===== ENGINE NGHE NGẦM dùng Whisper (Groq) thay cho Web Speech API =====
+  // Lý do: Web Speech API (Chrome) hay "chết câm" sau abort/restart, lại phụ thuộc mic
+  // mặc định + server Google (Brave chặn). Engine này dùng MediaRecorder trên đúng mic
+  // Chrome đã cấp, tự cắt câu theo độ lớn âm thanh (VAD) rồi gửi /api/transcribe.
+  const amStreamRef = useRef<MediaStream | null>(null);
+  const amCtxRef = useRef<AudioContext | null>(null);
+  const amRafRef = useRef<number | null>(null);
+  const amRecorderRef = useRef<MediaRecorder | null>(null);
+  const amChunksRef = useRef<Blob[]>([]);
+  const amRecordingRef = useRef(false);
+  const amSilenceStartRef = useRef(0);
+  const amSpeechStartRef = useRef(0);
+  const amEngineOnRef = useRef(false);
+  const AM_THRESHOLD = 0.035;     // ngưỡng RMS coi là có người nói
+  const AM_SILENCE_MS = 900;      // im lặng 0.9s -> chốt 1 câu, gửi phiên âm
+  const AM_MIN_SPEECH_MS = 350;   // câu < 0.35s -> bỏ (nhiễu)
+
   // Sync state to ref for callbacks
   useEffect(() => {
     stateRef.current = state;
@@ -206,74 +223,26 @@ export default function SlideBotPage() {
           }
         };
 
-        rec.onend = () => {
-          if (!isListeningLoopActive.current) return;
-          if (suppressListenRef.current) return; // đang đọc to -> chờ onSpeakDone mở lại
-          // Web Speech CHỈ dùng cho chế độ nghe ngầm. Turn-based (tắt nghe ngầm) dùng Whisper,
-          // nên KHÔNG được tự restart Web Speech ở đây — nếu không nó sẽ giành mic của Whisper.
-          if (!ambientRef.current) return;
-          if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') return;
-          try { recognitionRef.current?.start(); } catch(e){}
-        };
+        // Web Speech KHÔNG còn dùng cho nghe ngầm (hay chết câm + phụ thuộc mic mặc định/Google).
+        // Để onend inert; nghe ngầm giờ chạy bằng engine Whisper (startAmbientListening).
+        rec.onend = () => {};
 
         recognitionRef.current = rec;
-
-        // WATCHDOG: Web Speech (Chrome) đôi khi "chết câm" — vẫn báo đang nghe nhưng
-        // engine đã ngừng nhận audio và KHÔNG bắn onend. Cứ 3s kiểm tra: nếu đang ở chế độ
-        // nghe (ambient hoặc listening) mà >7s không có hoạt động nào -> ép abort + start lại.
-        watchdogRef.current = setInterval(() => {
-          if (!isListeningLoopActive.current) return;
-          if (suppressListenRef.current) return;            // đang đọc to -> bỏ qua
-          if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') return; // đang dùng Whisper
-          if (stateRef.current === 'processing' || stateRef.current === 'speaking') return;
-          if (!ambientRef.current) return; // watchdog chỉ áp dụng cho Web Speech ở chế độ nghe ngầm
-          const idle = Date.now() - lastActivityRef.current;
-          if (idle > 7000) {
-            lastActivityRef.current = Date.now();
-            try { recognitionRef.current?.abort(); } catch (e) {}
-            // onend sẽ tự restart; phòng khi onend không bắn -> ép start lại
-            setTimeout(() => {
-              if (!isListeningLoopActive.current) return;
-              if (ambientRef.current || stateRef.current === 'listening') {
-                try { recognitionRef.current?.start(); } catch (e) {}
-              }
-            }, 400);
-          }
-        }, 3000);
-
-        // TỰ ĐỘNG bật nghe ngầm ngay khi vào trang — không cần bấm gì.
-        ambientRef.current = true;
-        isListeningLoopActive.current = true;
-        // best-effort: thử start ngay (nhiều trình duyệt cho phép nếu mic đã được cấp quyền từ trước)
-        try {
-          recognitionRef.current?.start();
-          lastActivityRef.current = Date.now();
-          setState('listening');
-          setTranscript('🎧 Đang nghe ngầm…');
-        } catch (e) {}
-        // QUAN TRỌNG: cử chỉ người dùng đầu tiên (chạm/gõ phím) mới THỰC SỰ cấp quyền mic.
-        // Phiên auto-start ở trên (chưa có cử chỉ) thường "chết câm" — engine báo nghe nhưng
-        // không nhận audio. Vì vậy ở cử chỉ đầu tiên BẮT BUỘC abort phiên cũ rồi start lại
-        // để có phiên được trình duyệt cấp mic thật sự.
-        autoStartGestureRef.current = () => {
-          if (!isListeningLoopActive.current) return;
-          if (!ambientRef.current) return; // chế độ Whisper tự xử lý qua nút bấm
-          try { recognitionRef.current?.abort(); } catch (e) {}
-          setTimeout(() => {
-            if (!isListeningLoopActive.current || !ambientRef.current) return;
-            try {
-              recognitionRef.current?.start();
-              lastActivityRef.current = Date.now();
-              setState('listening');
-              setTranscript('🎧 Đang nghe ngầm…');
-            } catch (e) {}
-          }, 250);
-        };
-        window.addEventListener('pointerdown', autoStartGestureRef.current, { once: true });
-        window.addEventListener('keydown', autoStartGestureRef.current, { once: true });
-      } else {
-        setTranscript('Trình duyệt không hỗ trợ Web Speech API. Hãy thử Chrome hoặc Safari.');
       }
+
+      // NGHE NGẦM mặc định BẬT — chạy bằng engine Whisper (MediaRecorder + VAD).
+      ambientRef.current = true;
+      isListeningLoopActive.current = true;
+      // Thử bật ngay (nếu mic đã được cấp quyền trước đó). AudioContext có thể bị "suspended"
+      // tới khi có cử chỉ -> resume ở cử chỉ đầu tiên.
+      startAmbientListening();
+      autoStartGestureRef.current = () => {
+        if (!isListeningLoopActive.current || !ambientRef.current) return;
+        try { amCtxRef.current?.resume(); } catch (e) {}
+        startAmbientListening();
+      };
+      window.addEventListener('pointerdown', autoStartGestureRef.current);
+      window.addEventListener('keydown', autoStartGestureRef.current);
     }
 
     return () => {
@@ -291,6 +260,7 @@ export default function SlideBotPage() {
       audioQueueRef.current = [];
       isPlayingRef.current = false;
       if (recognitionRef.current) recognitionRef.current.abort();
+      stopAmbientListening();
       teardownVAD();
     };
   }, []);
@@ -347,7 +317,7 @@ export default function SlideBotPage() {
       };
       
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
         stream.getTracks().forEach(t => t.stop());
         await transcribeAndProcess(audioBlob);
       };
@@ -367,8 +337,8 @@ export default function SlideBotPage() {
     setTranscript('⚡ Đang xử lý giọng nói bằng Groq Whisper...');
     try {
       const formData = new FormData();
-      formData.append('file', blob, 'audio.wav');
-      
+      formData.append('file', blob, 'audio.webm');
+
       const res = await fetch('/api/transcribe', {
         method: 'POST',
         body: formData
@@ -404,10 +374,10 @@ export default function SlideBotPage() {
       audioQueueRef.current = [];
       isPlayingRef.current = false;
       
+      stopAmbientListening();
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
         mediaRecorderRef.current.stop();
       } else {
-        if (recognitionRef.current) recognitionRef.current.abort();
         teardownVAD();
         setState('idle');
         setTranscript('Đã dừng. Nhấn nút Micro để bắt đầu lại.');
@@ -421,9 +391,7 @@ export default function SlideBotPage() {
       if (activeAudioRef.current) activeAudioRef.current.pause();
 
       if (ambientMode) {
-        try { recognitionRef.current?.start(); } catch(e){}
-        setState('listening');
-        setTranscript('🎧 Đang nghe ngầm…');
+        startAmbientListening();
       } else {
         startWhisperRecording();
       }
@@ -447,11 +415,9 @@ export default function SlideBotPage() {
     isPlayingRef.current = false;
     teardownVAD();
     suppressListenRef.current = false;
-    
+
     if (ambientRef.current) {
-      setState('listening');
-      setTranscript('🎧 Đang nghe ngầm…');
-      try { recognitionRef.current?.start(); } catch (e) {}
+      startAmbientListening(); // engine vẫn chạy, chỉ mở lại thu (suppress đã tắt)
     } else {
       startWhisperRecording();
     }
@@ -609,6 +575,122 @@ export default function SlideBotPage() {
     if (audioCtxRef.current) { try { audioCtxRef.current.close(); } catch (e) {} audioCtxRef.current = null; }
   };
 
+  // Phiên âm 1 đoạn (utterance) bằng Whisper rồi đẩy vào luồng nghe ngầm.
+  const transcribeAmbientSegment = async (blob: Blob) => {
+    if (blob.size < 1400) return; // quá nhỏ -> bỏ
+    try {
+      const fd = new FormData();
+      fd.append('file', blob, 'audio.webm');
+      const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
+      if (!res.ok) return;
+      const data = await res.json();
+      const text = normalizeVietnameseSpeech((data.text || '').trim());
+      if (!text || text.replace(/[^a-zà-ỹ0-9]/gi, '').length < 2) return;
+      if (handleVoiceCommands(text)) return;
+      // Bắn tức thì nếu chạm từ khóa mạnh, đồng thời gom vào buffer xét slide đầy đủ
+      maybeInstantTrigger(text);
+      handleAmbientSpeech(text);
+    } catch (e) { /* bỏ qua, vòng sau thu tiếp */ }
+  };
+
+  // Bắt đầu engine nghe ngầm Whisper (idempotent). Thu liên tục, tự cắt câu theo VAD.
+  const startAmbientListening = async () => {
+    if (amEngineOnRef.current) { setState('listening'); setTranscript('🎧 Đang nghe ngầm…'); return; }
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      setTranscript('Trình duyệt không hỗ trợ thu âm.'); return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
+      amStreamRef.current = stream;
+      const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      const ctx: AudioContext = new Ctx();
+      amCtxRef.current = ctx;
+      try { if (ctx.state === 'suspended') ctx.resume(); } catch (e) {}
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 512;
+      source.connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+      amEngineOnRef.current = true;
+      amRecordingRef.current = false;
+      amSilenceStartRef.current = 0;
+      setState('listening');
+      setTranscript('🎧 Đang nghe ngầm…');
+
+      const startSeg = () => {
+        if (amRecordingRef.current) return;
+        amChunksRef.current = [];
+        try {
+          const mr = new MediaRecorder(stream);
+          amRecorderRef.current = mr;
+          mr.ondataavailable = (e) => { if (e.data.size > 0) amChunksRef.current.push(e.data); };
+          mr.onstop = () => {
+            amRecordingRef.current = false;
+            const dur = Date.now() - amSpeechStartRef.current;
+            const blob = new Blob(amChunksRef.current, { type: mr.mimeType || 'audio/webm' });
+            if (dur >= AM_MIN_SPEECH_MS) transcribeAmbientSegment(blob);
+          };
+          mr.start();
+          amRecordingRef.current = true;
+          amSpeechStartRef.current = Date.now();
+        } catch (e) {}
+      };
+      const stopSeg = () => {
+        if (amRecorderRef.current && amRecorderRef.current.state !== 'inactive') {
+          try { amRecorderRef.current.stop(); } catch (e) {}
+        }
+      };
+
+      let bargeFrames = 0;
+      const tick = () => {
+        amRafRef.current = requestAnimationFrame(tick);
+        analyser.getByteTimeDomainData(data);
+        let sum = 0;
+        for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
+        const rms = Math.sqrt(sum / data.length);
+        const speaking = rms > AM_THRESHOLD;
+
+        // Bot đang đọc to: chỉ phát hiện để CẮT LỜI (barge-in), KHÔNG thu (tránh ghi lại tiếng máy).
+        // Dùng ngưỡng cao hơn + nhiều frame liên tiếp để tiếng loa (echo) không tự cắt lời bot.
+        if (suppressListenRef.current || stateRef.current === 'speaking') {
+          if (Date.now() - speakStartRef.current > SPEAK_GRACE_MS) {
+            if (rms > VAD_THRESHOLD) bargeFrames++; else bargeFrames = Math.max(0, bargeFrames - 1);
+            if (bargeFrames >= VAD_FRAMES) { bargeFrames = 0; bargeIn(); }
+          }
+          if (amRecordingRef.current) stopSeg();
+          return;
+        }
+        bargeFrames = 0;
+
+        if (speaking) {
+          amSilenceStartRef.current = 0;
+          if (!amRecordingRef.current) startSeg();
+        } else if (amRecordingRef.current) {
+          if (!amSilenceStartRef.current) amSilenceStartRef.current = Date.now();
+          else if (Date.now() - amSilenceStartRef.current > AM_SILENCE_MS) stopSeg();
+        }
+      };
+      tick();
+    } catch (e) {
+      amEngineOnRef.current = false;
+      setTranscript('Không truy cập được mic. Cấp quyền mic rồi thử lại.');
+    }
+  };
+
+  const stopAmbientListening = () => {
+    amEngineOnRef.current = false;
+    if (amRafRef.current != null) { cancelAnimationFrame(amRafRef.current); amRafRef.current = null; }
+    if (amRecorderRef.current && amRecorderRef.current.state !== 'inactive') {
+      try { amRecorderRef.current.onstop = null; amRecorderRef.current.stop(); } catch (e) {}
+    }
+    amRecorderRef.current = null;
+    amRecordingRef.current = false;
+    if (amStreamRef.current) { try { amStreamRef.current.getTracks().forEach(t => t.stop()); } catch (e) {} amStreamRef.current = null; }
+    if (amCtxRef.current) { try { amCtxRef.current.close(); } catch (e) {} amCtxRef.current = null; }
+  };
+
   // Làm sạch + tách câu: dùng chung splitCleanSentences từ lib/speech.ts
   //   -> slide giờ đọc chuẩn y hệt trang /voice (SĐT, brand, %, tiền, Q.8, #03...)
 
@@ -618,9 +700,7 @@ export default function SlideBotPage() {
     suppressListenRef.current = false;
     if (isListeningLoopActive.current) {
       if (ambientRef.current) {
-        setState('listening');
-        setTranscript('🎧 Đang nghe ngầm…');
-        try { recognitionRef.current?.start(); } catch (e) {}
+        startAmbientListening(); // engine vẫn chạy, mở lại thu sau khi đọc xong
       } else {
         isListeningLoopActive.current = false;
         setState('idle');
@@ -692,11 +772,9 @@ export default function SlideBotPage() {
       setSlide(data);
 
       if (voiceOnRef.current) {
-        // Có đọc to: tạm ngắt mic khi đang đọc (tránh thu lại tiếng máy), mở lại ở onSpeakDone
-        if (ambientRef.current) {
-          suppressListenRef.current = true;
-          try { recognitionRef.current?.abort(); } catch (e) {}
-        }
+        // Có đọc to: engine Whisper tự tạm ngừng thu (đọc suppressListenRef) để khỏi ghi lại tiếng máy,
+        // vẫn giữ phát hiện barge-in. Mở lại thu ở onSpeakDone.
+        if (ambientRef.current) suppressListenRef.current = true;
         setState('speaking');
         speakText(data.speech_text);
       } else {
@@ -711,11 +789,8 @@ export default function SlideBotPage() {
     } catch (e) {
       if (ambient) { setTranscript('🎧 Đang nghe ngầm…'); return; }
       setTranscript('Xin lỗi, có lỗi xảy ra khi xử lý.');
-      if (isListeningLoopActive.current) {
-        setTimeout(() => {
-          setState('listening');
-          try { recognitionRef.current?.start(); } catch(e){}
-        }, 2000);
+      if (isListeningLoopActive.current && ambientRef.current) {
+        setTimeout(() => { startAmbientListening(); }, 1500);
       } else {
         setState('idle');
       }
@@ -991,7 +1066,7 @@ export default function SlideBotPage() {
           </Link>
           <Link
             href="/"
-            onClick={() => { isListeningLoopActive.current = false; if (activeAudioRef.current) activeAudioRef.current.pause(); if (recognitionRef.current) recognitionRef.current.abort(); teardownVAD(); }}
+            onClick={() => { isListeningLoopActive.current = false; if (activeAudioRef.current) activeAudioRef.current.pause(); if (recognitionRef.current) recognitionRef.current.abort(); stopAmbientListening(); teardownVAD(); }}
             title="Thoát về trang chủ"
             className="w-9 h-9 flex items-center justify-center rounded-full bg-[#161d30] border border-[#1e2a45] text-gray-400 hover:text-white hover:border-red-500/50 transition"
           >
@@ -1049,17 +1124,11 @@ export default function SlideBotPage() {
                 if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
                   try { mediaRecorderRef.current.onstop = null; mediaRecorderRef.current.stop(); } catch (e) {}
                 }
-                try { recognitionRef.current?.abort(); } catch (e) {}
-                lastActivityRef.current = Date.now();
+                stopAmbientListening();
                 setTimeout(() => {
                   if (!isListeningLoopActive.current) return;
-                  if (next) {
-                    setState('listening');
-                    setTranscript('🎧 Đang nghe ngầm…');
-                    try { recognitionRef.current?.start(); } catch (e) {}
-                  } else {
-                    startWhisperRecording();
-                  }
+                  if (next) startAmbientListening();
+                  else startWhisperRecording();
                 }, 300);
               }
             }}
