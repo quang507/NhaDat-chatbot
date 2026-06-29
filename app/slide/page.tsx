@@ -1240,7 +1240,7 @@ export default function SlideBotPage() {
   };
 
   return (
-    <div className="min-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Google Sans', 'Product Sans', 'Be Vietnam Pro', sans-serif" }}>
+    <div className="h-screen max-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Google Sans', 'Product Sans', 'Be Vietnam Pro', sans-serif" }}>
 
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes floatSlow1 {
@@ -1340,13 +1340,13 @@ export default function SlideBotPage() {
       </div>
 
       {/* Header */}
-      <header className="px-6 md:px-8 py-4 md:py-5 z-10 flex justify-between items-center border-b border-[#1e2a45] bg-[#0a0f1e]/80 backdrop-blur-md">
-        {/* Brand (logo placeholder 🏠 — sẽ thay bằng logo thật) */}
-        <div className="flex items-center gap-3">
-          <span className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-lg shrink-0"><img src="/logo.svg" alt="Ny'ah Phú Định" className="w-[82%] h-[82%] object-contain" /></span>
+      <header className="px-4 md:px-6 py-2 z-10 flex justify-between items-center border-b border-[#1e2a45] bg-[#0a0f1e]/80 backdrop-blur-md shrink-0">
+        {/* Brand */}
+        <div className="flex items-center gap-2.5">
+          <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-lg shrink-0"><img src="/logo.svg" alt="Ny'ah Phú Định" className="w-[82%] h-[82%] object-contain" /></span>
           <div>
-            <h1 className="font-bold text-lg leading-tight">Ny'ah Phú Định</h1>
-            <p className="text-xs text-gray-400">Trình chiếu thông minh · Nhã Đạt AI</p>
+            <h1 className="font-bold text-sm leading-tight">Ny'ah Phú Định</h1>
+            <p className="text-[10px] text-gray-400 leading-tight">Trình chiếu thông minh · Nhã Đạt AI</p>
           </div>
         </div>
 
@@ -1389,9 +1389,9 @@ export default function SlideBotPage() {
       </header>
 
       {/* Main Content Area - The Slide */}
-      <main className="flex-1 z-10 flex items-center justify-center p-8">
+      <main className="flex-1 min-h-0 z-10 flex items-center justify-center p-3">
         {slide ? (
-          <div className="w-full flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center">
             {renderSlideContent()}
           </div>
         ) : (
@@ -1406,8 +1406,8 @@ export default function SlideBotPage() {
       </main>
 
       {/* Footer / Controls */}
-      <footer className="p-6 z-10 flex flex-col items-center gap-4 bg-gradient-to-t from-[#0a0f1e] to-transparent">
-        <div className={`text-sm text-center font-medium bg-[#161d30]/80 backdrop-blur px-6 py-3 rounded-2xl border text-gray-300 min-w-[300px] max-w-2xl flex items-center justify-center gap-2.5 transition-colors ${
+      <footer className="px-4 py-3 z-10 flex flex-wrap items-center justify-center gap-2.5 bg-gradient-to-t from-[#0a0f1e] to-transparent shrink-0">
+        <div className={`text-sm font-medium bg-[#161d30]/80 backdrop-blur px-4 py-2.5 rounded-2xl border text-gray-300 min-w-0 max-w-[42vw] flex-1 flex items-center justify-center gap-2.5 transition-colors ${
           state === 'listening' ? 'border-green-500/60' : state === 'processing' ? 'border-blue-500/60' : 'border-[#1e2a45]'
         }`}>
           {state === 'listening' && (
@@ -1501,11 +1501,6 @@ export default function SlideBotPage() {
           </button>
         </div>
 
-        {ambientMode && (
-          <p className="text-[11px] text-emerald-400/70 text-center max-w-md">
-            Chế độ nghe ngầm: bot tự lắng nghe và chỉ hiện slide khi câu chuyện chạm chủ đề có dữ liệu. Tám chuyện linh tinh sẽ được bỏ qua.
-          </p>
-        )}
       </footer>
 
       {/* Fullscreen Image Lightbox Modal */}
