@@ -969,8 +969,8 @@ export default function SlideBotPage() {
       );
     };
 
-    // Định nghĩa class container chuẩn 16:9 to lớn chiếm gần trọn màn hình
-    const containerClass = "slide-stage w-full max-w-[95vw] md:max-w-[90vw] xl:max-w-[85vw] aspect-video max-h-[72vh] md:max-h-[75vh] xl:max-h-[78vh] rounded-3xl shadow-2xl border border-white/5 flex overflow-hidden transform transition-all duration-700 hover:shadow-[#e8b84b]/10";
+    // Định nghĩa class container to lớn chiếm gần trọn màn hình (độ cao chiếm 72-84vh để tối đa chiều cao ảnh)
+    const containerClass = "slide-stage w-full max-w-[95vw] md:max-w-[92vw] xl:max-w-[88vw] h-[72vh] md:h-[78vh] xl:h-[84vh] rounded-3xl shadow-2xl border border-white/5 flex overflow-hidden transform transition-all duration-700 hover:shadow-[#e8b84b]/10";
 
     // 1. TEXT ONLY (Chỉ có văn bản)
     if (layout === 'text_only') {
