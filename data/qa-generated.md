@@ -751,7 +751,7 @@ A: Căn mã lô 42 thuộc mẫu Cosmo Gen 2, có giá là 8,981,000,000 đồng
 Q: Tôi đang quan tâm căn mã lô 24, giá bán hiện tại là bao nhiêu?
 A: Căn mã lô 24 (mẫu Opus v3) có giá là 12,751,000,000 đồng (chưa bao gồm nội thất) và 13,136,350,000 đồng nếu bao gồm gói hoàn thiện nội thất Air.
 
-Q: Các căn Office 2 mã lô 25 và 26 có giá lần lượt là bao nhiêu?
+Q: Các căn Opus mã lô 25 và 26 có giá lần lượt là bao nhiêu?
 A: Căn mã lô 25 có giá 10,766,000,000 đồng và căn mã lô 26 có giá 16,566,000,000 đồng (giá chưa bao gồm nội thất).
 
 Q: Nếu tôi muốn mua căn mẫu Cosmo Gen 2 mã lô 50 thì giá là bao nhiêu?
@@ -763,7 +763,7 @@ A: Đúng rồi ạ, các căn mã lô 25, 26, 1 và 2 sẽ kèm theo giá nội
 Q: Căn mã lô 3 thuộc mẫu nhà nào và giá bao nhiêu?
 A: Căn mã lô 3 thuộc mẫu Cosmo, có giá 9,710,000,000 đồng (chưa bao gồm nội thất) và 9,957,800,000 đồng nếu bao gồm gói hoàn thiện nội thất Air.
 
-Q: Giá bán các căn Office 1 mã lô 1 và 2 là bao nhiêu?
+Q: Giá bán các căn Opus mã lô 1 và 2 là bao nhiêu?
 A: Căn mã lô 1 có giá 14,443,000,000 đồng và căn mã lô 2 có giá 12,791,000,000 đồng (giá chưa bao gồm nội thất).
 
 ## Nguồn: data/drive-extracted/2 - trình chiếu__2a - bản đồ phân lô__[2a1a] bản đồ phân lô.md
