@@ -47,7 +47,11 @@ const TOPIC_KEYWORDS = {
     'chuẩn', 'hiện đại', 'cổ điển', 'tân cổ điển', 'không gian', 'giếng trời', 'thông tầng'
   ],
   general: [
-    'phú định', "ny'ah", 'nyah', 'niah', 'cosmo', 'fusion', 'opus', 'office', 'cashmere', 
+    'phú định', "ny'ah", 'nyah', 'niah', 
+    'cosmo', 'cót mô', 'cót-mô', 'cốt mô',
+    'fusion', 'phiêu dân', 'phiêu-dân',
+    'opus', 'ô-pút', 'ô pút', 'o pút',
+    'office', 'cashmere', 
     'nhà đạt', 'nha dat', 'công ty', 'chủ đầu tư', 'founder', 'nhà mẫu', 'sa bàn', 
     'tiến độ', 'khởi công', 'bàn giao', 'chủ thầu', 'đơn vị thi công', 'phát triển', 'dự án'
   ]

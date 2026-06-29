@@ -46,7 +46,11 @@ CÁCH CHỌN LAYOUT_TYPE (HÃY ĐA DẠNG, đừng luôn chọn 1 kiểu — bi�
 // Danh sách từ khóa dự án — nếu ambient nhưng KHÔNG có bất kỳ từ nào này → SKIP ngay
 // (Thực tế: câu mơ hồ "ừ", "ok", "à ừ" không chứa keyword nào dưới đây)
 const PROJECT_KEYWORDS = [
-  'phú định', "ny'ah", 'nyah', 'niah', 'cosmo', 'fusion', 'opus', 'office', 'cashmere',
+  'phú định', "ny'ah", 'nyah', 'niah',
+  'cosmo', 'cót mô', 'cót-mô', 'cốt mô',
+  'fusion', 'phiêu dân', 'phiêu-dân',
+  'opus', 'ô-pút', 'ô pút', 'o pút',
+  'office', 'cashmere',
   'giá', 'căn', 'lô', 'diện tích', 'tầng', 'mặt bằng', 'gara', 'thang máy', 'sân thượng',
   'tiện ích', 'công viên', 'hồ bơi', 'cầu lông', 'bóng rổ',
   'vị trí', 'địa chỉ', 'bản đồ', 'quận', 'đường',
@@ -100,8 +104,16 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
         return { prompt: '', hasChunks: false };
       }
       const hasModelKeyword = message.toLowerCase().includes('opus') || 
+                              message.toLowerCase().includes('ô-pút') || 
+                              message.toLowerCase().includes('ô pút') || 
+                              message.toLowerCase().includes('o pút') || 
                               message.toLowerCase().includes('cosmo') || 
-                              message.toLowerCase().includes('fusion');
+                              message.toLowerCase().includes('cót mô') || 
+                              message.toLowerCase().includes('cót-mô') || 
+                              message.toLowerCase().includes('cốt mô') || 
+                              message.toLowerCase().includes('fusion') ||
+                              message.toLowerCase().includes('phiêu dân') ||
+                              message.toLowerCase().includes('phiêu-dân');
       const hasUnit = detectUnit(message) !== null;
       const minScore = (ambient && !hasModelKeyword && !hasUnit) ? 0.71 : 0;
       const chunks = await retrieve(ragQuery, index, 12, minScore);
@@ -264,10 +276,12 @@ export async function POST(req: NextRequest) {
     if (parsed.image_urls.length === 0) {
       // 1. Phân loại Model nhà
       let model = 'cosmo_gen_2'; // Mặc định là Cosmo Gen 2
-      if (textToSearch.includes('fusion') || textToSearch.includes('gen 5') || textToSearch.includes('gen5')) {
+      if (textToSearch.includes('fusion') || textToSearch.includes('gen 5') || textToSearch.includes('gen5') || textToSearch.includes('phiêu dân') || textToSearch.includes('phiêu-dân')) {
         model = 'fusion_gen_5';
-      } else if (textToSearch.includes('opus') || textToSearch.includes('ô-pút') || textToSearch.includes('ô pút')) {
+      } else if (textToSearch.includes('opus') || textToSearch.includes('ô-pút') || textToSearch.includes('ô pút') || textToSearch.includes('o pút')) {
         model = 'opus';
+      } else if (textToSearch.includes('cosmo') || textToSearch.includes('cót mô') || textToSearch.includes('cót-mô') || textToSearch.includes('cốt mô')) {
+        model = 'cosmo_gen_2';
       } else {
         // Suy ra mẫu nhà theo SỐ CĂN khách hỏi (nhận cả "căn 23" lẫn "căn hai ba" qua detectUnit)
         const unitNo = detectUnit(message);
@@ -421,7 +435,7 @@ export async function POST(req: NextRequest) {
       } else if (textToSearch.includes('pháp lý') || textToSearch.includes('sổ hồng') || textToSearch.includes('hợp đồng') || textToSearch.includes('cam kết')) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'];
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('cosmo') || textToSearch.includes('fusion') || textToSearch.includes('opus') || textToSearch.includes('mẫu nhà') || textToSearch.includes('nhà phố') || textToSearch.includes('nội thất') || textToSearch.includes('hình ảnh')) {
+      } else if (textToSearch.includes('cosmo') || textToSearch.includes('cót mô') || textToSearch.includes('cót-mô') || textToSearch.includes('cốt mô') || textToSearch.includes('fusion') || textToSearch.includes('phiêu dân') || textToSearch.includes('phiêu-dân') || textToSearch.includes('opus') || textToSearch.includes('ô-pút') || textToSearch.includes('mẫu nhà') || textToSearch.includes('nhà phố') || textToSearch.includes('nội thất') || textToSearch.includes('hình ảnh')) {
         // Hỏi chung về mẫu nhà → hiện slideshow nhiều góc nhìn đẹp nhất
         if (model === 'cosmo_gen_2') {
           parsed.image_urls = [
