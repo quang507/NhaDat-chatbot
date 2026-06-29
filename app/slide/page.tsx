@@ -143,6 +143,7 @@ export default function SlideBotPage() {
   const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
   const AM_SILENCE_MS = 900;      // im lặng 0.9s -> chốt 1 câu, gửi phiên âm
   const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
+  const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt để gửi phiên âm
 
   // Whisper tiếng Việt hay "ảo giác" câu outro YouTube khi thu phải im lặng/nhiễu -> chặn.
   const WHISPER_HALLUCINATIONS = [
@@ -181,6 +182,10 @@ export default function SlideBotPage() {
       startAmbientListening();
       autoStartGestureRef.current = () => {
         if (!isListeningLoopActive.current || !ambientRef.current) return;
+        if (useWhisperAmbientRef.current) {
+          startWhisperAmbient(); // Đã rớt sang Whisper, đảm bảo Whisper đang chạy
+          return;
+        }
         if (!firstGestureRef.current) {
           firstGestureRef.current = true;
           try { recognitionRef.current?.abort(); } catch (e) {}
@@ -613,19 +618,22 @@ export default function SlideBotPage() {
   };
 
   const restartAmbientRecognition = () => {
+    if (useWhisperAmbientRef.current) return; // Đã rớt sang Whisper, không chạy Web Speech nữa
     const rec = buildRecognition();
     if (!rec) { fallbackToWhisper('Trình duyệt không hỗ trợ Web Speech'); return; }
     recognitionRef.current = rec;
     try { rec.start(); } catch (e) { /* InvalidState: instance khác đang chạy -> bỏ */ }
     // WATCHDOG: nếu sau 6s vẫn KHÔNG có hoạt động nào (chết câm / bị chặn) -> rớt sang Whisper.
     if (wsWatchdogRef.current) clearTimeout(wsWatchdogRef.current);
-    wsWatchdogRef.current = setTimeout(() => {
-      if (!amEngineOnRef.current || useWhisperAmbientRef.current) return;
-      if (suppressListenRef.current || stateRef.current === 'speaking') return;
-      if (Date.now() - wsActivityRef.current > 5500) {
-        fallbackToWhisper('Web Speech không phản hồi 6s');
-      }
-    }, 6000);
+    if (firstGestureRef.current) { // Chỉ bật watchdog sau khi đã có cử chỉ đầu tiên
+      wsWatchdogRef.current = setTimeout(() => {
+        if (!amEngineOnRef.current || useWhisperAmbientRef.current) return;
+        if (suppressListenRef.current || stateRef.current === 'speaking') return;
+        if (Date.now() - wsActivityRef.current > 5500) {
+          fallbackToWhisper('Web Speech không phản hồi 6s');
+        }
+      }, 6000);
+    }
   };
 
   // Bật nghe ngầm. Idempotent. Ưu tiên Web Speech; nếu đã rớt thì dùng Whisper.
@@ -712,6 +720,11 @@ export default function SlideBotPage() {
         const speaking = rms > AM_THRESHOLD;
         if (suppressListenRef.current || stateRef.current === 'speaking') {
           if (amRecordingRef.current) stopSeg();
+          startFrames = 0;
+          return;
+        }
+        if (amRecordingRef.current && (Date.now() - amSpeechStartRef.current > AM_MAX_SPEECH_TIMEOUT_MS)) {
+          stopSeg();
           startFrames = 0;
           return;
         }
