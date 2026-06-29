@@ -243,20 +243,31 @@ export default function SlideBotPage() {
         // TỰ ĐỘNG bật nghe ngầm ngay khi vào trang — không cần bấm gì.
         ambientRef.current = true;
         isListeningLoopActive.current = true;
-        const tryAutoStart = () => {
+        // best-effort: thử start ngay (nhiều trình duyệt cho phép nếu mic đã được cấp quyền từ trước)
+        try {
+          recognitionRef.current?.start();
+          lastActivityRef.current = Date.now();
+          setState('listening');
+          setTranscript('🎧 Đang nghe ngầm…');
+        } catch (e) {}
+        // QUAN TRỌNG: cử chỉ người dùng đầu tiên (chạm/gõ phím) mới THỰC SỰ cấp quyền mic.
+        // Phiên auto-start ở trên (chưa có cử chỉ) thường "chết câm" — engine báo nghe nhưng
+        // không nhận audio. Vì vậy ở cử chỉ đầu tiên BẮT BUỘC abort phiên cũ rồi start lại
+        // để có phiên được trình duyệt cấp mic thật sự.
+        autoStartGestureRef.current = () => {
           if (!isListeningLoopActive.current) return;
-          if (stateRef.current !== 'idle') return; // đã đang nghe rồi
-          try {
-            recognitionRef.current?.start();
-            lastActivityRef.current = Date.now();
-            setState('listening');
-            setTranscript('🎧 Đang nghe ngầm…');
-          } catch (e) {}
+          if (!ambientRef.current) return; // chế độ Whisper tự xử lý qua nút bấm
+          try { recognitionRef.current?.abort(); } catch (e) {}
+          setTimeout(() => {
+            if (!isListeningLoopActive.current || !ambientRef.current) return;
+            try {
+              recognitionRef.current?.start();
+              lastActivityRef.current = Date.now();
+              setState('listening');
+              setTranscript('🎧 Đang nghe ngầm…');
+            } catch (e) {}
+          }, 250);
         };
-        tryAutoStart();
-        // Phòng khi trình duyệt chặn auto-start (cần cử chỉ người dùng để cấp quyền mic):
-        // bắt đầu ngay ở lần chạm/gõ phím đầu tiên ở bất kỳ đâu trên trang.
-        autoStartGestureRef.current = () => tryAutoStart();
         window.addEventListener('pointerdown', autoStartGestureRef.current, { once: true });
         window.addEventListener('keydown', autoStartGestureRef.current, { once: true });
       } else {
