@@ -22929,28 +22929,30 @@ Các câu hỏi Highlight ( dành cho KH NPD #27) dùng để hỏi khi PV
 
 ---
 
-## 🔖 [Ny'ah Phú Định] · 2026-06-23 08:42
+## 🔖 [Bảng Phân Lô Ny'ah Phú Định] · 2026-06-29
 
-## RH 13.05.26.jpg
+### Thông Tin Diện Tích Chi Tiết
 
-156 AN DƯƠNG VƯƠNG
+| Lô | Diện Tích (m²) | Mô Hình | Lô | Diện Tích (m²) | Mô Hình | Lô | Diện Tích (m²) | Mô Hình |
+|---|---|---|---|---|---|---|---|---|
+| #01 | 48.15 | Townhouse | #14 | 54.94 | Townhouse | #27 | - | Shophouse |
+| #02 | 48.15 | Townhouse | #15 | 36.57 | Townhouse | #28 | 47.27 | Townhouse |
+| #03 | 48.37 | Townhouse | #16 | 74.66 | Townhouse | #29 | 48.28 | Townhouse |
+| #04 | 43.08 | Townhouse | #17 | 55.51 | Townhouse | #30 | 44.50 | Townhouse |
+| #05 | 43.17 | Townhouse | #18 | - | Townhouse | #31 | 42.08 | Townhouse |
+| #06 | 45.80 | Townhouse | #19 | 56.92 | Townhouse | #32 | 44.04 | Townhouse |
+| #07 | 45.04 | Townhouse | #20 | 63.10 | Townhouse | #33 | 43.90 | Townhouse |
+| #08 | 45.17 | Townhouse | #21 | - | Townhouse | #34 | 43.50 | Townhouse |
+| #09 | 44.17 | Townhouse | #22 | 71.00 | Townhouse | #35 | - | Townhouse |
+| #10 | 41.32 | Townhouse | #23 | **69.61** | Townhouse | #36 | 43.11 | Townhouse |
+| #11 | 44.51 | Townhouse | #24 | - | Townhouse | #37 | 47.12 | Townhouse |
+| #12 | 44.94 | Townhouse | #25 | 64.56 | Townhouse | #38-#50 | - | Hộp thương mại |
+| #13 | - | Townhouse | #26 | 61.83 | Townhouse | CXCV | 86.37 | Công viên chung |
 
-| 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
+**Lưu ý:**
+- Căn #23: 4.16m (ngang) × 16.86m (sâu) = **69.61 m²**
+- Các ô "-" là những lô có thông tin chưa rõ hoặc chỉ có bản vẽ kỹ thuật
+- Diện tích sàn xây dựng có thể khác tùy mẫu nhà (Cosmo Gen 2, Fusion Gen 5, Opus)
 | | | | | | | | | | | | |
 | | | | | | | | | | | | |
 | | | | | | | | | | | | |
