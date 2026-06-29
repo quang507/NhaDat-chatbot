@@ -77,6 +77,25 @@ export default function SlideBotPage() {
   const toggleMicRef = useRef<() => void>(() => {});
   useEffect(() => { toggleMicRef.current = toggleMic; }, [toggleMic]);
 
+  // Slideshow interval tự động chuyển ảnh mỗi 4.5 giây
+  useEffect(() => {
+    if (!slide) return;
+    const imgs: string[] = [];
+    if (slide.image_urls && Array.isArray(slide.image_urls)) {
+      imgs.push(...slide.image_urls.filter(img => img && !brokenImages[img]));
+    } else if (slide.image_url && !brokenImages[slide.image_url]) {
+      imgs.push(slide.image_url);
+    }
+    
+    if (imgs.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentImageIndex(prev => (prev + 1) % imgs.length);
+    }, 4500);
+    
+    return () => clearInterval(interval);
+  }, [slide, brokenImages]);
+
   // Tốc độ đọc slide (đọc nhanh hơn bình thường cho đỡ lê thê)
   const SLIDE_TTS_RATE = '+22%';
 
@@ -480,6 +499,7 @@ export default function SlideBotPage() {
       // Mặc định layout nếu AI không chọn
       if (!data.layout_type) data.layout_type = 'split_image_right';
       setBrokenImages({});
+      setCurrentImageIndex(0);
       setSlide(data);
 
       if (voiceOnRef.current) {
@@ -530,99 +550,71 @@ export default function SlideBotPage() {
     const layout = hasImages ? (slide.layout_type || 'split_image_right') : 'text_only';
 
     // Helper render grid ảnh cho split/dark layouts
+    // Helper render slideshow ảnh tự động cho các layout
     const renderImageGrid = () => {
       if (!hasImages) return null;
-      if (images.length === 1) {
-        const isLocationMap = images[0].includes('vi_tri') || images[0].includes('18_phut');
-        return (
-          <div className="relative w-full h-full group/img overflow-hidden rounded-2xl">
-            <img 
-              src={images[0]} 
-              alt="Minh họa" 
-              className="w-full h-full object-contain bg-[#070707] opacity-95 hover:opacity-100 hover:scale-[1.01] transition-all duration-500 cursor-pointer"
-              onClick={() => setSelectedImage(images[0])}
-              onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
-            />
-            {isLocationMap && (
-              <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur px-3 py-3 rounded-2xl border border-white/10 flex flex-col items-center gap-1 shadow-2xl animate-scale-up z-20">
-                <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://maps.app.goo.gl/qwf4XibyMCL9sEX6A" 
-                  alt="QR Vị Trí" 
-                  className="w-[100px] h-[100px] rounded-lg bg-white p-1"
-                />
-                <span className="text-[10px] text-gray-200 font-bold mt-1 tracking-wide">📱 Quét xem Google Maps</span>
-              </div>
-            )}
-            <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none flex items-center gap-1">
-              🔍 Click để phóng to
-            </div>
-          </div>
-        );
-      }
-      if (images.length === 2) {
-        return (
-          <div className="grid grid-cols-2 gap-4 w-full h-full">
-            {images.map((img, idx) => {
-              const isLocationMap = img.includes('vi_tri') || img.includes('18_phut');
-              return (
-                <div key={idx} className="relative w-full h-full group/img overflow-hidden rounded-2xl">
-                  <img 
-                    src={img} 
-                    alt={`Minh họa ${idx + 1}`} 
-                    className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
-                    onClick={() => setSelectedImage(img)}
-                    onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
-                  />
-                  {isLocationMap && idx === 0 && (
-                    <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur px-2.5 py-2.5 rounded-2xl border border-white/10 flex flex-col items-center gap-1 shadow-2xl animate-scale-up z-20">
-                      <img 
-                        src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://maps.app.goo.gl/qwf4XibyMCL9sEX6A" 
-                        alt="QR Vị Trí" 
-                        className="w-[80px] h-[80px] rounded-lg bg-white p-1"
-                      />
-                      <span className="text-[9px] text-gray-200 font-bold mt-1 tracking-wide">📱 Quét bản đồ</span>
-                    </div>
-                  )}
-                  <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
-                    🔍 Phóng to
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
-      }
-      // >= 3 ảnh
+      
       return (
-        <div className="grid grid-cols-3 gap-4 w-full h-full">
-          <div className="col-span-2 h-full relative group/img overflow-hidden rounded-2xl">
-            <img 
-              src={images[0]} 
-              alt="Minh họa chính" 
-              className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
-              onClick={() => setSelectedImage(images[0])}
-              onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
-            />
-            <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
-              🔍 Phóng to
-            </div>
-          </div>
-          <div className="col-span-1 grid grid-rows-2 gap-4 h-full">
-            {images.slice(1, 3).map((img, idx) => (
-              <div key={idx} className="relative w-full h-full group/img overflow-hidden rounded-2xl">
+        <div className="relative w-full h-full group/img overflow-hidden rounded-2xl bg-[#070707] flex items-center justify-center">
+          {/* Render các ảnh đè lên nhau, chỉ hiển thị ảnh active bằng transition mờ dần */}
+          {images.map((img, idx) => {
+            const isActive = idx === (currentImageIndex % images.length);
+            const isMap = img.includes('vi_tri') || img.includes('18_phut');
+            return (
+              <div 
+                key={img + '-' + idx}
+                className={`absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-1000 ease-in-out ${
+                  isActive ? 'opacity-95 scale-100 z-10' : 'opacity-0 scale-95 z-0 pointer-events-none'
+                }`}
+              >
                 <img 
                   src={img} 
-                  alt={`Minh họa ${idx + 2}`} 
-                  className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+                  alt={`Minh họa ${idx + 1}`} 
+                  className={`w-full h-full cursor-pointer transition-transform duration-500 hover:scale-[1.01] ${
+                    isMap ? 'object-contain bg-[#070707]' : 'object-cover'
+                  }`}
                   onClick={() => setSelectedImage(img)}
                   onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
                 />
-                <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur px-2 py-1 rounded-[6px] text-[10px] text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  🔍 Phóng to
-                </div>
+                
+                {/* Lồng mã QR Code Google Maps ngay góc nếu ảnh này là bản đồ */}
+                {isMap && isActive && (
+                  <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur px-3 py-3 rounded-2xl border border-white/10 flex flex-col items-center gap-1 shadow-2xl animate-scale-up z-20">
+                    <img 
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://maps.app.goo.gl/qwf4XibyMCL9sEX6A" 
+                      alt="QR Vị Trí" 
+                      className="w-[100px] h-[100px] rounded-lg bg-white p-1"
+                    />
+                    <span className="text-[10px] text-gray-200 font-bold mt-1 tracking-wide">📱 Quét xem Google Maps</span>
+                  </div>
+                )}
               </div>
-            ))}
+            );
+          })}
+
+          {/* Chỉ báo phóng to */}
+          <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none z-20 flex items-center gap-1">
+            🔍 Click để phóng to
           </div>
+
+          {/* Dots Indicator nếu có nhiều ảnh */}
+          {images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full border border-white/10 shadow-lg">
+              {images.map((_, idx) => {
+                const isActive = idx === (currentImageIndex % images.length);
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      isActive ? 'bg-[#e8b84b] w-4' : 'bg-white/40 hover:bg-white/70'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
       );
     };
@@ -744,27 +736,7 @@ export default function SlideBotPage() {
           
           {/* Image Section */}
           <div className="flex-1 relative flex items-center justify-center p-6 border-l border-neutral-900/40 bg-[#070707]">
-            {hasImages && (
-              <div className="w-full h-full">
-                {images.length === 1 ? (
-                  <div className="relative w-full h-full group/img overflow-hidden rounded-2xl">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-transparent to-transparent z-10 pointer-events-none"></div>
-                    <img 
-                      src={images[0]} 
-                      alt="Minh họa" 
-                      className="w-full h-full object-contain bg-[#070707] opacity-75 hover:opacity-90 transition-opacity duration-500 cursor-pointer"
-                      onClick={() => setSelectedImage(images[0])}
-                      onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
-                    />
-                    <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300">
-                      🔍 Phóng to
-                    </div>
-                  </div>
-                ) : (
-                  renderImageGrid()
-                )}
-              </div>
-            )}
+            {renderImageGrid()}
           </div>
         </div>
       );
