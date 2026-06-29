@@ -5,6 +5,7 @@ import { DEFAULT_PERSONA } from '@/lib/admin';
 import { writeLog, extractPhone } from '@/lib/logs';
 import { loadIndex, retrieve } from '@/lib/rag';
 import { detectRouteIntent, getDrivingRoute, routeSummaryToPrompt } from '@/lib/maps';
+import { detectUnit, unitContext } from '@/lib/units';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -67,14 +68,29 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     console.warn('Route lookup failed:', e);
   }
 
+  // Nếu khách hỏi về 1 căn cụ thể -> nhét THÔNG TIN CHÍNH XÁC của căn đó (mẫu nhà, diện tích,
+  // mặt tiền, tầng, tính năng) thẳng từ bảng tra cứu, không phụ thuộc may rủi của RAG.
+  let unitContextStr = '';
+  let ragQuery = message;
+  try {
+    const unit = detectUnit(message);
+    if (unit) {
+      const { facts, modelKeywords } = unitContext(unit);
+      unitContextStr = `\n\n=== ${facts} ===`;
+      ragQuery = `${message} ${modelKeywords}`; // kéo thêm datasheet/tính năng đúng mẫu nhà
+    }
+  } catch (e) {
+    console.warn('Unit lookup failed:', e);
+  }
+
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
       // Khôi phục về 12 chunks theo yêu cầu của bạn
-      const chunks = await retrieve(message, index, 12);
+      const chunks = await retrieve(ragQuery, index, 12);
       const data = chunks.join('\n\n');
       return {
-        text: `${persona}${profileNote}${timeContext}${routeContext}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
+        text: `${persona}${profileNote}${timeContext}${routeContext}${unitContextStr}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
         usedRag: true,
       };
     }
@@ -88,7 +104,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   const data = await readRepoFile('data.md');
   const truncated = data.length > limit ? data.slice(0, limit) + '\n\n[... dữ liệu đã được rút ngắn để tránh quá tải API ...]' : data;
   return {
-    text: `${persona}${profileNote}${timeContext}${routeContext}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
+    text: `${persona}${profileNote}${timeContext}${routeContext}${unitContextStr}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     usedRag: false,
   };
 }
