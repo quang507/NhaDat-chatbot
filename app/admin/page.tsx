@@ -26,6 +26,7 @@ interface TreeNode {
   path: string;
   type: 'file' | 'directory';
   size?: number;
+  url?: string;            // chỉ ảnh: URL public /images/...
   children?: TreeNode[];
 }
 
@@ -44,8 +45,15 @@ export default function AdminPage() {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
 
-  // Tabs: 'tree' | 'crawl' | 'settings' | 'logs'
-  const [activeTab, setActiveTab] = useState<'tree' | 'crawl' | 'settings' | 'logs'>('tree');
+  // Tabs: 'tree' | 'images' | 'crawl' | 'settings' | 'logs'
+  const [activeTab, setActiveTab] = useState<'tree' | 'images' | 'crawl' | 'settings' | 'logs'>('tree');
+
+  // Tab Hình ảnh (cây public/images)
+  const [imageTree, setImageTree] = useState<TreeNode[]>([]);
+  const [imageCount, setImageCount] = useState(0);
+  const [openImageDirs, setOpenImageDirs] = useState<Record<string, boolean>>({});
+  const [selectedImage, setSelectedImage] = useState<TreeNode | null>(null);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   // Logs & Leads
   const [leads, setLeads] = useState<Record<string, string>[]>([]);
@@ -163,6 +171,38 @@ export default function AdminPage() {
       loadLogs();
     }
   }, [activeTab, loggedIn]);
+
+  async function loadImages() {
+    setBusy(true);
+    setStatus('Đang tải danh sách hình ảnh...');
+    try {
+      const res = await fetch('/api/admin/images', { method: 'POST', headers: authHeaders() });
+      const data = await res.json();
+      if (!res.ok) {
+        setStatus(data.error || 'Tải hình ảnh thất bại');
+        return;
+      }
+      setImageTree(data.tree || []);
+      setImageCount(data.count || 0);
+      setImagesLoaded(true);
+      // Mở sẵn các thư mục cấp 1
+      const open: Record<string, boolean> = {};
+      (data.tree || []).forEach((n: TreeNode) => { if (n.type === 'directory') open[n.path] = true; });
+      setOpenImageDirs(open);
+      setStatus('');
+    } catch {
+      setStatus('Không kết nối được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Tự tải hình ảnh lần đầu mở tab
+  useEffect(() => {
+    if (loggedIn && activeTab === 'images' && !imagesLoaded) {
+      loadImages();
+    }
+  }, [activeTab, loggedIn, imagesLoaded]);
 
   async function selectFile(node: TreeNode) {
     setSelectedFile(node);
@@ -517,6 +557,58 @@ export default function AdminPage() {
     });
   }
 
+  // Render cây hình ảnh (giống cây text, nhưng file là ảnh + thumbnail mini)
+  function renderImageTree(nodes: TreeNode[], depth = 0) {
+    return nodes.map(node => {
+      const isOpen = !!openImageDirs[node.path];
+      const isSelected = selectedImage?.path === node.path;
+
+      if (node.type === 'directory') {
+        return (
+          <div key={node.path} className="select-none">
+            <div
+              onClick={() => setOpenImageDirs(p => ({ ...p, [node.path]: !p[node.path] }))}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-slate-800/40 transition-colors text-slate-300 font-medium my-0.5 group"
+              style={{ paddingLeft: `${depth * 16 + 12}px` }}
+            >
+              <span className={`text-slate-500 text-[10px] transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}>▶</span>
+              <span className="text-amber-500 text-lg">📂</span>
+              <span className="truncate flex-1 text-slate-200 group-hover:text-white">{node.name}</span>
+              <span className="text-[10px] bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full font-normal group-hover:bg-slate-700">
+                {node.children?.length || 0}
+              </span>
+            </div>
+            {isOpen && node.children && (
+              <div className="mt-0.5 border-l border-slate-800/50 ml-5">
+                {renderImageTree(node.children, depth + 1)}
+              </div>
+            )}
+          </div>
+        );
+      }
+      return (
+        <div
+          key={node.path}
+          onClick={() => setSelectedImage(node)}
+          className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm my-0.5 border-l-2 ${
+            isSelected
+              ? 'bg-blue-600/10 text-blue-400 border-blue-500 font-semibold'
+              : 'hover:bg-slate-800/30 text-slate-400 hover:text-slate-200 border-transparent'
+          }`}
+          style={{ paddingLeft: `${depth * 16 + 16}px` }}
+        >
+          {node.url
+            ? <img src={node.url} alt="" loading="lazy" className="w-7 h-7 rounded object-cover border border-slate-700 flex-shrink-0 bg-slate-800" />
+            : <span className="text-sky-400 text-base">🖼️</span>}
+          <span className="truncate flex-1">{node.name}</span>
+          {node.size !== undefined && (
+            <span className="text-[10px] text-slate-600 font-normal">{(node.size / 1024).toFixed(1)} KB</span>
+          )}
+        </div>
+      );
+    });
+  }
+
   if (!loggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100 p-4">
@@ -586,6 +678,12 @@ export default function AdminPage() {
               className={`rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all ${activeTab === 'tree' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' : 'text-slate-400 hover:text-slate-200'}`}
             >
               📁 Sơ đồ cây
+            </button>
+            <button
+              onClick={() => setActiveTab('images')}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all ${activeTab === 'images' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              🖼️ Hình ảnh
             </button>
             <button
               onClick={() => setActiveTab('crawl')}
@@ -756,6 +854,64 @@ export default function AdminPage() {
         )}
 
         {/* TAB 2: Nạp dữ liệu (Crawl & Convert) */}
+        {/* TAB: Hình ảnh (cây public/images + xem trước) */}
+        {activeTab === 'images' && (
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[600px]">
+            {/* Trái: cây ảnh */}
+            <div className="lg:col-span-4 bg-slate-900/30 backdrop-blur-md border border-slate-900 rounded-2xl p-4 flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <p className="font-semibold text-slate-200 flex items-center gap-1.5 text-sm">
+                  🖼️ Hình ảnh <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full">{imageCount}</span>
+                </p>
+                <button onClick={loadImages} disabled={busy} className="text-[11px] bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700/50">↻ Tải lại</button>
+              </div>
+
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-[11px] text-slate-400 leading-relaxed">
+                Ảnh nằm trong <span className="text-slate-300 font-mono">public/images/</span>. Để thêm/xóa ảnh: bỏ vào thư mục OneDrive <span className="text-slate-300 font-mono">ChatBotImages_Upload</span> rồi chạy <span className="text-slate-300 font-mono">Chay_Dong_Bo.bat</span>.
+              </div>
+
+              <div className="flex-1 overflow-y-auto max-h-[550px] pr-1 scrollbar-thin">
+                {imageTree.length === 0 ? (
+                  <div className="text-center py-8 text-slate-600 text-xs">{imagesLoaded ? 'Chưa có hình ảnh nào trong public/images' : 'Đang tải...'}</div>
+                ) : (
+                  <div className="space-y-0.5">{renderImageTree(imageTree)}</div>
+                )}
+              </div>
+            </div>
+
+            {/* Phải: xem trước ảnh */}
+            <div className="lg:col-span-8 bg-slate-900/30 backdrop-blur-md border border-slate-900 rounded-2xl p-5 flex flex-col min-h-[500px]">
+              {selectedImage && selectedImage.url ? (
+                <div className="flex-1 flex flex-col gap-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
+                    <div className="min-w-0">
+                      <h2 className="text-sm font-semibold text-white truncate max-w-[320px] sm:max-w-md">{selectedImage.name}</h2>
+                      <p className="text-[10px] text-slate-500 font-mono mt-0.5 truncate max-w-[320px] sm:max-w-md">{selectedImage.url}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {selectedImage.size !== undefined && (
+                        <span className="text-xs bg-slate-800 border border-slate-700/50 px-2.5 py-1 rounded-lg text-slate-400 font-mono">{(selectedImage.size / 1024).toFixed(1)} KB</span>
+                      )}
+                      <button onClick={() => copyToClipboard(selectedImage.url || '')} className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/50">
+                        {copySuccess ? '✅ Đã chép' : '📋 Chép URL'}
+                      </button>
+                      <a href={selectedImage.url} target="_blank" rel="noreferrer" className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/50">↗ Mở</a>
+                    </div>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center bg-slate-950/50 rounded-xl border border-slate-800 overflow-hidden p-4">
+                    <img src={selectedImage.url} alt={selectedImage.name} className="max-w-full max-h-[60vh] object-contain rounded-lg" />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-slate-600 gap-3">
+                  <span className="text-5xl">🖼️</span>
+                  <p className="text-sm">Chọn một ảnh bên trái để xem trước</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'crawl' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[500px]">
             {/* Tools Area */}
