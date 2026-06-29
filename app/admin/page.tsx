@@ -54,6 +54,8 @@ export default function AdminPage() {
   const [openImageDirs, setOpenImageDirs] = useState<Record<string, boolean>>({});
   const [selectedImage, setSelectedImage] = useState<TreeNode | null>(null);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [uploadFolder, setUploadFolder] = useState('01_NyAh-PhuDinh');
+  const [uploadStatus, setUploadStatus] = useState('');
 
   // Logs & Leads
   const [leads, setLeads] = useState<Record<string, string>[]>([]);
@@ -195,6 +197,28 @@ export default function AdminPage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  // Upload ảnh online -> commit vào public/images/<folder> trên GitHub
+  async function uploadImages(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setBusy(true);
+    const folder = uploadFolder.trim() || '01_NyAh-PhuDinh';
+    let ok = 0; const errs: string[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      setUploadStatus(`🔄 Đang upload ${i + 1}/${files.length}: ${f.name}...`);
+      try {
+        const fd = new FormData();
+        fd.append('file', f);
+        fd.append('folder', folder);
+        const res = await fetch('/api/admin/upload-image', { method: 'POST', headers: authHeaders(), body: fd });
+        const data = await res.json();
+        if (res.ok) ok++; else errs.push(`${f.name}: ${data.error}`);
+      } catch { errs.push(`${f.name}: lỗi mạng`); }
+    }
+    setUploadStatus(`✅ Đã upload ${ok}/${files.length} ảnh vào public/images/${folder}. ⏳ Vercel cần ~1-2 phút build lại để ảnh hiển thị.${errs.length ? ' ❌ Lỗi: ' + errs.join('; ') : ''}`);
+    setBusy(false);
   }
 
   // Tự tải hình ảnh lần đầu mở tab
@@ -889,8 +913,25 @@ export default function AdminPage() {
                 <button onClick={loadImages} disabled={busy} className="text-[11px] bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700/50">↻ Tải lại</button>
               </div>
 
-              <div className="bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-[11px] text-slate-400 leading-relaxed">
-                Ảnh nằm trong <span className="text-slate-300 font-mono">public/images/</span>. Để thêm/xóa ảnh: bỏ vào thư mục OneDrive <span className="text-slate-300 font-mono">ChatBotImages_Upload</span> rồi chạy <span className="text-slate-300 font-mono">Chay_Dong_Bo.bat</span>.
+              {/* Upload ảnh online */}
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-3.5 flex flex-col gap-2.5">
+                <p className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">⬆️ Tải ảnh lên (online)</p>
+                <label className="text-[10px] text-slate-500">Thư mục đích (trong public/images/)</label>
+                <input
+                  value={uploadFolder}
+                  onChange={e => setUploadFolder(e.target.value)}
+                  placeholder="01_NyAh-PhuDinh/noi_that/opus"
+                  className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-200 font-mono focus:outline-none focus:border-blue-500"
+                />
+                <label className={`text-center text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer transition-all ${busy ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-500 text-white'}`}>
+                  📁 Chọn ảnh để upload
+                  <input
+                    type="file" accept="image/*" multiple disabled={busy} className="hidden"
+                    onChange={e => { uploadImages(e.target.files); e.target.value = ''; }}
+                  />
+                </label>
+                {uploadStatus && <p className="text-[10px] text-slate-400 leading-relaxed">{uploadStatus}</p>}
+                <p className="text-[10px] text-slate-600 leading-relaxed">Tên file tự chuẩn hóa (bỏ dấu, viết thường). Ảnh commit lên GitHub → Vercel build ~1-2 phút mới hiện. Hoặc vẫn có thể dùng OneDrive <span className="font-mono">ChatBotImages_Upload</span> + <span className="font-mono">Chay_Dong_Bo.bat</span>.</p>
               </div>
 
               <div className="flex-1 overflow-y-auto max-h-[550px] pr-1 scrollbar-thin">
