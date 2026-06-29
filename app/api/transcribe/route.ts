@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     const STT_PROMPT = "Dự án nhà phố Ny'ah Phú Định, nhà phát triển Nhã Đạt (Nyah Co Ltd). Các mẫu nhà phố liên kế: Cosmo Gen 2 (Cót mô, Cốt mô, Cotmo), Fusion Gen 5 (Phiêu dân, Phiêu-dân, Phiu dân, Fusion), Opus (Ô pút, Ô-pút, Opút). Vị trí đường Trương Đình Hội, Quận 8, TP.HCM. Các tiện ích và thiết kế: công viên, gara ô tô, xe bán tải, thang máy, giếng trời, ban công, thông tầng, lệch tầng, lửng, phòng ngủ master, phòng ngủ con, nhà vệ sinh, wc, phòng bếp, phòng khách, phòng học, sân thượng, mặt bằng tầng 1, tầng 2, tầng 3, vị trí, bản đồ Google Maps, quét mã QR. Thông tin pháp lý và giá bán: sổ hồng, bàn giao, tiến độ xây dựng, thanh toán, căn hộ số 23, căn số 23, giá bán từ 5 đến 7 tỷ. Khẩu lệnh điều khiển slide: xin chào, mở slide, cho xem căn, phóng to hình ảnh, thu nhỏ lại, đóng ảnh, quay lại.";
 
-    // 1) Thử phiên âm bằng Groq Whisper
+    // 1) Thử phiên âm bằng Groq Whisper (giới hạn thời gian chờ 800ms để tránh bị trễ)
     if (GROQ_API_KEY) {
       try {
         const fd = new FormData();
@@ -31,11 +31,16 @@ export async function POST(req: NextRequest) {
         fd.append('response_format', 'json');
         fd.append('prompt', STT_PROMPT); // Bias từ vựng dự án cho Whisper
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 800);
+
         const res = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
           method: 'POST',
           headers: { Authorization: `Bearer ${GROQ_API_KEY}` },
           body: fd,
+          signal: controller.signal,
         });
+        clearTimeout(timeoutId);
 
         if (res.ok) {
           const data = await res.json();
@@ -44,7 +49,7 @@ export async function POST(req: NextRequest) {
         const errText = await res.text();
         console.warn(`Groq Whisper failed, status: ${res.status} ${errText}. Falling back to Gemini...`);
       } catch (e) {
-        console.warn('Groq Whisper exception. Falling back to Gemini...', e);
+        console.warn('Groq Whisper exception or timeout. Falling back to Gemini...', e);
       }
     }
 

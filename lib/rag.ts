@@ -1,6 +1,8 @@
 // RAG: chia nhỏ data.md, tạo embedding, lưu chỉ mục, và truy hồi đoạn liên quan.
 // Mục tiêu: thay vì nhét cả 250k token vào mỗi câu hỏi (gây chậm + lỗi 429),
 // ta chỉ gửi vài đoạn liên quan nhất tới câu hỏi -> nhanh, rẻ, ít lỗi.
+import { readFile, writeFile } from 'fs/promises';
+import { existsSync, statSync } from 'fs';
 
 const OWNER = process.env.GITHUB_OWNER || 'quang507';
 const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
@@ -229,32 +231,88 @@ let memIndex: Index | null = null;
 let memIndexAt = 0;
 let memIndexLoading: Promise<Index | null> | null = null;
 
+const TMP_CACHE_PATH = '/tmp/rag_index.json';
+
 export async function loadIndex(): Promise<Index | null> {
-  // cache trong RAM 5 phút
-  if (memIndex && Date.now() - memIndexAt < 5 * 60 * 1000) {
-    if (!memIndex.chunks[0]?.vec?.length) { memIndex = null; memIndexAt = 0; }
-    else return memIndex;
+  const now = Date.now();
+
+  // 1) Nếu cache trong RAM chưa quá 5 phút -> trả về ngay (0ms)
+  if (memIndex && now - memIndexAt < 5 * 60 * 1000) {
+    if (memIndex.chunks?.[0]?.vec?.length) {
+      return memIndex;
+    } else {
+      memIndex = null;
+      memIndexAt = 0;
+    }
   }
-  // dedup: nhiều request đồng thời chỉ tải 1 lần
+
+  // 2) Nếu có file cache ở /tmp và chưa quá 15 phút -> đọc từ /tmp cực nhanh (2-5ms)
+  if (existsSync(TMP_CACHE_PATH)) {
+    try {
+      const stats = statSync(TMP_CACHE_PATH);
+      const fileAge = now - stats.mtimeMs;
+      if (fileAge < 15 * 60 * 1000) { // cache trong /tmp 15 phút
+        const content = await readFile(TMP_CACHE_PATH, 'utf-8');
+        memIndex = JSON.parse(content) as Index;
+        memIndexAt = now;
+        
+        // Kích hoạt revalidate ngầm từ GitHub để cập nhật index mới nếu có
+        revalidateIndexInBackground();
+        
+        return memIndex;
+      }
+    } catch (e) {
+      console.warn('[RAG] Đọc cache /tmp thất bại, sẽ tải từ GitHub...', e);
+    }
+  }
+
+  // 3) Nếu chưa có cache -> tải từ GitHub (đồng bộ)
+  return fetchAndCacheIndex();
+}
+
+// Hàm tải và lưu cache đồng bộ
+async function fetchAndCacheIndex(): Promise<Index | null> {
   if (memIndexLoading) return memIndexLoading;
   memIndexLoading = (async () => {
     try {
+      console.log('[RAG] Bắt đầu tải chỉ mục từ GitHub...');
       const sha = await getSha(INDEX_PATH);
       if (!sha) return null;
       const r = await fetch(`${API}/git/blobs/${sha}`, { headers: ghHeaders(), cache: 'no-store' });
       if (!r.ok) return null;
       const blob = await r.json();
       const json = Buffer.from(blob.content || '', blob.encoding || 'base64').toString('utf-8');
-      memIndex = JSON.parse(json) as Index;
+      const index = JSON.parse(json) as Index;
+      
+      // Cache vào RAM
+      memIndex = index;
       memIndexAt = Date.now();
-      return memIndex;
-    } catch {
+      
+      // Cache vào /tmp
+      try {
+        await writeFile(TMP_CACHE_PATH, json, 'utf-8');
+      } catch (err) {
+        console.warn('[RAG] Không thể lưu cache vào /tmp:', err);
+      }
+      
+      return index;
+    } catch (err) {
+      console.error('[RAG] Lỗi khi tải chỉ mục từ GitHub:', err);
       return null;
     } finally {
       memIndexLoading = null;
     }
   })();
   return memIndexLoading;
+}
+
+// Hàm revalidate ngầm (Stale-While-Revalidate)
+function revalidateIndexInBackground() {
+  if (memIndexLoading) return;
+  // Chạy ngầm hoàn toàn, không chặn luồng chính
+  fetchAndCacheIndex().catch(err => {
+    console.warn('[RAG] Revalidate index ngầm lỗi:', err);
+  });
 }
 
 function dot(a: number[], b: number[]): number {

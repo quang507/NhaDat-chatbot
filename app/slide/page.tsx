@@ -76,7 +76,7 @@ export default function SlideBotPage() {
   const autoStartGestureRef = useRef<(() => void) | null>(null); // handler auto-start ở cử chỉ đầu tiên
   const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
   const AMBIENT_DEBOUNCE_MS = 600;        // ngừng nói 0.6s mới xét tạo slide -> Rất nhanh!
-  const AMBIENT_COOLDOWN_MS = 2000;        // tối thiểu 2s giữa 2 slide (đã giảm từ 5s)
+  const AMBIENT_COOLDOWN_MS = 0;        // Không có cooldown, chuyển slide tức thì khi phát hiện từ khóa
 
   useEffect(() => { ambientRef.current = ambientMode; }, [ambientMode]);
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
@@ -184,7 +184,7 @@ export default function SlideBotPage() {
   const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
   const AM_THRESHOLD = 0.060;     // ngưỡng RMS coi là có người nói (cao để im lặng/nhiễu không kích hoạt)
   const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
-  const AM_SILENCE_MS = 650;      // im lặng 0.65s (nhạy bén hơn) -> chốt 1 câu, gửi phiên âm
+  const AM_SILENCE_MS = 550;      // im lặng 0.55s (nhạy bén hơn nữa) -> chốt 1 câu, gửi phiên âm
   const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
   const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt để gửi phiên âm
 
