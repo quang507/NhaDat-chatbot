@@ -22,6 +22,7 @@ export default function SlideBotPage() {
   const [transcript, setTranscript] = useState('Nhấn nút Micro để bắt đầu');
   const [slide, setSlide] = useState<SlideData | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
   // Chế độ nghe ngầm (ambient) + bật/tắt đọc to
   const [ambientMode, setAmbientMode] = useState(false);
@@ -299,6 +300,7 @@ export default function SlideBotPage() {
 
       // Mặc định layout nếu AI không chọn
       if (!data.layout_type) data.layout_type = 'split_image_right';
+      setBrokenImages({});
       setSlide(data);
 
       if (voiceOnRef.current) {
@@ -339,8 +341,8 @@ export default function SlideBotPage() {
     // Lấy tất cả ảnh
     const images: string[] = [];
     if (slide.image_urls && Array.isArray(slide.image_urls)) {
-      images.push(...slide.image_urls.filter(Boolean));
-    } else if (slide.image_url) {
+      images.push(...slide.image_urls.filter(img => img && !brokenImages[img]));
+    } else if (slide.image_url && !brokenImages[slide.image_url]) {
       images.push(slide.image_url);
     }
 
@@ -359,6 +361,7 @@ export default function SlideBotPage() {
               alt="Minh họa" 
               className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
               onClick={() => setSelectedImage(images[0])}
+              onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
             />
             <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none flex items-center gap-1">
               🔍 Click để phóng to
@@ -376,6 +379,7 @@ export default function SlideBotPage() {
                   alt={`Minh họa ${idx + 1}`} 
                   className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
                   onClick={() => setSelectedImage(img)}
+                  onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
                 />
                 <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
                   🔍 Phóng to
@@ -394,6 +398,7 @@ export default function SlideBotPage() {
               alt="Minh họa chính" 
               className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
               onClick={() => setSelectedImage(images[0])}
+              onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
             />
             <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
               🔍 Phóng to
@@ -407,6 +412,7 @@ export default function SlideBotPage() {
                   alt={`Minh họa ${idx + 2}`} 
                   className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
                   onClick={() => setSelectedImage(img)}
+                  onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
                 />
                 <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur px-2 py-1 rounded-[6px] text-[10px] text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
                   🔍 Phóng to
@@ -489,6 +495,7 @@ export default function SlideBotPage() {
                 src={bgImg} 
                 alt="Background" 
                 className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000 ease-out" 
+                onError={() => setBrokenImages(prev => ({ ...prev, [bgImg]: true }))}
               />
               <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 🔍 Click để xem ảnh gốc
@@ -544,6 +551,7 @@ export default function SlideBotPage() {
                       alt="Minh họa" 
                       className="w-full h-full object-cover opacity-60 hover:opacity-80 transition-opacity duration-500 cursor-pointer"
                       onClick={() => setSelectedImage(images[0])}
+                      onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
                     />
                     <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300">
                       🔍 Phóng to
