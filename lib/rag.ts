@@ -78,7 +78,24 @@ export function chunkText(raw: string): string[] {
     }
   }
   if (cur) chunks.push(cur);
-  return chunks;
+
+  // Khử trùng: bỏ các chunk có nội dung giống hệt nhau (data thường bị lặp file
+  // do tổ chức thư mục trùng), giữ lần xuất hiện đầu. So khớp theo nội dung đã
+  // bỏ dòng nhãn "## 🔖 [...]" và chuẩn hóa khoảng trắng để bắt cả bản gần giống.
+  const seen = new Set<string>();
+  const deduped: string[] = [];
+  for (const c of chunks) {
+    const key = c
+      .replace(/^##\s*🔖[^\n]*\n+/g, '')   // bỏ dòng nhãn nguồn ở đầu chunk
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+    if (key.length < 8) { deduped.push(c); continue; } // chunk quá ngắn, giữ nguyên
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(c);
+  }
+  return deduped;
 }
 
 // ---------- Embedding ----------
