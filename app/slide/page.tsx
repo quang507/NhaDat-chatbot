@@ -177,7 +177,7 @@ export default function SlideBotPage() {
   const amEngineOnRef = useRef(false);   // ý định: nghe ngầm ĐANG bật
   const amRunningRef = useRef(false);    // Web Speech instance đang chạy thật sự
   const firstGestureRef = useRef(false); // đã ép restart bằng cử chỉ đầu tiên chưa
-  const useWhisperAmbientRef = useRef(false); // đã rớt sang Whisper cho phiên này (Web Speech chết/bị chặn)
+  const useWhisperAmbientRef = useRef(true); // Mặc định sử dụng công cụ Whisper/Gemini siêu chính xác thay cho Web Speech nội bộ dễ lỗi
   const wsActivityRef = useRef(0);       // mốc Web Speech có hoạt động gần nhất (audio/speech/result)
   const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
   const AM_THRESHOLD = 0.060;     // ngưỡng RMS coi là có người nói (cao để im lặng/nhiễu không kích hoạt)
@@ -329,7 +329,7 @@ export default function SlideBotPage() {
 
   const transcribeAndProcess = async (blob: Blob) => {
     setState('processing');
-    setTranscript('⚡ Đang xử lý giọng nói bằng Groq Whisper...');
+    setTranscript('⚡ Đang xử lý giọng nói...');
     try {
       const formData = new FormData();
       formData.append('file', blob, 'audio.webm');
@@ -573,19 +573,28 @@ export default function SlideBotPage() {
   const transcribeAmbientSegment = async (blob: Blob) => {
     if (blob.size < 1400) return; // quá nhỏ -> bỏ
     try {
+      setTranscript('⚡ Đang xử lý âm thanh...');
       const fd = new FormData();
       fd.append('file', blob, 'audio.webm');
       const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
       if (!res.ok) {
         console.error('[Ambient] Transcribe API error:', res.status, await res.text());
+        setTranscript('🎙️ Đang lắng nghe bạn...');
         return;
       }
       const data = await res.json();
       const text = normalizeVietnameseSpeech((data.text || '').trim());
-      if (!text || text.replace(/[^a-zà-ỹ0-9]/gi, '').length < 2) return;
-      if (isHallucination(text)) { console.log('[Ambient] Bỏ câu Whisper bịa:', text); return; }
+      if (!text || text.replace(/[^a-zà-ỹ0-9]/gi, '').length < 2) {
+        setTranscript('🎙️ Đang lắng nghe bạn...');
+        return;
+      }
+      if (isHallucination(text)) { 
+        console.log('[Ambient] Bỏ câu Whisper bịa:', text); 
+        setTranscript('🎙️ Đang lắng nghe bạn...');
+        return; 
+      }
       if (handleVoiceCommands(text)) return;
-      setTranscript('🎧 Nghe: …' + text.slice(-90));
+      setTranscript(`🎧 Nhận diện: "${text.slice(-80)}"`);
       // Whisper trả nguyên câu hoàn chỉnh -> đưa vào handleAmbientSpeech;
       // nó tự xét kích hoạt tức thì (Logic 1) + debounce (Logic 2). KHÔNG gọi maybeInstantTrigger
       // ở đây nữa để tránh bắn slide 2 lần cho cùng 1 câu.
@@ -731,7 +740,7 @@ export default function SlideBotPage() {
       source.connect(analyser);
       const data = new Uint8Array(analyser.fftSize);
       setState('listening');
-      setTranscript('🎧 Đang nghe ngầm… (Whisper)');
+      setTranscript('🎙️ Đang lắng nghe bạn...');
 
       const startSeg = () => {
         if (amRecordingRef.current) return;
