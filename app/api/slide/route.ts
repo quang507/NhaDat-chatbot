@@ -170,29 +170,89 @@ export async function POST(req: NextRequest) {
 
     // Điểm kích hoạt ảnh cố định (Fixed Trigger Points) cho Sale Gallery
     if (parsed.image_urls.length === 0) {
+      // 1. Phân loại Model nhà
+      let model = 'cosmo_gen_2'; // Mặc định là Cosmo Gen 2
+      if (textToSearch.includes('fusion') || textToSearch.includes('gen 5') || textToSearch.includes('gen5')) {
+        model = 'fusion_gen_5';
+      } else if (textToSearch.includes('opus') || textToSearch.includes('ô-pút') || textToSearch.includes('ô pút')) {
+        model = 'opus';
+      }
+
+      // 2. Kiểm tra từ khóa phòng / không gian
       if (textToSearch.includes('vị trí') || textToSearch.includes('bản đồ') || textToSearch.includes('maps') || textToSearch.includes('địa chỉ') || textToSearch.includes('đường đi') || textToSearch.includes('ở đâu')) {
         parsed.image_urls = [
           '/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg',
           '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'
         ];
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('tiện ích') || textToSearch.includes('công viên') || textToSearch.includes(' landmark coffee') || textToSearch.includes('sân chơi') || textToSearch.includes('sân cầu lông') || textToSearch.includes('bóng rổ')) {
+      } else if (textToSearch.includes('tiện ích') || textToSearch.includes('công viên') || textToSearch.includes(' landmark coffee') || textToSearch.includes('sân chơi') || textToSearch.includes('sân cầu lông') || textToSearch.includes('bóng rổ') || textToSearch.includes('tiện nghi')) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('cosmo') || textToSearch.includes('siêu sáng')) {
-        parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png',
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png',
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'
-        ];
+      } else if (textToSearch.includes('bếp') || textToSearch.includes('ăn') || textToSearch.includes('nấu')) {
+        if (model === 'cosmo_gen_2') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png'];
+        } else if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg'];
+        }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('thang máy')) {
+      } else if (textToSearch.includes('gara') || textToSearch.includes('xe hơi') || textToSearch.includes('đỗ xe') || textToSearch.includes('ô tô') || textToSearch.includes('đậu xe')) {
+        if (model === 'cosmo_gen_2') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'];
+        } else if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png'];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('phòng khách') || textToSearch.includes('sofa') || textToSearch.includes('tiếp khách') || textToSearch.includes('sinh hoạt chung')) {
+        if (model === 'cosmo_gen_2') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
+        } else if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png'];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('phòng ngủ') || textToSearch.includes('giường') || textToSearch.includes('ngủ master') || textToSearch.includes('ngủ con') || textToSearch.includes('nơi ngủ')) {
+        if (model === 'cosmo_gen_2') {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png'
+          ];
+        } else if (model === 'fusion_gen_5') {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png',
+            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-ngu-con.png'
+          ];
+        } else {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg',
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg'
+          ];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('wc') || textToSearch.includes('vệ sinh') || textToSearch.includes('toilet') || textToSearch.includes('tắm') || textToSearch.includes('phòng tắm')) {
+        if (model === 'cosmo_gen_2') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_wc.png'];
+        } else if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-wc.png'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_wc.jpg'];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('thang máy') || textToSearch.includes('elevator')) {
+        // Cả Cosmo Gen 2 và Opus đều thiết kế thang máy kính đi từ Gara
         parsed.image_urls = [
           '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png',
           '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'
         ];
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('mặt bằng') || textToSearch.includes('tầng') || textToSearch.includes('thiết kế') || textToSearch.includes('bố cục')) {
+      } else if (textToSearch.includes('ban công') || textToSearch.includes('sân thượng') || textToSearch.includes('logia')) {
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('mặt bằng') || textToSearch.includes('tầng') || textToSearch.includes('thiết kế') || textToSearch.includes('bố cục') || textToSearch.includes('phân lô')) {
         parsed.image_urls = [
           '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg',
           '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg',
@@ -200,8 +260,26 @@ export async function POST(req: NextRequest) {
         ];
         parsed.layout_type = 'split_image_right';
       } else if (textToSearch.includes('pháp lý') || textToSearch.includes('sổ hồng') || textToSearch.includes('hợp đồng') || textToSearch.includes('cam kết')) {
-        // Cho pháp lý, hiển thị hình ảnh bản đồ hoặc vị trí dự án làm nền để tạo sự uy tín
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg'];
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('cosmo') || textToSearch.includes('fusion') || textToSearch.includes('opus') || textToSearch.includes('mẫu nhà') || textToSearch.includes('nhà phố')) {
+        // Hỏi chung chung về mẫu nhà thì hiện bộ sưu tập phòng khách và mặt tiền của mẫu đó
+        if (model === 'cosmo_gen_2') {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'
+          ];
+        } else if (model === 'fusion_gen_5') {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png',
+            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png'
+          ];
+        } else {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png',
+            '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png'
+          ];
+        }
         parsed.layout_type = 'split_image_right';
       } else {
         // Fallback cảnh quan/phối cảnh dự án tổng thể nếu không tìm thấy chủ đề chuyên biệt
