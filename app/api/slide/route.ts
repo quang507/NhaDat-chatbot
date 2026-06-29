@@ -254,7 +254,26 @@ export async function POST(req: NextRequest) {
       } else if (textToSearch.includes('ban công') || textToSearch.includes('sân thượng') || textToSearch.includes('logia')) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('mặt bằng') || textToSearch.includes('tầng') || textToSearch.includes('thiết kế') || textToSearch.includes('bố cục') || textToSearch.includes('phân lô')) {
+      } else if (textToSearch.includes('sảnh') || textToSearch.includes('lounge') || textToSearch.includes('phòng chờ')) {
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_sanh-master.jpg'];
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('tầng 1') || textToSearch.includes('tầng một') || textToSearch.includes('tầng trệt') || textToSearch.includes('trệt')) {
+        if (model === 'opus') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg'];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('tầng 2') || textToSearch.includes('tầng hai') || textToSearch.includes('lầu 1')) {
+        if (model === 'opus') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg'];
+        } else if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg'];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('mặt bằng') || textToSearch.includes('tầng') || textToSearch.includes('thiết kế') || textToSearch.includes('bố cục') || textToSearch.includes('phân lô') || textToSearch.includes('lầu')) {
         parsed.image_urls = [
           '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg',
           '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg',
@@ -278,8 +297,9 @@ export async function POST(req: NextRequest) {
           ];
         } else {
           parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png',
-            '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png'
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_sanh-master.jpg',
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg',
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg'
           ];
         }
         parsed.layout_type = 'split_image_right';
