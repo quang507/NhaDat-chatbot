@@ -33,6 +33,27 @@ CÁCH CHỌN LAYOUT_TYPE:
 - 'full_background': Nếu đang miêu tả toàn cảnh, cảnh quan, không gian sống bao quát, sang trọng và có 1 hình ảnh chất lượng cao làm nền.
 - 'split_image_right' / 'split_image_left': Nếu đang liệt kê nhiều ý chính, có từ 1 đến 3 hình ảnh minh hoạ cụ thể (Mặt bằng, thiết kế, danh sách tiện ích). Hãy xen kẽ trái phải để linh hoạt.`;
 
+// Danh sách từ khóa dự án — nếu ambient nhưng KHÔNG có bất kỳ từ nào này → SKIP ngay
+// (Thực tế: câu mơ hồ "ừ", "ok", "à ừ" không chứa keyword nào dưới đây)
+const PROJECT_KEYWORDS = [
+  'phú định', "ny'ah", 'nyah', 'niah', 'cosmo', 'fusion', 'opus', 'office', 'cashmere',
+  'giá', 'căn', 'lô', 'diện tích', 'tầng', 'mặt bằng', 'gara', 'thang máy', 'sân thượng',
+  'tiện ích', 'công viên', 'hồ bơi', 'cầu lông', 'bóng rổ',
+  'vị trí', 'địa chỉ', 'bản đồ', 'quận', 'đường',
+  'pháp lý', 'sổ hồng', 'hợp đồng', 'cam kết', 'qsdđ',
+  'thanh toán', 'đặt cọc', 'chiết khấu', 'vay', 'ngân hàng',
+  'nhà đạt', 'nha dat', 'công ty', 'chủ đầu tư', 'founder',
+  'phòng ngủ', 'phòng khách', 'phòng tắm', 'bếp', 'phòng học',
+  'nhà phố', 'mẫu nhà', 'thiết kế', 'nội thất', 'phối cảnh',
+  'sinh thái', 'xanh', 'landmark', 'trung tâm thương mại',
+  'metro', 'quận 1', 'quận 8', 'bình chánh', 'an dương vương',
+];
+
+function hasProjectKeyword(text: string): boolean {
+  const lower = text.toLowerCase();
+  return PROJECT_KEYWORDS.some(kw => lower.includes(kw));
+}
+
 async function readRepoFile(name: string): Promise<string> {
   try { return await readFile(path.join(process.cwd(), name), 'utf-8'); } catch { return ''; }
 }
@@ -46,8 +67,15 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
-      // Ambient mode dùng ngưỡng score cao hơn (0.35) — chỉ cầm kết quả kém khi câu hỏi mơ hồ
-      const minScore = ambient ? 0.35 : 0;
+      // Ambient: Lọc 2 tầng —
+      //   Tầng 1 (nhanh, miễn phí): Kiểm tra keyword — nếu không có keyword dự án → SKIP ngay
+      //   Tầng 2 (embedding): minScore=0.71 — nếu vector score thấp → SKIP
+      // Lý do 2 tầng: score embedding có variance (~±0.02), keyword detection ổn định 100%
+      if (ambient && !hasProjectKeyword(message)) {
+        console.log(`[Slide] Ambient SKIP (no keyword): "${message.slice(0, 60)}"`);
+        return { prompt: '', hasChunks: false };
+      }
+      const minScore = ambient ? 0.71 : 0;
       const chunks = await retrieve(message, index, 12, minScore);
       if (chunks.length > 0) {
         return {
