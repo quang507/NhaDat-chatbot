@@ -73,6 +73,23 @@
 | #49 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
 | #50 | Cosmo Gen 2 | Đường nội khu | ≈5.00 | ≈11.4 | 57.21 | Còn trống |
 
+## Giá bán (Bảng giá độc quyền T3.2026 — các căn đã công bố giá)
+
+| Mã Lô | Mẫu Nhà | Giá (chưa nội thất) | Giá (gói Air) | Giá (gói Max) |
+| :--- | :--- | :--- | :--- | :--- |
+| #01 | Opus | 14,443,000,000 đ | — | — |
+| #02 | Opus | 12,791,000,000 đ | — | — |
+| #03 | Cosmo Gen 2 | — | 9,710,000,000 đ | 9,957,800,000 đ |
+| #23 | Opus | 10,498,000,000 đ | — | — |
+| #24 | Opus | — | 12,751,000,000 đ | 13,136,350,000 đ |
+| #25 | Opus | 10,766,000,000 đ | — | — |
+| #26 | Opus | 16,566,000,000 đ | — | — |
+| #42 | Cosmo Gen 2 | — | 8,981,000,000 đ | 9,277,100,000 đ |
+| #50 | Cosmo Gen 2 | — | 11,470,000,000 đ | 11,797,600,000 đ |
+
+- Gói **Air** = nội thất cơ bản; gói **Max** = nội thất đầy đủ cao cấp.
+- Các căn khác chưa công bố giá — vui lòng liên hệ tư vấn.
+
 ## Bố trí công năng các tầng (chuẩn Ny'ah Phú Định)
 
 Nhà phố 6 tầng (1 trệt, 1 lửng, 3 lầu, sân thượng):
