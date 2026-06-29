@@ -225,32 +225,40 @@ function generateImageMetadata(imagesDir, outputMdPath) {
     return;
   }
 
-  const files = fs.readdirSync(imagesDir);
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
   const entries = [];
 
-  for (const name of files) {
-    const ext = path.extname(name).toLowerCase();
-    if (!imageExtensions.includes(ext)) continue;
+  // Duyệt ĐỆ QUY mọi thư mục con (vd 01_NyAh-PhuDinh/, cong_ty/) để không bỏ sót ảnh
+  const walk = (dir) => {
+    for (const name of fs.readdirSync(dir)) {
+      const full = path.join(dir, name);
+      let isDir = false;
+      try { isDir = fs.statSync(full).isDirectory(); } catch {}
+      if (isDir) { walk(full); continue; }
 
-    const baseName = path.basename(name, ext);
-    
-    // Tách từ theo ký hiệu gạch dưới hoặc gạch ngang để tạo từ khóa
-    // ví dụ: biet-thu-nyah_phoi-canh-mat-ngoai.jpg -> biet thu nyah, phoi canh mat ngoai
-    const parts = baseName.split('_');
-    const cleanParts = parts.map(p => p.replace(/-/g, ' ').trim());
-    
-    const title = cleanParts[cleanParts.length - 1]; // từ khóa cuối cùng làm tiêu đề/caption
-    const keywords = cleanParts.join(', ');
-    
-    const mdEntry = `## 🔖 [Ảnh Minh Họa] · ${baseName}
+      const ext = path.extname(name).toLowerCase();
+      if (!imageExtensions.includes(ext)) continue;
+
+      const rel = path.relative(imagesDir, full).replace(/\\/g, '/'); // vd: 01_NyAh-PhuDinh/phoi-canh.jpg
+      const baseName = path.basename(name, ext);
+      const parts = baseName.split('_');
+      const cleanParts = parts.map(p => p.replace(/-/g, ' ').trim());
+      const title = cleanParts[cleanParts.length - 1];
+      // Gộp tên thư mục cha vào từ khóa để RAG khớp đúng dự án
+      const folderKw = path.dirname(rel) !== '.' ? path.dirname(rel).replace(/[\/_-]/g, ' ').trim() + ', ' : '';
+      const keywords = folderKw + cleanParts.join(', ');
+      // Encode đường dẫn để URL hợp lệ kể cả khi tên file có dấu cách / tiếng Việt
+      const urlPath = rel.split('/').map(encodeURIComponent).join('/');
+
+      entries.push(`## 🔖 [Ảnh Minh Họa] · ${baseName}
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: ${keywords}.
 Chi tiết: ${title}.
-Đường dẫn hình ảnh: ![${title}](/images/${name})
+Đường dẫn hình ảnh: ![${title}](/images/${urlPath})
 
----`;
-    entries.push(mdEntry);
-  }
+---`);
+    }
+  };
+  walk(imagesDir);
 
   if (entries.length > 0) {
     const content = `# 📸 Danh Sách Ảnh Minh Họa Tự Động Sinh\n\nTài liệu này chứa thông tin và đường dẫn đến các hình ảnh dự án phục vụ cho RAG.\n\n${entries.join('\n\n')}\n`;
@@ -315,8 +323,18 @@ async function main() {
     const ONEDRIVE_IMAGES_DIR = ONEDRIVE_IMAGES_DIR_GLOBAL;
     const LOCAL_IMAGES_DIR = path.join(__dirname, 'public', 'images');
     const LOCAL_IMAGES_METADATA_FILE = path.join(LOCAL_DATA_DIR, 'generated_images_metadata.md');
-    // Bỏ qua đồng bộ ảnh từ OneDrive theo yêu cầu người dùng, ảnh sẽ được quản lý trực tiếp trong source code.
-    
+    // MIRROR ảnh: ChatBotImages_Upload (OneDrive) -> public/images (xóa cũ rồi copy, để ảnh đã xóa cũng biến mất)
+    if (fs.existsSync(ONEDRIVE_IMAGES_DIR) && fs.readdirSync(ONEDRIVE_IMAGES_DIR).length > 0) {
+      if (fs.existsSync(LOCAL_IMAGES_DIR)) fs.rmSync(LOCAL_IMAGES_DIR, { recursive: true, force: true });
+      fs.mkdirSync(LOCAL_IMAGES_DIR, { recursive: true });
+      copyDir(ONEDRIVE_IMAGES_DIR, LOCAL_IMAGES_DIR);
+      console.log("Đồng bộ hình ảnh từ OneDrive vào public/images thành công!");
+    } else {
+      console.log("Bỏ qua đồng bộ ảnh: thư mục ảnh OneDrive trống hoặc không tồn tại.");
+    }
+    // Sinh metadata ảnh (đường dẫn /images/...) để RAG/slide biết URL ảnh mà chèn vào slide
+    generateImageMetadata(LOCAL_IMAGES_DIR, LOCAL_IMAGES_METADATA_FILE);
+
     // 3. Phân tích các file, phát hiện các file mới/thay đổi để gom chunks
     console.log("3. Đang phân tích files dữ liệu...");
     const files = scanDir(LOCAL_DATA_DIR);
@@ -343,6 +361,13 @@ async function main() {
       console.log(`Phát hiện file mới/thay đổi: ${relativePath}`);
       filesToEmbed.push({ file, relativePath, hash: currentHash });
     }
+
+    // Ưu tiên embed file metadata ảnh TRƯỚC, để nếu dính 429 giữa chừng thì URL ảnh vẫn kịp vào index
+    filesToEmbed.sort((a, b) => {
+      const am = a.relativePath.includes('generated_images_metadata') ? 0 : 1;
+      const bm = b.relativePath.includes('generated_images_metadata') ? 0 : 1;
+      return am - bm;
+    });
 
     console.log(`Giữ nguyên: ${filesSkipped} files. Cần sinh vector mới cho: ${filesToEmbed.length} files.`);
 
@@ -458,7 +483,7 @@ async function main() {
     console.log("10. Đang push các file thư mục data và hình ảnh lên GitHub...");
     execSync('git add -A data/'); // -A để stage cả file/folder bị xóa (mirror)
     if (fs.existsSync(LOCAL_IMAGES_DIR)) {
-      execSync('git add public/images/');
+      execSync('git add -A public/images/');
     }
     try {
       execSync('git commit -m "Sync data folders and images from OneDrive"');
