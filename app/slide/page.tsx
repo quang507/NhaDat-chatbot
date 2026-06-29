@@ -65,8 +65,20 @@ export default function SlideBotPage() {
   const isGeneratingRef = useRef(false);   // đang gọi API slide -> bỏ qua ambient trigger mới
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const instantFiredRef = useRef(false);   // đã bắn slide tức thì cho câu đang nói chưa
+  const lastInstantRef = useRef(0);        // mốc lần bắn slide tức thì gần nhất
   const AMBIENT_DEBOUNCE_MS = 1200;        // ngừng nói 1.2s mới xét tạo slide (nhanh hơn)
   const AMBIENT_COOLDOWN_MS = 6000;        // tối thiểu 6s giữa 2 slide
+  const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
+  // Từ khóa nghe được là bật slide LIỀN (không đợi hết câu)
+  const AMBIENT_TRIGGER_WORDS = [
+    'vị trí', 'bản đồ', 'địa chỉ', 'đường đi', 'ở đâu', 'bao xa', 'di chuyển',
+    'giá', 'bảng giá', 'thanh toán', 'chiết khấu', 'pháp lý', 'sổ hồng',
+    'mẫu nhà', 'opus', 'fusion', 'cosmo', 'signature', 'nội thất',
+    'diện tích', 'mặt tiền', 'bếp', 'phòng ngủ', 'phòng khách', 'master',
+    'gara', 'sân thượng', 'thang máy', 'tiện ích', 'công viên', 'tầng',
+    'căn số', 'lô số', 'căn ', 'lô ',
+  ];
 
   useEffect(() => { ambientRef.current = ambientMode; }, [ambientMode]);
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
@@ -158,9 +170,14 @@ export default function SlideBotPage() {
             setTranscript(ambientRef.current
               ? '🎧 Đang nghe: …' + interim.trim().slice(-90)
               : `🎤 …${interim.trim()}`);
+            // NGHE NGẦM: nghe thấy từ khóa là bật slide LIỀN (không đợi hết câu)
+            if (ambientRef.current) maybeInstantTrigger(interim);
             return;
           }
           if (!finalText) return;
+
+          // Hết câu -> cho phép câu sau lại được bắn tức thì
+          instantFiredRef.current = false;
 
           const text = normalizeVietnameseSpeech(finalText);
           if (handleVoiceCommands(text)) {
@@ -376,6 +393,24 @@ export default function SlideBotPage() {
     } else {
       startWhisperRecording();
     }
+  };
+
+  // Bắn slide TỨC THÌ khi nghe thấy từ khóa (đang nói dở, chưa hết câu).
+  // Sau khi hết câu, logic debounce (maybeGenerateAmbient) vẫn chạy để ra slide hoàn chỉnh tiếp theo.
+  const maybeInstantTrigger = (interim: string) => {
+    if (instantFiredRef.current) return;          // câu này đã bắn 1 lần rồi
+    if (isGeneratingRef.current) return;          // đang tạo slide -> chờ
+    const now = Date.now();
+    if (now - lastInstantRef.current < INSTANT_COOLDOWN_MS) return;
+    const q = interim.toLowerCase();
+    if (!AMBIENT_TRIGGER_WORDS.some(w => q.includes(w))) return;
+    const query = interim.trim();
+    if (query.split(/\s+/).length < 2) return;    // quá ngắn, bỏ qua
+    instantFiredRef.current = true;
+    lastInstantRef.current = now;
+    lastGenRef.current = now;                      // tính luôn vào cooldown chung
+    lastQueryRef.current = query;
+    fetchSlideData(normalizeVietnameseSpeech(query), true);
   };
 
   // ===== NGHE NGẦM (AMBIENT) =====
