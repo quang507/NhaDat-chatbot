@@ -161,11 +161,45 @@ export async function buildIndex(dataText: string): Promise<Index> {
   // Nếu không gắn -> các boost này chết, Q&A chuẩn không được ưu tiên. Chunk không có marker thì
   // kế thừa file của marker gần nhất phía trên (file dài bị cắt thành nhiều chunk).
   let currentFile = '';
-  const chunks: Chunk[] = texts.map((text, i) => {
+  const rawChunks: Chunk[] = texts.map((text, i) => {
     const m = text.match(/##\s*🔖\s*\[([^\]]*)\]\s*·\s*([^\n]+)/);
     if (m) currentFile = `${m[1].trim()}/${m[2].trim()}`;
     return { text, vec: vecs[i] || [], file: currentFile || undefined };
   });
+
+  // NEAR-DUP: gộp các chunk gần như y hệt (cùng nội dung đăng lại nhiều file/nguồn).
+  // An toàn: ngưỡng rất cao 0.985, BỎ QUA bảng (| ...) để không xoá nhầm dòng phân lô gần giống,
+  // và khi trùng thì GIỮ nguồn ưu tiên cao hơn (canonical theo source_priority).
+  const NEAR_DUP = 0.985;
+  const sourcePriority = (file?: string): number => {
+    const f = (file || '').toLowerCase();
+    if (f.includes('03_human-qa')) return 5;       // Q&A chuẩn Human — tin nhất
+    if (f.includes('drive-extracted')) return 4;   // dữ liệu gốc từ Drive
+    if (f.includes('nyah-phudinh') || f.includes('nyah-phuinh') || f.includes('01 nyah')) return 3;
+    if (f.includes('qa-generated')) return 2;       // QA sinh tự động — dễ sai
+    if (f.includes('web-crawl')) return 1;          // crawl web — thấp nhất
+    return 3;
+  };
+  const isTable = (t: string) => t.trim().startsWith('|') || t.includes('\n|');
+  const chunks: Chunk[] = [];
+  let nearDupRemoved = 0;
+  for (const c of rawChunks) {
+    if (!c.vec.length || isTable(c.text)) { chunks.push(c); continue; }
+    let dupIdx = -1;
+    for (let j = 0; j < chunks.length; j++) {
+      const k = chunks[j];
+      if (!k.vec.length || isTable(k.text)) continue;
+      if (dot(c.vec, k.vec) > NEAR_DUP) { dupIdx = j; break; }
+    }
+    if (dupIdx >= 0) {
+      nearDupRemoved++;
+      // giữ bản từ nguồn ưu tiên cao hơn làm canonical
+      if (sourcePriority(c.file) > sourcePriority(chunks[dupIdx].file)) chunks[dupIdx] = c;
+    } else {
+      chunks.push(c);
+    }
+  }
+  console.log(`[buildIndex] ${rawChunks.length} chunk -> bỏ ${nearDupRemoved} near-dup -> ${chunks.length} chunk.`);
   return { chunks, builtAt: new Date().toISOString() };
 }
 
