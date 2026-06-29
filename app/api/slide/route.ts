@@ -16,14 +16,14 @@ const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 // Giá trị dùng để chọn thư mục ảnh: 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'.
 const UNIT_MODELS: Record<number, 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'> = (() => {
   const m: Record<number, 'opus' | 'fusion_gen_5' | 'cosmo_gen_2'> = {};
-  const opus = [1, 2, 23, 24];
-  const cosmo = [3, 4, 38, 39, 40, 41, 42, 45, 46, 47, 48, 49, 50];
+  const opus = [1, 2, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
+  const fusion = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
   // Signature by Codinachs (43, 44): chưa có bộ ảnh riêng -> tạm dùng ảnh Cosmo Gen 2 làm fallback.
-  const signatureFallback = [43, 44];
+  // Phần còn lại (3, 38-42, 45-50, 43, 44) là Cosmo Gen 2.
   for (let i = 1; i <= 50; i++) {
     if (opus.includes(i)) m[i] = 'opus';
-    else if (cosmo.includes(i) || signatureFallback.includes(i)) m[i] = 'cosmo_gen_2';
-    else m[i] = 'fusion_gen_5';
+    else if (fusion.includes(i)) m[i] = 'fusion_gen_5';
+    else m[i] = 'cosmo_gen_2';
   }
   return m;
 })();
