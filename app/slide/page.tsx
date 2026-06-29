@@ -69,8 +69,13 @@ export default function SlideBotPage() {
   useEffect(() => { ambientRef.current = ambientMode; }, [ambientMode]);
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
 
+  const slideRef = useRef<SlideData | null>(null);
+  const brokenImagesRef = useRef<Record<string, boolean>>({});
+  useEffect(() => { slideRef.current = slide; }, [slide]);
+  useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
+
   // Tốc độ đọc slide (đọc nhanh hơn bình thường cho đỡ lê thê)
-  const SLIDE_TTS_RATE = '+15%';
+  const SLIDE_TTS_RATE = '+22%';
 
   // Barge-in (nói chèn lúc đang đọc) — VAD trên stream có khử vọng, giống trang /voice
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -104,6 +109,9 @@ export default function SlideBotPage() {
         rec.onresult = (event: any) => {
           const rawText = event.results[0][0].transcript;
           const text = normalizeVietnameseSpeech(rawText);
+          if (handleVoiceCommands(text)) {
+            return;
+          }
           if (ambientRef.current) {
             handleAmbientSpeech(text);
           } else {
@@ -151,6 +159,46 @@ export default function SlideBotPage() {
     };
   }, []);
 
+  const handleVoiceCommands = (text: string): boolean => {
+    const clean = text.toLowerCase().trim();
+    
+    // 1. Nhóm lệnh phóng to
+    const zoomInKeywords = [
+      'phóng to', 'phóng lớn', 'xem ảnh to', 'xem hình to', 
+      'zoom to', 'zoom lên', 'phóng to ảnh', 'phóng to hình', 'mở to'
+    ];
+    if (zoomInKeywords.some(kw => clean.includes(kw))) {
+      const images: string[] = [];
+      if (slideRef.current?.image_urls && Array.isArray(slideRef.current.image_urls)) {
+        images.push(...slideRef.current.image_urls.filter(img => img && !brokenImagesRef.current[img]));
+      } else if (slideRef.current?.image_url && !brokenImagesRef.current[slideRef.current.image_url]) {
+        images.push(slideRef.current.image_url);
+      }
+      
+      if (images.length > 0) {
+        setSelectedImage(images[0]);
+        setTranscript('🔍 Khẩu lệnh: Phóng to hình ảnh.');
+        setState('idle');
+        return true;
+      }
+    }
+    
+    // 2. Nhóm lệnh thu nhỏ / đóng
+    const zoomOutKeywords = [
+      'thu nhỏ', 'thu nhỏ lại', 'nhỏ lại', 'nhỏ về', 
+      'đóng ảnh', 'đóng hình', 'thoát ảnh', 'quay lại', 
+      'đóng lại', 'tắt ảnh', 'tắt hình', 'zoom nhỏ', 'nhỏ đi'
+    ];
+    if (zoomOutKeywords.some(kw => clean.includes(kw))) {
+      setSelectedImage(null);
+      setTranscript('🔍 Khẩu lệnh: Thu nhỏ hình ảnh.');
+      setState('idle');
+      return true;
+    }
+    
+    return false;
+  };
+
   const startWhisperRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -194,6 +242,10 @@ export default function SlideBotPage() {
       const data = await res.json();
       const text = normalizeVietnameseSpeech(data.text || '');
       
+      if (handleVoiceCommands(text)) {
+        return;
+      }
+
       if (text && text.trim()) {
         setTranscript(`Bạn nói: "${text}"`);
         fetchSlideData(text, false);
