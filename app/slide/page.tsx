@@ -75,7 +75,7 @@ export default function SlideBotPage() {
   const autoStartGestureRef = useRef<(() => void) | null>(null); // handler auto-start ở cử chỉ đầu tiên
   const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
   const AMBIENT_DEBOUNCE_MS = 600;        // ngừng nói 0.6s mới xét tạo slide -> Rất nhanh!
-  const AMBIENT_COOLDOWN_MS = 5000;        // tối thiểu 5s giữa 2 slide
+  const AMBIENT_COOLDOWN_MS = 2000;        // tối thiểu 2s giữa 2 slide (đã giảm từ 5s)
 
   useEffect(() => { ambientRef.current = ambientMode; }, [ambientMode]);
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
@@ -394,7 +394,6 @@ export default function SlideBotPage() {
 
     instantFiredRef.current = true;
     lastInstantRef.current = now;
-    lastGenRef.current = now;                      // tính luôn vào cooldown chung
     lastQueryRef.current = interim;
     fetchSlideData(normalizeVietnameseSpeech(interim), true);
   };
@@ -451,8 +450,9 @@ export default function SlideBotPage() {
     }
 
     const now = Date.now();
+    const isNewTopic = intent.topic && activeTopicRef.current && activeTopicRef.current.topic !== intent.topic;
     const wait = AMBIENT_COOLDOWN_MS - (now - lastGenRef.current);
-    if (wait > 0 && intent.reason !== 'explicit_slide_request') {
+    if (wait > 0 && intent.reason !== 'explicit_slide_request' && !isNewTopic) {
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(maybeGenerateAmbient, wait);
       return;
@@ -480,7 +480,6 @@ export default function SlideBotPage() {
     const fullQuery = shortContextRef.current.join('. ');
 
     lastQueryRef.current = fullQuery;
-    lastGenRef.current = now;
     bufferRef.current = ''; // Clear buffer ngay
     
     fetchSlideData(fullQuery, true);
@@ -841,6 +840,9 @@ export default function SlideBotPage() {
       setCurrentImageIndex(0);
       setSlideKey(k => k + 1);
       setSlide(data);
+      if (ambient) {
+        lastGenRef.current = Date.now();
+      }
 
       if (voiceOnRef.current) {
         // Có đọc to: tạm ngắt mic khi đang đọc (tránh loa vọng vào mic), mở lại ở onSpeakDone.
