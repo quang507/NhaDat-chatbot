@@ -366,19 +366,103 @@ export async function POST(req: NextRequest) {
           image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg']
         };
       }
-    } else if (cleanMsg.includes('thang máy') || cleanMsg.includes('elevator') || cleanMsg.includes('thang kính')) {
+    } else if (cleanMsg.includes('pháp lý') || cleanMsg.includes('sổ hồng') || cleanMsg.includes('phê duyệt') || cleanMsg.includes('giấy phép') || cleanMsg.includes('sở hữu')) {
       staticSlide = {
         layout_type: 'split_image_right',
-        title: "Thiết kế Thang máy kính",
+        title: "Pháp lý dự án",
         points: [
-          "Bố trí thang máy kính sang trọng",
-          "Tầm nhìn 360 độ thoáng đãng",
-          "Kết nối thuận tiện từ gara xe"
+          "Sổ hồng riêng từng căn sở hữu lâu dài",
+          "Quyết định phê duyệt quy hoạch 1/500",
+          "Giấy phép xây dựng đầy đủ, minh bạch"
         ],
-        speech_text: "Các căn nhà được trang bị thang máy kính quan sát sang trọng, di chuyển êm ái kết nối từ khu vực gara đỗ xe lên các tầng.",
-        image_urls: model === 'fusion_gen_5' 
-          ? ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png']
-          : ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png']
+        speech_text: "Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.",
+        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg']
+      };
+    } else if (cleanMsg.includes('thanh toán') || cleanMsg.includes('tiến độ thanh toán') || cleanMsg.includes('lịch thanh toán') || cleanMsg.includes('chiết khấu') || cleanMsg.includes('chính sách')) {
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: "Tiến độ Thanh toán",
+        points: [
+          "Lịch thanh toán linh hoạt theo tiến độ",
+          "Hỗ trợ vay ngân hàng lãi suất ưu đãi",
+          "Chiết khấu hấp dẫn khi thanh toán nhanh"
+        ],
+        speech_text: "Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.",
+        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg']
+      };
+    } else if (cleanMsg.includes('giá bán') || cleanMsg.includes('giá') || cleanMsg.includes('bao nhiêu tiền') || cleanMsg.includes('bao nhiêu tỷ') || cleanMsg.includes('mấy tỷ')) {
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: "Giá bán hấp dẫn",
+        points: [
+          "Giá bán cạnh tranh hàng đầu khu vực",
+          "Giá trị gia tăng bền vững lâu dài",
+          "Chỉ từ 5 đến 7 tỷ đồng mỗi căn"
+        ],
+        speech_text: "Giá bán các căn nhà phố thương mại tại dự án cực kỳ hấp dẫn, chỉ từ năm đến bảy tỷ đồng tùy theo diện tích và mẫu nhà.",
+        image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
+      };
+    } else if (cleanMsg.includes('mẫu nhà') || cleanMsg.includes('thiết kế nhà') || cleanMsg.includes('kiến trúc nhà')) {
+      if (model === 'cosmo_gen_2') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Mẫu nhà Cosmo Gen 2",
+          points: [
+            "Diện tích sử dụng tối ưu hóa",
+            "Thang máy kính từ gara tầng trệt",
+            "Thiết kế trần cao thoáng đãng"
+          ],
+          speech_text: "Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png']
+        };
+      } else if (model === 'fusion_gen_5') {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Mẫu nhà Fusion Gen 5",
+          points: [
+            "Thiết kế lệch tầng phá cách",
+            "Không gian bếp đảo rộng mở",
+            "Tối ưu ánh sáng và gió tự nhiên"
+          ],
+          speech_text: "Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png']
+        };
+      } else {
+        staticSlide = {
+          layout_type: 'split_image_right',
+          title: "Mẫu nhà Opus",
+          points: [
+            "Phù hợp vừa ở vừa kinh doanh",
+            "Thiết kế 6 tầng bề thế",
+            "Mặt tiền thương mại đắt giá"
+          ],
+          speech_text: "Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.",
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg']
+        };
+      }
+    } else if (cleanMsg.includes('phối cảnh') || cleanMsg.includes('cảnh quan') || cleanMsg.includes('toàn cảnh') || cleanMsg.includes('tổng thể') || cleanMsg.includes('ngoại thất')) {
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: "Kiến trúc Phối cảnh",
+        points: [
+          "Quy hoạch đồng bộ, hiện đại",
+          "Không gian xanh bao phủ rộng",
+          "Mặt ngoài kiến trúc tinh tế"
+        ],
+        speech_text: "Dự án được quy hoạch đồng bộ với hạ tầng ngầm, đường nội khu rộng rãi và thiết kế mặt ngoài sang trọng.",
+        image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
+      };
+    } else if (cleanMsg.includes('chủ đầu tư') || cleanMsg.includes('nhã đạt') || cleanMsg.includes('nhà phát triển') || cleanMsg.includes('nhà đạt')) {
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: "Nhà phát triển Nhã Đạt",
+        points: [
+          "Thương hiệu uy tín, chất lượng",
+          "Tập trung vào giá trị sống thực tế",
+          "Cam kết bàn giao hoàn thiện cao"
+        ],
+        speech_text: "Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.",
+        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg']
       };
     }
 
