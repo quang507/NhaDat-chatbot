@@ -45,7 +45,7 @@ export default function SlideBotPage() {
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
   // Chế độ nghe ngầm (ambient) + bật/tắt đọc to
-  const [ambientMode, setAmbientMode] = useState(false);
+  const [ambientMode, setAmbientMode] = useState(true); // mặc định BẬT nghe ngầm ngay khi vào trang
   const [voiceOn, setVoiceOn] = useState(true);
 
   const recognitionRef = useRef<any>(null);
@@ -72,6 +72,7 @@ export default function SlideBotPage() {
   const lastInstantRef = useRef(0);        // mốc lần bắn slide tức thì gần nhất
   const lastActivityRef = useRef(0);       // mốc hoạt động gần nhất của STT (onstart/onresult/audio) -> watchdog
   const watchdogRef = useRef<any>(null);   // timer kiểm tra STT "chết câm" để khởi động lại
+  const autoStartGestureRef = useRef<(() => void) | null>(null); // handler auto-start ở cử chỉ đầu tiên
   const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
   const AMBIENT_DEBOUNCE_MS = 600;        // ngừng nói 0.6s mới xét tạo slide -> Rất nhanh!
   const AMBIENT_COOLDOWN_MS = 5000;        // tối thiểu 5s giữa 2 slide
@@ -238,6 +239,26 @@ export default function SlideBotPage() {
             }, 400);
           }
         }, 3000);
+
+        // TỰ ĐỘNG bật nghe ngầm ngay khi vào trang — không cần bấm gì.
+        ambientRef.current = true;
+        isListeningLoopActive.current = true;
+        const tryAutoStart = () => {
+          if (!isListeningLoopActive.current) return;
+          if (stateRef.current !== 'idle') return; // đã đang nghe rồi
+          try {
+            recognitionRef.current?.start();
+            lastActivityRef.current = Date.now();
+            setState('listening');
+            setTranscript('🎧 Đang nghe ngầm…');
+          } catch (e) {}
+        };
+        tryAutoStart();
+        // Phòng khi trình duyệt chặn auto-start (cần cử chỉ người dùng để cấp quyền mic):
+        // bắt đầu ngay ở lần chạm/gõ phím đầu tiên ở bất kỳ đâu trên trang.
+        autoStartGestureRef.current = () => tryAutoStart();
+        window.addEventListener('pointerdown', autoStartGestureRef.current, { once: true });
+        window.addEventListener('keydown', autoStartGestureRef.current, { once: true });
       } else {
         setTranscript('Trình duyệt không hỗ trợ Web Speech API. Hãy thử Chrome hoặc Safari.');
       }
@@ -248,6 +269,10 @@ export default function SlideBotPage() {
         window.removeEventListener('keydown', handleKeyDown);
       }
       isListeningLoopActive.current = false;
+      if (autoStartGestureRef.current) {
+        window.removeEventListener('pointerdown', autoStartGestureRef.current);
+        window.removeEventListener('keydown', autoStartGestureRef.current);
+      }
       if (watchdogRef.current) clearInterval(watchdogRef.current);
       if (debounceRef.current) clearTimeout(debounceRef.current);
       if (activeAudioRef.current) activeAudioRef.current.pause();
