@@ -65,7 +65,7 @@ export default function SlideBotPage() {
   const isGeneratingRef = useRef(false);   // đang gọi API slide -> bỏ qua ambient trigger mới
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const AMBIENT_DEBOUNCE_MS = 1800;        // ngừng nói 1.8s mới xét tạo slide
+  const AMBIENT_DEBOUNCE_MS = 1200;        // ngừng nói 1.2s mới xét tạo slide (nhanh hơn)
   const AMBIENT_COOLDOWN_MS = 6000;        // tối thiểu 6s giữa 2 slide
 
   useEffect(() => { ambientRef.current = ambientMode; }, [ambientMode]);
@@ -135,17 +135,34 @@ export default function SlideBotPage() {
       if (SpeechRecognition) {
         const rec = new SpeechRecognition();
         rec.continuous = false;
-        rec.interimResults = false;
+        rec.interimResults = true;   // hiện chữ NGAY khi đang nói -> tín hiệu nghe rõ + bớt cảm giác trễ
         rec.lang = 'vi-VN';
 
         rec.onstart = () => {
           setState('listening');
-          setTranscript('Tôi đang nghe...');
+          setTranscript(ambientRef.current ? '🎧 Đang nghe…' : '🎤 Đang nghe, mời nói…');
         };
 
         rec.onresult = (event: any) => {
-          const rawText = event.results[0][0].transcript;
-          const text = normalizeVietnameseSpeech(rawText);
+          // Gom kết quả: interim (tạm) hiện ngay; final mới đem đi xử lý
+          let interim = '';
+          let finalText = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const r = event.results[i];
+            if (r.isFinal) finalText += r[0].transcript;
+            else interim += r[0].transcript;
+          }
+
+          // Phản hồi tức thì khi đang nói (chưa chốt câu)
+          if (interim && !finalText) {
+            setTranscript(ambientRef.current
+              ? '🎧 Đang nghe: …' + interim.trim().slice(-90)
+              : `🎤 …${interim.trim()}`);
+            return;
+          }
+          if (!finalText) return;
+
+          const text = normalizeVietnameseSpeech(finalText);
           if (handleVoiceCommands(text)) {
             return;
           }
@@ -845,8 +862,21 @@ export default function SlideBotPage() {
 
       {/* Footer / Controls */}
       <footer className="p-6 z-10 flex flex-col items-center gap-4 bg-gradient-to-t from-[#0a0f1e] to-transparent">
-        <div className="text-sm text-center font-medium bg-[#161d30]/80 backdrop-blur px-6 py-3 rounded-2xl border border-[#1e2a45] text-gray-300 min-w-[300px] max-w-2xl">
-          {transcript}
+        <div className={`text-sm text-center font-medium bg-[#161d30]/80 backdrop-blur px-6 py-3 rounded-2xl border text-gray-300 min-w-[300px] max-w-2xl flex items-center justify-center gap-2.5 transition-colors ${
+          state === 'listening' ? 'border-green-500/60' : state === 'processing' ? 'border-blue-500/60' : 'border-[#1e2a45]'
+        }`}>
+          {state === 'listening' && (
+            // Tín hiệu sóng âm "đang nghe" — 3 vạch nhấp nháy lệch pha
+            <span className="flex items-end gap-0.5 h-4 shrink-0" aria-hidden>
+              <span className="w-0.5 bg-green-400 rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
+              <span className="w-0.5 bg-green-400 rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
+              <span className="w-0.5 bg-green-400 rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+            </span>
+          )}
+          {state === 'processing' && (
+            <span className="w-3.5 h-3.5 shrink-0 border-2 border-blue-400/40 border-t-blue-400 rounded-full animate-spin" aria-hidden />
+          )}
+          <span className="truncate">{transcript}</span>
         </div>
 
         {/* Toggle: Nghe ngầm + Đọc to */}
@@ -960,6 +990,10 @@ export default function SlideBotPage() {
         }
         .animate-scale-up {
           animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-sound-wave {
+          animation: wave 0.9s ease-in-out infinite;
+          will-change: height;
         }
         .animate-slide-up {
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
