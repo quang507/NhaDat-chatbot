@@ -63,6 +63,13 @@ export default function ChatWidget() {
   const [cfg, setCfg] = useState<Config>({ suggestions: [], phone: '', zalo: '' });
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // Tự động thu gọn chatbot khi vào trang trình chiếu hoặc hội thoại
+  useEffect(() => {
+    if (pathname === '/slide' || pathname === '/voice') {
+      setOpen(false);
+    }
+  }, [pathname]);
+
   useEffect(() => {
     fetch('/api/config').then(r => r.json()).then(setCfg).catch(() => {});
   }, []);
