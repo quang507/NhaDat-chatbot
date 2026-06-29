@@ -263,7 +263,7 @@ export async function POST(req: NextRequest) {
       }
 
       // 2. Kiểm tra từ khóa phòng / không gian
-      if (textToSearch.includes('vị trí') || textToSearch.includes('bản đồ') || textToSearch.includes('maps') || textToSearch.includes('địa chỉ') || textToSearch.includes('đường đi') || textToSearch.includes('ở đâu') || textToSearch.includes('bao xa') || textToSearch.includes('bao lâu') || textToSearch.includes('di chuyển') || textToSearch.includes('đi từ') || textToSearch.includes('cách')) {
+      if (textToSearch.includes('vị trí') || textToSearch.includes('bản đồ') || textToSearch.includes('maps') || textToSearch.includes('địa chỉ') || textToSearch.includes('đường đi') || textToSearch.includes('ở đâu') || textToSearch.includes('bao xa') || textToSearch.includes('bao lâu') || textToSearch.includes('di chuyển') || textToSearch.includes('đi từ') || textToSearch.includes('cách bao') || textToSearch.includes('cách trung tâm') || textToSearch.includes('cách dự án') || textToSearch.includes('cách quận')) {
         parsed.image_urls = [
           '/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg',
           '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'
