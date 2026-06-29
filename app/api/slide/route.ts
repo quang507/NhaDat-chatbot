@@ -57,10 +57,18 @@ const PROJECT_KEYWORDS = [
   'pháp lý', 'sổ hồng', 'hợp đồng', 'cam kết', 'qsdđ',
   'thanh toán', 'đặt cọc', 'chiết khấu', 'vay', 'ngân hàng',
   'nhà đạt', 'nha dat', 'công ty', 'chủ đầu tư', 'founder',
-  'phòng ngủ', 'phòng khách', 'phòng tắm', 'bếp', 'phòng học',
-  'nhà phố', 'mẫu nhà', 'thiết kế', 'nội thất', 'phối cảnh',
+  'phòng ngủ', 'phòng khách', 'phòng tắm', 'bếp', 'phòng học', 'phòng ăn', 'master',
+  'nhà phố', 'mẫu nhà', 'thiết kế', 'nội thất', 'phối cảnh', 'toàn cảnh', 'ngoại thất',
   'sinh thái', 'xanh', 'landmark', 'trung tâm thương mại',
   'metro', 'quận 1', 'quận 8', 'bình chánh', 'an dương vương',
+  // bổ sung: mẫu nhà + biến thể, công năng, tiện ích, tài chính, vị trí
+  'signature', 'codinachs', 'cashmere', 'gen 2', 'gen 5',
+  'thang xoắn', 'thang biến hóa', 'giếng trời', 'ban công', 'thông tầng', 'airtop', 'air top', 'khí tươi',
+  'ô tô', 'đỗ xe', 'đậu xe', 'sofa', 'giường', 'wc', 'vệ sinh', 'lavabo',
+  'sân chơi', 'sân thể thao', 'hồ bơi', 'cà phê', 'coffee',
+  'ở đâu', 'bao xa', 'bao lâu', 'đường đi', 'di chuyển', 'trương đình hội', 'võ văn kiệt', 'nguyễn văn linh', 'quốc lộ',
+  'giá bán', 'bao nhiêu tỷ', 'thanh toán', 'tiến độ', 'xây dựng', 'bàn giao', 'bảo hành', 'phí quản lý',
+  'giấy phép', 'quy hoạch', 'cho thuê', 'đầu tư', 'lợi nhuận',
 ];
 
 function hasProjectKeyword(text: string): boolean {
