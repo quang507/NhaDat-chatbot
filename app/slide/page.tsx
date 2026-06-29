@@ -587,8 +587,10 @@ export default function SlideBotPage() {
       const text = normalizeVietnameseSpeech((data.text || '').trim());
       if (!text || text.replace(/[^a-zà-ỹ0-9]/gi, '').length < 2) return;
       if (handleVoiceCommands(text)) return;
-      // Bắn tức thì nếu chạm từ khóa mạnh, đồng thời gom vào buffer xét slide đầy đủ
-      maybeInstantTrigger(text);
+      setTranscript('🎧 Nghe: …' + text.slice(-90));
+      // Whisper trả nguyên câu hoàn chỉnh -> đưa vào handleAmbientSpeech;
+      // nó tự xét kích hoạt tức thì (Logic 1) + debounce (Logic 2). KHÔNG gọi maybeInstantTrigger
+      // ở đây nữa để tránh bắn slide 2 lần cho cùng 1 câu.
       handleAmbientSpeech(text);
     } catch (e) { /* bỏ qua, vòng sau thu tiếp */ }
   };
