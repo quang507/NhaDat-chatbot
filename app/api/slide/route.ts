@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
       } else if (textToSearch.includes('tiện ích') || textToSearch.includes('công viên') || textToSearch.includes(' landmark coffee') || textToSearch.includes('sân chơi') || textToSearch.includes('sân cầu lông') || textToSearch.includes('bóng rổ') || textToSearch.includes('tiện nghi')) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('bếp') || textToSearch.includes('ăn') || textToSearch.includes('nấu')) {
+      } else if (textToSearch.includes('bếp') || textToSearch.includes('nhà ăn') || textToSearch.includes('nấu ăn') || textToSearch.includes('phòng ăn')) {
         if (model === 'cosmo_gen_2') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png'];
         } else if (model === 'fusion_gen_5') {
@@ -199,7 +199,7 @@ export async function POST(req: NextRequest) {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg'];
         }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('gara') || textToSearch.includes('xe hơi') || textToSearch.includes('đỗ xe') || textToSearch.includes('ô tô') || textToSearch.includes('đậu xe')) {
+      } else if (textToSearch.includes('gara') || textToSearch.includes('xe hơi') || textToSearch.includes('đỗ xe') || textToSearch.includes('ô tô') || textToSearch.includes('đậu xe') || textToSearch.includes('xe ô tô')) {
         if (model === 'cosmo_gen_2') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'];
         } else if (model === 'fusion_gen_5') {
@@ -208,7 +208,19 @@ export async function POST(req: NextRequest) {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png'];
         }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('phòng khách') || textToSearch.includes('sofa') || textToSearch.includes('tiếp khách') || textToSearch.includes('sinh hoạt chung')) {
+      } else if (textToSearch.includes('phòng học') || textToSearch.includes('phòng làm việc') || textToSearch.includes('home office') || textToSearch.includes('góc học') || textToSearch.includes('bàn làm việc') || textToSearch.includes('workspace') || textToSearch.includes('workzone')) {
+        if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-hoc.png'];
+        } else if (model === 'opus') {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg',
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg'
+          ];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('phòng khách') || textToSearch.includes('sofa') || textToSearch.includes('tiếp khách') || textToSearch.includes('sinh hoạt chung') || textToSearch.includes('phòng tiếp')) {
         if (model === 'cosmo_gen_2') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
         } else if (model === 'fusion_gen_5') {
@@ -217,11 +229,24 @@ export async function POST(req: NextRequest) {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png'];
         }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('phòng ngủ') || textToSearch.includes('giường') || textToSearch.includes('ngủ master') || textToSearch.includes('ngủ con') || textToSearch.includes('nơi ngủ')) {
+      } else if (textToSearch.includes('phòng ngủ master') || textToSearch.includes('ngủ master') || textToSearch.includes('master bedroom') || textToSearch.includes('phòng ngủ chính') || textToSearch.includes('phòng ngủ ba')) {
         if (model === 'cosmo_gen_2') {
           parsed.image_urls = [
             '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png'
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png'
+          ];
+        } else if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg'];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('phòng ngủ') || textToSearch.includes('giường') || textToSearch.includes('ngủ con') || textToSearch.includes('nơi ngủ') || textToSearch.includes('ngủ nhỏ') || textToSearch.includes('phòng ngủ 2') || textToSearch.includes('phòng ngủ phụ')) {
+        if (model === 'cosmo_gen_2') {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png'
           ];
         } else if (model === 'fusion_gen_5') {
           parsed.image_urls = [
@@ -231,11 +256,12 @@ export async function POST(req: NextRequest) {
         } else {
           parsed.image_urls = [
             '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg'
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg',
+            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-2.jpg'
           ];
         }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('wc') || textToSearch.includes('vệ sinh') || textToSearch.includes('toilet') || textToSearch.includes('tắm') || textToSearch.includes('phòng tắm')) {
+      } else if (textToSearch.includes('wc') || textToSearch.includes('vệ sinh') || textToSearch.includes('toilet') || textToSearch.includes('tắm') || textToSearch.includes('phòng tắm') || textToSearch.includes('lavabo')) {
         if (model === 'cosmo_gen_2') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_wc.png'];
         } else if (model === 'fusion_gen_5') {
@@ -244,33 +270,48 @@ export async function POST(req: NextRequest) {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_wc.jpg'];
         }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('thang máy') || textToSearch.includes('elevator')) {
-        // Cả Cosmo Gen 2 và Opus đều thiết kế thang máy kính đi từ Gara
-        parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png',
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'
-        ];
+      } else if (textToSearch.includes('thang máy') || textToSearch.includes('elevator') || textToSearch.includes('thang kính')) {
+        // Cosmo Gen 2 và Opus đều có thang máy kính đi từ Gara
+        if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png'];
+        } else {
+          parsed.image_urls = [
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'
+          ];
+        }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('ban công') || textToSearch.includes('sân thượng') || textToSearch.includes('logia')) {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
+      } else if (textToSearch.includes('ban công') || textToSearch.includes('sân thượng') || textToSearch.includes('logia') || textToSearch.includes('ngoài trời') || textToSearch.includes('vườn')) {
+        if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-3.png'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
+        }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('sảnh') || textToSearch.includes('lounge') || textToSearch.includes('phòng chờ')) {
+      } else if (textToSearch.includes('sảnh') || textToSearch.includes('lounge') || textToSearch.includes('phòng chờ') || textToSearch.includes('reception')) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_sanh-master.jpg'];
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('tầng 1') || textToSearch.includes('tầng một') || textToSearch.includes('tầng trệt') || textToSearch.includes('trệt')) {
+      } else if (textToSearch.includes('tầng 1') || textToSearch.includes('tầng một') || textToSearch.includes('tầng trệt') || textToSearch.includes('trệt') || textToSearch.includes('lầu trệt')) {
         if (model === 'opus') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg'];
         } else {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg'];
         }
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('tầng 2') || textToSearch.includes('tầng hai') || textToSearch.includes('lầu 1')) {
+      } else if (textToSearch.includes('tầng 2') || textToSearch.includes('tầng hai') || textToSearch.includes('lầu 1') || textToSearch.includes('lầu một')) {
         if (model === 'opus') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg'];
         } else if (model === 'fusion_gen_5') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tang-2.png'];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (textToSearch.includes('tầng 3') || textToSearch.includes('tầng ba') || textToSearch.includes('lầu 2') || textToSearch.includes('lầu hai')) {
+        if (model === 'fusion_gen_5') {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-3.png'];
+        } else {
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-3.jpg'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (textToSearch.includes('mặt bằng') || textToSearch.includes('tầng') || textToSearch.includes('thiết kế') || textToSearch.includes('bố cục') || textToSearch.includes('phân lô') || textToSearch.includes('lầu')) {
@@ -283,17 +324,19 @@ export async function POST(req: NextRequest) {
       } else if (textToSearch.includes('pháp lý') || textToSearch.includes('sổ hồng') || textToSearch.includes('hợp đồng') || textToSearch.includes('cam kết')) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg'];
         parsed.layout_type = 'split_image_right';
-      } else if (textToSearch.includes('cosmo') || textToSearch.includes('fusion') || textToSearch.includes('opus') || textToSearch.includes('mẫu nhà') || textToSearch.includes('nhà phố')) {
-        // Hỏi chung chung về mẫu nhà thì hiện bộ sưu tập phòng khách và mặt tiền của mẫu đó
+      } else if (textToSearch.includes('cosmo') || textToSearch.includes('fusion') || textToSearch.includes('opus') || textToSearch.includes('mẫu nhà') || textToSearch.includes('nhà phố') || textToSearch.includes('nội thất') || textToSearch.includes('hình ảnh')) {
+        // Hỏi chung về mẫu nhà → hiện slideshow nhiều góc nhìn đẹp nhất
         if (model === 'cosmo_gen_2') {
           parsed.image_urls = [
             '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png'
           ];
         } else if (model === 'fusion_gen_5') {
           parsed.image_urls = [
             '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png',
-            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png'
+            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png',
+            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-hoc.png'
           ];
         } else {
           parsed.image_urls = [
@@ -304,7 +347,7 @@ export async function POST(req: NextRequest) {
         }
         parsed.layout_type = 'split_image_right';
       } else {
-        // Fallback cảnh quan/phối cảnh dự án tổng thể nếu không tìm thấy chủ đề chuyên biệt
+        // Fallback cảnh quan/phối cảnh dự án tổng thể
         parsed.image_urls = [
           '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png',
           '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png'
