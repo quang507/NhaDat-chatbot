@@ -4,6 +4,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { splitCleanSentences, ttsUrl } from '@/lib/speech';
 
+function normalizeVietnameseSpeech(text: string): string {
+  if (!text) return '';
+  let clean = text.toLowerCase();
+  
+  // Khắc phục lỗi trình duyệt và AI nghe nhầm tên dự án/thương hiệu Nhã Đạt
+  clean = clean.replace(/\bphố đêm\b/g, 'phú định');
+  clean = clean.replace(/\bphố định\b/g, 'phú định');
+  clean = clean.replace(/\bphú định\b/g, 'phú định');
+  clean = clean.replace(/\bcốt mô\b/g, 'cosmo');
+  clean = clean.replace(/\bcốt-mô\b/g, 'cosmo');
+  clean = clean.replace(/\bô pút\b/g, 'opus');
+  clean = clean.replace(/\bô-pút\b/g, 'opus');
+  clean = clean.replace(/\bphiu giần\b/g, 'fusion');
+  clean = clean.replace(/\bphiu dân\b/g, 'fusion');
+  
+  return clean;
+}
+
 type SlideState = 'idle' | 'listening' | 'processing' | 'speaking';
 
 interface SlideData {
@@ -43,6 +61,8 @@ export default function SlideBotPage() {
   const lastGenRef = useRef(0);            // mốc lần tạo slide gần nhất (cooldown)
   const lastQueryRef = useRef('');         // query lần trước (tránh lặp)
   const suppressListenRef = useRef(false); // đang đọc to -> tạm ngắt nghe
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   const AMBIENT_DEBOUNCE_MS = 1800;        // ngừng nói 1.8s mới xét tạo slide
   const AMBIENT_COOLDOWN_MS = 6000;        // tối thiểu 6s giữa 2 slide
 
@@ -82,7 +102,8 @@ export default function SlideBotPage() {
         };
 
         rec.onresult = (event: any) => {
-          const text = event.results[0][0].transcript;
+          const rawText = event.results[0][0].transcript;
+          const text = normalizeVietnameseSpeech(rawText);
           if (ambientRef.current) {
             handleAmbientSpeech(text);
           } else {
@@ -130,6 +151,62 @@ export default function SlideBotPage() {
     };
   }, []);
 
+  const startWhisperRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunksRef.current = [];
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
+      };
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        stream.getTracks().forEach(t => t.stop());
+        await transcribeAndProcess(audioBlob);
+      };
+      
+      mediaRecorder.start();
+      setState('listening');
+      setTranscript('🎤 Đang ghi âm giọng nói... Bấm nút Đỏ để gửi.');
+    } catch (err) {
+      console.error(err);
+      setTranscript('Không thể truy cập Micro. Vui lòng kiểm tra quyền.');
+      setState('idle');
+    }
+  };
+
+  const transcribeAndProcess = async (blob: Blob) => {
+    setState('processing');
+    setTranscript('⚡ Đang xử lý giọng nói bằng Groq Whisper...');
+    try {
+      const formData = new FormData();
+      formData.append('file', blob, 'audio.wav');
+      
+      const res = await fetch('/api/transcribe', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!res.ok) throw new Error('Lỗi API');
+      const data = await res.json();
+      const text = normalizeVietnameseSpeech(data.text || '');
+      
+      if (text && text.trim()) {
+        setTranscript(`Bạn nói: "${text}"`);
+        fetchSlideData(text, false);
+      } else {
+        setTranscript('Không nghe rõ lời bạn nói, vui lòng thử lại.');
+        setState('idle');
+      }
+    } catch (err) {
+      setTranscript('Không nhận diện được giọng nói. Thử lại sau.');
+      setState('idle');
+    }
+  };
+
   const toggleMic = () => {
     if (state === 'listening' || state === 'processing' || state === 'speaking') {
       isListeningLoopActive.current = false;
@@ -138,10 +215,15 @@ export default function SlideBotPage() {
       if (activeAudioRef.current) activeAudioRef.current.pause();
       audioQueueRef.current = [];
       isPlayingRef.current = false;
-      if (recognitionRef.current) recognitionRef.current.abort();
-      teardownVAD();
-      setState('idle');
-      setTranscript('Đã dừng. Nhấn nút Micro để bắt đầu lại.');
+      
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      } else {
+        if (recognitionRef.current) recognitionRef.current.abort();
+        teardownVAD();
+        setState('idle');
+        setTranscript('Đã dừng. Nhấn nút Micro để bắt đầu lại.');
+      }
     } else {
       isListeningLoopActive.current = true;
       suppressListenRef.current = false;
@@ -149,21 +231,40 @@ export default function SlideBotPage() {
       lastQueryRef.current = '';
       lastGenRef.current = 0;
       if (activeAudioRef.current) activeAudioRef.current.pause();
-      setupVAD();
-      try { recognitionRef.current?.start(); } catch(e){}
+
+      if (ambientMode) {
+        try { recognitionRef.current?.start(); } catch(e){}
+        setState('listening');
+        setTranscript('🎧 Đang nghe ngầm…');
+      } else {
+        startWhisperRecording();
+      }
     }
   };
 
   // Cắt lời khi đang đọc -> dừng audio + chuyển sang nghe (giống ChatGPT Voice)
   const bargeIn = () => {
     if (stateRef.current !== 'speaking') return;
-    if (activeAudioRef.current) { try { activeAudioRef.current.pause(); } catch (e) {} activeAudioRef.current = null; }
+    if (activeAudioRef.current) {
+      try {
+        activeAudioRef.current.onended = null;
+        activeAudioRef.current.onerror = null;
+        activeAudioRef.current.pause();
+      } catch (e) {}
+      activeAudioRef.current = null;
+    }
     audioQueueRef.current = [];
     isPlayingRef.current = false;
+    teardownVAD();
     suppressListenRef.current = false;
-    setState('listening');
-    setTranscript(ambientRef.current ? '🎧 Đang nghe ngầm…' : 'Tôi đang nghe...');
-    try { recognitionRef.current?.start(); } catch (e) {}
+    
+    if (ambientRef.current) {
+      setState('listening');
+      setTranscript('🎧 Đang nghe ngầm…');
+      try { recognitionRef.current?.start(); } catch (e) {}
+    } else {
+      startWhisperRecording();
+    }
   };
 
   // ===== NGHE NGẦM (AMBIENT) =====
@@ -241,11 +342,18 @@ export default function SlideBotPage() {
 
   // Khi đọc xong toàn bộ -> quay lại nghe (hands-free) hoặc idle
   const onSpeakDone = () => {
+    teardownVAD();
     suppressListenRef.current = false;
     if (isListeningLoopActive.current) {
-      setState('listening');
-      setTranscript(ambientRef.current ? '🎧 Đang nghe ngầm…' : 'Tôi đang nghe...');
-      try { recognitionRef.current?.start(); } catch (e) {}
+      if (ambientRef.current) {
+        setState('listening');
+        setTranscript('🎧 Đang nghe ngầm…');
+        try { recognitionRef.current?.start(); } catch (e) {}
+      } else {
+        isListeningLoopActive.current = false;
+        setState('idle');
+        setTranscript('Đã đọc xong. Nhấn nút Micro để nói câu tiếp theo.');
+      }
     } else {
       setState('idle');
     }
@@ -360,7 +468,7 @@ export default function SlideBotPage() {
             <img 
               src={images[0]} 
               alt="Minh họa" 
-              className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+              className="w-full h-full object-contain bg-[#070707] opacity-95 hover:opacity-100 hover:scale-[1.01] transition-all duration-500 cursor-pointer"
               onClick={() => setSelectedImage(images[0])}
               onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
             />
@@ -573,7 +681,7 @@ export default function SlideBotPage() {
                     <img 
                       src={images[0]} 
                       alt="Minh họa" 
-                      className="w-full h-full object-cover opacity-60 hover:opacity-80 transition-opacity duration-500 cursor-pointer"
+                      className="w-full h-full object-contain bg-[#070707] opacity-75 hover:opacity-90 transition-opacity duration-500 cursor-pointer"
                       onClick={() => setSelectedImage(images[0])}
                       onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
                     />
