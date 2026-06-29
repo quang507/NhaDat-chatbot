@@ -238,6 +238,20 @@ export async function POST(req: NextRequest) {
         model = 'fusion_gen_5';
       } else if (textToSearch.includes('opus') || textToSearch.includes('ô-pút') || textToSearch.includes('ô pút')) {
         model = 'opus';
+      } else {
+        // Suy ra mẫu nhà theo SỐ CĂN khách hỏi (rổ hàng T6.2026)
+        // Opus: 01,02,23,24 | Cosmo Gen 2: 03,04,38-50 | Signature: 43,44 | còn lại Fusion Gen 5
+        const numMatch = message.match(/(?:căn|lô|ô|unit|nhà|#)\s*(?:số\s*)?#?\s*(\d{1,2})\b/i);
+        const unitNo = numMatch ? parseInt(numMatch[1], 10) : 0;
+        if (unitNo > 0) {
+          const opusUnits = [1, 2, 23, 24];
+          const cosmoUnits = [3, 4, 38, 39, 40, 41, 42, 45, 46, 47, 48, 49, 50];
+          const signatureUnits = [43, 44];
+          if (opusUnits.includes(unitNo)) model = 'opus';
+          else if (cosmoUnits.includes(unitNo)) model = 'cosmo_gen_2';
+          else if (signatureUnits.includes(unitNo)) model = 'cosmo_gen_2'; // chưa có ảnh Signature riêng -> fallback
+          else model = 'fusion_gen_5';
+        }
       }
 
       // 2. Kiểm tra từ khóa phòng / không gian
