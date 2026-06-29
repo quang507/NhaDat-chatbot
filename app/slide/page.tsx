@@ -452,9 +452,14 @@ export default function SlideBotPage() {
       if (!res.ok) throw new Error('API lỗi');
       const data: SlideData = await res.json();
 
-      // Nghe ngầm + không liên quan -> giữ slide cũ, tiếp tục nghe (không pop bừa)
-      if (ambient && (data.skip || !data.speech_text || data.title === 'Lỗi hiển thị')) {
-        setTranscript('🎧 Đang nghe ngầm… (chưa có chủ đề rõ ràng)');
+      // Nếu AI báo skip hoặc không có dữ liệu trả lời phù hợp -> Giữ nguyên slide cũ, không đọc, không đổi màn hình
+      if (data.skip || !data.speech_text || !data.title || data.title === 'Lỗi hiển thị' || data.title.includes('Lỗi hiển thị')) {
+        if (ambient) {
+          setTranscript('🎧 Đang nghe ngầm… (chưa có chủ đề rõ ràng)');
+        } else {
+          setTranscript('Không tìm thấy thông tin phù hợp trong dữ liệu dự án.');
+          setState('idle');
+        }
         return;
       }
 

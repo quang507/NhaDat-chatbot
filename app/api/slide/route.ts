@@ -13,10 +13,12 @@ const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):
 - CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN". Không bịa thêm thông tin.
+- Nếu câu hỏi KHÔNG có thông tin liên quan trong phần dữ liệu để trả lời -> BẮT BUỘC trả về {"skip": true} và để trống tất cả các trường khác.
 - BẮT BUỘC TOÀN BỘ CÂU TRẢ LỜI (Title, Points, Speech_text) PHẢI BẰNG TIẾNG VIỆT (VIETNAMESE).
 - Đóng vai trò là Giám đốc Nghệ thuật (Art Director), bạn phải tự quyết định layout nào phù hợp nhất với nội dung.
 - Bạn PHẢI trả về ĐÚNG chuẩn JSON với cấu trúc sau, KHÔNG thêm markdown \`\`\`json:
 {
+  "skip": true_nếu_không_có_thông_tin_dữ_liệu_dự_án_để_trả_lời,
   "layout_type": "Loại bố cục (chỉ chọn 1 trong 5: 'split_image_right', 'split_image_left', 'full_background', 'dark_minimal', 'text_only')",
   "title": "Tiêu đề ngắn gọn, ấn tượng (Tối đa 10 chữ)",
   "points": ["Ý chính 1 (Ngắn gọn để chiếu slide)", "Ý chính 2", "Ý chính 3"],
@@ -131,7 +133,7 @@ export async function POST(req: NextRequest) {
           responseSchema: {
             type: "OBJECT",
             properties: {
-              skip: { type: "BOOLEAN", description: "true nếu chế độ nghe ngầm và đoạn nói không có chủ đề/dữ liệu liên quan." },
+              skip: { type: "BOOLEAN", description: "true nếu câu hỏi hoặc cuộc hội thoại không có dữ liệu liên quan để trả lời." },
               layout_type: { type: "STRING" },
               title: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." },
               points: { type: "ARRAY", items: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." } },
