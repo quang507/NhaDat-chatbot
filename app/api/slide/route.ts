@@ -203,6 +203,13 @@ export async function POST(req: NextRequest) {
         // Cho pháp lý, hiển thị hình ảnh bản đồ hoặc vị trí dự án làm nền để tạo sự uy tín
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg'];
         parsed.layout_type = 'split_image_right';
+      } else {
+        // Fallback cảnh quan/phối cảnh dự án tổng thể nếu không tìm thấy chủ đề chuyên biệt
+        parsed.image_urls = [
+          '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png',
+          '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png'
+        ];
+        parsed.layout_type = 'split_image_right';
       }
     }
 

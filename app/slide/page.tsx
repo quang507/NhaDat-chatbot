@@ -354,6 +354,7 @@ export default function SlideBotPage() {
     const renderImageGrid = () => {
       if (!hasImages) return null;
       if (images.length === 1) {
+        const isLocationMap = images[0].includes('vi_tri') || images[0].includes('18_phut');
         return (
           <div className="relative w-full h-full group/img overflow-hidden rounded-2xl">
             <img 
@@ -363,6 +364,16 @@ export default function SlideBotPage() {
               onClick={() => setSelectedImage(images[0])}
               onError={() => setBrokenImages(prev => ({ ...prev, [images[0]]: true }))}
             />
+            {isLocationMap && (
+              <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur px-3 py-3 rounded-2xl border border-white/10 flex flex-col items-center gap-1 shadow-2xl animate-scale-up z-20">
+                <img 
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://maps.app.goo.gl/qwf4XibyMCL9sEX6A" 
+                  alt="QR Vị Trí" 
+                  className="w-[100px] h-[100px] rounded-lg bg-white p-1"
+                />
+                <span className="text-[10px] text-gray-200 font-bold mt-1 tracking-wide">📱 Quét xem Google Maps</span>
+              </div>
+            )}
             <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none flex items-center gap-1">
               🔍 Click để phóng to
             </div>
@@ -372,20 +383,33 @@ export default function SlideBotPage() {
       if (images.length === 2) {
         return (
           <div className="grid grid-cols-2 gap-4 w-full h-full">
-            {images.map((img, idx) => (
-              <div key={idx} className="relative w-full h-full group/img overflow-hidden rounded-2xl">
-                <img 
-                  src={img} 
-                  alt={`Minh họa ${idx + 1}`} 
-                  className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
-                  onClick={() => setSelectedImage(img)}
-                  onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
-                />
-                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  🔍 Phóng to
+            {images.map((img, idx) => {
+              const isLocationMap = img.includes('vi_tri') || img.includes('18_phut');
+              return (
+                <div key={idx} className="relative w-full h-full group/img overflow-hidden rounded-2xl">
+                  <img 
+                    src={img} 
+                    alt={`Minh họa ${idx + 1}`} 
+                    className="w-full h-full object-cover opacity-95 hover:opacity-100 hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+                    onClick={() => setSelectedImage(img)}
+                    onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
+                  />
+                  {isLocationMap && idx === 0 && (
+                    <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur px-2.5 py-2.5 rounded-2xl border border-white/10 flex flex-col items-center gap-1 shadow-2xl animate-scale-up z-20">
+                      <img 
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://maps.app.goo.gl/qwf4XibyMCL9sEX6A" 
+                        alt="QR Vị Trí" 
+                        className="w-[80px] h-[80px] rounded-lg bg-white p-1"
+                      />
+                      <span className="text-[9px] text-gray-200 font-bold mt-1 tracking-wide">📱 Quét bản đồ</span>
+                    </div>
+                  )}
+                  <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    🔍 Phóng to
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         );
       }
