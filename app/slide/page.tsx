@@ -184,7 +184,7 @@ export default function SlideBotPage() {
   const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
   const AM_THRESHOLD = 0.060;     // ngưỡng RMS coi là có người nói (cao để im lặng/nhiễu không kích hoạt)
   const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
-  const AM_SILENCE_MS = 550;      // im lặng 0.55s (nhạy bén hơn nữa) -> chốt 1 câu, gửi phiên âm
+  const AM_SILENCE_MS = 450;      // im lặng 0.45s (cực kỳ nhạy bén) -> chốt 1 câu, gửi phiên âm ngay lập tức
   const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
   const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt để gửi phiên âm
 

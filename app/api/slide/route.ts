@@ -72,8 +72,12 @@ async function readRepoFile(name: string): Promise<string> {
   try { return await readFile(path.join(process.cwd(), name), 'utf-8'); } catch { return ''; }
 }
 
+let cachedPersona: string | null = null;
 async function getPersona(): Promise<string> {
-  return (await readRepoFile('persona.md')).trim() || DEFAULT_PERSONA;
+  if (cachedPersona) return cachedPersona;
+  const p = (await readRepoFile('persona.md')).trim() || DEFAULT_PERSONA;
+  cachedPersona = p;
+  return p;
 }
 
 async function buildPrompt(message: string, ambient = false): Promise<{ prompt: string; hasChunks: boolean }> {
