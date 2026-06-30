@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
+import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
@@ -16,6 +17,88 @@ const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 // office->opus, cashmere/signature->cosmo (tạm) — xử lý trong imageFamily().
 function imageModelForUnit(n: number): 'opus' | 'fusion_gen_5' | 'cosmo_gen_2' {
   return imageFamily(n);
+}
+
+function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
+  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  
+  if (model) {
+    try {
+      const specificPath = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', model, spaceName);
+      if (existsSync(specificPath)) {
+        const files = readdirSync(specificPath);
+        let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
+        
+        if (fileKeyword) {
+          matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
+        }
+        
+        const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${model}/${spaceName}/${f}`);
+        if (imgs.length > 0) return imgs;
+      }
+    } catch (e) {
+      console.error(`Error reading specific space folder for ${model}/${spaceName}:`, e);
+    }
+  }
+
+  try {
+    const sharedPath = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', spaceName);
+    if (existsSync(sharedPath)) {
+      const files = readdirSync(sharedPath);
+      let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
+      
+      if (fileKeyword) {
+        matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
+      }
+      
+      const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${spaceName}/${f}`);
+      if (imgs.length > 0) return imgs;
+    }
+  } catch (e) {
+    console.error(`Error reading shared space folder ${spaceName}:`, e);
+  }
+
+  return [];
+}
+
+function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): string[] {
+  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  const allImgs: string[] = [];
+  const models: Array<'cosmo_gen_2' | 'fusion_gen_5' | 'opus'> = ['cosmo_gen_2', 'fusion_gen_5', 'opus'];
+
+  for (const m of models) {
+    try {
+      const p = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', m, spaceName);
+      if (existsSync(p)) {
+        const files = readdirSync(p);
+        let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
+        
+        if (fileKeyword) {
+          matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
+        }
+        
+        const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${m}/${spaceName}/${f}`);
+        allImgs.push(...imgs);
+      }
+    } catch {}
+  }
+
+  try {
+    const p = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', spaceName);
+    if (existsSync(p)) {
+      const files = readdirSync(p);
+      let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
+      
+      if (fileKeyword) {
+        matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
+      }
+      
+      const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${spaceName}/${f}`);
+      allImgs.push(...imgs);
+    }
+  } catch {}
+
+  return allImgs;
 }
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):
@@ -618,7 +701,7 @@ export async function POST(req: NextRequest) {
     // Điểm kích hoạt ảnh cố định (Fixed Trigger Points) cho Sale Gallery
     if (parsed.image_urls.length === 0) {
       // 1. Phân loại Model nhà
-      let model = 'cosmo_gen_2'; // Mặc định là Cosmo Gen 2
+      let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null = 'cosmo_gen_2'; // Mặc định là Cosmo Gen 2
       const modelSearch = queryText + ' ' + contentText;
       if (modelSearch.includes('fusion') || modelSearch.includes('gen 5') || modelSearch.includes('gen5') || modelSearch.includes('phiêu dân') || modelSearch.includes('phiêu-dân')) {
         model = 'fusion_gen_5';
@@ -652,10 +735,16 @@ export async function POST(req: NextRequest) {
         if (text.includes('phòng khách') || text.includes('sofa') || text.includes('tiếp khách') || text.includes('sinh hoạt chung') || text.includes('phòng tiếp')) {
           return 'phong_khach';
         }
+        if (text.includes('phòng ngủ ông bà') || text.includes('phòng ông bà') || text.includes('ong ba') || text.includes('ông bà')) {
+          return 'phong_ngu_ong_ba';
+        }
         if (text.includes('phòng ngủ master') || text.includes('ngủ master') || text.includes('master bedroom') || text.includes('phòng ngủ chính') || text.includes('phòng ngủ ba')) {
           return 'phong_ngu_master';
         }
-        if (text.includes('phòng ngủ') || text.includes('giường') || text.includes('ngủ con') || text.includes('nơi ngủ') || text.includes('ngủ nhỏ') || text.includes('phòng ngủ 2') || text.includes('phòng ngủ phụ')) {
+        if (text.includes('phòng ngủ trẻ em') || text.includes('ngủ trẻ em') || text.includes('trẻ em') || text.includes('ngủ con') || text.includes('phòng ngủ con') || text.includes('phòng ngủ 2') || text.includes('phòng ngủ phụ') || text.includes('phòng ngủ 3')) {
+          return 'phong_ngu_con';
+        }
+        if (text.includes('phòng ngủ') || text.includes('giường') || text.includes('nơi ngủ') || text.includes('ngủ nhỏ')) {
           return 'phong_ngu';
         }
         if (text.includes('wc') || text.includes('vệ sinh') || text.includes('toilet') || text.includes('tắm') || text.includes('phòng tắm') || text.includes('lavabo')) {
@@ -664,7 +753,10 @@ export async function POST(req: NextRequest) {
         if (text.includes('thang máy') || text.includes('elevator') || text.includes('thang kính')) {
           return 'thang_may';
         }
-        if (text.includes('ban công') || text.includes('sân thượng') || text.includes('logia') || text.includes('ngoài trời') || text.includes('vườn')) {
+        if (text.includes('sân thượng') || text.includes('san thuong')) {
+          return 'san_thuong';
+        }
+        if (text.includes('ban công') || text.includes('logia') || text.includes('ngoài trời') || text.includes('vườn')) {
           return 'ban_cong';
         }
         if (text.includes('sảnh') || text.includes('lounge') || text.includes('phòng chờ') || text.includes('reception')) {
@@ -701,83 +793,132 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
         parsed.layout_type = 'split_image_right';
       } else if (category === 'bep') {
-        if (model === 'cosmo_gen_2') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png'];
-        } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg'];
+        parsed.image_urls = getImagesForSpace(model, 'bep');
+        if (parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png'];
+          } else if (model === 'fusion_gen_5') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png'];
+          } else {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg'];
+          }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'gara') {
-        if (model === 'cosmo_gen_2') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'];
-        } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png'];
+        parsed.image_urls = getImagesForSpace(model, 'gara');
+        if (parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'];
+          } else if (model === 'fusion_gen_5') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png'];
+          } else {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png'];
+          }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'phong_hoc') {
-        if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-hoc.png'];
-        } else if (model === 'opus') {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg'
-          ];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
+        parsed.image_urls = getImagesForSpace(model, 'khac');
+        if (parsed.image_urls.length === 0) {
+          if (model === 'fusion_gen_5') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-hoc.png'];
+          } else if (model === 'opus') {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg'
+            ];
+          } else {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
+          }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'phong_khach') {
-        if (model === 'cosmo_gen_2') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
-        } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png'];
+        parsed.image_urls = getImagesForSpace(model, 'phong_khach');
+        if (parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
+          } else if (model === 'fusion_gen_5') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png'];
+          } else {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png'];
+          }
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (category === 'phong_ngu_ong_ba') {
+        let imgs = getImagesForSpace(model, 'phong_ngu', 'ong-ba');
+        if (imgs.length === 0) imgs = getImagesForSpace(model, 'phong_ngu', 'tang-2');
+        parsed.image_urls = imgs;
+        if (parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2.png'];
+          }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'phong_ngu_master') {
-        if (model === 'cosmo_gen_2') {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png'
-          ];
-        } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg'];
+        parsed.image_urls = getImagesForSpace(model, 'phong_ngu', 'master');
+        if (parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png'];
+          } else if (model === 'fusion_gen_5') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png'];
+          } else {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg'];
+          }
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (category === 'phong_ngu_con') {
+        let imgs = getImagesForSpace(model, 'phong_ngu', 'con');
+        if (imgs.length === 0) imgs = getImagesForSpace(model, 'phong_ngu', 'ngu-2');
+        if (imgs.length === 0) imgs = getImagesForSpace(model, 'phong_ngu', 'ngu-3');
+        parsed.image_urls = imgs;
+        if (parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png'
+            ];
+          } else if (model === 'fusion_gen_5') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-ngu-con.png'];
+          } else {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-2.jpg'
+            ];
+          }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'phong_ngu') {
-        if (model === 'cosmo_gen_2') {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png'
-          ];
-        } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png',
-            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-ngu-con.png'
-          ];
-        } else {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-2.jpg'
-          ];
+        parsed.image_urls = getImagesForSpace(model, 'phong_ngu');
+        if (parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png'
+            ];
+          } else if (model === 'fusion_gen_5') {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png',
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-ngu-con.png'
+            ];
+          } else {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-2.jpg'
+            ];
+          }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'wc') {
-        if (model === 'cosmo_gen_2') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_wc.png'];
-        } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-wc.png'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_wc.jpg'];
+        parsed.image_urls = getImagesForSpace(model, 'wc');
+        if (parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_wc.png'];
+          } else if (model === 'fusion_gen_5') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-wc.png'];
+          } else {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_wc.jpg'];
+          }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'thang_may') {
@@ -788,6 +929,18 @@ export async function POST(req: NextRequest) {
             '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png',
             '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'
           ];
+        }
+        parsed.layout_type = 'split_image_right';
+      } else if (category === 'san_thuong') {
+        let imgs = getImagesForSpace(model, 'khac', 'thuong');
+        if (imgs.length === 0) imgs = getImagesForSpace(model, 'khac', 'san-thuong');
+        parsed.image_urls = imgs;
+        if (parsed.image_urls.length === 0) {
+          if (model === 'fusion_gen_5') {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-3.png'];
+          } else {
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
+          }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'ban_cong') {
