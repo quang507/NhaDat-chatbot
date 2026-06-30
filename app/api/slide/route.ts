@@ -189,8 +189,15 @@ export async function POST(req: NextRequest) {
     const has = (...keywords: string[]) => keywords.some(k => cleanMsg.includes(k) || noD.includes(removeDiacritics(k)));
 
     // CHẶN DỰ ÁN/THƯƠNG HIỆU KHÁC: khách hỏi "vị trí Vinhomes Cần Giờ"... thì KHÔNG bung slide của mình.
-    const COMPETITORS = ['vinhome', 'vin home', 'vinhomes', 'cần giờ', 'masteri', 'the global city', 'global city',
-      'vạn phúc', 'ecopark', 'phú mỹ hưng', 'novaland', 'aqua city', 'celadon', 'akari', 'lumiere', 'glory heights', 'ocean park'];
+    const COMPETITORS = [
+      'vinhome', 'vin home', 'vinhomes', 'vin group', 'grand park', 'ocean park', 'cần giờ',
+      'eco retreat', 'eco-retreat', 'ecoretreat', 'ecopark', 'eco park',
+      'masteri', 'the global city', 'global city', 'vạn phúc', 'waterpoint', 'water point',
+      'mizuki', 'akari', 'flora', 'lovera', 'valora', 'the privia', 'privia', 'essensia',
+      'celadon', 'west gate', 'westgate', 'the beverly', 'beverly', 'izumi', 'aqua city',
+      'novaland', 'nam long', 'khang điền', 'phú mỹ hưng', 'lumiere', 'glory heights',
+      'classia', 'senturia', 'the rivana', 'la vida', 'phú đông', 'opal', 'dragon',
+    ];
     if (has(...COMPETITORS)) {
       console.log(`[Slide] Bỏ qua: hỏi dự án/thương hiệu khác -> "${message.slice(0, 60)}"`);
       return NextResponse.json({ skip: true });
