@@ -241,7 +241,7 @@ export default function SlideBotPage() {
   const useWhisperAmbientRef = useRef(true); // Mặc định sử dụng công cụ Whisper/Gemini siêu chính xác thay cho Web Speech nội bộ dễ lỗi
   const wsActivityRef = useRef(0);       // mốc Web Speech có hoạt động gần nhất (audio/speech/result)
   const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
-  const AM_THRESHOLD = 0.060;     // ngưỡng RMS coi là có người nói (cao để im lặng/nhiễu không kích hoạt)
+  const AM_THRESHOLD = 0.038;     // ngưỡng RMS — hạ thấp để bắt tiếng nói xa ~2m (nghe ngầm cuộc họp). Chống nhiễu nhờ AM_START_FRAMES + AM_MIN_SPEECH_MS + blocklist Whisper bịa.
   const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
   const AM_SILENCE_MS = 450;      // im lặng 0.45s (cực kỳ nhạy bén) -> chốt 1 câu, gửi phiên âm ngay lập tức
   const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
