@@ -132,7 +132,7 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT
   "title": "Tiêu đề ngắn gọn, ấn tượng (Tối đa 10 chữ)",
   "points": ["Ý chính 1 (ngắn gọn súc tích, ~8-12 chữ)", "Ý chính 2", "Ý chính 3"],
   "highlight_number": "Một con số nổi bật nhất trong đoạn văn (ví dụ '18 phút', '9,5 triệu lít', '5,19 tỷ'). Nếu không có số liệu nào ấn tượng, để trống ''. Chỉ dùng cho layout dark_minimal hoặc split.",
-  "speech_text": "Kịch bản chi tiết để MC đọc. BẮT BUỘC KHÔNG DÙNG emoji, KHÔNG DÙNG ký tự đặc biệt (*, _, #), KHÔNG DÙNG ngoặc kép, viết tự nhiên như văn nói để máy đọc mượt mà.",
+  "speech_text": "Câu trả lời NGẮN GỌN để HIỂN THỊ trên slide (KHÔNG đọc ra tiếng). Tối đa 1-2 câu, súc tích, đi thẳng trọng tâm. KHÔNG emoji, KHÔNG ký tự đặc biệt (*, _, #), KHÔNG ngoặc kép.",
   "image_urls": ["Đường dẫn ảnh 1", "Đường dẫn ảnh 2", ...] (Mảng chứa các đường dẫn hình ảnh tìm thấy trong phần dữ liệu liên quan. CHỈ được chọn các đường dẫn bắt đầu bằng "/images/" như "/images/01_NyAh-PhuDinh/...", TUYỆT ĐỐI KHÔNG lấy các đường dẫn bắt đầu bằng "2 - trình chiếu" hoặc các file PowerPoint local. Nếu không có ảnh nào bắt đầu bằng "/images/", trả về mảng rỗng []).
 }
 
