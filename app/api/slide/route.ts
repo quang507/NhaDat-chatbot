@@ -127,7 +127,8 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
                               message.toLowerCase().includes('phiêu-dân');
       const hasUnit = detectUnit(message) !== null;
       const minScore = (ambient && !hasModelKeyword && !hasUnit) ? 0.71 : 0;
-      const chunks = await retrieve(ragQuery, index, 12, minScore);
+      // Nghe ngầm: ít chunk hơn (6) -> prompt ngắn -> LLM trả NHANH hơn; chat trực tiếp giữ 10.
+      const chunks = await retrieve(ragQuery, index, ambient ? 6 : 10, minScore);
       // Có facts của căn cụ thể -> luôn tạo slide kể cả khi RAG rỗng (đã có dữ liệu chính xác)
       if (chunks.length > 0 || unitFacts) {
         return {
@@ -523,8 +524,8 @@ export async function POST(req: NextRequest) {
               { role: 'system', content: systemWithAmbient },
               { role: 'user', content: message },
             ],
-            temperature: 0.7,
-            max_tokens: 2048,
+            temperature: ambient ? 0.4 : 0.7,   // ambient: thấp hơn -> ít sampling, nhanh + ổn định hơn
+            max_tokens: ambient ? 700 : 2048,    // slide JSON ngắn -> cắt sớm, trả nhanh hơn
             response_format: { type: 'json_object' },
           }),
         });
