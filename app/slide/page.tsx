@@ -17,7 +17,8 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
   [vnWord('ph[ốôuú]\\s*(?:đêm|định|đỉnh|đính|dinh|đin)'), 'phú định'],
   [vnWord("ny[\\s']*ah|ni\\s*a|nia|niah"), "ny'ah"],
   // Mẫu nhà
-  [vnWord('c[ốôo]t?[\\s-]*m[ôoơ]|cosmos|cot\\s*mo'), 'cosmo'],
+  [vnWord('cô\\s*gái\\s*của\\s*cô\\s*t[\\s-]*m[ôo]'), 'cosmo gen 2'],
+  [vnWord('c[ốôo]t?[\\s-]*m[ôoơ]|cosmos|cot\\s*mo|cô\\s*t[\\s-]*m[ôo]'), 'cosmo'],
   [vnWord('ph(?:iu|iêu|i u)\\s*(?:giần|dân|gân|giàn)|fiu\\s*s[ầừ]n|phu\\s*sần'), 'fusion'],
   [vnWord('ô\\s*p(?:út|ut|ức)|o\\s*pút|ốp\\s*pút|ô\\s*bút|opút'), 'opus'],
   [vnWord('[sx]i\\s*nha\\s*(?:t[ơưa]|ch[ơo])|sích\\s*na\\s*ch[ơo]|sin\\s*nh[ơa]'), 'signature'],
