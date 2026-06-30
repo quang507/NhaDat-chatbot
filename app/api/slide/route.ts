@@ -101,6 +101,24 @@ function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): stri
   return allImgs;
 }
 
+// Lấy ẢNH GỐC (root) của 1 model — KHÔNG lấy trong các thư mục con (bep, gara, phong_khach...).
+// Dùng khi hỏi chung chung "cosmo gen 2" mà không chỉ rõ phòng nào.
+function getRootImagesForModel(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus'): string[] {
+  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  try {
+    const modelDir = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', model);
+    if (!existsSync(modelDir)) return [];
+    const entries = readdirSync(modelDir, { withFileTypes: true });
+    // Chỉ lấy FILE trực tiếp ở root, bỏ qua thư mục con
+    const rootFiles = entries
+      .filter(e => !e.isDirectory() && imageExts.includes(path.extname(e.name).toLowerCase()))
+      .map(e => `/images/01_NyAh-PhuDinh/noi_that/${model}/${e.name}`);
+    return rootFiles;
+  } catch {
+    return [];
+  }
+}
+
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):
 - CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN". Không bịa thêm thông tin.
 - Nếu câu hỏi KHÔNG có thông tin liên quan trong phần dữ liệu để trả lời -> BẮT BUỘC trả về {"skip": true} và để trống tất cả các trường khác.
@@ -987,25 +1005,35 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'];
         parsed.layout_type = 'split_image_right';
       } else {
-        // Hỏi chung hoặc không khớp danh mục -> hiện slideshow các góc đẹp của model
-        if (model === 'cosmo_gen_2') {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png'
-          ];
-        } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png',
-            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png',
-            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-hoc.png'
-          ];
-        } else {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg'
-          ];
+        // Hỏi chung hoặc không khớp danh mục -> ưu tiên ảnh ROOT (tổng quan, mặt tiền, tính năng tầng...)
+        // KHÔNG lấy ảnh từ thư mục con (bep, gara, phong_khach...) để tránh hiện phòng ngẫu nhiên.
+        if (model) {
+          const rootImgs = getRootImagesForModel(model);
+          if (rootImgs.length > 0) {
+            parsed.image_urls = rootImgs;
+          }
+        }
+        // Fallback tĩnh nếu dynamic scan không tìm thấy gì
+        if (!parsed.image_urls || parsed.image_urls.length === 0) {
+          if (model === 'cosmo_gen_2') {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_mat-cat.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-1.jpg'
+            ];
+          } else if (model === 'fusion_gen_5') {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_mat-tien.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-1.jpg'
+            ];
+          } else {
+            parsed.image_urls = [
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_mat-tien.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg'
+            ];
+          }
         }
         parsed.layout_type = 'split_image_right';
       }
