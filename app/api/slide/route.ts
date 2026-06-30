@@ -290,7 +290,7 @@ export async function POST(req: NextRequest) {
           "Chỉ mất 18 phút di chuyển đến Quận 1"
         ],
         speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút qua đại lộ Võ Văn Kiệt.",
-        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'],
+        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'],
         maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A'
       };
     } else if (has('tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi', 'hồ bơi', 'bể bơi', 'sân thể thao', 'cầu lông', 'bóng rổ', 'khu vui chơi')) {
@@ -303,7 +303,7 @@ export async function POST(req: NextRequest) {
           "Sân thể thao đa năng và Landmark Coffee"
         ],
         speech_text: "Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.",
-        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png']
+        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png']
       };
     } else if (has('bếp', 'nhà ăn', 'nấu ăn', 'phòng ăn')) {
       if (model === 'cosmo_gen_2') {
@@ -316,7 +316,7 @@ export async function POST(req: NextRequest) {
             "Không gian bàn ăn ấm cúng"
           ],
           speech_text: "Khu vực bếp và bàn ăn của căn nhà Cosmo được thiết kế ấm cúng, trang bị hệ tủ bếp hiện đại.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png']
         };
       } else if (model === 'fusion_gen_5') {
         staticSlide = {
@@ -328,7 +328,7 @@ export async function POST(req: NextRequest) {
             "Trang bị thiết bị bếp cao cấp"
           ],
           speech_text: "Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png']
         };
       } else {
         staticSlide = {
@@ -340,7 +340,7 @@ export async function POST(req: NextRequest) {
             "Kết nối ban công thoáng mát"
           ],
           speech_text: "Không gian bếp của mẫu nhà Opus sang trọng, thoáng đãng nhờ kết nối trực tiếp với ban công ngoài trời.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg']
         };
       }
     } else if (has('gara', 'xe hơi', 'đỗ xe', 'ô tô', 'đậu xe', 'xe ô tô')) {
@@ -354,7 +354,7 @@ export async function POST(req: NextRequest) {
             "Hệ thống thông gió hiện đại"
           ],
           speech_text: "Mẫu nhà Cosmo thiết kế gara rộng rãi với sức chứa ô tô lớn, kết nối trực tiếp đến thang máy kính lên các tầng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png']
         };
       } else if (model === 'fusion_gen_5') {
         staticSlide = {
@@ -366,7 +366,7 @@ export async function POST(req: NextRequest) {
             "Bố trí hộp kỹ thuật âm tường"
           ],
           speech_text: "Gara mẫu nhà Fusion được tối ưu không gian, đỗ vừa xe bán tải lớn và có thiết kế thông thoáng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png']
         };
       } else {
         staticSlide = {
@@ -378,7 +378,7 @@ export async function POST(req: NextRequest) {
             "Bố trí tủ giày và tủ dụng cụ"
           ],
           speech_text: "Mẫu nhà thương mại Opus sở hữu gara ô tô riêng biệt tại tầng trệt, kết nối thuận tiện lên khu vực kinh doanh.",
-          image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg']
         };
       }
     } else if (has('phòng khách', 'sofa', 'tiếp khách', 'sinh hoạt chung')) {
@@ -392,7 +392,7 @@ export async function POST(req: NextRequest) {
             "Nội thất sofa hiện đại"
           ],
           speech_text: "Phòng khách Cosmo Gen 2 ngập tràn ánh sáng tự nhiên nhờ hệ kính lớn và trần cao thoáng đãng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png']
         };
       } else if (model === 'fusion_gen_5') {
         staticSlide = {
@@ -404,7 +404,7 @@ export async function POST(req: NextRequest) {
             "Tối ưu góc nhìn ra sân vườn"
           ],
           speech_text: "Phòng khách mẫu nhà Fusion mang phong cách hiện đại với thiết kế lệch tầng tạo không gian rộng mở.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png']
         };
       } else {
         staticSlide = {
@@ -416,7 +416,7 @@ export async function POST(req: NextRequest) {
             "Bố trí ánh sáng gián tiếp tinh tế"
           ],
           speech_text: "Không gian phòng khách Opus lịch lãm với gỗ tự nhiên, thiết kế lý tưởng để tiếp các đối tác kinh doanh.",
-          image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg']
         };
       }
     } else if (has('phòng ngủ', 'giường', 'ngủ con', 'ngủ master', 'phòng ngủ chính')) {
@@ -430,7 +430,7 @@ export async function POST(req: NextRequest) {
             "Hệ tủ quần áo kính sang trọng"
           ],
           speech_text: "Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_ngu-master.png']
         };
       } else if (model === 'fusion_gen_5') {
         staticSlide = {
@@ -442,7 +442,7 @@ export async function POST(req: NextRequest) {
             "Cửa sổ hướng công viên nội khu"
           ],
           speech_text: "Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png']
         };
       } else {
         staticSlide = {
@@ -454,7 +454,7 @@ export async function POST(req: NextRequest) {
             "Thiết kế chuẩn khách sạn 5 sao"
           ],
           speech_text: "Phòng ngủ master của mẫu nhà Opus mang phong cách resort đẳng cấp với ban công rộng đón gió tự nhiên.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg']
         };
       }
     } else if (has('pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu')) {
@@ -467,7 +467,7 @@ export async function POST(req: NextRequest) {
           "Giấy phép xây dựng đầy đủ, minh bạch"
         ],
         speech_text: "Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.",
-        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg']
+        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg']
       };
     } else if (has('thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách')) {
       staticSlide = {
@@ -479,7 +479,7 @@ export async function POST(req: NextRequest) {
           "Chiết khấu hấp dẫn khi thanh toán nhanh"
         ],
         speech_text: "Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.",
-        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg']
+        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg']
       };
     } else if (has('giá bán', 'giá', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ')) {
       staticSlide = {
@@ -491,7 +491,7 @@ export async function POST(req: NextRequest) {
           "Chỉ từ 5 đến 7 tỷ đồng mỗi căn"
         ],
         speech_text: "Giá bán các căn nhà phố thương mại tại dự án cực kỳ hấp dẫn, chỉ từ năm đến bảy tỷ đồng tùy theo diện tích và mẫu nhà.",
-        image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
+        image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg']
       };
     } else if (has('mẫu nhà', 'thiết kế nhà', 'kiến trúc nhà')) {
       if (model === 'cosmo_gen_2') {
@@ -504,7 +504,7 @@ export async function POST(req: NextRequest) {
             "Thiết kế trần cao thoáng đãng"
           ],
           speech_text: "Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png']
         };
       } else if (model === 'fusion_gen_5') {
         staticSlide = {
@@ -516,7 +516,7 @@ export async function POST(req: NextRequest) {
             "Tối ưu ánh sáng và gió tự nhiên"
           ],
           speech_text: "Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png']
         };
       } else {
         staticSlide = {
@@ -528,7 +528,7 @@ export async function POST(req: NextRequest) {
             "Mặt tiền thương mại đắt giá"
           ],
           speech_text: "Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg']
         };
       }
     } else if (has('phối cảnh', 'cảnh quan', 'toàn cảnh', 'tổng thể', 'ngoại thất')) {
@@ -541,7 +541,7 @@ export async function POST(req: NextRequest) {
           "Mặt ngoài kiến trúc tinh tế"
         ],
         speech_text: "Dự án được quy hoạch đồng bộ với hạ tầng ngầm, đường nội khu rộng rãi và thiết kế mặt ngoài sang trọng.",
-        image_urls: ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png']
+        image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg']
       };
     } else if (has('chủ đầu tư', 'nhã đạt', 'nhà phát triển', 'nhà đạt')) {
       staticSlide = {
@@ -553,7 +553,7 @@ export async function POST(req: NextRequest) {
           "Cam kết bàn giao hoàn thiện cao"
         ],
         speech_text: "Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.",
-        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg']
+        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg']
       };
     }
 
@@ -763,23 +763,23 @@ export async function POST(req: NextRequest) {
 
       if (category === 'vi_tri') {
         parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'
+          '/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'
         ];
         parsed.layout_type = 'split_image_right';
         const mapsMatch = (parsed.speech_text || '').match(/https:\/\/maps\.(?:app\.goo\.gl|google\.com)\/\S+/);
         parsed.maps_url = mapsMatch ? mapsMatch[0] : 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
       } else if (category === 'tien_ich') {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png'];
         parsed.layout_type = 'split_image_right';
       } else if (category === 'bep') {
         parsed.image_urls = getImagesForSpace(model, 'bep');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png'];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png'];
           } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg'];
           }
         }
         parsed.layout_type = 'split_image_right';
@@ -787,11 +787,11 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = getImagesForSpace(model, 'gara');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png'];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png'];
           } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'];
           }
         }
         parsed.layout_type = 'split_image_right';
@@ -799,14 +799,14 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = getImagesForSpace(model, 'khac');
         if (parsed.image_urls.length === 0) {
           if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-hoc.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png'];
           } else if (model === 'opus') {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg'
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1-2.jpg'
             ];
           } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png'];
           }
         }
         parsed.layout_type = 'split_image_right';
@@ -814,11 +814,11 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = getImagesForSpace(model, 'phong_khach');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png'];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png'];
           } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'];
           }
         }
         parsed.layout_type = 'split_image_right';
@@ -828,7 +828,7 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = imgs;
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2-phong-ngu-ong-ba-1.png'];
           }
         }
         parsed.layout_type = 'split_image_right';
@@ -836,11 +836,11 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = getImagesForSpace(model, 'phong_ngu', 'master');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_ngu-master.png'];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png'];
           } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg'];
           }
         }
         parsed.layout_type = 'split_image_right';
@@ -852,15 +852,15 @@ export async function POST(req: NextRequest) {
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png'
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-3.png'
             ];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-ngu-con.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png'];
           } else {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-2.jpg'
+              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-2.jpg'
             ];
           }
         }
@@ -870,20 +870,20 @@ export async function POST(req: NextRequest) {
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png'
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_ngu-master.png',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-3.png'
             ];
           } else if (model === 'fusion_gen_5') {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png',
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-ngu-con.png'
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png',
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png'
             ];
           } else {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-2.jpg'
+              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-2.jpg'
             ];
           }
         }
@@ -892,21 +892,21 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = getImagesForSpace(model, 'wc');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_wc.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_wc.png'];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-wc.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg'];
           } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_wc.jpg'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/wc/opus_wc.jpg'];
           }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'thang_may') {
         if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png'];
         } else {
           parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png'
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png'
           ];
         }
         parsed.layout_type = 'split_image_right';
@@ -916,54 +916,54 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = imgs;
         if (parsed.image_urls.length === 0) {
           if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-3.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png'];
           } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png'];
           }
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'ban_cong') {
         if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-3.png'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'sanh') {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg'];
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg'];
         parsed.layout_type = 'split_image_right';
       } else if (category === 'tang_1') {
         if (model === 'opus') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'tang_2') {
         if (model === 'opus') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1-2.jpg'];
         } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tang-2.png'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-2.jpg'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'tang_3') {
         if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-3.png'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-3.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'mat_bang') {
         parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg',
-          '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg',
-          '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-3.jpg'
+          '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg',
+          '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-4-5-6.jpg',
+          '/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg'
         ];
         parsed.layout_type = 'split_image_right';
       } else if (category === 'phap_ly') {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'];
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'];
         parsed.layout_type = 'split_image_right';
       } else {
         // Hỏi chung hoặc không khớp danh mục -> ưu tiên ảnh ROOT (tổng quan, mặt tiền, tính năng tầng...)
