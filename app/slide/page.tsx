@@ -126,6 +126,7 @@ export default function SlideBotPage() {
   const activeTopicRef = useRef<{topic: string, expiry: number} | null>(null);
   const shortContextRef = useRef<string[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const manualStreamRef = useRef<MediaStream | null>(null); // stream mic của chế độ ghi âm thủ công -> nhả tường minh tránh chồng chéo
   const audioChunksRef = useRef<Blob[]>([]);
   const instantFiredRef = useRef(false);   // đã bắn slide tức thì cho câu đang nói chưa
   const lastInstantRef = useRef(0);        // mốc lần bắn slide tức thì gần nhất
@@ -317,6 +318,7 @@ export default function SlideBotPage() {
       isPlayingRef.current = false;
       if (recognitionRef.current) recognitionRef.current.abort();
       stopAmbientListening();
+      releaseManualStream();
       teardownVAD();
     };
   }, []);
@@ -361,23 +363,35 @@ export default function SlideBotPage() {
     return false;
   };
 
+  // Nhả mic của chế độ ghi âm thủ công (gọi ở MỌI chỗ dừng để không bị giữ mic chồng chéo)
+  const releaseManualStream = () => {
+    if (manualStreamRef.current) {
+      try { manualStreamRef.current.getTracks().forEach(t => t.stop()); } catch (e) {}
+      manualStreamRef.current = null;
+    }
+  };
+
   const startWhisperRecording = async () => {
     try {
+      // Đảm bảo không còn engine/stream nào đang giữ mic trước khi mở stream mới
+      stopAmbientListening();
+      releaseManualStream();
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      manualStreamRef.current = stream;
       audioChunksRef.current = [];
       const mediaRecorder = new MediaRecorder(stream, { audioBitsPerSecond: 24000 });
       mediaRecorderRef.current = mediaRecorder;
-      
+
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
-      
+
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
-        stream.getTracks().forEach(t => t.stop());
+        releaseManualStream();
         await transcribeAndProcess(audioBlob);
       };
-      
+
       mediaRecorder.start();
       setState('listening');
       setTranscript('🎤 Đang ghi âm giọng nói... Bấm nút Đỏ để gửi.');
@@ -1388,7 +1402,7 @@ export default function SlideBotPage() {
           </Link>
           <Link
             href="/"
-            onClick={() => { isListeningLoopActive.current = false; if (activeAudioRef.current) activeAudioRef.current.pause(); if (recognitionRef.current) recognitionRef.current.abort(); stopAmbientListening(); teardownVAD(); }}
+            onClick={() => { isListeningLoopActive.current = false; if (activeAudioRef.current) activeAudioRef.current.pause(); if (recognitionRef.current) recognitionRef.current.abort(); stopAmbientListening(); releaseManualStream(); teardownVAD(); }}
             title="Thoát về trang chủ"
             className="w-9 h-9 flex items-center justify-center rounded-full bg-[#161d30] border border-[#1e2a45] text-gray-400 hover:text-white hover:border-red-500/50 transition"
           >
@@ -1446,6 +1460,7 @@ export default function SlideBotPage() {
                 if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
                   try { mediaRecorderRef.current.onstop = null; mediaRecorderRef.current.stop(); } catch (e) {}
                 }
+                releaseManualStream(); // onstop bị null ở trên -> phải nhả mic tường minh
                 stopAmbientListening();
                 setTimeout(() => {
                   if (!isListeningLoopActive.current) return;
