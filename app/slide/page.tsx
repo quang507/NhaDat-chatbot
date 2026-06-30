@@ -15,12 +15,12 @@ const vnWord = (core: string) =>
 const VN_SPEECH_FIXES: [RegExp, string][] = [
   // Tên dự án Ny'ah Phú Định
   [vnWord('ph[ốôuú]\\s*(?:đêm|định|đỉnh|đính|dinh|đin)'), 'phú định'],
-  [vnWord("ny[\\s']*ah|nia|niah"), "ny'ah"],
+  [vnWord("ny[\\s']*ah|ni\\s*a|nia|niah"), "ny'ah"],
   // Mẫu nhà
-  [vnWord('c[ốôo]t[\\s-]*m[ôoơ]|cosmos'), 'cosmo'],
+  [vnWord('c[ốôo]t?[\\s-]*m[ôoơ]|cosmos|cot\\s*mo'), 'cosmo'],
   [vnWord('ph(?:iu|iêu|i u)\\s*(?:giần|dân|gân|giàn)|fiu\\s*s[ầừ]n|phu\\s*sần'), 'fusion'],
   [vnWord('ô\\s*p(?:út|ut|ức)|o\\s*pút|ốp\\s*pút|ô\\s*bút|opút'), 'opus'],
-  [vnWord('si\\s*nha\\s*t[ơưa]|sích\\s*na\\s*ch[ơo]|xi\\s*nha\\s*chơ'), 'signature'],
+  [vnWord('[sx]i\\s*nha\\s*(?:t[ơưa]|ch[ơo])|sích\\s*na\\s*ch[ơo]|sin\\s*nh[ơa]'), 'signature'],
   // Thương hiệu / địa danh
   [vnWord('nha\\s*dat|da\\s*đạt|nhả\\s*đạt'), 'nhã đạt'],
   [vnWord('ch[ưu]ơng\\s*đình\\s*hội|trương\\s*đình\\s*hồi'), 'trương đình hội'],
@@ -37,9 +37,9 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
   [vnWord('ban[\\s-]*công'), 'ban công'],
   [vnWord('giếng\\s*trời|ráng\\s*trời'), 'giếng trời'],
   [vnWord('thông\\s*tầng'), 'thông tầng'],
-  [vnWord('phòng\\s*kh[ắáa]ch'), 'phòng khách'],
+  [vnWord('phòng\\s*kh[ắáa]ch?'), 'phòng khách'],
   [vnWord('phòng\\s*ng[ủu]'), 'phòng ngủ'],
-  [vnWord('phòng\\s*ng[ủu]\\s*ma[sx]\\s*tơ|ma[sx]\\s*tơ'), 'phòng ngủ master'],
+  [vnWord('phòng\\s*ng[ủu]\\s*ma[sx]?\\s*tơ|ma[sx]?\\s*tơ|mát\\s*tơ'), 'phòng ngủ master'],
   [vnWord('phòng\\s*t[ắáa]m|phòng\\s*vệ\\s*sinh|toa\\s*lét|toi\\s*lét'), 'phòng tắm'],
   [vnWord('phòng\\s*học'), 'phòng học'],
   [vnWord('phòng\\s*b[ếê]p|nhà\\s*b[ếê]p'), 'bếp'],

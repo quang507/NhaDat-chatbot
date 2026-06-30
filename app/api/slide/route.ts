@@ -203,7 +203,7 @@ export async function POST(req: NextRequest) {
 
     let staticSlide: any = null;
 
-    if (has('vị trí', 'bản đồ', 'maps', 'địa chỉ', 'đường đi', 'ở đâu')) {
+    if (has('vị trí', 'bản đồ', 'maps', 'địa chỉ', 'đường đi', 'ở đâu', 'chỗ nào', 'nằm ở', 'võ văn kiệt', 'quận 8', 'nguyễn văn linh', 'trương đình hội')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Vị trí dự án",
@@ -216,7 +216,7 @@ export async function POST(req: NextRequest) {
         image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg'],
         maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A'
       };
-    } else if (has('tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi')) {
+    } else if (has('tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi', 'hồ bơi', 'bể bơi', 'sân thể thao', 'cầu lông', 'bóng rổ', 'khu vui chơi')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Hệ thống Tiện ích",
