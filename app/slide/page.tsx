@@ -997,12 +997,21 @@ export default function SlideBotPage() {
             )}
             
             <div className="flex flex-col gap-6 items-center w-full max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-              {slide.points.map((point, idx) => (
-                <div key={idx} className="flex gap-4 items-start max-w-2xl text-left animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
-                  <div className="w-2.5 h-2.5 mt-2.5 rounded-full bg-[#e8b84b] shrink-0"></div>
-                  <p className="text-lg md:text-xl lg:text-[21px] text-gray-300 font-light leading-relaxed">{point}</p>
-                </div>
-              ))}
+              {slide.points && slide.points.length > 0 ? (
+                slide.points.map((point, idx) => (
+                  <div key={idx} className="flex gap-4 items-start max-w-2xl text-left animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
+                    <div className="w-2.5 h-2.5 mt-2.5 rounded-full bg-[#e8b84b] shrink-0"></div>
+                    <p className="text-lg md:text-xl lg:text-[21px] text-gray-300 font-light leading-relaxed">{point}</p>
+                  </div>
+                ))
+              ) : (
+                // Không có đầu mục → hiện thẳng câu trả lời (speech_text) cho khách đọc
+                slide.speech_text && (
+                  <p className="text-xl md:text-2xl text-gray-200 font-light leading-relaxed max-w-3xl text-center animate-fade-in-up">
+                    {slide.speech_text}
+                  </p>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -1128,7 +1137,7 @@ export default function SlideBotPage() {
   };
 
   return (
-    <div className="h-screen max-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Google Sans', 'Product Sans', 'Be Vietnam Pro', sans-serif" }}>
+    <div className="h-screen max-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "var(--font-display), 'Be Vietnam Pro', system-ui, sans-serif" }}>
 
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes floatSlow1 {
