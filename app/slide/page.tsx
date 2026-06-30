@@ -1137,7 +1137,7 @@ export default function SlideBotPage() {
   };
 
   return (
-    <div className="h-screen max-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "var(--font-display), 'Be Vietnam Pro', system-ui, sans-serif" }}>
+    <div className="h-screen max-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, var(--font-display), 'Be Vietnam Pro', sans-serif" }}>
 
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes floatSlow1 {
