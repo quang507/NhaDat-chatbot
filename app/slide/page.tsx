@@ -129,9 +129,9 @@ export default function SlideBotPage() {
   const lastInstantRef = useRef(0);        // mốc lần bắn slide tức thì gần nhất
   const watchdogRef = useRef<any>(null);   // timer kiểm tra STT "chết câm" để khởi động lại
   const autoStartGestureRef = useRef<(() => void) | null>(null); // handler auto-start ở cử chỉ đầu tiên
-  const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
-  const AMBIENT_DEBOUNCE_MS = 600;        // ngừng nói 0.6s mới xét tạo slide -> Rất nhanh!
-  const AMBIENT_COOLDOWN_MS = 3500;     // tối thiểu 3.5s giữa 2 slide -> tránh nhảy liên miên khi STT nghe sai/nhiễu
+  const INSTANT_COOLDOWN_MS = 3000;     // tối thiểu 3s giữa 2 lần bắn tức thì
+  const AMBIENT_DEBOUNCE_MS = 80;       // chờ 80ms sau khi nhận transcript — đủ để batcher không spam nhưng slide xuất hiện gần ngay
+  const AMBIENT_COOLDOWN_MS = 3500;     // tối thiểu 3.5s giữa 2 slide — tránh nhảy liên miên
 
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
 
@@ -234,11 +234,11 @@ export default function SlideBotPage() {
   const useWhisperAmbientRef = useRef(true); // Mặc định sử dụng công cụ Whisper/Gemini siêu chính xác thay cho Web Speech nội bộ dễ lỗi
   const wsActivityRef = useRef(0);       // mốc Web Speech có hoạt động gần nhất (audio/speech/result)
   const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
-  const AM_THRESHOLD = 0.038;     // ngưỡng RMS — hạ thấp để bắt tiếng nói xa ~2m (nghe ngầm cuộc họp). Chống nhiễu nhờ AM_START_FRAMES + AM_MIN_SPEECH_MS + blocklist Whisper bịa.
-  const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
-  const AM_SILENCE_MS = 1100;     // im lặng 1.1s mới chốt câu -> NGHE HẾT CÂU (vd "vị trí Mizuki" gom trọn 1 đoạn, không cắt giữa)
-  const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
-  const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt để gửi phiên âm
+  const AM_THRESHOLD = 0.038;     // ngưỡng RMS — hạ thấp để bắt tiếng nói xa ~2m
+  const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp mới bắt đầu thu (chống blip nhiễu)
+  const AM_SILENCE_MS = 380;      // im lặng 0.38s mới chốt câu — đủ để nghe "thang máy" trọn vẹn mà không chờ lâu
+  const AM_MIN_SPEECH_MS = 180;   // câu < 0.18s -> bỏ (nhiễu); 0.18s đủ cho từ đơn "bếp", "gara"
+  const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt
 
   // Whisper tiếng Việt hay "ảo giác" câu outro YouTube khi thu phải im lặng/nhiễu -> chặn.
   const WHISPER_HALLUCINATIONS = [
