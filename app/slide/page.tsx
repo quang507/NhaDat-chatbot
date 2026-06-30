@@ -1035,36 +1035,46 @@ export default function SlideBotPage() {
       );
     }
 
-    // 3. FULL BACKGROUND (Nền toàn màn hình)
+    // 3. FULL BACKGROUND — ảnh chiếm TRỌN khung, chữ nằm trong khung mờ ở 1 GÓC (dưới-trái).
     if (layout === 'full_background') {
-      const bgImg = images[0];
+      const bgImg = images[currentImageIndex % images.length];
       return (
         <div className={`${containerClass} flex-col overflow-hidden relative group animate-fade-in`}>
           {bgImg && (
             <div className="absolute inset-0 w-full h-full cursor-pointer overflow-hidden" onClick={() => setSelectedImage(bgImg)}>
-              <img 
-                src={bgImg} 
-                alt="Background" 
-                className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000 ease-out" 
+              <img
+                src={bgImg}
+                alt="Ảnh dự án"
+                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[2000ms] ease-out"
                 onError={() => setBrokenImages(prev => ({ ...prev, [bgImg]: true }))}
               />
-              <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                🔍 Click để xem ảnh gốc
-              </div>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none"></div>
-          
-          <div key={slide.title} className="absolute bottom-0 left-0 w-full p-12 md:p-16 flex flex-col z-10 animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white tracking-tight drop-shadow-lg animate-slide-up">
-              {slide.title}
-            </h2>
-            <div className="flex flex-col gap-4 max-w-3xl animate-slide-up delay-100">
-              {slide.points.map((point, idx) => (
-                <p key={idx} className="text-lg md:text-xl lg:text-[21px] text-gray-200 font-light drop-shadow-md border-l-4 border-[#e8b84b] pl-4">{point}</p>
-              ))}
+          {/* Lớp tối nhẹ chỉ ở góc dưới-trái để chữ nổi mà ảnh vẫn rõ */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/75 via-black/10 to-transparent pointer-events-none"></div>
+
+          {/* Khung chữ ở GÓC dưới-trái */}
+          <div key={slide.title} className="absolute bottom-6 left-6 md:bottom-8 md:left-8 max-w-[58%] md:max-w-[48%] z-10 animate-fade-in-up">
+            <div className="bg-black/55 backdrop-blur-md rounded-2xl border border-white/10 px-6 py-5 md:px-7 md:py-6 shadow-2xl">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-white tracking-tight leading-tight">
+                {slide.title}
+              </h2>
+              <div className="flex flex-col gap-2.5">
+                {slide.points.slice(0, 4).map((point, idx) => (
+                  <p key={idx} className="text-base md:text-lg text-gray-100 font-light leading-snug border-l-[3px] border-[#e8b84b] pl-3">{point}</p>
+                ))}
+              </div>
             </div>
           </div>
+
+          {/* Chấm chuyển ảnh nếu nhiều ảnh */}
+          {images.length > 1 && (
+            <div className="absolute bottom-4 right-4 flex gap-1.5 z-20 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full border border-white/10">
+              {images.map((_, idx) => (
+                <span key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === (currentImageIndex % images.length) ? 'bg-[#e8b84b] w-4' : 'bg-white/40'}`} />
+              ))}
+            </div>
+          )}
         </div>
       );
     }

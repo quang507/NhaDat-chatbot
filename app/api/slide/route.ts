@@ -846,23 +846,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // LAYOUT BIẾN ĐỔI: tránh lúc nào cũng split_image_right cho đỡ nhàm.
-    // Quy tắc: vị trí/cảnh quan -> full_background; có số nổi bật -> dark_minimal;
-    // còn lại xen kẽ trái/phải theo độ dài câu hỏi.
+    // LAYOUT: ẢNH FULL MÀN HÌNH, chữ đè 1 góc (full_background) cho mọi slide có ảnh.
+    // Riêng bản đồ vị trí giữ split để còn chỗ cho mã QR.
     {
       const imgs: string[] = Array.isArray(parsed.image_urls) ? parsed.image_urls : [];
-      const t = queryText + ' ' + contentText;
       const isMapImg = imgs.some((u: string) => u.includes('vi_tri') || u.includes('18_phut'));
       if (imgs.length === 0) {
         parsed.layout_type = 'text_only';
       } else if (isMapImg) {
-        parsed.layout_type = 'split_image_right'; // giữ bản đồ + QR bên phải
-      } else if ((/(tổng quan|toàn cảnh|cảnh quan|phối cảnh|không gian|dự án)/).test(t) && imgs.length >= 1) {
-        parsed.layout_type = 'full_background';
-      } else if (parsed.highlight_number && String(parsed.highlight_number).trim() && imgs.length >= 1) {
-        parsed.layout_type = 'dark_minimal';
+        parsed.layout_type = 'split_image_right'; // bản đồ + QR
       } else {
-        parsed.layout_type = (message.length % 2 === 0) ? 'split_image_right' : 'split_image_left';
+        parsed.layout_type = 'full_background';   // ảnh full + chữ ở góc
       }
     }
 
