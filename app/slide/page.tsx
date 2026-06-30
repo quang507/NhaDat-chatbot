@@ -130,7 +130,6 @@ export default function SlideBotPage() {
   const audioChunksRef = useRef<Blob[]>([]);
   const instantFiredRef = useRef(false);   // đã bắn slide tức thì cho câu đang nói chưa
   const lastInstantRef = useRef(0);        // mốc lần bắn slide tức thì gần nhất
-  const lastActivityRef = useRef(0);       // mốc hoạt động gần nhất của STT (onstart/onresult/audio) -> watchdog
   const watchdogRef = useRef<any>(null);   // timer kiểm tra STT "chết câm" để khởi động lại
   const autoStartGestureRef = useRef<(() => void) | null>(null); // handler auto-start ở cử chỉ đầu tiên
   const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
@@ -214,14 +213,11 @@ export default function SlideBotPage() {
   // Tốc độ đọc slide (đọc nhanh hơn bình thường cho đỡ lê thê)
   const SLIDE_TTS_RATE = '+22%';
 
-  // Barge-in (nói chèn lúc đang đọc) — VAD trên stream có khử vọng, giống trang /voice
+  // Refs dọn dẹp barge-in (teardownVAD) — giữ làm cleanup an toàn.
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const vadRafRef = useRef<number | null>(null);
   const speakStartRef = useRef<number>(0);
-  const VAD_THRESHOLD = 0.06;
-  const VAD_FRAMES = 6;
-  const SPEAK_GRACE_MS = 400;
 
   // ===== ENGINE NGHE NGẦM dùng Whisper (Groq) thay cho Web Speech API =====
   // Lý do: Web Speech API (Chrome) hay "chết câm" sau abort/restart, lại phụ thuộc mic
@@ -606,50 +602,7 @@ export default function SlideBotPage() {
     fetchSlideData(fullQuery, true);
   };
 
-  // VAD: phát hiện người dùng nói lúc AI đang đọc (stream khử vọng + đo RMS)
-  const setupVAD = async () => {
-    if (mediaStreamRef.current) return;
-    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) return;
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-      });
-      mediaStreamRef.current = stream;
-      const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
-      const ctx: AudioContext = new Ctx();
-      audioCtxRef.current = ctx;
-      const source = ctx.createMediaStreamSource(stream);
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 512;
-      source.connect(analyser);
-      const data = new Uint8Array(analyser.fftSize);
-      let loudFrames = 0;
-      const tick = () => {
-        vadRafRef.current = requestAnimationFrame(tick);
-        analyser.getByteTimeDomainData(data);
-        let sum = 0;
-        for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
-        const rms = Math.sqrt(sum / data.length);
-        // Cập nhật vòng sáng VAD thời gian thực
-        if (volumeVisualRef.current) {
-          const scale = 1 + Math.min(rms * 5, 2.0);
-          volumeVisualRef.current.style.transform = `scale(${scale})`;
-          volumeVisualRef.current.style.backgroundColor = rms > 0.01 ? 'rgba(232, 184, 75, 0.25)' : 'rgba(239, 68, 68, 0.15)';
-        }
-
-        if (stateRef.current === 'speaking' && Date.now() - speakStartRef.current > SPEAK_GRACE_MS) {
-          if (rms > VAD_THRESHOLD) loudFrames++; else loudFrames = Math.max(0, loudFrames - 1);
-          if (loudFrames >= VAD_FRAMES) { loudFrames = 0; bargeIn(); }
-        } else {
-          loudFrames = 0;
-        }
-      };
-      tick();
-    } catch (e) {
-      // Không bật được VAD thì vẫn dùng bình thường (chỉ là không cắt lời bằng giọng được)
-    }
-  };
-
+  // teardownVAD: dọn stream/AudioContext của barge-in (giữ lại như cleanup an toàn).
   const teardownVAD = () => {
     if (vadRafRef.current != null) { cancelAnimationFrame(vadRafRef.current); vadRafRef.current = null; }
     if (mediaStreamRef.current) { try { mediaStreamRef.current.getTracks().forEach(t => t.stop()); } catch (e) {} mediaStreamRef.current = null; }
