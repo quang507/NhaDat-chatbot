@@ -1038,24 +1038,34 @@ export default function SlideBotPage() {
 
     // 3. FULL BACKGROUND — ảnh chiếm TRỌN khung, chữ nằm trong khung mờ ở 1 GÓC (dưới-trái).
     if (layout === 'full_background') {
-      const bgImg = images[currentImageIndex % images.length];
+      const activeIdx = currentImageIndex % images.length;
       return (
         <div className={`${containerClass} flex-col overflow-hidden relative group animate-fade-in`}>
-          {bgImg && (
-            <div className="absolute inset-0 w-full h-full cursor-pointer overflow-hidden" onClick={() => setSelectedImage(bgImg)}>
-              <img
-                src={bgImg}
-                alt="Ảnh dự án"
-                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[2000ms] ease-out"
-                onError={() => setBrokenImages(prev => ({ ...prev, [bgImg]: true }))}
-              />
-            </div>
-          )}
+          {/* Slideshow với transition mượt (giống renderImageGrid) */}
+          {images.map((img, idx) => {
+            const isActive = idx === activeIdx;
+            return (
+              <div
+                key={img + '-' + idx}
+                className={`absolute inset-0 w-full h-full overflow-hidden transition-opacity duration-1000 ease-in-out cursor-pointer ${isActive ? 'opacity-100 z-[1]' : 'opacity-0 z-0 pointer-events-none'}`}
+                onClick={() => setSelectedImage(img)}
+                style={{ willChange: 'opacity' }}
+              >
+                <img
+                  src={img}
+                  alt={`Ảnh dự án ${idx + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[2000ms] ease-out"
+                  onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
+                />
+              </div>
+            );
+          })}
+
           {/* Lớp tối nhẹ chỉ ở góc dưới-trái để chữ nổi mà ảnh vẫn rõ */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/75 via-black/10 to-transparent pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/75 via-black/10 to-transparent pointer-events-none z-[2]"></div>
 
           {/* Khung chữ ở GÓC dưới-trái */}
-          <div key={slide.title} className="absolute bottom-6 left-6 md:bottom-8 md:left-8 max-w-[58%] md:max-w-[48%] z-10 animate-fade-in-up">
+          <div key={slide.title} className="absolute bottom-6 left-6 md:bottom-8 md:left-8 max-w-[58%] md:max-w-[48%] z-[3] animate-fade-in-up">
             <div className="bg-black/55 backdrop-blur-md rounded-2xl border border-white/10 px-6 py-5 md:px-7 md:py-6 shadow-2xl">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-white tracking-tight leading-tight">
                 {slide.title}
@@ -1068,11 +1078,16 @@ export default function SlideBotPage() {
             </div>
           </div>
 
-          {/* Chấm chuyển ảnh nếu nhiều ảnh */}
+          {/* Chấm chuyển ảnh nếu nhiều ảnh — có thể click */}
           {images.length > 1 && (
-            <div className="absolute bottom-4 right-4 flex gap-1.5 z-20 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full border border-white/10">
+            <div className="absolute bottom-4 right-4 flex gap-1.5 z-[4] bg-black/50 backdrop-blur px-3 py-1.5 rounded-full border border-white/10">
               {images.map((_, idx) => (
-                <span key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === (currentImageIndex % images.length) ? 'bg-[#e8b84b] w-4' : 'bg-white/40'}`} />
+                <button
+                  key={idx}
+                  onClick={() => setCurrentImageIndex(idx)}
+                  className={`rounded-full transition-all duration-300 ${idx === activeIdx ? 'bg-[#e8b84b] w-4 h-2' : 'bg-white/40 hover:bg-white/70 w-2 h-2'}`}
+                  aria-label={`Ảnh ${idx + 1}`}
+                />
               ))}
             </div>
           )}
@@ -1264,7 +1279,7 @@ export default function SlideBotPage() {
       {/* Main Content Area - The Slide */}
       <main className="flex-1 min-h-0 z-10 flex items-center justify-center p-3">
         {slide ? (
-          <div className="w-full h-full flex items-center justify-center">
+          <div key={slideKey} className="w-full h-full flex items-center justify-center">
             {renderSlideContent()}
           </div>
         ) : (

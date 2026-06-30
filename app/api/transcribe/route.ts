@@ -3,9 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const maxDuration = 30;
 
-// STT: ƯU TIÊN Groq Whisper (whisper-large-v3-turbo) vì NHANH hơn nhiều (~0.3s) — hợp nghe ngầm
-// realtime. Tự rớt sang Gemini 2.5 Flash nếu Groq lỗi/thiếu key.
+// STT: Thứ tự ưu tiên:
+// 1) Deepgram Nova-2 — chất lượng tiếng Việt cao, latency thấp (~0.3s)
+// 2) Groq Whisper (whisper-large-v3-turbo) — fallback nhanh
+// 3) Gemini 2.5 Flash — fallback cuối
 export async function POST(req: NextRequest) {
+  const DEEPGRAM_API_KEY = process.env.DEEPGRAM_API_KEY || '';
   const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 
@@ -20,7 +23,45 @@ export async function POST(req: NextRequest) {
     const ext = type.includes('ogg') ? 'ogg' : type.includes('wav') ? 'wav' : type.includes('mp4') || type.includes('m4a') ? 'm4a' : type.includes('mpeg') ? 'mp3' : 'webm';
     const mimeType = type.includes('webm') ? 'audio/webm' : type;
 
-    // 1) GROQ WHISPER — nhanh nhất, ưu tiên hàng đầu cho nghe ngầm realtime.
+    // 1) DEEPGRAM NOVA-2 — chất lượng tiếng Việt tốt nhất, latency thấp.
+    if (DEEPGRAM_API_KEY) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const params = new URLSearchParams({
+          model: 'nova-2',
+          language: 'vi',
+          smart_format: 'true',
+          punctuate: 'true',
+          filler_words: 'false',
+          keywords: [
+            "Ny'ah:2", 'Phú Định:2', 'Nhã Đạt:2',
+            'Cosmo:2', 'Fusion:2', 'Opus:1', 'Cashmere:1', 'Signature:1',
+            'gara:1', 'thang máy:1', 'giếng trời:1', 'sổ hồng:1',
+          ].join(','),
+        });
+        const dgRes = await fetch(`https://api.deepgram.com/v1/listen?${params}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Token ${DEEPGRAM_API_KEY}`,
+            'Content-Type': mimeType,
+          },
+          body: arrayBuffer,
+        });
+
+        if (dgRes.ok) {
+          const data = await dgRes.json();
+          const text = data?.results?.channels?.[0]?.alternatives?.[0]?.transcript || '';
+          if (text.trim()) return NextResponse.json({ text: text.trim() });
+        } else {
+          const errText = await dgRes.text();
+          console.warn(`Deepgram lỗi ${dgRes.status}: ${errText}. Rớt sang Groq...`);
+        }
+      } catch (e) {
+        console.warn('Deepgram exception. Rớt sang Groq...', e);
+      }
+    }
+
+    // 2) GROQ WHISPER — nhanh nhất trong số Whisper, ưu tiên hàng đầu cho nghe ngầm realtime.
     if (GROQ_API_KEY) {
       try {
         // prompt giúp nhận đúng tên riêng; KHÔNG seed số căn cụ thể (tránh bịa "căn 23").
@@ -49,7 +90,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2) Fallback Gemini 2.5 Flash (chính xác cao nhưng chậm hơn).
+    // 3) Fallback Gemini 2.5 Flash (chính xác cao nhưng chậm hơn).
     if (GEMINI_API_KEY) {
       try {
         const arrayBuffer = await file.arrayBuffer();
