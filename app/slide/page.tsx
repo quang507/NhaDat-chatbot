@@ -233,6 +233,7 @@ export default function SlideBotPage() {
   const amSilenceStartRef = useRef(0);
   const amSpeechStartRef = useRef(0);
   const amEngineOnRef = useRef(false);   // ý định: nghe ngầm ĐANG bật
+  const amStartingRef = useRef(false);   // CHỐNG ĐUA: đang trong lúc getUserMedia khởi tạo engine Whisper
   const amRunningRef = useRef(false);    // Web Speech instance đang chạy thật sự
   const firstGestureRef = useRef(false); // đã ép restart bằng cử chỉ đầu tiên chưa
   const useWhisperAmbientRef = useRef(true); // Mặc định sử dụng công cụ Whisper/Gemini siêu chính xác thay cho Web Speech nội bộ dễ lỗi
@@ -793,13 +794,18 @@ export default function SlideBotPage() {
 
   // ===== ENGINE WHISPER (fallback): MediaRecorder + VAD, gửi /api/transcribe =====
   const startWhisperAmbient = async () => {
-    if (amEngineOnRef.current && amStreamRef.current) { setState('listening'); return; } // đang chạy
+    // CHỐNG ĐUA: đã có stream HOẶC đang khởi tạo (getUserMedia async) -> không tạo engine thứ 2.
+    if (amStreamRef.current || amStartingRef.current) { setState('listening'); return; }
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) return;
+    amStartingRef.current = true;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
       });
+      // nếu engine đã bị tắt trong lúc chờ quyền mic -> nhả stream, thoát
+      if (!amEngineOnRef.current) { stream.getTracks().forEach(t => t.stop()); amStartingRef.current = false; return; }
       amStreamRef.current = stream;
+      amStartingRef.current = false;
       const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
       const ctx: AudioContext = new Ctx();
       amCtxRef.current = ctx;
@@ -874,11 +880,13 @@ export default function SlideBotPage() {
       };
       tick();
     } catch (e) {
+      amStartingRef.current = false;
       setTranscript('Không truy cập được mic. Cấp quyền mic rồi thử lại.');
     }
   };
 
   const stopWhisperAmbient = () => {
+    amStartingRef.current = false;
     if (amRafRef.current != null) { cancelAnimationFrame(amRafRef.current); amRafRef.current = null; }
     if (amRecorderRef.current && amRecorderRef.current.state !== 'inactive') {
       try { amRecorderRef.current.onstop = null; amRecorderRef.current.stop(); } catch (e) {}
