@@ -235,7 +235,7 @@ export default function SlideBotPage() {
   const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
   const AM_THRESHOLD = 0.038;     // ngưỡng RMS — hạ thấp để bắt tiếng nói xa ~2m (nghe ngầm cuộc họp). Chống nhiễu nhờ AM_START_FRAMES + AM_MIN_SPEECH_MS + blocklist Whisper bịa.
   const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
-  const AM_SILENCE_MS = 450;      // im lặng 0.45s (cực kỳ nhạy bén) -> chốt 1 câu, gửi phiên âm ngay lập tức
+  const AM_SILENCE_MS = 1100;     // im lặng 1.1s mới chốt câu -> NGHE HẾT CÂU (vd "vị trí Mizuki" gom trọn 1 đoạn, không cắt giữa)
   const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
   const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt để gửi phiên âm
 
@@ -416,21 +416,15 @@ export default function SlideBotPage() {
     bufferRef.current = fullText;
     setTranscript('🎧 Đang nghe: …' + fullText.slice(-90));
 
-    // Logic 1: Kích hoạt ngay lập tức nếu từ khóa mạnh
+    // Logic 1: CHỈ kích hoạt tức thì với LỆNH RÕ RÀNG ("mở slide", "cho xem").
+    // Các topic thường (vị trí/giá/mẫu nhà...) thì ĐỢI HẾT CÂU (Logic 2) để có đủ ngữ cảnh
+    // -> tránh bắn nhầm khi câu là "vị trí Mizuki" (đợi nghe trọn câu mới biết là dự án khác).
     if (!isGeneratingRef.current && ambientRef.current && isListeningLoopActive.current) {
       const intent = classifyAmbientIntent(fullText);
-      // Nếu là explicit request (vd: "mở slide", "cho xem") hoặc đã bắt được topic
-      if (intent.shouldGenerate && (intent.reason === 'explicit_slide_request' || intent.reason === 'has_project_topic')) {
-        // Kiểm tra xem topic này có bị trùng lặp không (chống spam liên tục cùng 1 topic khi đang nói dở)
-        const now = Date.now();
-        const isSpam = intent.topic && activeTopicRef.current && activeTopicRef.current.topic === intent.topic && now < activeTopicRef.current.expiry && intent.reason !== 'explicit_slide_request';
-        
-        if (!isSpam) {
-          console.log('[Ambient] Bắt được từ khóa mạnh -> Kích hoạt NGAY LẬP TỨC (không chờ hết câu):', intent.topic);
-          if (debounceRef.current) clearTimeout(debounceRef.current);
-          maybeGenerateAmbient(); // Trigger ngay!
-          return;
-        }
+      if (intent.shouldGenerate && intent.reason === 'explicit_slide_request') {
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        maybeGenerateAmbient();
+        return;
       }
     }
 

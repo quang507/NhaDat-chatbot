@@ -13,47 +13,40 @@ const EXPLICIT_TRIGGERS = [
   'cho khách xem', 'mở slide', 'hiện cái', 'show phần', 'trình chiếu', 'mở hình', 'cho xem', 'nhìn trên màn hình', 'em mở', 'mở cho'
 ];
 
+// ĐÃ THU HẸP: chỉ giữ từ ĐẶC TRƯNG sản phẩm, bỏ các từ đời thường (tỷ, phút, quận, đường,
+// chợ, trường học, tầng, hiện đại, "dự án"...) vì chúng bắn slide lung tung trong lúc nói chuyện.
 const TOPIC_KEYWORDS = {
   price: [
-    'giá', 'bao nhiêu tiền', 'thanh toán', 'đặt cọc', 'chiết khấu', 'vay', 'ngân hàng', 
-    'lãi suất', 'tỷ', 'triệu', 'bảng giá', 'giá bán', 'booking', 'chính sách', 'pttt', 
-    'trả góp', 'ân hạn', 'vốn tự có', 'nợ gốc', 'tài chính', 'báo giá', 'giá rumor', 'giá trần'
+    'giá bán', 'bảng giá', 'bao nhiêu tiền', 'mấy tỷ', 'thanh toán', 'đặt cọc',
+    'chiết khấu', 'trả góp', 'ân hạn', 'pttt', 'booking', 'báo giá'
   ],
   location: [
-    'vị trí', 'địa chỉ', 'bản đồ', 'quận', 'đường', 'bình chánh', 'an dương vương', 'quận 8', 
-    'đi lại', 'di chuyển', 'kết nối', 'mặt tiền', 'hẻm', 'cách bao xa', 'km', 'phút', 
-    'hướng đi', 'quận 6', 'võ văn kiệt', 'quốc lộ', 'giao thông', 'ngập nước', 'triều cường'
+    'vị trí', 'địa chỉ', 'bản đồ', 'an dương vương', 'trương đình hội', 'võ văn kiệt',
+    'mặt tiền', 'cách trung tâm', 'bao xa', 'ở đâu', 'nằm ở'
   ],
   unit: [
-    'căn số', 'lô', 'diện tích', 'tầng', 'gara', 'thang máy', 'sân thượng', 'phòng ngủ', 
-    'phòng khách', 'phòng tắm', 'bếp', 'phòng học', 'toilet', 'wc', 'ban công', 'ngang', 
-    'dài', 'trệt', 'lầu', 'lửng', 'áp mái', 'm2', 'mét vuông', 'hướng cửa', 'hướng nhà', 
-    'hướng ban công', 'tây tứ trạch', 'đông tứ trạch'
+    'căn số', 'diện tích', 'gara', 'thang máy', 'thang xoắn', 'sân thượng', 'phòng ngủ',
+    'phòng khách', 'phòng tắm', 'phòng bếp', 'phòng học', 'ban công', 'master',
+    'hướng nhà', 'giếng trời', 'thông tầng'
   ],
   legal: [
-    'pháp lý', 'sổ hồng', 'hợp đồng', 'cam kết', 'qsdđ', 'sổ đỏ', 'quy hoạch', 'giấy phép', 
-    'xây dựng', 'gpxd', 'hoàn công', 'sở hữu', 'lâu dài', 'thời hạn', 'sang tên', 
-    'công chứng', 'hdmb', 'văn bản thỏa thuận', 'phê duyệt'
+    'pháp lý', 'sổ hồng', 'sổ đỏ', 'qsdđ', 'quy hoạch', 'giấy phép', 'hoàn công',
+    'sở hữu lâu dài', 'sang tên', 'hợp đồng mua bán', 'hdmb'
   ],
   amenity: [
-    'tiện ích', 'công viên', 'hồ bơi', 'cầu lông', 'bóng rổ', 'sinh thái', 'xanh', 
-    'trung tâm thương mại', 'metro', 'landmark', 'bảo vệ', 'an ninh', 'camera', 
-    'chỗ đậu xe', 'bãi giữ xe', 'gym', 'spa', 'bbq', 'trường học', 'bệnh viện', 
-    'siêu thị', 'chợ', 'khu dân cư', 'compound', 'biệt lập'
+    'tiện ích', 'công viên', 'hồ bơi', 'bể bơi', 'cầu lông', 'bóng rổ', 'sân thể thao',
+    'landmark', 'khu vui chơi', 'sân chơi'
   ],
   design: [
-    'mặt bằng', 'mẫu nhà', 'thiết kế', 'nội thất', 'phối cảnh', 'nhà phố', 'layout', 
-    'kiến trúc', 'phong cách', 'cảnh quan', 'hoàn thiện', 'giao thô', 'vật liệu', 
-    'chuẩn', 'hiện đại', 'cổ điển', 'tân cổ điển', 'không gian', 'giếng trời', 'thông tầng'
+    'mặt bằng', 'mẫu nhà', 'thiết kế nhà', 'nội thất', 'phối cảnh', 'kiến trúc nhà', 'sa bàn'
   ],
   general: [
-    'phú định', "ny'ah", 'nyah', 'niah', 
-    'cosmo', 'cót mô', 'cót-mô', 'cốt mô',
-    'fusion', 'phiêu dân', 'phiêu-dân',
-    'opus', 'ô-pút', 'ô pút', 'o pút',
-    'office', 'cashmere', 
-    'nhà đạt', 'nha dat', 'công ty', 'chủ đầu tư', 'founder', 'nhà mẫu', 'sa bàn', 
-    'tiến độ', 'khởi công', 'bàn giao', 'chủ thầu', 'đơn vị thi công', 'phát triển', 'dự án'
+    'phú định', "ny'ah", 'nyah', 'niah',
+    'cosmo', 'cót mô', 'cốt mô',
+    'fusion', 'phiêu dân',
+    'opus', 'ô-pút', 'ô pút',
+    'cashmere', 'signature',
+    'nhã đạt', 'nha dat', 'chủ đầu tư', 'nhà mẫu', 'tiến độ', 'bàn giao'
   ]
 };
 
