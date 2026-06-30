@@ -129,9 +129,9 @@ export default function SlideBotPage() {
   const lastInstantRef = useRef(0);        // mốc lần bắn slide tức thì gần nhất
   const watchdogRef = useRef<any>(null);   // timer kiểm tra STT "chết câm" để khởi động lại
   const autoStartGestureRef = useRef<(() => void) | null>(null); // handler auto-start ở cử chỉ đầu tiên
-  const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
-  const AMBIENT_DEBOUNCE_MS = 600;        // ngừng nói 0.6s mới xét tạo slide -> Rất nhanh!
-  const AMBIENT_COOLDOWN_MS = 3500;     // tối thiểu 3.5s giữa 2 slide -> tránh nhảy liên miên khi STT nghe sai/nhiễu
+  const INSTANT_COOLDOWN_MS = 3000;     // tối thiểu 3s giữa 2 lần bắn tức thì
+  const AMBIENT_DEBOUNCE_MS = 80;       // chờ 80ms sau khi nhận transcript — đủ để batcher không spam nhưng slide xuất hiện gần ngay
+  const AMBIENT_COOLDOWN_MS = 3500;     // tối thiểu 3.5s giữa 2 slide — tránh nhảy liên miên
 
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
 
@@ -234,11 +234,11 @@ export default function SlideBotPage() {
   const useWhisperAmbientRef = useRef(true); // Mặc định sử dụng công cụ Whisper/Gemini siêu chính xác thay cho Web Speech nội bộ dễ lỗi
   const wsActivityRef = useRef(0);       // mốc Web Speech có hoạt động gần nhất (audio/speech/result)
   const wsWatchdogRef = useRef<any>(null); // timer kiểm Web Speech "chết câm" để rớt sang Whisper
-  const AM_THRESHOLD = 0.038;     // ngưỡng RMS — hạ thấp để bắt tiếng nói xa ~2m (nghe ngầm cuộc họp). Chống nhiễu nhờ AM_START_FRAMES + AM_MIN_SPEECH_MS + blocklist Whisper bịa.
-  const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
-  const AM_SILENCE_MS = 1100;     // im lặng 1.1s mới chốt câu -> NGHE HẾT CÂU (vd "vị trí Mizuki" gom trọn 1 đoạn, không cắt giữa)
-  const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
-  const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt để gửi phiên âm
+  const AM_THRESHOLD = 0.038;     // ngưỡng RMS — hạ thấp để bắt tiếng nói xa ~2m
+  const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp mới bắt đầu thu (chống blip nhiễu)
+  const AM_SILENCE_MS = 380;      // im lặng 0.38s mới chốt câu — đủ để nghe "thang máy" trọn vẹn mà không chờ lâu
+  const AM_MIN_SPEECH_MS = 180;   // câu < 0.18s -> bỏ (nhiễu); 0.18s đủ cho từ đơn "bếp", "gara"
+  const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt
 
   // Whisper tiếng Việt hay "ảo giác" câu outro YouTube khi thu phải im lặng/nhiễu -> chặn.
   const WHISPER_HALLUCINATIONS = [
@@ -997,12 +997,21 @@ export default function SlideBotPage() {
             )}
             
             <div className="flex flex-col gap-6 items-center w-full max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-              {slide.points.map((point, idx) => (
-                <div key={idx} className="flex gap-4 items-start max-w-2xl text-left animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
-                  <div className="w-2.5 h-2.5 mt-2.5 rounded-full bg-[#e8b84b] shrink-0"></div>
-                  <p className="text-lg md:text-xl lg:text-[21px] text-gray-300 font-light leading-relaxed">{point}</p>
-                </div>
-              ))}
+              {slide.points && slide.points.length > 0 ? (
+                slide.points.map((point, idx) => (
+                  <div key={idx} className="flex gap-4 items-start max-w-2xl text-left animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
+                    <div className="w-2.5 h-2.5 mt-2.5 rounded-full bg-[#e8b84b] shrink-0"></div>
+                    <p className="text-lg md:text-xl lg:text-[21px] text-gray-300 font-light leading-relaxed">{point}</p>
+                  </div>
+                ))
+              ) : (
+                // Không có đầu mục → hiện thẳng câu trả lời (speech_text) cho khách đọc
+                slide.speech_text && (
+                  <p className="text-xl md:text-2xl text-gray-200 font-light leading-relaxed max-w-3xl text-center animate-fade-in-up">
+                    {slide.speech_text}
+                  </p>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -1038,24 +1047,34 @@ export default function SlideBotPage() {
 
     // 3. FULL BACKGROUND — ảnh chiếm TRỌN khung, chữ nằm trong khung mờ ở 1 GÓC (dưới-trái).
     if (layout === 'full_background') {
-      const bgImg = images[currentImageIndex % images.length];
+      const activeIdx = currentImageIndex % images.length;
       return (
         <div className={`${containerClass} flex-col overflow-hidden relative group animate-fade-in`}>
-          {bgImg && (
-            <div className="absolute inset-0 w-full h-full cursor-pointer overflow-hidden" onClick={() => setSelectedImage(bgImg)}>
-              <img
-                src={bgImg}
-                alt="Ảnh dự án"
-                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[2000ms] ease-out"
-                onError={() => setBrokenImages(prev => ({ ...prev, [bgImg]: true }))}
-              />
-            </div>
-          )}
+          {/* Slideshow với transition mượt (giống renderImageGrid) */}
+          {images.map((img, idx) => {
+            const isActive = idx === activeIdx;
+            return (
+              <div
+                key={img + '-' + idx}
+                className={`absolute inset-0 w-full h-full overflow-hidden transition-opacity duration-1000 ease-in-out cursor-pointer ${isActive ? 'opacity-100 z-[1]' : 'opacity-0 z-0 pointer-events-none'}`}
+                onClick={() => setSelectedImage(img)}
+                style={{ willChange: 'opacity' }}
+              >
+                <img
+                  src={img}
+                  alt={`Ảnh dự án ${idx + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[2000ms] ease-out"
+                  onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
+                />
+              </div>
+            );
+          })}
+
           {/* Lớp tối nhẹ chỉ ở góc dưới-trái để chữ nổi mà ảnh vẫn rõ */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/75 via-black/10 to-transparent pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/75 via-black/10 to-transparent pointer-events-none z-[2]"></div>
 
           {/* Khung chữ ở GÓC dưới-trái */}
-          <div key={slide.title} className="absolute bottom-6 left-6 md:bottom-8 md:left-8 max-w-[58%] md:max-w-[48%] z-10 animate-fade-in-up">
+          <div key={slide.title} className="absolute bottom-6 left-6 md:bottom-8 md:left-8 max-w-[58%] md:max-w-[48%] z-[3] animate-fade-in-up">
             <div className="bg-black/55 backdrop-blur-md rounded-2xl border border-white/10 px-6 py-5 md:px-7 md:py-6 shadow-2xl">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-white tracking-tight leading-tight">
                 {slide.title}
@@ -1068,11 +1087,16 @@ export default function SlideBotPage() {
             </div>
           </div>
 
-          {/* Chấm chuyển ảnh nếu nhiều ảnh */}
+          {/* Chấm chuyển ảnh nếu nhiều ảnh — có thể click */}
           {images.length > 1 && (
-            <div className="absolute bottom-4 right-4 flex gap-1.5 z-20 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full border border-white/10">
+            <div className="absolute bottom-4 right-4 flex gap-1.5 z-[4] bg-black/50 backdrop-blur px-3 py-1.5 rounded-full border border-white/10">
               {images.map((_, idx) => (
-                <span key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === (currentImageIndex % images.length) ? 'bg-[#e8b84b] w-4' : 'bg-white/40'}`} />
+                <button
+                  key={idx}
+                  onClick={() => setCurrentImageIndex(idx)}
+                  className={`rounded-full transition-all duration-300 ${idx === activeIdx ? 'bg-[#e8b84b] w-4 h-2' : 'bg-white/40 hover:bg-white/70 w-2 h-2'}`}
+                  aria-label={`Ảnh ${idx + 1}`}
+                />
               ))}
             </div>
           )}
@@ -1113,7 +1137,7 @@ export default function SlideBotPage() {
   };
 
   return (
-    <div className="h-screen max-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Google Sans', 'Product Sans', 'Be Vietnam Pro', sans-serif" }}>
+    <div className="h-screen max-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, var(--font-display), 'Be Vietnam Pro', sans-serif" }}>
 
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes floatSlow1 {
@@ -1264,7 +1288,7 @@ export default function SlideBotPage() {
       {/* Main Content Area - The Slide */}
       <main className="flex-1 min-h-0 z-10 flex items-center justify-center p-3">
         {slide ? (
-          <div className="w-full h-full flex items-center justify-center">
+          <div key={slideKey} className="w-full h-full flex items-center justify-center">
             {renderSlideContent()}
           </div>
         ) : (

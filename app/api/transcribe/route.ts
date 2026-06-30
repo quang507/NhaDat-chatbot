@@ -3,8 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const maxDuration = 30;
 
-// STT: ƯU TIÊN Groq Whisper (whisper-large-v3-turbo) vì NHANH hơn nhiều (~0.3s) — hợp nghe ngầm
-// realtime. Tự rớt sang Gemini 2.5 Flash nếu Groq lỗi/thiếu key.
+// STT: Thứ tự ưu tiên:
+// 1) Groq Whisper (whisper-large-v3) — tốt nhất cho tiếng Việt, ~0.6s
+// 2) Gemini 2.5 Flash — fallback chính xác nhưng chậm hơn
+// NOTE: Deepgram Nova-2 đã thử nhưng tiếng Việt rất kém (nhận sai hoàn toàn)
+//       nên đã loại khỏi pipeline. DEEPGRAM_API_KEY hiện không dùng cho STT.
 export async function POST(req: NextRequest) {
   const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
@@ -20,14 +23,14 @@ export async function POST(req: NextRequest) {
     const ext = type.includes('ogg') ? 'ogg' : type.includes('wav') ? 'wav' : type.includes('mp4') || type.includes('m4a') ? 'm4a' : type.includes('mpeg') ? 'mp3' : 'webm';
     const mimeType = type.includes('webm') ? 'audio/webm' : type;
 
-    // 1) GROQ WHISPER — nhanh nhất, ưu tiên hàng đầu cho nghe ngầm realtime.
+    // 1) GROQ WHISPER — tốt nhất cho tiếng Việt, ~0.3s.
     if (GROQ_API_KEY) {
       try {
         // prompt giúp nhận đúng tên riêng; KHÔNG seed số căn cụ thể (tránh bịa "căn 23").
         const STT_PROMPT = "Dự án nhà phố Ny'ah Phú Định, nhà phát triển Nhã Đạt. Mẫu nhà: Cosmo Gen 2 (Cót mô, Cốt mô), Fusion Gen 5 (Phiêu dân, Phiu dân), Opus (Ô pút), Cashmere, Signature. Đường Trương Đình Hội, An Dương Vương, Quận 8. Các từ: gara ô tô, thang máy, giếng trời, ban công, phòng ngủ master, phòng khách, phòng bếp, sân thượng, mặt bằng, vị trí, bản đồ, sổ hồng, bàn giao, tiến độ, thanh toán. Lệnh: mở slide, cho xem, phóng to, thu nhỏ, đóng ảnh.";
         const fd = new FormData();
         fd.append('file', file, `audio.${ext}`);
-        fd.append('model', 'whisper-large-v3-turbo');
+        fd.append('model', 'whisper-large-v3');
         fd.append('language', 'vi');
         fd.append('response_format', 'json');
         fd.append('prompt', STT_PROMPT);

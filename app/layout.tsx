@@ -1,9 +1,15 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Be_Vietnam_Pro } from 'next/font/google';
 import './globals.css';
 import ChatWidget from '@/components/ChatWidget';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin', 'vietnamese'] });
+// Font hiển thị tiêu đề slide — Be Vietnam Pro hỗ trợ đầy đủ dấu tiếng Việt
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-display',
+});
 
 export const metadata: Metadata = {
   title: 'NhaDat Chatbot',
@@ -23,7 +29,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${beVietnamPro.variable}`}>
         {children}
         <ChatWidget />
       </body>
