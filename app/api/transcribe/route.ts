@@ -4,7 +4,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 30;
 
 // STT: Thứ tự ưu tiên:
-// 1) Groq Whisper (whisper-large-v3-turbo) — tốt nhất cho tiếng Việt, ~0.3s
+// 1) Groq Whisper (whisper-large-v3) — tốt nhất cho tiếng Việt, ~0.6s
 // 2) Gemini 2.5 Flash — fallback chính xác nhưng chậm hơn
 // NOTE: Deepgram Nova-2 đã thử nhưng tiếng Việt rất kém (nhận sai hoàn toàn)
 //       nên đã loại khỏi pipeline. DEEPGRAM_API_KEY hiện không dùng cho STT.
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         const STT_PROMPT = "Dự án nhà phố Ny'ah Phú Định, nhà phát triển Nhã Đạt. Mẫu nhà: Cosmo Gen 2 (Cót mô, Cốt mô), Fusion Gen 5 (Phiêu dân, Phiu dân), Opus (Ô pút), Cashmere, Signature. Đường Trương Đình Hội, An Dương Vương, Quận 8. Các từ: gara ô tô, thang máy, giếng trời, ban công, phòng ngủ master, phòng khách, phòng bếp, sân thượng, mặt bằng, vị trí, bản đồ, sổ hồng, bàn giao, tiến độ, thanh toán. Lệnh: mở slide, cho xem, phóng to, thu nhỏ, đóng ảnh.";
         const fd = new FormData();
         fd.append('file', file, `audio.${ext}`);
-        fd.append('model', 'whisper-large-v3-turbo');
+        fd.append('model', 'whisper-large-v3');
         fd.append('language', 'vi');
         fd.append('response_format', 'json');
         fd.append('prompt', STT_PROMPT);
