@@ -88,5 +88,3 @@ Mỗi mẫu nhà 1 thư mục. Bot tự suy ra mẫu nhà theo SỐ CĂN khách 
 - [ ] `opus/opus_sanh-master.jpg`
 - [ ] Cả thư mục `signature_by_codinachs/` (7 ảnh, căn 43 & 44)
 
-> ⚠️ Hiện code map căn **43, 44 (Signature)** tạm về ảnh **Cosmo Gen 2**.
-> Khi nào có ảnh Signature thật, báo để wire `signature_by_codinachs/` vào routing.
