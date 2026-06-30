@@ -19,15 +19,19 @@ function ghHeaders() {
   };
 }
 
-// Làm sạch tên: bỏ dấu, khoảng trắng -> gạch ngang; giữ chữ/số/-/_/.
-function sanitize(name: string): string {
+// Làm sạch chung: bỏ dấu, khoảng trắng -> gạch ngang; giữ chữ/số/-/_/.
+function sanitizeKeepCase(name: string): string {
   return name
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/đ/g, 'd').replace(/Đ/g, 'D')
     .replace(/\s+/g, '-')
     .replace(/[^a-zA-Z0-9\-_.]/g, '')
-    .replace(/-{2,}/g, '-')
-    .toLowerCase();
+    .replace(/-{2,}/g, '-');
+}
+// Tên FILE -> viết thường cho đồng nhất. Tên THƯ MỤC -> GIỮ NGUYÊN hoa/thường
+// (KHÔNG lowercase, nếu không '01_NyAh-PhuDinh' sẽ thành '01_nyah-phudinh' -> tách thư mục trùng).
+function sanitize(name: string): string {
+  return sanitizeKeepCase(name).toLowerCase();
 }
 
 // Upload 1 ảnh -> commit vào public/images/<folder>/<file> trên nhánh main.
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Chuẩn hóa folder + tên file
-    const folder = folderRaw.split('/').map(sanitize).filter(Boolean).join('/');
+    const folder = folderRaw.split('/').map(sanitizeKeepCase).filter(Boolean).join('/');
     const base = sanitize(file.name.replace(/\.[^.]+$/, '')) || 'anh';
     const fileName = `${base}.${ext}`;
     const repoPath = `public/images/${folder}/${fileName}`;
