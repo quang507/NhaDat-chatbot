@@ -495,15 +495,13 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    if (staticSlide) {
-      console.log(`[Slide] Static bypass triggered for query: "${message}"`);
-      return NextResponse.json(staticSlide);
-    }
+    // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
+    // viết lại text theo ngữ cảnh câu hỏi. (Ảnh luôn cố định theo từ khóa, text bám câu nói.)
 
     const { prompt: systemText, hasChunks } = await buildPrompt(message, ambient);
 
-    // Ambient + RAG rỗng (query mơ hồ) → trả skip ngay, không tốn API call
-    if (ambient && !hasChunks) {
+    // Ambient + RAG rỗng + KHÔNG có slide tĩnh khớp → mơ hồ, bỏ qua.
+    if (ambient && !hasChunks && !staticSlide) {
       console.log(`[Slide] Ambient skip (no RAG match): "${message.slice(0, 60)}"`);
       return NextResponse.json({ skip: true });
     }
@@ -593,6 +591,19 @@ export async function POST(req: NextRequest) {
     }
 
     const parsed: any = parseSlide(rawText);
+
+    // HYBRID: nếu có slide tĩnh khớp từ khóa -> ÉP DÙNG ẢNH cố định của nó (deterministic),
+    // còn TEXT thì lấy của LLM (bám ngữ cảnh). LLM skip/lỗi -> rớt về text tĩnh có sẵn.
+    if (staticSlide) {
+      const llmOk = !parsed.skip && parsed.title && parsed.speech_text && Array.isArray(parsed.points) && parsed.points.length;
+      const base = llmOk ? parsed : staticSlide;
+      const imgs: string[] = staticSlide.image_urls || [];
+      base.image_urls = imgs;                              // ẢNH CỐ ĐỊNH theo từ khóa
+      if (staticSlide.maps_url) base.maps_url = staticSlide.maps_url;
+      const isMap = imgs.some((u: string) => u.includes('vi_tri') || u.includes('18_phut'));
+      base.layout_type = isMap ? 'split_image_right' : 'full_background'; // bản đồ split (QR), còn lại full + chữ góc
+      return NextResponse.json(base);
+    }
 
     // Lọc bỏ mọi đường dẫn không hợp lệ không bắt đầu bằng /images/
     if (parsed.image_urls && Array.isArray(parsed.image_urls)) {
