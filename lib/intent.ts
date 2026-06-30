@@ -71,18 +71,26 @@ export function classifyAmbientIntent(text: string): AmbientIntent {
     }
   }
 
-  // 2. CHỈ kích hoạt khi câu có TÊN RIÊNG của dự án/mẫu nhà (general). Từ chung chung
-  //    (vị trí, giá, mẫu nhà, gara, phòng ngủ...) KHÔNG đủ để bung slide nữa — phải gọi đích danh.
+  // 2. Kích hoạt khi câu có TÊN RIÊNG (general) HOẶC chứa bất kỳ từ khóa chuyên biệt nào của dự án
+  // (vị trí, giá bán, gara, phòng ngủ, pháp lý, sổ hồng, công viên, mặt bằng...)
   const hasProperName = TOPIC_KEYWORDS.general.some(kw => clean.includes(kw));
-  if (!hasProperName) {
+  let bestTopic: keyof typeof TOPIC_KEYWORDS | null = null;
+  for (const [topic, keywords] of Object.entries(TOPIC_KEYWORDS)) {
+    if (topic === 'general') continue;
+    if (keywords.some(kw => clean.includes(kw))) {
+      bestTopic = topic as keyof typeof TOPIC_KEYWORDS;
+      break;
+    }
+  }
+
+  if (!hasProperName && !bestTopic) {
     return { shouldGenerate: false, reason: 'filler', confidence: 0.6 };
   }
 
-  // Đã có tên riêng -> phân loại topic (để chọn nội dung slide + chống trùng), mặc định 'general'.
-  let bestTopic: keyof typeof TOPIC_KEYWORDS = 'general';
-  for (const [topic, keywords] of Object.entries(TOPIC_KEYWORDS)) {
-    if (topic === 'general') continue;
-    if (keywords.some(kw => clean.includes(kw))) { bestTopic = topic as keyof typeof TOPIC_KEYWORDS; break; }
-  }
-  return { shouldGenerate: true, reason: 'has_project_topic', confidence: 0.85, topic: bestTopic };
+  return { 
+    shouldGenerate: true, 
+    reason: 'has_project_topic', 
+    confidence: 0.85, 
+    topic: bestTopic || 'general' 
+  };
 }
