@@ -541,6 +541,38 @@ export async function POST(req: NextRequest) {
         speech_text: "Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.",
         image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg']
       };
+    } else if (has('tầng', 'lầu', 'tính năng tầng', 'công năng tầng')) {
+      // Câu hỏi về "tầng" rất dễ bị LLM bịa số liệu → ép text tĩnh + ảnh tính năng tầng theo model.
+      // Chọn số tầng (1-6) nếu có, mặc định ảnh tổng quan tính năng tầng 1.
+      const floorMatch = noD.match(/tang\s*([1-6])|lau\s*([1-5])/);
+      let floor = 1;
+      if (floorMatch) {
+        const n = parseInt(floorMatch[1] || floorMatch[2] || '1', 10);
+        floor = (floorMatch[2] !== undefined && floorMatch[1] === undefined) ? n + 1 : n; // "lầu 1" = tầng 2
+      }
+      const m = (model || 'cosmo_gen_2') as 'cosmo_gen_2' | 'fusion_gen_5' | 'opus';
+      const floorImgs = model
+        ? (getImagesForSpace(model, String(floor)) || [])
+        : [];
+      // Ảnh tính năng tầng theo model (file có sẵn: *_tinh-nang-tang-{1..4})
+      const featImg = m === 'opus'
+        ? `/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-${Math.min(floor, 4)}.jpg`
+        : m === 'fusion_gen_5'
+          ? `/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-${Math.min(floor, 4)}.jpg`
+          : `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 4)}.jpg`;
+      const modelLabel = m === 'opus' ? 'Opus' : m === 'fusion_gen_5' ? 'Fusion Gen 5' : 'Cosmo Gen 2';
+      staticSlide = {
+        forceStatic: true,
+        layout_type: 'split_image_right',
+        title: `Công năng tầng ${floor} · ${modelLabel}`,
+        points: [
+          "Bố trí công năng tối ưu theo từng tầng",
+          "Không gian thông thoáng, đón sáng tự nhiên",
+          "Xem chi tiết bố trí phòng trên hình minh họa"
+        ],
+        speech_text: `Sơ đồ công năng tầng ${floor} của mẫu nhà ${modelLabel} tại Ny'ah Phú Định. Anh chị xem chi tiết bố trí các phòng trên hình minh họa.`,
+        image_urls: floorImgs.length > 0 ? floorImgs : [featImg]
+      };
     }
 
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
@@ -644,12 +676,15 @@ export async function POST(req: NextRequest) {
     // còn TEXT thì lấy của LLM (bám ngữ cảnh). LLM skip/lỗi -> rớt về text tĩnh có sẵn.
     if (staticSlide) {
       const llmOk = !parsed.skip && parsed.title && parsed.speech_text && Array.isArray(parsed.points) && parsed.points.length;
-      const base = llmOk ? parsed : staticSlide;
+      // forceStatic: câu mơ hồ (vd "tầng 2") dễ bị LLM bịa số liệu → ép DÙNG LUÔN text tĩnh
+      const base = (staticSlide.forceStatic || !llmOk) ? staticSlide : parsed;
       const imgs: string[] = staticSlide.image_urls || [];
       base.image_urls = imgs;                              // ẢNH CỐ ĐỊNH theo từ khóa
       if (staticSlide.maps_url) base.maps_url = staticSlide.maps_url;
-      const isMap = imgs.some((u: string) => u.includes('vi_tri') || u.includes('18_phut'));
-      base.layout_type = isMap ? 'split_image_right' : 'full_background'; // bản đồ split (QR), còn lại full + chữ góc
+      // Ảnh dạng infographic/sơ đồ (bản đồ, tính năng tầng, mặt bằng, cấu trúc) → split để KHÔNG bị cắt.
+      // Ảnh chụp thực tế (phòng, phối cảnh) → full_background cho hoành tráng.
+      const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|datasheet/.test(u));
+      base.layout_type = isDiagram ? 'split_image_right' : 'full_background';
       return NextResponse.json(base);
     }
 
