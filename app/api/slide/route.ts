@@ -20,6 +20,34 @@ function imageModelForUnit(n: number): 'opus' | 'fusion_gen_5' | 'cosmo_gen_2' {
   return imageFamily(n);
 }
 
+// Công năng từng tầng THẬT (theo datasheet + data.md). Dùng cho slide tĩnh khi khách
+// hỏi "tầng X" — tránh để LLM bịa số liệu. Cosmo/Fusion là nhà ở đa thế hệ (tầng 2 = ông bà),
+// Opus là nhà phố thương mại (tầng dưới kinh doanh/văn phòng).
+type FloorInfo = { name: string; points: string[]; speech: string; img?: string };
+const FLOOR_FUNCTIONS: Record<'cosmo_gen_2' | 'fusion_gen_5' | 'opus', Record<number, FloorInfo>> = {
+  cosmo_gen_2: {
+    1: { name: 'Garage & Phòng khách', points: ['Garage ô tô trong nhà, cách âm cách nhiệt', 'Phòng khách thông tầng siêu sáng', 'Sảnh đón riêng trang trọng'], speech: 'Tầng trệt Cosmo gồm garage ô tô trong nhà và phòng khách thông tầng siêu sáng.' },
+    2: { name: 'Phòng ông bà', points: ['Tầng dành riêng cho ông bà', 'Phòng ngủ en-suite có sảnh riêng', 'Gần bếp và trệt, đi lại nhẹ nhàng'], speech: 'Tầng 2 mẫu Cosmo dành riêng cho ông bà, là phòng ngủ en-suite có sảnh riêng, gần bếp và tầng trệt nên đi lại rất nhẹ nhàng.', img: '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2-phong-ngu-ong-ba-1.png' },
+    3: { name: 'Bếp, Bar & Phòng ăn', points: ['Bếp đảo đa năng như quầy bar', 'Phòng ăn có view thiên nhiên', 'Tiện lợi nhờ giặt sấy tại bếp'], speech: 'Tầng 3 là không gian bếp đảo đa năng kết hợp quầy bar và phòng ăn có view thiên nhiên.' },
+    4: { name: 'Phòng ngủ Master', points: ['Phòng master chuẩn villa', 'Walk-in closet rộng', 'Phòng tắm 5 sao'], speech: 'Tầng 4 là phòng ngủ master đẳng cấp villa với walk-in closet và phòng tắm 5 sao.' },
+    5: { name: 'Phòng ngủ con', points: ['Hai phòng ngủ cho con cái', 'Đón sáng từ giếng trời', 'Phòng tắm riêng tiện nghi'], speech: 'Tầng 5 gồm hai phòng ngủ cho con cái, đón sáng tự nhiên từ giếng trời.' },
+    6: { name: 'Sân thượng', points: ['Sân thượng thoáng đãng', 'Thang máy lên tận nơi', 'Không gian thư giãn, trồng cây'], speech: 'Trên cùng là sân thượng thoáng đãng, có thang máy lên tận nơi để thư giãn và trồng cây.' },
+  },
+  fusion_gen_5: {
+    1: { name: 'Garage & Phòng khách', points: ['Garage ô tô trong nhà', 'Phòng khách thông tầng', 'Lối vào thông thoáng'], speech: 'Tầng trệt Fusion gồm garage ô tô và phòng khách thông tầng thoáng đãng.' },
+    2: { name: 'Phòng ông bà', points: ['Tầng dành riêng cho ông bà', 'Phòng ngủ en-suite ấm cúng', 'Kết nối gần bếp và trệt'], speech: 'Tầng 2 mẫu Fusion dành cho ông bà, là phòng ngủ riêng tư, gần bếp và trệt để đi lại thuận tiện.' },
+    3: { name: 'Bếp & Phòng ăn', points: ['Bếp thiết kế mở hiện đại', 'Phòng ăn rộng cho gia đình', 'Ban công đón gió'], speech: 'Tầng 3 mẫu Fusion là khu bếp và phòng ăn thiết kế mở, rộng rãi cho gia đình.' },
+    4: { name: 'Phòng ngủ Master', points: ['Phòng master ấm cúng', 'Tích hợp phòng thay đồ', 'Nhà vệ sinh riêng'], speech: 'Tầng 4 là phòng ngủ master ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.' },
+    5: { name: 'Phòng ngủ con & Sân thượng', points: ['Phòng ngủ con tiện nghi', 'Sân thượng đón gió', 'Đón sáng tự nhiên'], speech: 'Tầng trên cùng mẫu Fusion gồm phòng ngủ con và sân thượng đón gió thoáng mát.' },
+  },
+  opus: {
+    1: { name: 'Mặt bằng kinh doanh', points: ['Mặt tiền lớn cho kinh doanh', 'Phù hợp showroom, văn phòng', 'Lối đi riêng tiện lợi'], speech: 'Tầng trệt mẫu Opus có mặt tiền lớn, lý tưởng cho kinh doanh, showroom hoặc văn phòng.' },
+    2: { name: 'Phòng kinh doanh', points: ['Tầng 2 bố trí cho kinh doanh', 'Linh hoạt làm văn phòng', 'Phù hợp vừa ở vừa làm việc'], speech: 'Tầng 2 mẫu Opus được bố trí cho kinh doanh hoặc văn phòng, phù hợp nhu cầu vừa ở vừa làm việc.' },
+    3: { name: 'Không gian sinh hoạt', points: ['Khu vực sinh hoạt gia đình', 'Bếp và phòng ăn tiện nghi', 'Tách biệt khu kinh doanh'], speech: 'Tầng 3 mẫu Opus là không gian sinh hoạt gia đình, tách biệt khỏi khu kinh doanh bên dưới.' },
+    4: { name: 'Phòng ngủ', points: ['Các phòng ngủ riêng tư', 'Thiết kế thoáng đãng', 'Đón sáng tự nhiên'], speech: 'Tầng 4 mẫu Opus bố trí các phòng ngủ riêng tư, thoáng đãng cho gia đình.' },
+  },
+};
+
 function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
   const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
   
@@ -551,9 +579,6 @@ export async function POST(req: NextRequest) {
         floor = (floorMatch[2] !== undefined && floorMatch[1] === undefined) ? n + 1 : n; // "lầu 1" = tầng 2
       }
       const m = (model || 'cosmo_gen_2') as 'cosmo_gen_2' | 'fusion_gen_5' | 'opus';
-      const floorImgs = model
-        ? (getImagesForSpace(model, String(floor)) || [])
-        : [];
       // Ảnh tính năng tầng theo model (file có sẵn: *_tinh-nang-tang-{1..4})
       const featImg = m === 'opus'
         ? `/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-${Math.min(floor, 4)}.jpg`
@@ -561,17 +586,16 @@ export async function POST(req: NextRequest) {
           ? `/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-${Math.min(floor, 4)}.jpg`
           : `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 4)}.jpg`;
       const modelLabel = m === 'opus' ? 'Opus' : m === 'fusion_gen_5' ? 'Fusion Gen 5' : 'Cosmo Gen 2';
+      // Tra công năng tầng THẬT; nếu vượt số tầng của model thì lấy tầng cao nhất có dữ liệu.
+      const floorsOfModel = FLOOR_FUNCTIONS[m];
+      const info: FloorInfo = floorsOfModel[floor] || floorsOfModel[Math.max(...Object.keys(floorsOfModel).map(Number))];
       staticSlide = {
         forceStatic: true,
         layout_type: 'split_image_right',
-        title: `Công năng tầng ${floor} · ${modelLabel}`,
-        points: [
-          "Bố trí công năng tối ưu theo từng tầng",
-          "Không gian thông thoáng, đón sáng tự nhiên",
-          "Xem chi tiết bố trí phòng trên hình minh họa"
-        ],
-        speech_text: `Sơ đồ công năng tầng ${floor} của mẫu nhà ${modelLabel} tại Ny'ah Phú Định. Anh chị xem chi tiết bố trí các phòng trên hình minh họa.`,
-        image_urls: floorImgs.length > 0 ? floorImgs : [featImg]
+        title: `Tầng ${floor} · ${info.name}`,
+        points: info.points,
+        speech_text: info.speech,
+        image_urls: [info.img || featImg],
       };
     }
 
