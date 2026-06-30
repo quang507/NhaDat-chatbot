@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { splitCleanSentences, ttsUrl } from '@/lib/speech';
 import { classifyAmbientIntent } from '@/lib/intent';
 
-// Boundary "từ" cho tiếng Việt: KHÔNG dùng \b (JS \b sai cạnh chữ có dấu ô/ố/ư...).
-// Tự định nghĩa: vị trí không nằm giữa 2 ký tự chữ/số tiếng Việt.
+// Boundary "từ" cho tiếng Việt: KHÔNG dùng \b (JS \b sai cạnh chữ có dấu ô/ố/ư...)
+// và KHÔNG dùng lookbehind (?<!) — Safari/iOS ≤ 16.3 ném lỗi lúc build regex -> trắng trang.
+// Thay bằng nhóm bắt ký tự ranh giới phía trước (group 1) rồi tự ghép lại; lookahead (?!) thì OK mọi nơi.
 const vnWord = (core: string) =>
-  new RegExp(`(?<![a-zà-ỹ0-9])(?:${core})(?![a-zà-ỹ0-9])`, 'g');
+  new RegExp(`(^|[^a-zà-ỹ0-9])(?:${core})(?![a-zà-ỹ0-9])`, 'gi');
 
 // Sửa từ NGỌNG / STT nghe nhầm -> đúng từ khóa (cho cả Web Speech lẫn Whisper/Gemini).
 const VN_SPEECH_FIXES: [RegExp, string][] = [
@@ -75,7 +76,8 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
 function normalizeVietnameseSpeech(text: string): string {
   if (!text) return '';
   let clean = ' ' + text.toLowerCase() + ' ';
-  for (const [re, to] of VN_SPEECH_FIXES) clean = clean.replace(re, to);
+  // group 1 = ký tự ranh giới phía trước -> ghép lại bằng callback (tránh lỗi ký tự $ trong chuỗi thay)
+  for (const [re, to] of VN_SPEECH_FIXES) clean = clean.replace(re, (_m, b) => b + to);
   return clean.trim();
 }
 

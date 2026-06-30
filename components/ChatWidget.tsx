@@ -25,14 +25,17 @@ function renderMarkdown(text: string) {
   // 1. Render markdown images: ![alt](url) (supports relative paths /images/... or full URLs)
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded-xl my-2 border border-gray-200 shadow-sm max-h-[250px] object-cover" />');
   
-  // 2. Render normal links: [text](url) (not preceded by !)
-  html = html.replace(/(?<!!)\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">$1</a>');
-  
-  // 3. Render raw Google Drive links
-  html = html.replace(/(?<!href=")(https:\/\/drive\.google\.com\/[^\s\)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">Link Google Drive</a>');
+  // 2. Render normal links: [text](url). Ảnh ![..](..) đã được thay ở bước 1 nên không cần lookbehind.
+  // (Tránh lookbehind (?<!) vì Safari/iOS ≤ 16.3 ném lỗi -> crash widget.)
+  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">$1</a>');
 
-  // 3b. Render raw Google Maps links
-  html = html.replace(/(?<!href=")(https:\/\/maps\.(?:app\.goo\.gl|google\.com)\/[^\s\)\]"]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">📍 Xem đường đi trên Google Maps</a>');
+  // 3. Render raw Google Drive links — bỏ qua URL đã nằm trong href="..." (nhóm bắt tùy chọn thay lookbehind)
+  html = html.replace(/(href=")?(https:\/\/drive\.google\.com\/[^\s\)"]+)/g, (m, href, url) =>
+    href ? m : `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">Link Google Drive</a>`);
+
+  // 3b. Render raw Google Maps links — tương tự, bỏ qua URL đã trong href
+  html = html.replace(/(href=")?(https:\/\/maps\.(?:app\.goo\.gl|google\.com)\/[^\s\)\]"]+)/g, (m, href, url) =>
+    href ? m : `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">📍 Xem đường đi trên Google Maps</a>`);
   
   // 4. Render bold text: **text**
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
