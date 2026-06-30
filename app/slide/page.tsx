@@ -130,7 +130,7 @@ export default function SlideBotPage() {
   const autoStartGestureRef = useRef<(() => void) | null>(null); // handler auto-start ở cử chỉ đầu tiên
   const INSTANT_COOLDOWN_MS = 3000;        // tối thiểu 3s giữa 2 lần bắn tức thì
   const AMBIENT_DEBOUNCE_MS = 600;        // ngừng nói 0.6s mới xét tạo slide -> Rất nhanh!
-  const AMBIENT_COOLDOWN_MS = 0;        // Không có cooldown, chuyển slide tức thì khi phát hiện từ khóa
+  const AMBIENT_COOLDOWN_MS = 3500;     // tối thiểu 3.5s giữa 2 slide -> tránh nhảy liên miên khi STT nghe sai/nhiễu
 
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
 

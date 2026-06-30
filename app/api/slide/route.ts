@@ -188,6 +188,14 @@ export async function POST(req: NextRequest) {
     // Hàm kiểm tra: khớp nếu có dấu HOẶC không dấu
     const has = (...keywords: string[]) => keywords.some(k => cleanMsg.includes(k) || noD.includes(removeDiacritics(k)));
 
+    // CHẶN DỰ ÁN/THƯƠNG HIỆU KHÁC: khách hỏi "vị trí Vinhomes Cần Giờ"... thì KHÔNG bung slide của mình.
+    const COMPETITORS = ['vinhome', 'vin home', 'vinhomes', 'cần giờ', 'masteri', 'the global city', 'global city',
+      'vạn phúc', 'ecopark', 'phú mỹ hưng', 'novaland', 'aqua city', 'celadon', 'akari', 'lumiere', 'glory heights', 'ocean park'];
+    if (has(...COMPETITORS)) {
+      console.log(`[Slide] Bỏ qua: hỏi dự án/thương hiệu khác -> "${message.slice(0, 60)}"`);
+      return NextResponse.json({ skip: true });
+    }
+
     let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' = 'cosmo_gen_2';
     if (has('fusion', 'gen 5', 'gen5', 'phiêu dân', 'phiêu-dân')) {
       model = 'fusion_gen_5';
