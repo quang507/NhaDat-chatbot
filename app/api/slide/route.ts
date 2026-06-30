@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
-import { detectUnit, unitContext, unitModel } from '@/lib/units';
+import { detectUnit, unitContext, imageFamily } from '@/lib/units';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -12,11 +12,10 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
-// Chọn thư mục ảnh theo mẫu nhà của 1 căn. Dùng CHUNG nguồn unitModel() ở lib/units (1 nguồn duy nhất).
-// Signature (43,44) chưa có bộ ảnh riêng -> tạm fallback ảnh Cosmo Gen 2.
+// Chọn thư mục ảnh theo họ mẫu nhà của 1 căn (1 nguồn: lib/units). Chỉ có 3 bộ ảnh.
+// office->opus, cashmere/signature->cosmo (tạm) — xử lý trong imageFamily().
 function imageModelForUnit(n: number): 'opus' | 'fusion_gen_5' | 'cosmo_gen_2' {
-  const mk = unitModel(n);
-  return mk === 'signature' ? 'cosmo_gen_2' : mk;
+  return imageFamily(n);
 }
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):

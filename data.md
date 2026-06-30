@@ -18306,116 +18306,86 @@ Dạ, theo thiết kế chuẩn, chỉ riêng mẫu nhà Opus là có sẵn mặ
 
 ## 🔖 [drive-extracted] · 05_ThongTinCacLo
 
-# Thông Tin Chuẩn Từng Lô Đất - Ny'ah Phú Định
+> ⚠️ ĐÂY LÀ NGUỒN DUY NHẤT, CHÍNH XÁC về 50 lô đất — trích từ file Data_productlist.xlsx chính thức, cập nhật 24/6/2026. Mọi bảng phân lô khác (nếu có) đều CŨ/SAI, bỏ qua.
+> **"DT" = Diện Tích.** "Căn"/"Lô"/"Ô"/"Unit"/"#" tương đương nhau.
+> Tên mẫu nhà ghi ĐẦY ĐỦ ở cột "Mẫu nhà" (vd "Fusion Gen 5 v2", "Opus v3", "Cosmo Gen 2"). Khi khách nói gọn "Cosmo / Fusion / Opus" thì hiểu là dòng tương ứng (mọi biến thể của dòng đó).
+> Địa chỉ chung: đường Trương Đình Hội & 156 An Dương Vương, Phường 16, Quận 8, TP.HCM.
 
-> ⚠️ ĐÂY LÀ NGUỒN DUY NHẤT, CHÍNH XÁC về danh sách lô đất, mẫu nhà, mặt tiền, diện tích, trạng thái bán. Mọi bảng phân lô khác trong dữ liệu (nếu có) đều CŨ/SAI, bỏ qua.
-> Số liệu đọc từ sơ đồ phân lô chính thức. Cập nhật rổ hàng T6.2026. "Căn"/"Lô"/"Ô"/"Unit"/"#" (vd #03, #3) tương đương nhau.
-> "Mặt tiền (m)" là bề rộng cạnh giáp đường. Dấu "≈": lô góc/lô vát nên là số xấp xỉ; số chính xác xem bản vẽ Phụ lục B (PL B) từng căn.
-
-## Mặt tiền giáp đường nào
-- **Giáp đường An Dương Vương (hẻm 156)**: căn **#15 – #26** (12 căn mặt tiền chính, lô sâu 14–18m).
-- **Giáp đường Trương Đình Hội**: chỉ **#01, #02**.
-- **Giáp đường nội khu (nội bộ dự án)**: tất cả các căn còn lại (#03–#14, #27–#50).
-
-## Mẫu nhà theo căn (cố định, không đổi)
-- **Opus**: #01, #02, #15–#26
-- **Fusion Gen 5**: #04–#14, #27–#37 (mặt tiền 4m, sâu ~11m)
-- **Signature by Codinachs**: #43, #44 (mặt tiền ~6.75m)
-- **Cosmo Gen 2**: #03, #38–#42, #45–#50 (mặt tiền 5m, sâu 8.75m)
+## Các dòng mẫu nhà (cố định theo lô)
+- **Office 1**: #01, #02
+- **Cosmo v2**: #03, #45, #47, #49
+- **Fusion Gen 5 v2**: #04, #05, #06, #07, #08, #09, #10, #11, #12, #36
+- **Fusion Gen 4 v4**: #13
+- **Cosmo Gen 2**: #14, #37, #39, #40, #41, #42, #46, #48, #50
+- **Opus v3**: #15, #16, #17, #18, #20, #21, #24
+- **Cashmere**: #19, #22, #23
+- **Office 2**: #25, #26
+- **Fusion 2MT Gen 5**: #27, #28, #31, #35
+- **Fusion 2MT Gen 4 v4**: #29, #30
+- **Fusion 2MT Gen 4 v3**: #32, #33, #34
+- **Cosmo**: #38
+- **Signature v2**: #43, #44
 
 ## Các căn CÒN TRỐNG (chưa bán) — rổ hàng T6.2026
-**#01, #02, #03, #23, #24, #42, #50**. Tất cả căn còn lại đã bán.
+**#01, #02, #03, #23, #24, #42, #50**. Các căn còn lại đã bán.
 
-## Bảng chi tiết 50 lô
+## Bảng 50 lô (DT = Diện Tích)
 
-| Mã Lô | Mẫu Nhà | Mặt Tiền Giáp Đường | Mặt Tiền (m) | Chiều Sâu (m) | Diện Tích Đất (m²) | Trạng Thái |
+| Lô | Mẫu nhà (tên đầy đủ) | DT đất GCN (m²) | DT sàn GPXD (m²) | Mặt tiền (m) | Hướng nhà | Trạng thái |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| #01 | Opus | Trương Đình Hội | ≈4.07 | ≈16.5 | 67.24 | Còn trống |
-| #02 | Opus | Trương Đình Hội | ≈4.29 | ≈15.2 | 65.15 | Còn trống |
-| #03 | Cosmo Gen 2 | Đường nội khu | ≈5.00 | ≈9.9 | 49.37 | Còn trống |
-| #04 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈10.8 | 43.32 | Đã bán |
-| #05 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈10.9 | 43.70 | Đã bán |
-| #06 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.0 | 43.82 | Đã bán |
-| #07 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.0 | 43.94 | Đã bán |
-| #08 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.0 | 44.10 | Đã bán |
-| #09 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.0 | 44.17 | Đã bán |
-| #10 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.1 | 44.32 | Đã bán |
-| #11 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.1 | 44.51 | Đã bán |
-| #12 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.2 | 44.73 | Đã bán |
-| #13 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.2 | 44.94 | Đã bán |
-| #14 | Fusion Gen 5 | Đường nội khu | ≈4.00 | ≈13.7 | 54.96 | Đã bán |
-| #15 | Opus | An Dương Vương | 5.00 | ≈15.5 | 77.46 | Đã bán |
-| #16 | Opus | An Dương Vương | 5.00 | ≈14.9 | 74.68 | Đã bán |
-| #17 | Opus | An Dương Vương | 5.00 | ≈14.4 | 71.89 | Đã bán |
-| #18 | Opus | An Dương Vương | 4.00 | ≈13.9 | 55.51 | Đã bán |
-| #19 | Opus | An Dương Vương | 4.00 | ≈16.5 | 65.92 | Đã bán |
-| #20 | Opus | An Dương Vương | 4.00 | ≈15.4 | 61.80 | Đã bán |
-| #21 | Opus | An Dương Vương | 4.00 | ≈16.9 | 67.51 | Đã bán |
-| #22 | Opus | An Dương Vương | 4.00 | ≈18.5 | 73.91 | Đã bán |
-| #23 | Opus | An Dương Vương | 4.00 | ≈17.4 | 69.61 | Còn trống |
-| #24 | Opus | An Dương Vương | 4.00 | ≈18.4 | 73.52 | Còn trống |
-| #25 | Opus | An Dương Vương | 4.00 | ≈16.1 | 64.56 | Đã bán |
-| #26 | Opus | An Dương Vương | ≈6.49 | ≈14.1 | 91.83 | Đã bán |
-| #27 | Fusion Gen 5 | Đường nội khu | ≈4.09 | ≈12.0 | 49.24 | Đã bán |
-| #28 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.8 | 47.27 | Đã bán |
-| #29 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.3 | 45.35 | Đã bán |
-| #30 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.1 | 44.52 | Đã bán |
-| #31 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.1 | 44.28 | Đã bán |
-| #32 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈11.0 | 44.04 | Đã bán |
-| #33 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈10.9 | 43.80 | Đã bán |
-| #34 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈10.9 | 43.59 | Đã bán |
-| #35 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈10.8 | 43.33 | Đã bán |
-| #36 | Fusion Gen 5 | Đường nội khu | 4.00 | ≈10.8 | 43.11 | Đã bán |
-| #37 | Fusion Gen 5 | Đường nội khu | ≈4.40 | ≈10.7 | 47.12 | Đã bán |
-| #38 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #39 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #40 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #41 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #42 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.76 | Còn trống |
-| #43 | Signature by Codinachs | Đường nội khu | ≈6.75 | ≈8.3 | 55.87 | Đã bán |
-| #44 | Signature by Codinachs | Đường nội khu | ≈6.75 | ≈8.3 | 55.87 | Đã bán |
-| #45 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #46 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #47 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #48 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #49 | Cosmo Gen 2 | Đường nội khu | 5.00 | ≈8.8 | 43.75 | Đã bán |
-| #50 | Cosmo Gen 2 | Đường nội khu | ≈5.00 | ≈11.4 | 57.21 | Còn trống |
+| #01 | Office 1 | 67.3 | 472.53 | 3.33 | Nam ( Tây Tứ Mệnh) | Còn trống |
+| #02 | Office 1 | 62.9 | 396.07 | 4.01 | Nam ( Tây Tứ Mệnh) | Còn trống |
+| #03 | Cosmo v2 | 49 | 211 | 5 | Đông  - Đông Nam (Đông Tứ Mệnh) | Còn trống |
+| #04 | Fusion Gen 5 v2 | 42.9 | 211.4 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #05 | Fusion Gen 5 v2 | 43.1 | 213.7 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #06 | Fusion Gen 5 v2 | 43.3 | 213.41 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #07 | Fusion Gen 5 v2 | 43.5 | 214.21 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #08 | Fusion Gen 5 v2 | 43.8 | 215.61 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #09 | Fusion Gen 5 v2 | 43.9 | 216.18 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #10 | Fusion Gen 5 v2 | 44.2 | 217.33 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #11 | Fusion Gen 5 v2 | 44.4 | 219.81 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #12 | Fusion Gen 5 v2 | 44.6 | 220.72 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #13 | Fusion Gen 4 v4 | 44.8 | 190.02 | 4 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #14 | Cosmo Gen 2 | 54.7 | 245.86 | 5.74 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #15 | Opus v3 | 77.5 | 349.09 | 5 | Bắc ( Đông tứ trạch) | Đã bán |
+| #16 | Opus v3 | 74.7 | 345.01 | 5 | Bắc ( Đông tứ trạch) | Đã bán |
+| #17 | Opus v3 | 71.9 | 335.23 | 5 | Bắc ( Đông tứ trạch) | Đã bán |
+| #18 | Opus v3 | 55.4 | 263.5 | 4 | Bắc ( Đông tứ trạch) | Đã bán |
+| #19 | Cashmere | 65.9 | 294.26 | 4 | Bắc ( Đông tứ trạch) | Đã bán |
+| #20 | Opus v3 | 61.8 | 274.06 | 4.14 | Bắc ( Đông tứ trạch) | Đã bán |
+| #21 | Opus v3 | 57.5 | 271.63 | 4 | Bắc ( Đông tứ trạch) | Đã bán |
+| #22 | Cashmere | 73.8 | 334.92 | 4.14 | Bắc ( Đông tứ trạch) | Đã bán |
+| #23 | Cashmere | 69.6 | 313.84 | 4 | Bắc ( Đông tứ trạch) | Còn trống |
+| #24 | Opus v3 | 73.5 | 351.2 | 4.14 | Bắc ( Đông tứ trạch) | Còn trống |
+| #25 | Office 2 | 64.5 | 358.46 | 4 | Bắc ( Đông tứ trạch) | Đã bán |
+| #26 | Office 2 | 91.8 | 517 | 6.4 | Bắc ( Đông tứ trạch) | Đã bán |
+| #27 | Fusion 2MT Gen 5 | 49.2 | 246.46 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #28 | Fusion 2MT Gen 5 | 47.3 | 237.1 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #29 | Fusion 2MT Gen 4 v4 | 45.4 | 194.64 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #30 | Fusion 2MT Gen 4 v4 | 44.5 | 193.49 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #31 | Fusion 2MT Gen 5 | 44.3 | 223.16 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #32 | Fusion 2MT Gen 4 v3 | 44 | 178.62 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #33 | Fusion 2MT Gen 4 v3 | 43.8 | 176.1 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #34 | Fusion 2MT Gen 4 v3 | 43.5 | 175.36 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #35 | Fusion 2MT Gen 5 | 43.3 | 218.9 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #36 | Fusion Gen 5 v2 | 43.1 | 214.85 | 4 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #37 | Cosmo Gen 2 | 54 | 234.01 | 4.31 | Tây - Tây Nam ( Tây Tứ Mệnh) | Đã bán |
+| #38 | Cosmo | 43.8 | 176.52 | 5 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #39 | Cosmo Gen 2 | 43.8 | 217.05 | 5 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #40 | Cosmo Gen 2 | 43.8 | 217.05 | 5 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #41 | Cosmo Gen 2 | 43.8 | 217.05 | 5 | Đông - Đông Nam (Đông Tứ Mệnh) | Đã bán |
+| #42 | Cosmo Gen 2 | 43.8 | 217.05 | 5 | Đông - Đông Nam (Đông Tứ Mệnh) | Còn trống |
+| #43 | Signature v2 | 55.8 | 296.48 | 5 | Nam ( Tây Tứ Mệnh) | Đã bán |
+| #44 | Signature v2 | 55.8 | 296.48 | 5 | Nam ( Tây Tứ Mệnh) | Đã bán |
+| #45 | Cosmo v2 | 43.8 | 187.84 | 5 | Tây ( Tây Tứ Mệnh) | Đã bán |
+| #46 | Cosmo Gen 2 | 43.8 | 217.05 | 5 | Tây ( Tây Tứ Mệnh) | Đã bán |
+| #47 | Cosmo v2 | 43.8 | 186.18 | 5 | Tây ( Tây Tứ Mệnh) | Đã bán |
+| #48 | Cosmo Gen 2 | 43.8 | 217.05 | 5 | Tây ( Tây Tứ Mệnh) | Đã bán |
+| #49 | Cosmo v2 | 43.8 | 187.84 | 5 | Tây ( Tây Tứ Mệnh) | Đã bán |
+| #50 | Cosmo Gen 2 | 57 | 249.32 | 5 | Tây ( Tây Tứ Mệnh) | Còn trống |
 
-## Giá bán (Bảng giá độc quyền T3.2026 — các căn đã công bố giá)
+> Ghi chú: "Mặt tiền (m)" là bề rộng cạnh giáp đường. Kích thước chi tiết từng cạnh + địa chỉ/biển số nhà từng lô có trong dữ liệu gốc — hỏi tư vấn để biết chính xác.
 
-| Mã Lô | Mẫu Nhà | Giá (chưa nội thất) | Giá (gói Air) | Giá (gói Max) |
-| :--- | :--- | :--- | :--- | :--- |
-| #01 | Opus | 14,443,000,000 đ | — | — |
-| #02 | Opus | 12,791,000,000 đ | — | — |
-| #03 | Cosmo Gen 2 | — | 9,710,000,000 đ | 9,957,800,000 đ |
-| #23 | Opus | 10,498,000,000 đ | — | — |
-| #24 | Opus | — | 12,751,000,000 đ | 13,136,350,000 đ |
-| #25 | Opus | 10,766,000,000 đ | — | — |
-| #26 | Opus | 16,566,000,000 đ | — | — |
-| #42 | Cosmo Gen 2 | — | 8,981,000,000 đ | 9,277,100,000 đ |
-| #50 | Cosmo Gen 2 | — | 11,470,000,000 đ | 11,797,600,000 đ |
-
-- Gói **Air** = nội thất cơ bản; gói **Max** = nội thất đầy đủ cao cấp.
-- Các căn khác chưa công bố giá — vui lòng liên hệ tư vấn.
-
-## Bố trí công năng các tầng (chuẩn Ny'ah Phú Định)
-
-Nhà phố 6 tầng (1 trệt, 1 lửng, 3 lầu, sân thượng):
-- **Tầng 1 (trệt)**: Gara để xe + Phòng khách
-- **Tầng 2 (lửng)**: Phòng ngủ ông bà
-- **Tầng 3**: Bếp + Phòng ăn + Khu giặt sấy
-- **Tầng 4**: Phòng ngủ Master (phòng ngủ lớn)
-- **Tầng 5**: Phòng ngủ cho trẻ con
-- **Tầng 6**: Sân thượng
-
-Riêng mẫu **Opus**: 2 tầng dưới (tầng 1+2) là tầng văn phòng/thương mại; 4 tầng trên là không gian ở.
-
-**Hệ thang & thang máy:**
-- Thang máy chạy lên tận sân thượng.
-- Thang biến hóa (tiết kiệm diện tích): tầng 1 → 2 → 3.
-- Thang xoắn: tầng 4 → 5 và tầng 5 → 6.
-
----
 
 ## 🔖 [drive-extracted] · 1 - rổ hàng__PTTT v7d [2026]
 
