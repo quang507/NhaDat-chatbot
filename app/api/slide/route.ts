@@ -48,6 +48,17 @@ const FLOOR_FUNCTIONS: Record<'cosmo_gen_2' | 'fusion_gen_5' | 'opus', Record<nu
   },
 };
 
+// Công năng tầng CHUNG khi khách chỉ nói "tầng X" mà KHÔNG kèm mẫu nhà.
+// Phân biệt rõ: Cosmo/Fusion (nhà ở đa thế hệ) vs Opus (nhà phố thương mại).
+const FLOOR_GENERAL: Record<number, FloorInfo> = {
+  1: { name: 'Tầng trệt', points: ['Cosmo & Fusion: garage và phòng khách', 'Opus: mặt bằng kinh doanh, showroom', 'Mặt tiền thoáng, lối vào riêng'], speech: 'Tầng trệt: với Cosmo và Fusion là garage và phòng khách; với nhà phố Opus là mặt bằng kinh doanh hoặc showroom.' },
+  2: { name: 'Tầng 2', points: ['Cosmo & Fusion: phòng ngủ ông bà', 'Opus: phòng kinh doanh, văn phòng', 'Bố trí theo nhu cầu từng mẫu'], speech: 'Tầng 2 thì tùy mẫu nhà: với Cosmo và Fusion là phòng dành cho ông bà; còn với nhà phố Opus thì là phòng để kinh doanh hoặc làm văn phòng.', img: '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2-phong-ngu-ong-ba-1.png' },
+  3: { name: 'Tầng 3', points: ['Cosmo & Fusion: bếp, phòng ăn', 'Opus: không gian sinh hoạt', 'Khu vực sinh hoạt chung của gia đình'], speech: 'Tầng 3 thường là khu bếp và phòng ăn với Cosmo, Fusion; còn Opus là không gian sinh hoạt gia đình.' },
+  4: { name: 'Tầng 4', points: ['Phòng ngủ master đẳng cấp', 'Walk-in closet và phòng tắm riêng', 'Không gian nghỉ ngơi riêng tư'], speech: 'Tầng 4 thường là phòng ngủ master với walk-in closet và phòng tắm riêng.' },
+  5: { name: 'Tầng 5', points: ['Phòng ngủ cho con cái', 'Đón sáng từ giếng trời', 'Phòng tắm riêng tiện nghi'], speech: 'Tầng 5 là các phòng ngủ cho con cái, đón sáng tự nhiên từ giếng trời.' },
+  6: { name: 'Sân thượng', points: ['Sân thượng thoáng đãng', 'Thang máy lên tận nơi', 'Thư giãn, trồng cây, phơi đồ'], speech: 'Trên cùng là sân thượng thoáng đãng, có thang máy lên tận nơi để thư giãn và trồng cây.' },
+};
+
 function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
   const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
   
@@ -586,17 +597,30 @@ export async function POST(req: NextRequest) {
           ? `/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-${Math.min(floor, 4)}.jpg`
           : `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 4)}.jpg`;
       const modelLabel = m === 'opus' ? 'Opus' : m === 'fusion_gen_5' ? 'Fusion Gen 5' : 'Cosmo Gen 2';
-      // Tra công năng tầng THẬT; nếu vượt số tầng của model thì lấy tầng cao nhất có dữ liệu.
-      const floorsOfModel = FLOOR_FUNCTIONS[m];
-      const info: FloorInfo = floorsOfModel[floor] || floorsOfModel[Math.max(...Object.keys(floorsOfModel).map(Number))];
-      staticSlide = {
-        forceStatic: true,
-        layout_type: 'split_image_right',
-        title: `Tầng ${floor} · ${info.name}`,
-        points: info.points,
-        speech_text: info.speech,
-        image_urls: [info.img || featImg],
-      };
+      if (hasExplicitModel) {
+        // Khách nói rõ model → trả công năng tầng của model đó.
+        const floorsOfModel = FLOOR_FUNCTIONS[m];
+        const info: FloorInfo = floorsOfModel[floor] || floorsOfModel[Math.max(...Object.keys(floorsOfModel).map(Number))];
+        staticSlide = {
+          forceStatic: true,
+          layout_type: 'split_image_right',
+          title: `Tầng ${floor} · ${info.name}`,
+          points: info.points,
+          speech_text: info.speech,
+          image_urls: [info.img || featImg],
+        };
+      } else {
+        // Khách chỉ nói "tầng X" KHÔNG kèm model → trả lời CHUNG, phân biệt nhà ở vs thương mại.
+        const g = FLOOR_GENERAL[floor] || FLOOR_GENERAL[Math.max(...Object.keys(FLOOR_GENERAL).map(Number))];
+        staticSlide = {
+          forceStatic: true,
+          layout_type: 'split_image_right',
+          title: `Tầng ${floor} · Ny'ah Phú Định`,
+          points: g.points,
+          speech_text: g.speech,
+          image_urls: [g.img || `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 4)}.jpg`],
+        };
+      }
     }
 
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
