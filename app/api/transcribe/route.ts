@@ -27,18 +27,20 @@ export async function POST(req: NextRequest) {
     if (DEEPGRAM_API_KEY) {
       try {
         const arrayBuffer = await file.arrayBuffer();
+        // Nova-2 dùng `keyterm` (không phải `keywords`) và phải append nhiều lần
         const params = new URLSearchParams({
           model: 'nova-2',
           language: 'vi',
           smart_format: 'true',
           punctuate: 'true',
           filler_words: 'false',
-          keywords: [
-            "Ny'ah:2", 'Phú Định:2', 'Nhã Đạt:2',
-            'Cosmo:2', 'Fusion:2', 'Opus:1', 'Cashmere:1', 'Signature:1',
-            'gara:1', 'thang máy:1', 'giếng trời:1', 'sổ hồng:1',
-          ].join(','),
         });
+        const keyterms = [
+          "Ny'ah", 'Phú Định', 'Nhã Đạt',
+          'Cosmo', 'Fusion', 'Opus', 'Cashmere', 'Signature',
+          'gara', 'thang máy', 'giếng trời', 'sổ hồng', 'bàn giao',
+        ];
+        keyterms.forEach(k => params.append('keyterm', k));
         const dgRes = await fetch(`https://api.deepgram.com/v1/listen?${params}`, {
           method: 'POST',
           headers: {
