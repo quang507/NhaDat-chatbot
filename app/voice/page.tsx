@@ -104,12 +104,20 @@ export default function VoicePage() {
         rec.interimResults = false;
         rec.lang = 'vi-VN';
         
+        // Trì hoãn 60ms trước khi tự bật "chờ gọi tên": nếu cử chỉ đầu tiên là chạm
+        // thẳng vào orb/nút mic, onClick của nó chạy gần như ngay sau pointerdown và
+        // đã set isListeningLoopActive=true + tự gọi recognition.start() cho đàm thoại
+        // đầy đủ. Không trì hoãn thì 2 cái start() đụng nhau: cái này start() trước,
+        // startListening() sau đó thấy "đã đang chạy" nên bỏ qua -> phải bấm 2 lần mới
+        // thực sự vào đàm thoại.
         const handleFirstGesture = () => {
-          if (!isListeningLoopActive.current && !isWakeWordModeRef.current) {
-            isWakeWordModeRef.current = true;
-            try { rec.start(); } catch(e) {}
-            setTranscript('Đang chờ gọi tên (Hey Ny\'ah)...');
-          }
+          setTimeout(() => {
+            if (!isListeningLoopActive.current && !isWakeWordModeRef.current) {
+              isWakeWordModeRef.current = true;
+              try { rec.start(); } catch(e) {}
+              setTranscript('Đang chờ gọi tên (Hey Ny\'ah)...');
+            }
+          }, 60);
         };
         window.addEventListener('pointerdown', handleFirstGesture, { once: true });
         window.addEventListener('keydown', handleFirstGesture, { once: true });
