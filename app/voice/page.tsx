@@ -704,7 +704,7 @@ export default function VoicePage() {
           className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col pointer-events-auto px-6
             ${layoutMode === 'default' ? 'top-[calc(50%+110px)] left-1/2 -translate-x-1/2 w-full max-w-md text-center items-center' : ''}
             ${layoutMode === 'text-focus' ? 'top-28 left-1/2 -translate-x-1/2 w-full max-w-4xl text-center items-center' : ''}
-            ${layoutMode === 'image-focus' ? 'bottom-[180px] left-4 right-4 text-center items-center md:bottom-[250px] md:left-auto md:right-12 md:w-full md:max-w-md md:text-right md:items-end' : ''}
+            ${layoutMode === 'image-focus' ? 'bottom-[230px] left-4 right-4 text-center items-center md:bottom-[310px] md:left-auto md:right-12 md:w-full md:max-w-md md:text-right md:items-end' : ''}
           `}
         >
           {state === 'listening' && (
