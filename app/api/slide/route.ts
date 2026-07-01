@@ -119,6 +119,26 @@ function getRootImagesForModel(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus'): 
   }
 }
 
+// Lấy ẢNH GỐC (root) của toàn dự án (không thuộc model nào cụ thể).
+function getRootImagesForProject(): string[] {
+  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  try {
+    const projectDir = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh');
+    if (!existsSync(projectDir)) return [];
+    const entries = readdirSync(projectDir, { withFileTypes: true });
+    const rootFiles = entries
+      .filter(e => !e.isDirectory() && imageExts.includes(path.extname(e.name).toLowerCase()))
+      .map(e => `/images/01_NyAh-PhuDinh/${e.name}`);
+    // Trả về ngẫu nhiên 3 tấm nếu có nhiều
+    if (rootFiles.length > 3) {
+      return rootFiles.sort(() => 0.5 - Math.random()).slice(0, 3);
+    }
+    return rootFiles;
+  } catch {
+    return [];
+  }
+}
+
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):
 - CHỈ trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN". Không bịa thêm thông tin.
 - Nếu câu hỏi KHÔNG có thông tin liên quan trong phần dữ liệu để trả lời -> BẮT BUỘC trả về {"skip": true} và để trống tất cả các trường khác.
@@ -129,13 +149,13 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT
   "skip": true_nếu_không_có_thông_tin_dữ_liệu_dự_án_để_trả_lời,
   "layout_type": "Loại bố cục (chỉ chọn 1 trong 5: 'split_image_right', 'split_image_left', 'full_background', 'dark_minimal', 'text_only')",
   "title": "Tiêu đề ngắn gọn, ấn tượng (Tối đa 10 chữ)",
-  "points": ["Ý chính 1 (ngắn gọn súc tích, ~8-12 chữ)", "Ý chính 2", "Ý chính 3"],
+  "points": ["Ý chính 1 (Là một CÂU TRẢ LỜI NGẮN GỌN súc tích, đủ ý, ~10-20 chữ. KHÔNG dùng dạng gạch đầu dòng/đầu mục cụt lủn)", "Ý chính 2", "Ý chính 3"],
   "highlight_number": "Một con số nổi bật nhất trong đoạn văn (ví dụ '18 phút', '9,5 triệu lít', '5,19 tỷ'). Nếu không có số liệu nào ấn tượng, để trống ''. Chỉ dùng cho layout dark_minimal hoặc split.",
   "speech_text": "Kịch bản chi tiết để MC đọc. BẮT BUỘC KHÔNG DÙNG emoji, KHÔNG DÙNG ký tự đặc biệt (*, _, #), KHÔNG DÙNG ngoặc kép, viết tự nhiên như văn nói để máy đọc mượt mà.",
   "image_urls": ["Đường dẫn ảnh 1", "Đường dẫn ảnh 2", ...] (Mảng chứa các đường dẫn hình ảnh tìm thấy trong phần dữ liệu liên quan. CHỈ được chọn các đường dẫn bắt đầu bằng "/images/" như "/images/01_NyAh-PhuDinh/...", TUYỆT ĐỐI KHÔNG lấy các đường dẫn bắt đầu bằng "2 - trình chiếu" hoặc các file PowerPoint local. Nếu không có ảnh nào bắt đầu bằng "/images/", trả về mảng rỗng []).
 }
 
-SỐ LƯỢNG Ý CHÍNH: Đưa ra tối đa 3-4 ý ("points") để slide thoáng, tránh tràn màn hình. Mỗi ý 1 câu ngắn gọn, súc tích (~8-12 chữ), đủ thông tin.
+SỐ LƯỢNG Ý CHÍNH: Đưa ra tối đa 3-4 ý ("points") để slide thoáng. MỖI Ý PHẢI LÀ MỘT CÂU TRẢ LỜI NGẮN, mang thông tin giải thích (vd thay vì "Vị trí đắc địa", hãy viết "Dự án nằm ngay mặt tiền Trương Đình Hội, dễ dàng di chuyển").
 
 CÁCH CHỌN LAYOUT_TYPE (HÃY ĐA DẠNG, đừng luôn chọn 1 kiểu — biến đổi theo nội dung):
 - 'text_only': Nếu KHÔNG tìm thấy bất kỳ hình ảnh minh họa hoặc đường dẫn hình ảnh nào liên quan đến câu hỏi trong dữ liệu, hoặc nếu câu trả lời chỉ cần văn bản và số liệu.
@@ -1012,7 +1032,14 @@ export async function POST(req: NextRequest) {
           if (rootImgs.length > 0) {
             parsed.image_urls = rootImgs;
           }
+        } else {
+          // Nếu không chỉ định model cụ thể (hỏi về toàn dự án)
+          const rootImgs = getRootImagesForProject();
+          if (rootImgs.length > 0) {
+            parsed.image_urls = rootImgs;
+          }
         }
+        
         // Fallback tĩnh nếu dynamic scan không tìm thấy gì
         if (!parsed.image_urls || parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
