@@ -152,9 +152,9 @@ export default function SlideBotPage() {
   const amEngineOnRef = useRef(false);   // ý định: nghe ngầm ĐANG bật
   const amStartingRef = useRef(false);   // CHỐNG ĐUA: đang trong lúc getUserMedia khởi tạo engine Whisper
   const firstGestureRef = useRef(false); // đã ép restart bằng cử chỉ đầu tiên chưa
-  const AM_THRESHOLD = 0.038;     // ngưỡng RMS — hạ thấp để bắt tiếng nói xa ~2m (nghe ngầm cuộc họp). Chống nhiễu nhờ AM_START_FRAMES + AM_MIN_SPEECH_MS + blocklist Whisper bịa.
+  const AM_THRESHOLD = 0.028;     // Ngưỡng RMS — hạ thấp xuống 0.028 để nhạy âm hơn, nhận diện tiếng nói xa tốt hơn
   const AM_START_FRAMES = 3;      // phải đủ 3 frame liên tiếp đủ to mới bắt đầu thu (chống blip nhiễu)
-  const AM_SILENCE_MS = 1100;     // im lặng 1.1s mới chốt câu -> NGHE HẾT CÂU (vd "vị trí Mizuki" gom trọn 1 đoạn, không cắt giữa)
+  const AM_SILENCE_MS = 750;      // Rút ngắn xuống 750ms im lặng là chốt câu để phản hồi nhanh, mượt hơn
   const AM_MIN_SPEECH_MS = 500;   // câu < 0.5s -> bỏ (nhiễu)
   const AM_MAX_SPEECH_TIMEOUT_MS = 8000; // ghi âm tối đa 8s tự động cắt để gửi phiên âm
 
