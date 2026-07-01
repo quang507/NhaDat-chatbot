@@ -170,10 +170,10 @@ export default function ChatWidget() {
     <>
       <button
         onClick={() => setOpen(o => !o)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center text-2xl hover:bg-blue-700 transition overflow-hidden"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-white text-gray-800 shadow-xl border border-gray-200 flex items-center justify-center text-2xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 overflow-hidden"
         aria-label={open ? 'Đóng chatbot' : 'Mở chatbot Nhã Đạt AI'}
       >
-        {open ? '✕' : <span className="w-full h-full bg-white flex items-center justify-center"><img src="/logo.svg" alt="Nhã Đạt AI" className="w-[78%] h-[78%] object-contain" /></span>}
+        {open ? '✕' : <img src="/logo.svg" alt="Nhã Đạt AI" className="w-[78%] h-[78%] object-contain" />}
       </button>
 
       {open && (
