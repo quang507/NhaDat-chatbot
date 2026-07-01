@@ -100,7 +100,7 @@ export default function VoicePage() {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         const rec = new SpeechRecognition();
-        rec.continuous = true;
+        rec.continuous = false;
         rec.interimResults = false;
         rec.lang = 'vi-VN';
         
@@ -125,7 +125,7 @@ export default function VoicePage() {
         };
         
         rec.onresult = (event: any) => {
-          const rawText = event.results[event.results.length - 1][0].transcript;
+          const rawText = event.results[0][0].transcript;
           const resultText = normalizeVietnameseSpeech(rawText) || rawText;
           
           if (!isListeningLoopActive.current) {
@@ -140,8 +140,6 @@ export default function VoicePage() {
                setTranscript("👋 Dạ, Ny'ah đang nghe đây ạ!");
                const tts = new Audio(ttsUrl("Dạ, Ny'ah đang nghe đây ạ"));
                tts.play().catch(() => {});
-               
-               try { recognitionRef.current?.abort(); } catch(e) {}
             }
             return;
           }
