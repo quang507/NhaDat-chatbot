@@ -697,100 +697,180 @@ export default function VoicePage() {
       )}
 
       {/* Dynamic Content Area (Orb + Text) */}
-      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-        
-        {/* The Text / Captions */}
-        <div 
-          className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col pointer-events-auto px-6
-            ${layoutMode === 'default' ? 'top-[calc(50%+110px)] left-1/2 -translate-x-1/2 w-full max-w-md text-center items-center' : ''}
-            ${layoutMode === 'text-focus' ? 'top-28 left-1/2 -translate-x-1/2 w-full max-w-4xl text-center items-center' : ''}
-            ${layoutMode === 'image-focus' ? 'bottom-[230px] left-4 right-4 text-center items-center md:bottom-[310px] md:left-auto md:right-12 md:w-full md:max-w-md md:text-right md:items-end' : ''}
-          `}
-        >
-          {state === 'listening' && (
-            <p className={`italic select-text drop-shadow-md transition-all duration-1000 ${layoutMode === 'text-focus' ? 'text-neutral-300 text-xl' : 'text-neutral-400 text-sm'}`}>
-              {transcript || 'Đang nghe...'}
-            </p>
-          )}
-          {state === 'processing' && (
-            <p className="text-purple-400 text-sm font-medium animate-pulse select-text drop-shadow-md">Robot đang suy nghĩ...</p>
-          )}
-          {state === 'speaking' && (
-            <>
-              <p className={`font-medium leading-relaxed select-text drop-shadow-xl transition-all duration-1000 ${layoutMode === 'text-focus' ? 'text-emerald-400 text-3xl md:text-5xl drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]' : 'text-emerald-400 text-base md:text-lg bg-black/40 p-4 rounded-2xl backdrop-blur-md'}`}>
-                {response}
+      {layoutMode === 'image-focus' ? (
+        /* Image Focus Layout: Clean, responsive Flexbox sidebar for Orb + Text (never overlaps) */
+        <div className="absolute left-4 right-4 bottom-24 top-auto md:top-28 md:bottom-28 md:left-auto md:right-12 md:w-[35%] md:max-w-md z-10 flex flex-col justify-end md:justify-between items-center pointer-events-none gap-6">
+          
+          {/* The Text / Captions */}
+          <div className="w-full flex flex-col items-center md:items-end text-center md:text-right pointer-events-auto px-4">
+            {state === 'listening' && (
+              <p className="italic select-text drop-shadow-md text-neutral-400 text-sm">
+                {transcript || 'Đang nghe...'}
               </p>
-              {layoutMode !== 'text-focus' && (
+            )}
+            {state === 'processing' && (
+              <p className="text-purple-400 text-sm font-medium animate-pulse select-text drop-shadow-md">Robot đang suy nghĩ...</p>
+            )}
+            {state === 'speaking' && (
+              <>
+                <p className="font-medium leading-relaxed select-text drop-shadow-xl text-emerald-400 text-base md:text-lg bg-black/50 p-4 rounded-2xl border border-white/5 backdrop-blur-md w-full">
+                  {response}
+                </p>
                 <p className="text-neutral-300/80 text-xs mt-3 drop-shadow-md">💬 Cứ nói để chen ngang, hoặc chạm quả cầu để cắt lời</p>
-              )}
-            </>
-          )}
-          {state === 'idle' && (
-            <p className="text-neutral-500 text-sm drop-shadow-md">Chạm vào quả cầu để bắt đầu đàm thoại rảnh tay</p>
-          )}
-          {errorMsg && (
-            <p className="text-red-400 text-xs font-semibold max-w-xs mx-auto mt-2 bg-red-950/40 border border-red-900/40 px-3 py-1.5 rounded-lg select-text">{errorMsg}</p>
-          )}
+              </>
+            )}
+            {state === 'idle' && (
+              <p className="text-neutral-500 text-sm drop-shadow-md">Chạm vào quả cầu để bắt đầu đàm thoại rảnh tay</p>
+            )}
+            {errorMsg && (
+              <p className="text-red-400 text-xs font-semibold max-w-xs mx-auto mt-2 bg-red-950/40 border border-red-900/40 px-3 py-1.5 rounded-lg select-text">{errorMsg}</p>
+            )}
+          </div>
+
+          {/* The Orb */}
+          <div className="pointer-events-auto flex items-center justify-center shrink-0 scale-75 md:scale-90 transition-transform">
+            {state === 'listening' && (
+              <>
+                <div className="absolute w-48 h-48 rounded-full border border-blue-500/30 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out' }} />
+                <div className="absolute w-48 h-48 rounded-full border border-sky-400/20 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out 0.6s' }} />
+              </>
+            )}
+            {state === 'speaking' && (
+              <>
+                <div className="absolute w-48 h-48 rounded-full border border-emerald-500/30 pointer-events-none" style={{ animation: 'ripple 1.5s infinite ease-out' }} />
+              </>
+            )}
+
+            <button
+              onClick={onOrbClick}
+              className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative overflow-hidden focus:outline-none shadow-2xl
+                ${state === 'idle' ? 'bg-gradient-to-tr from-blue-900/80 to-sky-800/80 border border-blue-500/30 animate-pulse-orb' : ''}
+                ${state === 'listening' ? 'bg-gradient-to-tr from-blue-600 to-sky-400 scale-105 border border-sky-300 shadow-sky-500/20 animate-pulse-orb' : ''}
+                ${state === 'processing' ? 'bg-gradient-to-tr from-indigo-800/80 to-purple-800/80 border border-purple-500/30' : ''}
+                ${state === 'speaking' ? 'bg-gradient-to-tr from-emerald-600 to-cyan-400 scale-105 border border-emerald-300 shadow-emerald-500/20 animate-pulse-orb' : ''}
+                ${state === 'error' ? 'bg-gradient-to-tr from-red-950 to-red-800 border border-red-500/40' : ''}
+              `}
+            >
+              <div className="absolute inset-2 rounded-full bg-black/10 backdrop-blur-[2px] flex items-center justify-center">
+                {state === 'idle' && (
+                  <span className="text-neutral-400 text-sm font-medium tracking-wide">Chạm để nói</span>
+                )}
+                {state === 'listening' && (
+                  <span className="text-white text-sm font-bold tracking-wide animate-pulse">🎙️ Đang nghe...</span>
+                )}
+                {state === 'processing' && (
+                  <div className="w-12 h-12 rounded-full border-4 border-purple-500/20 border-t-purple-400 animate-spin-orb" />
+                )}
+                {state === 'speaking' && (
+                  <div className="flex gap-1.5 items-end justify-center h-6">
+                    <span className="w-1 bg-white h-4 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
+                    <span className="w-1 bg-white h-6 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
+                    <span className="w-1 bg-white h-3 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+                    <span className="w-1 bg-white h-5 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+                  </div>
+                )}
+                {state === 'error' && (
+                  <span className="text-red-300 text-sm font-medium">Lỗi kết nối</span>
+                )}
+              </div>
+            </button>
+          </div>
         </div>
-
-        {/* The Orb */}
-        <div 
-          className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] pointer-events-auto flex items-center justify-center
-            ${layoutMode === 'default' ? 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-100' : ''}
-            ${layoutMode === 'text-focus' ? 'bottom-28 left-1/2 -translate-x-1/2 scale-75' : ''}
-            ${layoutMode === 'image-focus' ? 'bottom-16 left-1/2 -translate-x-1/2 scale-75 md:bottom-24 md:left-auto md:right-16 md:translate-x-0' : ''}
-          `}
-        >
-          {/* Ripple effects for active states */}
-          {state === 'listening' && (
-            <>
-              <div className="absolute w-48 h-48 rounded-full border border-blue-500/30 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out' }} />
-              <div className="absolute w-48 h-48 rounded-full border border-sky-400/20 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out 0.6s' }} />
-            </>
-          )}
-          {state === 'speaking' && (
-            <>
-              <div className="absolute w-48 h-48 rounded-full border border-emerald-500/30 pointer-events-none" style={{ animation: 'ripple 1.5s infinite ease-out' }} />
-            </>
-          )}
-
-          {/* The Main Glowing Orb */}
-          <button
-            onClick={onOrbClick}
-            className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative overflow-hidden focus:outline-none shadow-2xl
-              ${state === 'idle' ? 'bg-gradient-to-tr from-blue-900/80 to-sky-800/80 border border-blue-500/30 animate-pulse-orb' : ''}
-              ${state === 'listening' ? 'bg-gradient-to-tr from-blue-600 to-sky-400 scale-105 border border-sky-300 shadow-sky-500/20 animate-pulse-orb' : ''}
-              ${state === 'processing' ? 'bg-gradient-to-tr from-indigo-800/80 to-purple-800/80 border border-purple-500/30' : ''}
-              ${state === 'speaking' ? 'bg-gradient-to-tr from-emerald-600 to-cyan-400 scale-105 border border-emerald-300 shadow-emerald-500/20 animate-pulse-orb' : ''}
-              ${state === 'error' ? 'bg-gradient-to-tr from-red-950 to-red-800 border border-red-500/40' : ''}
+      ) : (
+        /* Default / Text Focus Layout: Standard Absolute Positions */
+        <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+          
+          {/* The Text / Captions */}
+          <div 
+            className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col pointer-events-auto px-6
+              ${layoutMode === 'default' ? 'top-[calc(50%+110px)] left-1/2 -translate-x-1/2 w-full max-w-md text-center items-center' : ''}
+              ${layoutMode === 'text-focus' ? 'top-28 left-1/2 -translate-x-1/2 w-full max-w-4xl text-center items-center' : ''}
             `}
           >
-            {/* Inner details of the orb */}
-            <div className="absolute inset-2 rounded-full bg-black/10 backdrop-blur-[2px] flex items-center justify-center">
-              {state === 'idle' && (
-                <span className="text-neutral-400 text-sm font-medium tracking-wide">Chạm để nói</span>
-              )}
-              {state === 'listening' && (
-                <span className="text-white text-sm font-bold tracking-wide animate-pulse">🎙️ Đang nghe...</span>
-              )}
-              {state === 'processing' && (
-                <div className="w-12 h-12 rounded-full border-4 border-purple-500/20 border-t-purple-400 animate-spin-orb" />
-              )}
-              {state === 'speaking' && (
-                <div className="flex gap-1.5 items-end justify-center h-6">
-                  <span className="w-1 bg-white h-4 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
-                  <span className="w-1 bg-white h-6 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
-                  <span className="w-1 bg-white h-3 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                  <span className="w-1 bg-white h-5 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
-                </div>
-              )}
-              {state === 'error' && (
-                <span className="text-red-300 text-sm font-medium">Lỗi kết nối</span>
-              )}
-            </div>
-          </button>
+            {state === 'listening' && (
+              <p className={`italic select-text drop-shadow-md transition-all duration-1000 ${layoutMode === 'text-focus' ? 'text-neutral-300 text-xl' : 'text-neutral-400 text-sm'}`}>
+                {transcript || 'Đang nghe...'}
+              </p>
+            )}
+            {state === 'processing' && (
+              <p className="text-purple-400 text-sm font-medium animate-pulse select-text drop-shadow-md">Robot đang suy nghĩ...</p>
+            )}
+            {state === 'speaking' && (
+              <>
+                <p className={`font-medium leading-relaxed select-text drop-shadow-xl transition-all duration-1000 ${layoutMode === 'text-focus' ? 'text-emerald-400 text-3xl md:text-5xl drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]' : 'text-emerald-400 text-base md:text-lg bg-black/40 p-4 rounded-2xl backdrop-blur-md'}`}>
+                  {response}
+                </p>
+                {layoutMode !== 'text-focus' && (
+                  <p className="text-neutral-300/80 text-xs mt-3 drop-shadow-md">💬 Cứ nói để chen ngang, hoặc chạm quả cầu để cắt lời</p>
+                )}
+              </>
+            )}
+            {state === 'idle' && (
+              <p className="text-neutral-500 text-sm drop-shadow-md">Chạm vào quả cầu để bắt đầu đàm thoại rảnh tay</p>
+            )}
+            {errorMsg && (
+              <p className="text-red-400 text-xs font-semibold max-w-xs mx-auto mt-2 bg-red-950/40 border border-red-900/40 px-3 py-1.5 rounded-lg select-text">{errorMsg}</p>
+            )}
+          </div>
+  
+          {/* The Orb */}
+          <div 
+            className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] pointer-events-auto flex items-center justify-center
+              ${layoutMode === 'default' ? 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-100' : ''}
+              ${layoutMode === 'text-focus' ? 'bottom-28 left-1/2 -translate-x-1/2 scale-75' : ''}
+            `}
+          >
+            {/* Ripple effects for active states */}
+            {state === 'listening' && (
+              <>
+                <div className="absolute w-48 h-48 rounded-full border border-blue-500/30 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out' }} />
+                <div className="absolute w-48 h-48 rounded-full border border-sky-400/20 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out 0.6s' }} />
+              </>
+            )}
+            {state === 'speaking' && (
+              <>
+                <div className="absolute w-48 h-48 rounded-full border border-emerald-500/30 pointer-events-none" style={{ animation: 'ripple 1.5s infinite ease-out' }} />
+              </>
+            )}
+  
+            {/* The Main Glowing Orb */}
+            <button
+              onClick={onOrbClick}
+              className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative overflow-hidden focus:outline-none shadow-2xl
+                ${state === 'idle' ? 'bg-gradient-to-tr from-blue-900/80 to-sky-800/80 border border-blue-500/30 animate-pulse-orb' : ''}
+                ${state === 'listening' ? 'bg-gradient-to-tr from-blue-600 to-sky-400 scale-105 border border-sky-300 shadow-sky-500/20 animate-pulse-orb' : ''}
+                ${state === 'processing' ? 'bg-gradient-to-tr from-indigo-800/80 to-purple-800/80 border border-purple-500/30' : ''}
+                ${state === 'speaking' ? 'bg-gradient-to-tr from-emerald-600 to-cyan-400 scale-105 border border-emerald-300 shadow-emerald-500/20 animate-pulse-orb' : ''}
+                ${state === 'error' ? 'bg-gradient-to-tr from-red-950 to-red-800 border border-red-500/40' : ''}
+              `}
+            >
+              {/* Inner details of the orb */}
+              <div className="absolute inset-2 rounded-full bg-black/10 backdrop-blur-[2px] flex items-center justify-center">
+                {state === 'idle' && (
+                  <span className="text-neutral-400 text-sm font-medium tracking-wide">Chạm để nói</span>
+                )}
+                {state === 'listening' && (
+                  <span className="text-white text-sm font-bold tracking-wide animate-pulse">🎙️ Đang nghe...</span>
+                )}
+                {state === 'processing' && (
+                  <div className="w-12 h-12 rounded-full border-4 border-purple-500/20 border-t-purple-400 animate-spin-orb" />
+                )}
+                {state === 'speaking' && (
+                  <div className="flex gap-1.5 items-end justify-center h-6">
+                    <span className="w-1 bg-white h-4 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
+                    <span className="w-1 bg-white h-6 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
+                    <span className="w-1 bg-white h-3 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+                    <span className="w-1 bg-white h-5 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+                  </div>
+                )}
+                {state === 'error' && (
+                  <span className="text-red-300 text-sm font-medium">Lỗi kết nối</span>
+                )}
+              </div>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Footer controls — kiểu ChatGPT Voice: [Logs] [Stop/Start] [Exit] */}
       <div className="w-full max-w-md z-10 flex flex-col items-center gap-3 pb-6">
