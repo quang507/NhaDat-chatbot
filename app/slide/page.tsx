@@ -793,6 +793,15 @@ export default function SlideBotPage() {
                   <p className="text-lg md:text-xl lg:text-[21px] text-gray-300 font-light leading-relaxed">{point}</p>
                 </div>
               ))}
+              
+              {/* Lời giải thích chi tiết / Phần hồn chữ viết */}
+              {slide.speech_text && (
+                <div className="mt-6 pt-6 border-t border-white/10 max-w-3xl animate-fade-in-up" style={{ animationDelay: '500ms' }}>
+                  <p className="text-[19px] md:text-[22px] text-gray-400/90 font-light italic leading-relaxed text-center">
+                    "{slide.speech_text}"
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -816,6 +825,15 @@ export default function SlideBotPage() {
                   <p className="text-lg md:text-xl lg:text-[21px] text-gray-200 leading-relaxed font-light">{point}</p>
                 </div>
               ))}
+
+              {/* Lời giải thích chi tiết / Phần hồn chữ viết */}
+              {slide.speech_text && (
+                <div className="mt-4 pt-4 border-t border-white/10 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+                  <p className="text-[17px] md:text-[19px] text-gray-400/90 font-light italic leading-relaxed">
+                    "{slide.speech_text}"
+                  </p>
+                </div>
+              )}
             </div>
           </div>
           {/* Image Section — chiếm 60%, ảnh tràn viền (không chừa khoảng) */}
@@ -860,6 +878,15 @@ export default function SlideBotPage() {
                 {slide.points.slice(0, 4).map((point, idx) => (
                   <p key={idx} className="text-base md:text-lg text-gray-100 font-light leading-snug border-l-[3px] border-[#e8b84b] pl-3">{point}</p>
                 ))}
+                
+                {/* Lời giải thích chi tiết / Phần hồn chữ viết */}
+                {slide.speech_text && (
+                  <div className="mt-3 pt-3 border-t border-white/20 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+                    <p className="text-sm md:text-base text-gray-300 font-light italic leading-snug">
+                      "{slide.speech_text}"
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -894,6 +921,15 @@ export default function SlideBotPage() {
               {slide.points.map((point, idx) => (
                 <p key={idx} className="text-[16px] md:text-[18px] text-gray-400 font-light leading-relaxed">{point}</p>
               ))}
+              
+              {/* Lời giải thích chi tiết / Phần hồn chữ viết */}
+              {slide.speech_text && (
+                <div className="mt-6 pt-5 border-t border-white/10 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+                  <p className="text-[17px] md:text-[19px] text-gray-500 font-light italic leading-relaxed">
+                    "{slide.speech_text}"
+                  </p>
+                </div>
+              )}
             </div>
           </div>
           
