@@ -579,6 +579,14 @@ export default function VoicePage() {
         from { transform: translateY(100%); }
         to { transform: translateY(0); }
       }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes scaleUp {
+        from { transform: scale(0.95); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
       .animate-pulse-orb {
         animation: orbPulse 3s infinite ease-in-out;
       }
@@ -587,6 +595,12 @@ export default function VoicePage() {
       }
       .animate-slide-up {
         animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+      }
+      .animate-scale-up {
+        animation: scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
     `;
     document.head.appendChild(style);
@@ -652,6 +666,36 @@ export default function VoicePage() {
         </div>
       </div>
 
+      {/* Clear Image Showcase on the Left for Image Focus Mode */}
+      {layoutMode === 'image-focus' && (
+        <div className="absolute left-4 right-4 top-24 bottom-[380px] md:bottom-28 md:left-12 md:right-[42%] z-10 flex items-center justify-center animate-scale-up pointer-events-auto">
+          <div className="w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl relative bg-black/40 backdrop-blur-sm">
+            {backgroundImages.map((src, i) => (
+              <img 
+                key={src} 
+                src={src} 
+                alt="Showcase"
+                className={`absolute inset-0 w-full h-full object-contain transition-all duration-1000 ${i === currentImageIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`} 
+              />
+            ))}
+            
+            {/* Dots Indicator if multiple images */}
+            {backgroundImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full border border-white/10 shadow-lg">
+                {backgroundImages.map((_, idx) => (
+                  <span 
+                    key={idx} 
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                      idx === currentImageIndex ? 'bg-emerald-400 w-5' : 'bg-white/40'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Dynamic Content Area (Orb + Text) */}
       <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
         
@@ -660,7 +704,7 @@ export default function VoicePage() {
           className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col pointer-events-auto px-6
             ${layoutMode === 'default' ? 'top-[calc(50%+110px)] left-1/2 -translate-x-1/2 w-full max-w-md text-center items-center' : ''}
             ${layoutMode === 'text-focus' ? 'top-28 left-1/2 -translate-x-1/2 w-full max-w-4xl text-center items-center' : ''}
-            ${layoutMode === 'image-focus' ? 'bottom-[250px] right-4 md:right-12 w-full max-w-md text-right items-end' : ''}
+            ${layoutMode === 'image-focus' ? 'bottom-[180px] left-4 right-4 text-center items-center md:bottom-[250px] md:left-auto md:right-12 md:w-full md:max-w-md md:text-right md:items-end' : ''}
           `}
         >
           {state === 'listening' && (
@@ -694,7 +738,7 @@ export default function VoicePage() {
           className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] pointer-events-auto flex items-center justify-center
             ${layoutMode === 'default' ? 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-100' : ''}
             ${layoutMode === 'text-focus' ? 'bottom-28 left-1/2 -translate-x-1/2 scale-75' : ''}
-            ${layoutMode === 'image-focus' ? 'bottom-24 right-4 md:right-16 scale-75' : ''}
+            ${layoutMode === 'image-focus' ? 'bottom-16 left-1/2 -translate-x-1/2 scale-75 md:bottom-24 md:left-auto md:right-16 md:translate-x-0' : ''}
           `}
         >
           {/* Ripple effects for active states */}
