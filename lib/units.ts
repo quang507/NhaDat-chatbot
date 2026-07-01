@@ -59,6 +59,18 @@ const LOTS: Record<number, Lot> = {
   50: { model: 'Cosmo Gen 2', fam: 'cosmo_gen_2', dtDat: 57, dtSan: 249.32, front: 5, kt: '5.00m (mặt tiền) x 12.11m x 10.77m x 6.00m', huong: 'Tây ( Tây Tứ Mệnh)', diaChi: '' },
 };
 
+const PRICES: Record<number, string> = {
+  50: 'Giá nhà thô: 11.470.000.000 VNĐ | Giá Gói Air: 11.797.600.000 VNĐ',
+  42: 'Giá nhà thô: 8.981.000.000 VNĐ | Giá Gói Air: 9.277.100.000 VNĐ',
+  3: 'Giá nhà thô: 9.710.000.000 VNĐ | Giá Gói Air: 9.957.800.000 VNĐ',
+  24: 'Giá nhà thô: 12.751.000.000 VNĐ | Giá Gói Air: 13.136.350.000 VNĐ',
+  23: 'Giá nhà thô: 10.498.000.000 VNĐ (Gói Air liên hệ)',
+  25: 'Giá nhà thô: 10.766.000.000 VNĐ',
+  26: 'Giá nhà thô: 16.566.000.000 VNĐ',
+  1: 'Giá nhà thô: 14.443.000.000 VNĐ',
+  2: 'Giá nhà thô: 12.791.000.000 VNĐ',
+};
+
 const UNSOLD = new Set<number>([1, 2, 3, 23, 24, 42, 50]); // rổ hàng T6.2026: còn trống
 
 // Đặc điểm theo HỌ mẫu nhà (dùng chung cho các biến thể: Cosmo/Cosmo v2/Cosmo Gen 2...).
@@ -132,7 +144,7 @@ export function unitContext(n: number): { facts: string; modelKeywords: string }
 - Kích thước lô: ${l.kt}
 - Hướng nhà: ${l.huong}${l.diaChi ? `\n- Địa chỉ: ${l.diaChi}` : ''}
 - Trạng thái: ${status}
-- Đặc điểm dòng ${FAMILY_NAME[l.fam]}: ${FAMILY_FEATURES[l.fam]}`;
-  const modelKeywords = `${l.model} ${FAMILY_NAME[l.fam]} mẫu nhà diện tích DT mặt tiền hướng datasheet`;
+${PRICES[n] ? `- Bảng giá T6/2026: ${PRICES[n]}\n` : ''}- Đặc điểm dòng ${FAMILY_NAME[l.fam]}: ${FAMILY_FEATURES[l.fam]}`;
+  const modelKeywords = `${l.model} ${FAMILY_NAME[l.fam]} mẫu nhà diện tích DT mặt tiền hướng datasheet giá bán giá tiền bảng giá`;
   return { facts, modelKeywords };
 }

@@ -2,85 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { splitCleanSentences, ttsUrl } from '@/lib/speech';
+import { splitCleanSentences, ttsUrl, normalizeVietnameseSpeech } from '@/lib/speech';
 import { classifyAmbientIntent } from '@/lib/intent';
 
-// Boundary "từ" cho tiếng Việt: KHÔNG dùng \b (JS \b sai cạnh chữ có dấu ô/ố/ư...)
-// và KHÔNG dùng lookbehind (?<!) — Safari/iOS ≤ 16.3 ném lỗi lúc build regex -> trắng trang.
-// Thay bằng nhóm bắt ký tự ranh giới phía trước (group 1) rồi tự ghép lại; lookahead (?!) thì OK mọi nơi.
-const vnWord = (core: string) =>
-  new RegExp(`(^|[^a-zà-ỹ0-9])(?:${core})(?![a-zà-ỹ0-9])`, 'gi');
 
-// Sửa từ NGỌNG / STT nghe nhầm -> đúng từ khóa (cho cả Web Speech lẫn Whisper/Gemini).
-const VN_SPEECH_FIXES: [RegExp, string][] = [
-  // Tên dự án Ny'ah Phú Định
-  [vnWord('ph[ốôuú]\\s*(?:đêm|định|đỉnh|đính|dinh|đin)'), 'phú định'],
-  [vnWord("ny[\\s']*ah|ni\\s*a|nia|niah"), "ny'ah"],
-  // Mẫu nhà
-  [vnWord('cô\\s*gái\\s*của\\s*cô\\s*t[\\s-]*m[ôo]'), 'cosmo gen 2'],
-  [vnWord('c[ốôo]t?[\\s-]*m[ôoơ]|cosmos|cot\\s*mo|cô\\s*t[\\s-]*m[ôo]'), 'cosmo'],
-  [vnWord('ph(?:iu|iêu|i u)\\s*(?:giần|dân|gân|giàn)|fiu\\s*s[ầừ]n|phu\\s*sần'), 'fusion'],
-  [vnWord('ô\\s*p(?:út|ut|ức)|o\\s*pút|ốp\\s*pút|ô\\s*bút|opút'), 'opus'],
-  [vnWord('[sx]i\\s*nha\\s*(?:t[ơưa]|ch[ơo])|sích\\s*na\\s*ch[ơo]|sin\\s*nh[ơa]'), 'signature'],
-  // Thương hiệu / địa danh
-  [vnWord('nha\\s*dat|da\\s*đạt|nhả\\s*đạt'), 'nhã đạt'],
-  [vnWord('ch[ưu]ơng\\s*đình\\s*hội|trương\\s*đình\\s*hồi'), 'trương đình hội'],
-  [vnWord('võ\\s*văn\\s*ki[ệê]t|vỏ\\s*văn\\s*kiệt'), 'võ văn kiệt'],
-  [vnWord('nguyễn\\s*văn\\s*lin[hg]'), 'nguyễn văn linh'],
-  [vnWord('quận\\s*tám'), 'quận 8'],
-  [vnWord('e\\s*ơ\\s*t[óo]p|ép\\s*tóp|air\\s*tóp'), 'airtop'],
-  // Phòng ốc — để bắt từ khóa ra ảnh đúng
-  [vnWord('ga[\\s-]*ra|ga\\s*ra'), 'gara'],
-  [vnWord('thang\\s*má[yi]|thang\\s*mai'), 'thang máy'],
-  [vnWord('thang\\s*xoắ?n[g]?'), 'thang xoắn'],
-  [vnWord('thang\\s*biến\\s*hó?a'), 'thang biến hóa'],
-  [vnWord('sân\\s*th[ưu]ợng'), 'sân thượng'],
-  [vnWord('ban[\\s-]*công'), 'ban công'],
-  [vnWord('giếng\\s*trời|ráng\\s*trời'), 'giếng trời'],
-  [vnWord('thông\\s*tầng'), 'thông tầng'],
-  [vnWord('phòng\\s*kh[ắáa]ch?'), 'phòng khách'],
-  [vnWord('phòng\\s*ng[ủu]'), 'phòng ngủ'],
-  [vnWord('phòng\\s*ng[ủu]\\s*ma[sx]?\\s*tơ|ma[sx]?\\s*tơ|mát\\s*tơ'), 'phòng ngủ master'],
-  [vnWord('phòng\\s*t[ắáa]m|phòng\\s*vệ\\s*sinh|toa\\s*lét|toi\\s*lét'), 'phòng tắm'],
-  [vnWord('phòng\\s*học'), 'phòng học'],
-  [vnWord('phòng\\s*b[ếê]p|nhà\\s*b[ếê]p'), 'bếp'],
-  [vnWord('nhà\\s*ăn|phòng\\s*ăn'), 'phòng ăn'],
-  // Tiện ích
-  [vnWord('công\\s*vi[êe]n'), 'công viên'],
-  [vnWord('hồ\\s*b[ơo]i|hồ\\s*bời'), 'hồ bơi'],
-  [vnWord('cầu\\s*lông'), 'cầu lông'],
-  [vnWord('bóng\\s*rổ'), 'bóng rổ'],
-  [vnWord('len\\s*m[áa]c|lan\\s*mác|landmark'), 'landmark'],
-  [vnWord('sân\\s*chơi'), 'sân chơi'],
-  // Vị trí
-  [vnWord('vị\\s*tr[íi]'), 'vị trí'],
-  [vnWord('b[ảa]n[g]?\\s*đồ'), 'bản đồ'],
-  [vnWord('địa\\s*ch[ỉi]'), 'địa chỉ'],
-  // Tài chính / pháp lý
-  [vnWord('mặt\\s*t[iềêiê]+n'), 'mặt tiền'],
-  [vnWord('diện\\s*t(?:ích|ịt|ít)'), 'diện tích'],
-  [vnWord('ph(?:áp|át)\\s*l[ýí]'), 'pháp lý'],
-  [vnWord('sổ\\s*h(?:ồng|ông)'), 'sổ hồng'],
-  [vnWord('giấy\\s*ph[éêe]p'), 'giấy phép'],
-  [vnWord('chiế[tc]\\s*khấu'), 'chiết khấu'],
-  [vnWord('thanh\\s*to[áa]n|thăn\\s*toán'), 'thanh toán'],
-  [vnWord('ngân\\s*h[àa]ng'), 'ngân hàng'],
-  [vnWord('đặt\\s*c[ọo]c'), 'đặt cọc'],
-  [vnWord('chủ\\s*đầu\\s*t[ưu]'), 'chủ đầu tư'],
-  [vnWord('tiến\\s*độ'), 'tiến độ'],
-  [vnWord('bàn\\s*giao'), 'bàn giao'],
-  // Gen số
-  [vnWord('gen\\s*hai'), 'gen 2'],
-  [vnWord('gen\\s*năm'), 'gen 5'],
-];
-
-function normalizeVietnameseSpeech(text: string): string {
-  if (!text) return '';
-  let clean = ' ' + text.toLowerCase() + ' ';
-  // group 1 = ký tự ranh giới phía trước -> ghép lại bằng callback (tránh lỗi ký tự $ trong chuỗi thay)
-  for (const [re, to] of VN_SPEECH_FIXES) clean = clean.replace(re, (_m, b) => b + to);
-  return clean.trim();
-}
 
 type SlideState = 'idle' | 'listening' | 'processing' | 'speaking';
 

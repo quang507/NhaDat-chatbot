@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { cleanTextForTTS, splitSentences, ttsUrl } from '@/lib/speech';
+import { cleanTextForTTS, splitSentences, ttsUrl, normalizeVietnameseSpeech } from '@/lib/speech';
 
 type ChatState = 'idle' | 'listening' | 'processing' | 'speaking' | 'error';
 
@@ -98,8 +98,9 @@ export default function VoicePage() {
         };
         
         rec.onresult = (event: any) => {
-          const resultText = event.results[0][0].transcript;
-          addLog('SPEECH', `Nhận diện kết quả: "${resultText}"`);
+          const rawText = event.results[0][0].transcript;
+          const resultText = normalizeVietnameseSpeech(rawText) || rawText;
+          addLog('SPEECH', `Nhận diện kết quả: "${resultText}" (gốc: "${rawText}")`);
           setTranscript(resultText);
           updateState('processing');
           handleUserSpeech(resultText);
