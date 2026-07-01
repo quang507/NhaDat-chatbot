@@ -237,6 +237,11 @@ export default function SlideBotPage() {
     if (wakeWords.some(kw => clean.includes(kw))) {
       setTranscript('👋 Dạ, Ny\'ah đang nghe đây ạ!');
       setState('idle');
+      
+      // Phát âm thanh phản hồi ngay lập tức để báo hiệu đã nghe thấy (kể cả khi tắt auto-voice)
+      const tts = new Audio(ttsUrl("Dạ, Ny'ah đang nghe đây ạ"));
+      tts.play().catch(() => {});
+      
       return true; // chặn không cho tạo slide
     }
 

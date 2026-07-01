@@ -41,6 +41,7 @@ export default function VoicePage() {
   const isStreamFinishedRef = useRef<boolean>(false);
   const chatHistoryRef = useRef<Message[]>([]);
   const isListeningLoopActive = useRef(false);
+  const isWakeWordModeRef = useRef(false);
   const audioChunksBuffer = useRef<string>('');
 
   const chatStateRef = useRef<ChatState>('idle');
@@ -99,21 +100,52 @@ export default function VoicePage() {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         const rec = new SpeechRecognition();
-        rec.continuous = false;
+        rec.continuous = true;
         rec.interimResults = false;
         rec.lang = 'vi-VN';
         
+        const handleFirstGesture = () => {
+          if (!isListeningLoopActive.current && !isWakeWordModeRef.current) {
+            isWakeWordModeRef.current = true;
+            try { rec.start(); } catch(e) {}
+            setTranscript('Đang chờ gọi tên (Hey Ny\'ah)...');
+          }
+        };
+        window.addEventListener('pointerdown', handleFirstGesture, { once: true });
+        window.addEventListener('keydown', handleFirstGesture, { once: true });
+        
         rec.onstart = () => {
           isRecognitionRunningRef.current = true;
-          addLog('SPEECH', 'Nhận diện giọng nói bắt đầu (onstart)');
-          updateState('listening');
-          setTranscript('Mời anh/chị nói chuyện ạ...');
+          if (isListeningLoopActive.current) {
+            addLog('SPEECH', 'Nhận diện giọng nói bắt đầu (onstart)');
+            updateState('listening');
+            setTranscript('Mời anh/chị nói chuyện ạ...');
+          }
           setErrorMsg('');
         };
         
         rec.onresult = (event: any) => {
-          const rawText = event.results[0][0].transcript;
+          const rawText = event.results[event.results.length - 1][0].transcript;
           const resultText = normalizeVietnameseSpeech(rawText) || rawText;
+          
+          if (!isListeningLoopActive.current) {
+            const clean = resultText.toLowerCase();
+            const wakeWords = ['nhã ơi', 'ê nhã', 'hey nhã', 'hey ny', 'hey nỉ', 'ny\'ah ơi', 'hey ny\'ah', 'ny ah ơi', 'hi ny\'ah', 'chào ny\'ah'];
+            if (wakeWords.some(kw => clean.includes(kw))) {
+               addLog('SPEECH', 'Wake word detected!');
+               isListeningLoopActive.current = true;
+               isWakeWordModeRef.current = false;
+               setupVAD();
+               updateState('listening');
+               setTranscript("👋 Dạ, Ny'ah đang nghe đây ạ!");
+               const tts = new Audio(ttsUrl("Dạ, Ny'ah đang nghe đây ạ"));
+               tts.play().catch(() => {});
+               
+               try { recognitionRef.current?.abort(); } catch(e) {}
+            }
+            return;
+          }
+
           addLog('SPEECH', `Nhận diện kết quả: "${resultText}" (gốc: "${rawText}")`);
           setTranscript(resultText);
           updateState('processing');
@@ -155,10 +187,15 @@ export default function VoicePage() {
           isRecognitionRunningRef.current = false;
           addLog('SPEECH', `Nhận diện kết quả kết thúc (onend). Trạng thái hiện tại: ${chatStateRef.current}`);
           
-          // If we finished listening but didn't transition to processing or speaking, restart
           if (isListeningLoopActive.current && chatStateRef.current === 'listening') {
             addLog('SPEECH', 'Nhận diện dừng bất thường, tự động khởi động lại...');
             startListening();
+          } else if (!isListeningLoopActive.current && isWakeWordModeRef.current) {
+             setTimeout(() => {
+                if (!isListeningLoopActive.current && isWakeWordModeRef.current) {
+                  try { recognitionRef.current?.start(); } catch(e) {}
+                }
+             }, 100);
           }
         };
         
@@ -267,7 +304,11 @@ export default function VoicePage() {
       addLog('INFO', 'Người dùng bấm nút: DỪNG ĐÀM THOẠI.');
       stopAllVoiceActivities();
       updateState('idle');
-      setTranscript('Đã dừng đàm thoại');
+      
+      // Khôi phục lại wake word mode khi dừng đàm thoại chủ động
+      isWakeWordModeRef.current = true;
+      try { recognitionRef.current?.start(); } catch(e) {}
+      setTranscript('Đã dừng. Đang chờ gọi tên (Hey Ny\'ah)...');
     } else {
       addLog('INFO', 'Người dùng bấm nút: BẮT ĐẦU ĐÀM THOẠI.');
       isListeningLoopActive.current = true;
