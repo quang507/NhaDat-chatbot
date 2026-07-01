@@ -250,14 +250,22 @@ async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+// Đọc "retryDelay" (vd "38s") mà Gemini tự đề xuất trong lỗi 429, để đợi ĐÚNG thời gian
+// thay vì đoán cứng — quota free-tier tính theo request/phút nên đợi thiếu vẫn dính lại 429.
+function parseRetryDelaySeconds(errText) {
+  const m = errText.match(/"retryDelay"\s*:\s*"(\d+(?:\.\d+)?)s"/);
+  return m ? Math.ceil(parseFloat(m[1])) : null;
+}
+
 async function embedBatch(texts, taskType) {
   if (texts.length === 0) return [];
   const out = [];
 
   // Dùng Gemini Embedding (gemini-embedding-001, 3072 chiều) — khớp runtime lib/rag.ts
-  const BATCH_SIZE = 100;
+  // BATCH_SIZE nhỏ (20) để 1 file lớn không "ăn" hết quota free-tier (100 request/phút) chỉ trong 1 lần gọi.
+  const BATCH_SIZE = 20;
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-    if (i > 0) await sleep(3000);
+    if (i > 0) await sleep(15000);
     const chunk = texts.slice(i, i + BATCH_SIZE);
     console.log(`[Gemini] Đang tạo vector embedding cho chunks ${i} đến ${Math.min(i + BATCH_SIZE, texts.length)}... (Tổng: ${texts.length})`);
     const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
@@ -275,6 +283,31 @@ async function embedBatch(texts, taskType) {
     });
     if (!res.ok) {
       const errText = await res.text();
+      if (res.status === 429) {
+        const retryS = parseRetryDelaySeconds(errText);
+        if (retryS) {
+          console.log(`  (429 — Gemini đề xuất đợi ${retryS}s, đang đợi ${retryS + 3}s...)`);
+          await sleep((retryS + 3) * 1000);
+          // Thử lại đúng 1 lần với batch này sau khi đợi đủ thời gian Gemini yêu cầu
+          const retryRes = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              requests: chunk.map(text => ({
+                model: `models/${EMBED_MODEL}`,
+                content: { parts: [{ text }] },
+                taskType,
+              })),
+            }),
+          });
+          if (!retryRes.ok) {
+            throw new Error(`Batch embedding lỗi ${retryRes.status} (sau khi đợi ${retryS}s): ${await retryRes.text()}`);
+          }
+          const retryData = await retryRes.json();
+          for (const emb of (retryData.embeddings || [])) out.push(normalize(emb.values || []));
+          continue;
+        }
+      }
       throw new Error(`Batch embedding lỗi ${res.status}: ${errText}`);
     }
     const data = await res.json();
