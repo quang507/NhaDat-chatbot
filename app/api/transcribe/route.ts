@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
         // Đảm bảo URL encode cho tiếng Việt và khoảng trắng
         const keywords = rawKeywords.map(k => encodeURIComponent(k)).join('&keywords=');
 
-        const deepgramUrl = `https://api.deepgram.com/v1/listen?model=nova-3&language=vi&smart_format=true&keywords=${keywords}`;
+        const deepgramUrl = `https://api.deepgram.com/v1/listen?model=nova-2&language=vi&smart_format=true&keywords=${keywords}`;
         
         const dgRes = await fetch(deepgramUrl, {
           method: 'POST',

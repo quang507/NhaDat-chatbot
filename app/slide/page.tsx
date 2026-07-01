@@ -262,11 +262,24 @@ export default function SlideBotPage() {
       };
       window.addEventListener('keydown', handleKeyDown);
 
-      // CHỈ 1 chế độ: nghe ngầm. KHÔNG tự bật — sale BẤM nút mic để bắt đầu chạy ngầm (cú bấm
-      // cũng là cử chỉ cấp quyền mic), bấm lần nữa để tắt khi khách về.
+      // Tự động bật nghe ngầm ở cú click chuột/bấm phím ĐẦU TIÊN bất kỳ đâu trên màn hình
+      // (Do trình duyệt cấm tự bật mic khi chưa có tương tác)
+      const handleFirstGesture = () => {
+        if (!firstGestureRef.current) {
+          firstGestureRef.current = true;
+          // Tự bật mic nếu chưa bật
+          if (!isListeningLoopActive.current) {
+            toggleMicRef.current();
+          }
+        }
+      };
+      autoStartGestureRef.current = handleFirstGesture;
+      window.addEventListener('pointerdown', handleFirstGesture, { once: true });
+      window.addEventListener('keydown', handleFirstGesture, { once: true });
+
       ambientRef.current = true;
       isListeningLoopActive.current = false;
-      setTranscript('Nhấn nút Micro để bắt đầu nghe ngầm');
+      setTranscript('Chạm hoặc bấm phím bất kỳ để đánh thức Ny\'ah...');
     }
 
     return () => {
@@ -291,6 +304,17 @@ export default function SlideBotPage() {
   const handleVoiceCommands = (text: string): boolean => {
     const clean = text.toLowerCase().trim();
     
+    // 0. Nhóm lệnh "Gọi tên" (Wake word)
+    const wakeWords = [
+      'nhã ơi', 'ê nhã', 'hey nhã', 'hey ny', 'hey nỉ', 
+      'ny\'ah ơi', 'hey ny\'ah', 'ny ah ơi', 'hi ny\'ah', 'chào ny\'ah'
+    ];
+    if (wakeWords.some(kw => clean.includes(kw))) {
+      setTranscript('👋 Dạ, Ny\'ah đang nghe đây ạ!');
+      setState('idle');
+      return true; // chặn không cho tạo slide
+    }
+
     // 1. Nhóm lệnh phóng to
     const zoomInKeywords = [
       'phóng to', 'phóng lớn', 'xem ảnh to', 'xem hình to', 
