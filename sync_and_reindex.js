@@ -486,8 +486,8 @@ async function main() {
           retries++;
           console.warn(`⚠️ Cảnh báo: Lỗi sinh vector (Lần thử ${retries}):`, err.message);
           if (retries < 2) {
-            console.log("Đang tạm dừng 10 giây trước khi thử lại...");
-            await sleep(10000);
+            console.log("Đang tạm dừng 20 giây trước khi thử lại...");
+            await sleep(20000);
           }
         }
       }
@@ -505,8 +505,8 @@ async function main() {
         filesEmbeddedCount++;
         console.log(`-> Thành công sinh vector cho ${annotatedChunks.length} chunks.`);
         
-        // Sleep 2s giữa các file để tránh rate limits (RPM)
-        await sleep(2000);
+        // Sleep 20s giữa các file để tránh rate limits (RPM) — 2s trước đây quá ngắn, hay dính 429
+        await sleep(20000);
       } else {
         console.error(`❌ Lỗi: Không thể sinh vector cho file: ${item.relativePath}. Dừng sinh vector mới để lưu tiến trình.`);
         hitLimit = true;
