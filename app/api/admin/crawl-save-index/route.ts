@@ -107,17 +107,48 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Markdown quá ngắn hoặc rỗng' }, { status: 400 });
     }
 
-    // Bước 1: Lưu file markdown lên GitHub
-    const safeName = filename.replace(/[^a-zA-Z0-9\-_.]/g, '_').replace(/_{2,}/g, '_');
-    const filePath = `data/web-crawl/${safeName}.md`;
-    await saveFileToGitHub(filePath, markdown, `Crawl web: ${safeName}`);
+    // Bước 1: Lấy nội dung data.md hiện tại trên GitHub để kiểm tra trùng lặp (Dedup)
+    const DATA_PATH = 'data.md';
+    const dataSha = await getFileSha(DATA_PATH);
+    let existingData = '';
+    const dataRes = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DATA_PATH}?ref=${BRANCH}`, {
+      headers: ghHeaders(), cache: 'no-store',
+    });
+    if (dataRes.ok) {
+      const dataJson = await dataRes.json();
+      existingData = Buffer.from(dataJson.content || '', 'base64').toString('utf-8');
+    }
 
-    // Bước 2: Chunk và embed nội dung mới
+    // Bước 2: Kiểm tra trùng lặp (Khử trùng lặp nội dung y chang)
+    if (existingData.includes(markdown.trim())) {
+      return NextResponse.json({ 
+        ok: true, 
+        skipped: true, 
+        message: 'Nội dung này đã tồn tại trong hệ thống (trùng lặp hoàn toàn), đã bỏ qua để tránh rác.' 
+      });
+    }
+
+    // Bước 3: Append vào data.md trên GitHub
+    const safeName = filename.replace(/[^a-zA-Z0-9\-_.]/g, '_').replace(/_{2,}/g, '_');
+    const appendBlock = `\n\n## 📄 [Web Crawl] ➡ ${safeName}\n\n${markdown.trim()}\n`;
+    const newData = existingData.trimEnd() + appendBlock;
+    
+    await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DATA_PATH}`, {
+      method: 'PUT',
+      headers: ghHeaders(),
+      body: JSON.stringify({
+        message: `Web Admin: Thêm dữ liệu từ ${safeName}`,
+        content: Buffer.from(newData, 'utf-8').toString('base64'),
+        branch: BRANCH,
+        ...(dataSha ? { sha: dataSha } : {}),
+      }),
+    });
+
+    // Bước 4: Chunk và embed nội dung mới
     const rawChunks = chunkText(markdown);
     if (rawChunks.length === 0) {
       return NextResponse.json({ error: 'Không tách được nội dung thành chunks' }, { status: 400 });
     }
-    // Kiểm tra giới hạn (Cohere trial: 100k TPM ≈ tối đa ~200 chunks ~500 chars/chunk an toàn)
     const MAX_CHUNKS = 150;
     const chunks = rawChunks.slice(0, MAX_CHUNKS);
     const annotated = chunks.map(t => `## 🔖 [Web Crawl] · ${safeName}\n\n${t}`);
@@ -130,15 +161,14 @@ export async function POST(req: NextRequest) {
     const newChunks: (Chunk & { file: string; hash: string })[] = annotated.map((text, i) => ({
       text,
       vec: vecs[i] || [],
-      file: filePath,
+      file: 'data.md',
       hash: `web-${safeName}`,
     }));
 
-    // Bước 3: Tải index cũ và merge (xóa chunks cũ của file này nếu có, thêm chunks mới)
+    // Bước 5: Tải index cũ và merge (chỉ thêm chunks mới vào cuối index)
     const oldIndex = await loadIndex();
     const oldChunks: Chunk[] = oldIndex
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ? (oldIndex.chunks as any[]).filter((c: any) => c.file !== filePath && c.vec?.length === DIMS)
+      ? (oldIndex.chunks as any[]).filter((c: any) => c.vec?.length === DIMS)
       : [];
 
     const mergedIndex: Index = {
@@ -146,37 +176,12 @@ export async function POST(req: NextRequest) {
       builtAt: new Date().toISOString(),
     };
 
-    // Bước 4: Lưu index mới lên chatbot-logs
+    // Bước 6: Lưu index mới lên chatbot-logs
     await saveIndex(mergedIndex);
-
-    // Bước 5: Append vào data.md để Rebuild về sau luôn giữ nội dung này
-    try {
-      const DATA_PATH = 'data.md';
-      const dataSha = await getFileSha(DATA_PATH);
-      const dataRes = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DATA_PATH}?ref=${BRANCH}`, {
-        headers: ghHeaders(), cache: 'no-store',
-      });
-      const dataJson = dataRes.ok ? await dataRes.json() : null;
-      const existingData = dataJson ? Buffer.from(dataJson.content || '', 'base64').toString('utf-8') : '';
-      const appendBlock = `\n\n---\n<!-- web-crawl: ${safeName} -->\n${markdown.trim()}\n`;
-      const newData = existingData.trimEnd() + appendBlock;
-      await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DATA_PATH}`, {
-        method: 'PUT',
-        headers: ghHeaders(),
-        body: JSON.stringify({
-          message: `Append web crawl vào data.md: ${safeName}`,
-          content: Buffer.from(newData, 'utf-8').toString('base64'),
-          branch: BRANCH,
-          ...(dataSha ? { sha: dataSha } : {}),
-        }),
-      });
-    } catch (e2) {
-      console.warn('Append data.md failed (non-fatal):', e2);
-    }
 
     return NextResponse.json({
       ok: true,
-      file: filePath,
+      file: 'data.md',
       newChunks: newChunks.length,
       totalChunks: mergedIndex.chunks.length,
       truncated: rawChunks.length > MAX_CHUNKS,
