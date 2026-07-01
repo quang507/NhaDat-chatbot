@@ -438,6 +438,25 @@ async function main() {
     // Sinh metadata ảnh (đường dẫn /images/...) để RAG/slide biết URL ảnh mà chèn vào slide
     generateImageMetadata(LOCAL_IMAGES_DIR, LOCAL_IMAGES_METADATA_FILE);
 
+    // 2c. COMMIT + PUSH data/ và public/images/ lên main NGAY BÂY GIỜ, trước khi đụng tới nhánh
+    // chatbot-logs. QUAN TRỌNG: nếu để việc này tới cuối script (sau khi đã checkout sang
+    // chatbot-logs rồi quay lại), `git checkout -f` sẽ XÓA SẠCH các thay đổi data/ chưa commit
+    // (vì data/ không giống nhau giữa 2 nhánh) -> mirror-copy coi như vô nghĩa, GitHub main
+    // không bao giờ nhận được cập nhật/xóa file thật (dù index.json vẫn đúng vì embed đọc
+    // trực tiếp từ đĩa trước khi nhánh bị đổi). Commit ngay ở đây để không bị mất.
+    console.log("Đang push dữ liệu văn bản + hình ảnh lên main NGAY (trước khi đụng nhánh chatbot-logs)...");
+    execSync('git add -A data/'); // -A để stage cả file/folder bị xóa (mirror)
+    if (fs.existsSync(LOCAL_IMAGES_DIR)) {
+      execSync('git add -A public/images/');
+    }
+    try {
+      execSync('git commit -m "Sync data folders and images from OneDrive"');
+      execSync('git push origin main');
+      console.log("Đã đẩy dữ liệu và hình ảnh lên main branch thành công!");
+    } catch (e) {
+      console.log("Không có thay đổi dữ liệu hay hình ảnh nào cần commit trên main branch.");
+    }
+
     // 3. Phân tích các file, phát hiện các file mới/thay đổi để gom chunks
     console.log("3. Đang phân tích files dữ liệu...");
     const files = scanDir(LOCAL_DATA_DIR);
@@ -585,22 +604,9 @@ async function main() {
       console.log("Không có thay đổi chỉ mục nào cần commit.");
     }
 
-    // 7. Trở lại main và push các file data lên GitHub
+    // 9. Trở lại main (data/ và public/images/ đã được push từ bước 2c ở trên rồi, không push lại)
     console.log("9. Đang trở về nhánh main...");
     execSync('git checkout -f main');
-    
-    console.log("10. Đang push các file thư mục data và hình ảnh lên GitHub...");
-    execSync('git add -A data/'); // -A để stage cả file/folder bị xóa (mirror)
-    if (fs.existsSync(LOCAL_IMAGES_DIR)) {
-      execSync('git add -A public/images/');
-    }
-    try {
-      execSync('git commit -m "Sync data folders and images from OneDrive"');
-      execSync('git push origin main');
-      console.log("Đã đẩy dữ liệu và hình ảnh lên main branch thành công!");
-    } catch (e) {
-      console.log("Không có thay đổi dữ liệu hay hình ảnh nào cần commit trên main branch.");
-    }
 
     if (hitLimit) {
       console.log("\n⚠️ LƯU Ý: Quá trình đồng bộ chưa hoàn thành 100% do giới hạn hạn mức (rate limit) của API. Hãy chạy lại file BAT sau vài phút để tiếp tục đồng bộ phần còn lại.");
