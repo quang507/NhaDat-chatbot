@@ -1,36 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkAuth, getFile } from '@/lib/admin';
-import { buildIndex, saveIndex } from '@/lib/rag';
+import { checkAuth } from '@/lib/admin';
 
 export const runtime = 'nodejs';
-export const maxDuration = 300; // data.md lớn (gồm cả QA) -> cần lâu hơn để embed lại toàn bộ
 
-// Tạo lại chỉ mục tìm kiếm (RAG) từ data.md hiện tại trên GitHub.
-// Có thể nhận content trực tiếp từ admin (data vừa chỉnh) để tạo chỉ mục ngay,
-// không cần đợi Vercel deploy lại.
+// ĐÃ KHÓA: nguồn chỉ mục chính thức (index.json) giờ do sync_and_reindex.js quản lý
+// (chạy qua Chay_Dong_Bo.bat, đọc từ OneDrive ChatBotData_Upload/ChatBotImages_Upload).
+// Route này từng build lại TOÀN BỘ index từ data.md và GHI ĐÈ index.json trên nhánh
+// chatbot-logs — mỗi lần bấm sẽ xóa sạch dữ liệu mà sync_and_reindex.js vừa đồng bộ
+// (2 hệ thống ghi đè lẫn nhau, không dedup được vì mỗi bên chỉ biết nguồn của mình).
+// Muốn cập nhật chỉ mục: sửa dữ liệu trong OneDrive rồi chạy Chay_Dong_Bo.bat.
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: 'Sai mật khẩu' }, { status: 401 });
   }
-  try {
-    let content = '';
-    try {
-      const body = await req.json();
-      content = typeof body?.content === 'string' ? body.content : '';
-    } catch {
-      // không có body -> đọc từ GitHub
-    }
-    if (!content) {
-      const data = await getFile('data.md');
-      content = data.content;
-    }
-    if (!content.trim()) {
-      return NextResponse.json({ error: 'data.md trống, chưa có gì để lập chỉ mục' }, { status: 400 });
-    }
-    const index = await buildIndex(content);
-    await saveIndex(index);
-    return NextResponse.json({ ok: true, chunks: index.chunks.length });
-  } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
-  }
+  return NextResponse.json(
+    {
+      error:
+        'Đã tắt: chỉ mục (index.json) giờ chỉ được cập nhật qua Chay_Dong_Bo.bat (đồng bộ từ OneDrive). ' +
+        'Rebuild qua web sẽ ghi đè và xóa mất dữ liệu đã đồng bộ. Hãy sửa file trong OneDrive rồi chạy lại bat.',
+    },
+    { status: 409 }
+  );
 }

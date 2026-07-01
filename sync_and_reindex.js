@@ -78,6 +78,75 @@ async function parseFile(filePath) {
   return ''; // Bỏ qua định dạng khác (hoặc ảnh)
 }
 
+// Loại bỏ các khối "list.txt" (danh sách file kiểu ffmpeg concat: file 'C:/...') vô tình
+// lẫn vào tài liệu (vd copy nhầm lúc gộp nhiều tài liệu). Đây là rác kỹ thuật dựng phim,
+// không có giá trị cho RAG, và sinh ra hàng loạt chunk gần giống nhau (near-dup) vì
+// toàn đường dẫn file lặp lại theo mẫu giống hệt nhau.
+function stripJunkListDumps(text) {
+  const lines = text.split('\n');
+  const out = [];
+  let i = 0;
+  let removedLines = 0;
+  while (i < lines.length) {
+    const isListHeading = /^#{1,6}\s*list[._]?txt\b/i.test(lines[i].trim());
+    let k = isListHeading ? i + 1 : i;
+    let fileLineCount = 0;
+    while (k < lines.length) {
+      const t = lines[k].trim();
+      if (t === '') { k++; continue; }
+      if (/^file\s+'[^']*'\s*$/.test(t)) { fileLineCount++; k++; continue; }
+      break;
+    }
+    if (fileLineCount >= 3) {
+      removedLines += (k - i);
+      i = k;
+      continue;
+    }
+    out.push(lines[i]);
+    i++;
+  }
+  if (removedLines > 0) {
+    console.log(`  (Đã lọc bỏ ${removedLines} dòng 'list.txt' rác - danh sách file dựng phim lẫn vào tài liệu)`);
+  }
+  return out.join('\n');
+}
+
+// NEAR-DUP: gộp các chunk gần như y hệt (cùng nội dung lặp lại ở nhiều file/nguồn khác nhau).
+// Cùng ngưỡng + logic với lib/rag.ts buildIndex() để nhất quán giữa 2 đường build index.
+function dedupeNearDuplicates(chunks) {
+  const NEAR_DUP = 0.985;
+  const dot = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; };
+  const isTable = (t) => t.trim().startsWith('|') || t.includes('\n|');
+  const sourcePriority = (file) => {
+    const f = (file || '').toLowerCase();
+    if (f.includes('03_human-qa')) return 5;
+    if (f.includes('drive-extracted')) return 4;
+    if (f.includes("nyah-phudinh") || f.includes("nyah-ph") || f.includes('01 nyah')) return 3;
+    if (f.includes('qa-generated')) return 2;
+    if (f.includes('web-crawl')) return 1;
+    return 3;
+  };
+  const kept = [];
+  let removed = 0;
+  for (const c of chunks) {
+    if (!c.vec || !c.vec.length || isTable(c.text)) { kept.push(c); continue; }
+    let dupIdx = -1;
+    for (let j = 0; j < kept.length; j++) {
+      const k = kept[j];
+      if (!k.vec || !k.vec.length || isTable(k.text)) continue;
+      if (dot(c.vec, k.vec) > NEAR_DUP) { dupIdx = j; break; }
+    }
+    if (dupIdx >= 0) {
+      removed++;
+      if (sourcePriority(c.file) > sourcePriority(kept[dupIdx].file)) kept[dupIdx] = c;
+    } else {
+      kept.push(c);
+    }
+  }
+  if (removed > 0) console.log(`\n(Dedup) Đã lọc bỏ ${removed} chunk near-dup (cosine > ${NEAR_DUP}) trên tổng ${chunks.length} chunk.`);
+  return kept;
+}
+
 // ---------- Copy thư mục đệ quy ----------
 function copyDir(src, dest) {
   if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
@@ -387,7 +456,8 @@ async function main() {
         continue;
       }
 
-      const fileText = await parseFile(item.file);
+      let fileText = await parseFile(item.file);
+      fileText = stripJunkListDumps(fileText);
       if (!fileText.trim()) continue;
 
       // Xây dựng breadcrumb đường dẫn chi tiết thân thiện với LLM
@@ -450,7 +520,12 @@ async function main() {
 
     console.log(`\nTổng kết: Giữ nguyên ${filesSkipped} files. Đã sinh vector mới cho ${filesEmbeddedCount} files. Các file còn lại được giữ nguyên hoặc bỏ qua.`);
 
-    const index = { chunks: finalChunks, builtAt: new Date().toISOString() };
+    // Dọn near-dup TRƯỚC KHI lưu: sync tool trước đây không hề dedup (khác buildIndex() của web admin),
+    // nên các file trùng nội dung dưới nhiều đường dẫn khác nhau (vd cùng nội dung ở 2 vị trí cũ/mới)
+    // vẫn lọt vào index gây lãng phí context + trả lời không nhất quán.
+    const dedupedChunks = dedupeNearDuplicates(finalChunks);
+
+    const index = { chunks: dedupedChunks, builtAt: new Date().toISOString() };
 
     // 5. Lưu index.json tạm thời
     const tempIndexPath = path.join(__dirname, 'index_temp.json');

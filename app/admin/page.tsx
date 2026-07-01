@@ -1310,27 +1310,32 @@ export default function AdminPage() {
 
             {/* Markdown Output Area */}
             <div className="lg:col-span-7 bg-slate-900/30 border border-slate-900 rounded-2xl p-5 flex flex-col min-h-[400px]">
+              <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl px-3.5 py-2.5 mb-3 text-[11px] text-amber-300/90 leading-relaxed">
+                🔒 <strong>Chỉ mục (index.json) giờ chỉ cập nhật qua OneDrive + <code className="bg-slate-900 px-1 rounded">Chay_Dong_Bo.bat</code></strong>.
+                Nút Rebuild/Embed bên dưới đã bị khóa để tránh 2 hệ thống ghi đè lẫn nhau. Muốn thêm dữ liệu: lưu file .md vào OneDrive rồi chạy bat.
+              </div>
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">📝</span>
                   <h3 className="font-bold text-sm text-slate-200">Kết quả Markdown đầu ra</h3>
                   <button
                     onClick={rebuildFullIndex}
-                    disabled={busy}
-                    title="Build lại toàn bộ index từ data.md — xóa sạch chunk cũ/lỗi/trùng"
-                    className="ml-1 bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg shadow-orange-500/10 transition-all disabled:opacity-50 flex items-center gap-1"
+                    disabled={true}
+                    title="Đã khóa — chỉ mục giờ do Chay_Dong_Bo.bat quản lý (xem ghi chú phía trên)"
+                    className="ml-1 bg-slate-800 text-slate-500 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all disabled:opacity-60 flex items-center gap-1 cursor-not-allowed"
                   >
-                    🔁 Rebuild toàn bộ Index
+                    🔒 Rebuild toàn bộ Index (đã khóa)
                   </button>
                 </div>
                 {outputMarkdown && (
                   <div className="flex items-center gap-2 flex-wrap">
                     <button
                       onClick={embedAndIndex}
-                      disabled={busy}
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg shadow-emerald-500/10 transition-all disabled:opacity-50 flex items-center gap-1"
+                      disabled={true}
+                      title="Đã khóa — chỉ mục giờ do Chay_Dong_Bo.bat quản lý (xem ghi chú phía trên)"
+                      className="bg-slate-800 text-slate-500 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all disabled:opacity-60 flex items-center gap-1 cursor-not-allowed"
                     >
-                      ⚡ Embed &amp; Nạp vào Bot
+                      🔒 Embed &amp; Nạp vào Bot (đã khóa)
                     </button>
                     <button
                       onClick={() => copyToClipboard(outputMarkdown)}
