@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { cleanTextForTTS, splitSentences, ttsUrl, normalizeVietnameseSpeech } from '@/lib/speech';
+import { classifyAmbientIntent } from '@/lib/intent';
 
 type ChatState = 'idle' | 'listening' | 'processing' | 'speaking' | 'error';
 
@@ -23,6 +24,10 @@ export default function VoicePage() {
   const [transcript, setTranscript] = useState('');
   const [response, setResponse] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  
+  // Background images state
+  const [backgroundImages, setBackgroundImages] = useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Debug Logs State
   const [logs, setLogs] = useState<LogItem[]>([]);
@@ -66,6 +71,15 @@ export default function VoicePage() {
       console.log(`[${type}] ${time} - ${message}`);
     };
   });
+
+  // Slideshow interval
+  useEffect(() => {
+    if (backgroundImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex(prev => (prev + 1) % backgroundImages.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [backgroundImages]);
 
   const addLog = (type: LogItem['type'], message: string) => {
     addLogRef.current(type, message);
@@ -394,6 +408,31 @@ export default function VoicePage() {
     
     try {
       const history = chatHistoryRef.current;
+
+      // Fire and forget /api/slide to get images if intent matches
+      const intent = classifyAmbientIntent(speechText);
+      if (intent.shouldGenerate) {
+        fetch('/api/slide', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: speechText }),
+        })
+        .then(res => res.json())
+        .then(data => {
+          let imgs: string[] = [];
+          if (data.image_urls && Array.isArray(data.image_urls)) {
+            imgs = data.image_urls;
+          } else if (data.image_url) {
+            imgs = [data.image_url];
+          }
+          if (imgs.length > 0) {
+            setBackgroundImages(imgs);
+            setCurrentImageIndex(0);
+          }
+        })
+        .catch(err => addLog('ERROR', 'Lỗi tải ảnh nền: ' + err));
+      }
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -527,8 +566,24 @@ export default function VoicePage() {
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white flex flex-col justify-between items-center p-6 relative overflow-hidden select-none">
-      {/* Background radial gradient glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.08)_0%,transparent_70%)] pointer-events-none" />
+      
+      {/* Background images logic */}
+      {backgroundImages.length > 0 ? (
+        <div className="absolute inset-0 z-0 bg-neutral-950 transition-opacity duration-1000">
+          {backgroundImages.map((src, i) => (
+            <img 
+              key={src} 
+              src={src} 
+              alt="Background"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === currentImageIndex ? 'opacity-40' : 'opacity-0'}`} 
+            />
+          ))}
+          {/* Blur layer to make UI readable */}
+          <div className="absolute inset-0 bg-neutral-950/60 backdrop-blur-3xl"></div>
+        </div>
+      ) : (
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.08)_0%,transparent_70%)] pointer-events-none z-0" />
+      )}
 
       {/* Header — brand + link sang Slide + trạng thái */}
       <div className="w-full max-w-md flex justify-between items-center z-10 pt-2 gap-2">
