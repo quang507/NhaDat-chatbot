@@ -286,6 +286,7 @@ export default function SlideBotPage() {
     if (state === 'listening' || state === 'processing' || state === 'speaking') {
       // ĐANG chạy -> TẮT (khách về thì sale bấm)
       isListeningLoopActive.current = false;
+      amEngineOnRef.current = false;
       suppressListenRef.current = false;
       if (debounceRef.current) { clearTimeout(debounceRef.current); debounceRef.current = null; }
       if (activeAudioRef.current) activeAudioRef.current.pause();
@@ -304,6 +305,7 @@ export default function SlideBotPage() {
       lastQueryRef.current = '';
       lastGenRef.current = 0;
       if (activeAudioRef.current) activeAudioRef.current.pause();
+      amEngineOnRef.current = true; // Bật flag engine hoạt động
       startAmbientListening();
     }
   };
@@ -535,6 +537,7 @@ export default function SlideBotPage() {
 
   const stopAmbientListening = () => {
     amStartingRef.current = false;
+    amEngineOnRef.current = false;
     if (amRafRef.current != null) { cancelAnimationFrame(amRafRef.current); amRafRef.current = null; }
     if (amRecorderRef.current && amRecorderRef.current.state !== 'inactive') {
       try { amRecorderRef.current.onstop = null; amRecorderRef.current.stop(); } catch (e) {}
