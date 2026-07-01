@@ -747,15 +747,22 @@ export default function SlideBotPage() {
             return (
               <div 
                 key={img + '-' + idx}
-                className={`absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-1000 ease-in-out ${
+                className={`absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-1000 ease-in-out overflow-hidden bg-black ${
                   isActive ? 'opacity-95 scale-100 z-10' : 'opacity-0 scale-95 z-0 pointer-events-none'
                 }`}
                 style={{ willChange: 'opacity, transform', transform: 'translate3d(0,0,0)' }}
               >
+                {/* Lớp nền mờ chìm phía sau giúp lấp đầy khoảng đen nếu ảnh bị hẹp */}
+                <div 
+                  className="absolute inset-0 w-full h-full bg-cover bg-center blur-2xl opacity-40 scale-[1.15]" 
+                  style={{ backgroundImage: `url('${img}')` }}
+                ></div>
+                
+                {/* Ảnh chính nổi lên trên */}
                 <img 
                   src={img} 
                   alt={`Minh họa ${idx + 1}`} 
-                  className={`w-full h-full cursor-pointer transition-transform duration-500 hover:scale-[1.01] object-contain bg-[#070707]`}
+                  className={`relative z-10 w-full h-full cursor-pointer transition-transform duration-500 hover:scale-[1.02] drop-shadow-2xl object-contain`}
                   style={{ willChange: 'transform', transform: 'translate3d(0,0,0)' }}
                   onClick={() => setSelectedImage(img)}
                   onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
@@ -876,11 +883,17 @@ export default function SlideBotPage() {
       return (
         <div className={`${containerClass} flex-col overflow-hidden relative group animate-fade-in`}>
           {bgImg && (
-            <div className="absolute inset-0 w-full h-full cursor-pointer overflow-hidden" onClick={() => setSelectedImage(bgImg)}>
+            <div className="absolute inset-0 w-full h-full cursor-pointer overflow-hidden bg-black" onClick={() => setSelectedImage(bgImg)}>
+              {/* Lớp nền mờ lấp khoảng đen */}
+              <div 
+                className="absolute inset-0 w-full h-full bg-cover bg-center blur-3xl opacity-30 scale-[1.15] transition-transform duration-[3000ms] ease-out group-hover:scale-[1.25]"
+                style={{ backgroundImage: `url('${bgImg}')` }}
+              ></div>
+              {/* Ảnh chính */}
               <img
                 src={bgImg}
                 alt="Ảnh dự án"
-                className="w-full h-full object-contain bg-[#070707] group-hover:scale-[1.03] transition-transform duration-[2000ms] ease-out"
+                className="relative z-10 w-full h-full object-contain drop-shadow-2xl transition-transform duration-[2000ms] ease-out group-hover:scale-[1.02]"
                 onError={() => setBrokenImages(prev => ({ ...prev, [bgImg]: true }))}
               />
             </div>
