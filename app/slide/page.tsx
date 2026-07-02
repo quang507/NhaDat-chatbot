@@ -103,29 +103,34 @@ export default function SlideBotPage() {
     });
   }, []);
 
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   // Tăng mỗi lần có slide mới -> ép remount để animation vào lại mượt (kể cả khi chỉ đổi nội dung)
   const [slideKey, setSlideKey] = useState(0);
   const toggleMicRef = useRef<() => void>(() => {});
   const volumeVisualRef = useRef<HTMLDivElement>(null);
 
-  // Slideshow interval tự động chuyển ảnh mỗi 4.5 giây
-  useEffect(() => {
-    if (!slide) return;
+  // ===== Phát hiện hướng ảnh (ngang/dọc) qua naturalWidth/naturalHeight sau khi load =====
+  // Layout tự chọn cách xếp (cột / hàng / nổi bật) theo SỐ ẢNH + HƯỚNG từng ảnh,
+  // thay cho slideshow xoay theo giờ trước đây (slide chỉ đổi khi ĐỔI CHỦ ĐỀ qua intent).
+  const [imgOrient, setImgOrient] = useState<Record<string, 'landscape' | 'portrait'>>({});
+
+  const collectImages = (s: SlideData | null): string[] => {
+    if (!s) return [];
     const imgs: string[] = [];
-    if (slide.image_urls && Array.isArray(slide.image_urls)) {
-      imgs.push(...slide.image_urls.filter(img => img && !brokenImages[img]));
-    } else if (slide.image_url && !brokenImages[slide.image_url]) {
-      imgs.push(slide.image_url);
-    }
-    
-    if (imgs.length <= 1) return;
-    
-    const interval = setInterval(() => {
-      setCurrentImageIndex(prev => (prev + 1) % imgs.length);
-    }, 4500);
-    
-    return () => clearInterval(interval);
+    if (s.image_urls && Array.isArray(s.image_urls)) imgs.push(...s.image_urls.filter(Boolean));
+    else if (s.image_url) imgs.push(s.image_url);
+    return imgs.filter(img => !brokenImages[img]).slice(0, 3);
+  };
+
+  useEffect(() => {
+    const imgs = collectImages(slide);
+    imgs.forEach(src => {
+      if (imgOrient[src]) return;
+      const im = new window.Image();
+      im.onload = () => setImgOrient(prev => (prev[src] ? prev : { ...prev, [src]: im.naturalWidth >= im.naturalHeight ? 'landscape' : 'portrait' }));
+      im.onerror = () => setBrokenImages(prev => ({ ...prev, [src]: true }));
+      im.src = src;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slide, brokenImages]);
 
   const SLIDE_TTS_RATE = '+22%';
@@ -470,7 +475,6 @@ export default function SlideBotPage() {
       // Mặc định layout nếu AI không chọn
       if (!data.layout_type) data.layout_type = 'split_image_right';
       setBrokenImages({});
-      setCurrentImageIndex(0);
       setSlideKey(k => k + 1);
       setSlide(data);
       if (ambient) {
@@ -510,610 +514,421 @@ export default function SlideBotPage() {
     }
   };
 
-  // Renderers cho các Layout
-  const renderSlideContent = () => {
-    if (!slide) return null;
-    
-    // Lấy tất cả ảnh
-    const images: string[] = [];
-    if (slide.image_urls && Array.isArray(slide.image_urls)) {
-      images.push(...slide.image_urls.filter(img => img && !brokenImages[img]));
-    } else if (slide.image_url && !brokenImages[slide.image_url]) {
-      images.push(slide.image_url);
-    }
+  // ===== GIAO DIỆN EDITORIAL DỌC — thiết kế cho màn 85 inch đặt portrait =====
+  // Style: poster tuyển dụng (headline 2 tông, chấm bi, vòng tròn, badge góc) đổi sang
+  // tông xanh lá mạ, nền giấy sáng, sạch kiểu editorial khớp kiến trúc showroom.
 
-    const hasImages = images.length > 0;
-    // Nếu không có ảnh, tự động ép sang text_only để hiển thị đẹp nhất
-    const layout = hasImages ? (slide.layout_type || 'split_image_right') : 'text_only';
+  const SLOGAN = 'Sống đẹp hơn chung cư — Sinh lời hơn thổ cư';
 
-    // Helper render grid ảnh cho split/dark layouts
-    // Helper render slideshow ảnh tự động cho các layout
-    const renderImageGrid = () => {
-      if (!hasImages) return null;
-      
+  // Tách đoạn thành từng câu để animate từng dòng (không dùng lookbehind — Safari cũ crash)
+  const toLines = (t: string): string[] =>
+    (t || '').replace(/\s+/g, ' ').match(/[^.!?…]+[.!?…]?/g)?.map(s => s.trim()).filter(Boolean) || [];
+
+  // Tách title thành 2 tông màu kiểu poster "WE ARE / HIRING"
+  const splitTitle = (t: string): [string, string] => {
+    const w = (t || '').trim().split(/\s+/);
+    if (w.length <= 2) return [w.join(' '), ''];
+    const cut = Math.ceil(w.length / 2);
+    return [w.slice(0, cut).join(' '), w.slice(cut).join(' ')];
+  };
+
+  // 1 dòng chữ trượt từ dưới lên trong "mặt nạ" (overflow hidden), lóe sáng nhẹ rồi mờ dần
+  const Line = ({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) => (
+    <span className="line-mask block">
+      <span className={`line-in block ${className}`} style={{ animationDelay: `${delay}ms` }}>{children}</span>
+    </span>
+  );
+
+  // ===== KHỐI ẢNH: layout tự chọn theo SỐ ẢNH + HƯỚNG (ngang/dọc) từng ảnh =====
+  // Ảnh luôn object-contain (không crop), vào tuần tự: ảnh 1 hiện trước, ảnh sau trượt vào.
+  const renderImages = () => {
+    const imgs = collectImages(slide);
+    if (imgs.length === 0) return null;
+    const o = (u: string) => imgOrient[u] || 'landscape';
+    const baseDelay = 550;
+
+    const Card = ({ src, delay, className = '' }: { src: string; delay: number; className?: string }) => {
+      const isMap = src.includes('vi_tri') || src.includes('18_phut');
+      const qrUrl = slide?.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
       return (
-        <div className="relative w-full h-full group/img overflow-hidden bg-[#070707] flex items-center justify-center">
-          {/* Render các ảnh đè lên nhau, chỉ hiển thị ảnh active bằng transition mờ dần */}
-          {images.map((img, idx) => {
-            const isActive = idx === (currentImageIndex % images.length);
-            const isMap = img.includes('vi_tri') || img.includes('18_phut');
-            return (
-              <div 
-                key={img + '-' + idx}
-                className={`absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-1000 ease-in-out overflow-hidden bg-black ${
-                  isActive ? 'opacity-95 scale-100 z-10' : 'opacity-0 scale-95 z-0 pointer-events-none'
-                }`}
-                style={{ willChange: 'opacity, transform', transform: 'translate3d(0,0,0)' }}
-              >
-                {/* Lớp nền mờ chìm phía sau giúp lấp đầy khoảng đen nếu ảnh bị hẹp */}
-                <div 
-                  className="absolute inset-0 w-full h-full bg-cover bg-center blur-2xl opacity-40 scale-[1.15]" 
-                  style={{ backgroundImage: `url('${img}')` }}
-                ></div>
-                
-                {/* Ảnh chính nổi lên trên */}
-                <img 
-                  src={img} 
-                  alt={`Minh họa ${idx + 1}`} 
-                  className={`relative z-10 w-full h-full cursor-pointer transition-transform duration-500 hover:scale-[1.02] drop-shadow-2xl object-contain`}
-                  style={{ willChange: 'transform', transform: 'translate3d(0,0,0)' }}
-                  onClick={() => setSelectedImage(img)}
-                  onError={() => setBrokenImages(prev => ({ ...prev, [img]: true }))}
-                />
-                
-                {/* Lồng mã QR Code Google Maps ngay góc nếu ảnh này là bản đồ */}
-                {isMap && isActive && (() => {
-                  const qrUrl = slide.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
-                  return (
-                    <div className="absolute bottom-4 left-4 bg-black/85 backdrop-blur p-3 rounded-2xl border border-white/10 flex flex-col items-center gap-1.5 shadow-2xl animate-scale-up z-20">
-                      <a href={qrUrl} target="_blank" rel="noopener noreferrer" className="block">
-                        <img
-                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}`}
-                          alt="QR Vị Trí"
-                          className="w-[100px] h-[100px] rounded-lg bg-white p-1 hover:scale-105 transition-transform"
-                        />
-                      </a>
-                      <span className="text-[9px] text-gray-300 font-bold tracking-tight text-center max-w-[100px] leading-normal">
-                        Quét bản đồ
-                      </span>
-                    </div>
-                  );
-                })()}
-              </div>
-            );
-          })}
-
-          {/* Chỉ báo phóng to */}
-          <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none z-20 flex items-center gap-1">
-            🔍 Click để phóng to
-          </div>
-
-          {/* Dots Indicator nếu có nhiều ảnh */}
-          {images.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full border border-white/10 shadow-lg">
-              {images.map((_, idx) => {
-                const isActive = idx === (currentImageIndex % images.length);
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentImageIndex(idx)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      isActive ? 'bg-[#e8b84b] w-4' : 'bg-white/40 hover:bg-white/70'
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                );
-              })}
-            </div>
+        <div
+          className={`img-card relative rounded-[28px] overflow-hidden bg-white border border-black/[0.06] shadow-[0_24px_60px_-24px_rgba(14,90,52,0.35)] cursor-zoom-in ${className}`}
+          style={{ animationDelay: `${delay}ms` }}
+          onClick={() => setSelectedImage(src)}
+        >
+          <img
+            src={src}
+            alt="Hình ảnh dự án"
+            className="w-full h-full object-contain"
+            onError={() => setBrokenImages(prev => ({ ...prev, [src]: true }))}
+          />
+          {isMap && (
+            <a
+              href={qrUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute bottom-3 left-3 bg-white/95 rounded-xl p-2 shadow-lg border border-black/5 flex flex-col items-center"
+              onClick={e => e.stopPropagation()}
+            >
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrUrl)}`} alt="QR bản đồ" className="w-16 h-16" />
+              <span className="text-[9px] font-bold text-neutral-600 mt-1">Quét bản đồ</span>
+            </a>
           )}
         </div>
       );
     };
 
-    // Định nghĩa class container to lớn chiếm gần trọn màn hình (độ cao chiếm 72-84vh để tối đa chiều cao ảnh)
-    const containerClass = "slide-stage w-full max-w-[95vw] md:max-w-[92vw] xl:max-w-[88vw] h-[72vh] md:h-[78vh] xl:h-[84vh] rounded-3xl shadow-2xl border border-white/5 flex overflow-hidden transform transition-all duration-700 hover:shadow-[#e8b84b]/10";
+    // 1 ẢNH: dọc -> khung cao ở giữa; ngang -> khung rộng full
+    if (imgs.length === 1) {
+      const one = imgs[0];
+      return o(one) === 'portrait'
+        ? <div className="flex justify-center min-h-0"><Card src={one} delay={baseDelay} className="h-[42vh] w-[74%]" /></div>
+        : <Card src={one} delay={baseDelay} className="h-[30vh] w-full" />;
+    }
 
-    // 1. TEXT ONLY (Chỉ có văn bản)
-    if (layout === 'text_only') {
+    // 2 ẢNH
+    if (imgs.length === 2) {
+      const [a, b] = imgs;
+      const twoP = o(a) === 'portrait' && o(b) === 'portrait';
+      const twoL = o(a) === 'landscape' && o(b) === 'landscape';
+      if (twoP) {
+        return (
+          <div className="grid grid-cols-2 gap-4 h-[38vh] min-h-0">
+            <Card src={a} delay={baseDelay} className="h-full" />
+            <Card src={b} delay={baseDelay + 420} className="h-full" />
+          </div>
+        );
+      }
+      if (twoL) {
+        return (
+          <div className="grid grid-rows-2 gap-4 h-[44vh] min-h-0">
+            <Card src={a} delay={baseDelay} className="h-full min-h-0" />
+            <Card src={b} delay={baseDelay + 420} className="h-full min-h-0" />
+          </div>
+        );
+      }
+      // Trộn ngang/dọc: ảnh dọc làm cột cao bên trái, ảnh ngang căn giữa bên phải
+      const p = o(a) === 'portrait' ? a : b;
+      const l = p === a ? b : a;
       return (
-        <div className={`${containerClass} flex-col justify-center items-center p-16 relative animate-fade-in`}>
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#e8b84b]/3 to-transparent pointer-events-none"></div>
-          
-          <div key={slide.title} className="max-w-4xl text-center z-10 w-full flex flex-col justify-center items-center h-full animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 text-white tracking-tight leading-tight">
-              {slide.title}
-            </h2>
-            
-            {slide.highlight_number && (
-              <div className="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#ffffff] to-[#a0a0a0] mb-8 tracking-tighter">
-                {slide.highlight_number}
-              </div>
-            )}
-            
-            <div className="flex flex-col gap-6 items-center w-full max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-              {slide.points.map((point, idx) => (
-                <div key={idx} className="flex gap-4 items-start max-w-2xl text-left animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
-                  <div className="w-2.5 h-2.5 mt-2.5 rounded-full bg-[#e8b84b] shrink-0"></div>
-                  <p className="text-lg md:text-xl lg:text-[21px] text-gray-300 font-light leading-relaxed">{point}</p>
-                </div>
-              ))}
-              
-              {/* Lời giải thích chi tiết / Phần hồn chữ viết */}
-              {slide.speech_text && (
-                <div className="mt-6 pt-6 border-t border-white/10 max-w-3xl animate-fade-in-up" style={{ animationDelay: '500ms' }}>
-                  <p className="text-[19px] md:text-[22px] text-gray-400/90 font-light italic leading-relaxed text-center">
-                    "{slide.speech_text}"
-                  </p>
-                </div>
-              )}
-            </div>
+        <div className="grid grid-cols-5 gap-4 h-[40vh] min-h-0">
+          <Card src={p} delay={baseDelay} className="col-span-2 h-full" />
+          <div className="col-span-3 flex items-center min-h-0">
+            <Card src={l} delay={baseDelay + 420} className="h-[72%] w-full" />
           </div>
         </div>
       );
     }
 
-    // 2. SPLIT RIGHT / SPLIT LEFT (Chữ một bên, Ảnh một bên)
-    if (layout === 'split_image_right' || layout === 'split_image_left') {
-      const isLeft = layout === 'split_image_left';
+    // 3 ẢNH
+    const [a, b, c] = imgs;
+    const allP = imgs.every(u => o(u) === 'portrait');
+    const allL = imgs.every(u => o(u) === 'landscape');
+    if (allP) {
       return (
-        <div className={`${containerClass} ${isLeft ? 'flex-row-reverse' : 'flex-row'} animate-fade-in`}>
-          {/* Text Content — chiếm 40% */}
-          <div key={slide.title} className="basis-[40%] shrink-0 p-10 md:p-12 flex flex-col justify-center animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold mb-6 leading-[1.1] text-white tracking-tight">
-              {slide.title}
-            </h2>
-            <div className="flex flex-col gap-5 flex-1 overflow-y-auto pr-3 custom-scrollbar">
-              {slide.points.map((point, idx) => (
-                <div key={idx} className="flex gap-3.5 items-start group animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
-                  <div className="w-2.5 h-2.5 mt-[0.7rem] rounded-full bg-[#e8b84b] shrink-0 transition-transform group-hover:scale-150"></div>
-                  <p className="text-lg md:text-xl lg:text-[21px] text-gray-200 leading-relaxed font-light">{point}</p>
-                </div>
-              ))}
+        <div className="grid grid-cols-3 gap-4 h-[34vh] min-h-0">
+          {imgs.map((u, i) => <Card key={u} src={u} delay={baseDelay + i * 380} className="h-full" />)}
+        </div>
+      );
+    }
+    if (allL) {
+      return (
+        <div className="grid grid-rows-3 gap-3 h-[50vh] min-h-0">
+          {imgs.map((u, i) => <Card key={u} src={u} delay={baseDelay + i * 380} className="h-full min-h-0" />)}
+        </div>
+      );
+    }
+    // Trộn: ảnh đầu nổi bật full-width, 2 ảnh còn lại hàng dưới
+    return (
+      <div className="flex flex-col gap-4 min-h-0">
+        <Card src={a} delay={baseDelay} className="h-[26vh] w-full" />
+        <div className="grid grid-cols-2 gap-4 h-[18vh]">
+          <Card src={b} delay={baseDelay + 420} className="h-full" />
+          <Card src={c} delay={baseDelay + 800} className="h-full" />
+        </div>
+      </div>
+    );
+  };
 
-              {/* Lời giải thích chi tiết / Phần hồn chữ viết */}
-              {slide.speech_text && (
-                <div className="mt-4 pt-4 border-t border-white/10 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-                  <p className="text-[17px] md:text-[19px] text-gray-400/90 font-light italic leading-relaxed">
-                    "{slide.speech_text}"
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-          {/* Image Section — chiếm 60%, ảnh tràn viền (không chừa khoảng) */}
-          <div className="basis-[60%] shrink-0 relative flex items-stretch justify-center border-l border-white/5">
-            {renderImageGrid()}
-          </div>
+  // ===== THÂN SLIDE =====
+  const renderSlideBody = () => {
+    if (!slide) {
+      // Màn chờ: poster editorial lớn
+      return (
+        <div className="flex-1 flex flex-col items-center justify-center text-center gap-[2.5vh]">
+          <Line delay={100}>
+            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold tracking-[0.2em] uppercase text-[clamp(11px,1.2vw,17px)]">
+              Smart Showroom · Nhã Đạt
+            </span>
+          </Line>
+          <h1 className="uppercase font-black leading-[0.95] tracking-tight">
+            <Line delay={240} className="text-[#2E9E5B] text-[clamp(44px,9vw,150px)]">Ny&apos;ah</Line>
+            <Line delay={400} className="text-[#161616] text-[clamp(52px,11vw,190px)]">Phú Định</Line>
+          </h1>
+          <Line delay={580} className="text-neutral-500 text-[clamp(15px,2vw,28px)] max-w-[78%] mx-auto leading-relaxed">
+            Nói &ldquo;Hey Ny&apos;ah&rdquo; hoặc chạm nút micro — slide sẽ tự hiện theo câu chuyện của bạn.
+          </Line>
         </div>
       );
     }
 
-    // 3. FULL BACKGROUND — ảnh chiếm TRỌN khung, chữ nằm trong khung mờ ở 1 GÓC (dưới-trái).
-    if (layout === 'full_background') {
-      const bgImg = images[currentImageIndex % images.length];
-      return (
-        <div className={`${containerClass} flex-col overflow-hidden relative group animate-fade-in`}>
-          {bgImg && (
-            <div className="absolute inset-0 w-full h-full cursor-pointer overflow-hidden bg-black" onClick={() => setSelectedImage(bgImg)}>
-              {/* Lớp nền mờ lấp khoảng đen */}
-              <div 
-                className="absolute inset-0 w-full h-full bg-cover bg-center blur-3xl opacity-30 scale-[1.15] transition-transform duration-[3000ms] ease-out group-hover:scale-[1.25]"
-                style={{ backgroundImage: `url('${bgImg}')` }}
-              ></div>
-              {/* Ảnh chính */}
-              <img
-                src={bgImg}
-                alt="Ảnh dự án"
-                className="relative z-10 w-full h-full object-contain drop-shadow-2xl transition-transform duration-[2000ms] ease-out group-hover:scale-[1.02]"
-                onError={() => setBrokenImages(prev => ({ ...prev, [bgImg]: true }))}
-              />
-            </div>
-          )}
-          {/* Lớp tối nhẹ chỉ ở góc dưới-trái để chữ nổi mà ảnh vẫn rõ */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/75 via-black/10 to-transparent pointer-events-none"></div>
+    const [t1, t2] = splitTitle(slide.title);
+    const speechLines = toLines(slide.speech_text || '').slice(0, 4);
 
-          {/* Khung chữ ở GÓC dưới-trái */}
-          <div key={slide.title} className="absolute bottom-6 left-6 md:bottom-8 md:left-8 max-w-[58%] md:max-w-[48%] z-10 animate-fade-in-up">
-            <div className="bg-black/55 backdrop-blur-md rounded-2xl border border-white/10 px-6 py-5 md:px-7 md:py-6 shadow-2xl">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-white tracking-tight leading-tight">
-                {slide.title}
-              </h2>
-              <div className="flex flex-col gap-2.5">
-                {slide.points.slice(0, 4).map((point, idx) => (
-                  <p key={idx} className="text-base md:text-lg text-gray-100 font-light leading-snug border-l-[3px] border-[#e8b84b] pl-3">{point}</p>
-                ))}
-                
-                {/* Lời giải thích chi tiết / Phần hồn chữ viết */}
-                {slide.speech_text && (
-                  <div className="mt-3 pt-3 border-t border-white/20 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                    <p className="text-sm md:text-base text-gray-300 font-light italic leading-snug">
-                      "{slide.speech_text}"
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Chấm chuyển ảnh nếu nhiều ảnh */}
-          {images.length > 1 && (
-            <div className="absolute bottom-4 right-4 flex gap-1.5 z-20 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full border border-white/10">
-              {images.map((_, idx) => (
-                <span key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === (currentImageIndex % images.length) ? 'bg-[#e8b84b] w-4' : 'bg-white/40'}`} />
-              ))}
-            </div>
+    return (
+      <div key={slideKey} className="flex-1 min-h-0 flex flex-col gap-[2.2vh] py-1">
+        {/* Kicker + headline 2 tông */}
+        <div className="shrink-0">
+          <Line delay={60}>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold tracking-[0.2em] uppercase text-[clamp(10px,1.1vw,15px)]">
+              Ny&apos;ah Phú Định
+            </span>
+          </Line>
+          <h1 className="mt-[1.2vh] uppercase font-black leading-[0.98] tracking-tight">
+            <Line delay={180} className="text-[#2E9E5B] text-[clamp(30px,4.6vw,84px)]">{t1}</Line>
+            {t2 && <Line delay={330} className="text-[#161616] text-[clamp(34px,5.4vw,100px)]">{t2}</Line>}
+          </h1>
+          {slide.highlight_number && (
+            <Line delay={470} className="mt-1 font-black leading-none text-transparent text-[clamp(40px,7vw,120px)]">
+              <span style={{ WebkitTextStroke: '3px #2E9E5B' }}>{slide.highlight_number}</span>
+            </Line>
           )}
         </div>
-      );
-    }
 
-    // 4. DARK MINIMAL (Tối giản, nhấn mạnh số liệu)
-    if (layout === 'dark_minimal') {
-      return (
-        <div className={`${containerClass} animate-fade-in`}>
-          {/* Text Content */}
-          <div key={slide.title} className="flex-1 p-12 md:p-16 flex flex-col justify-center relative z-10 animate-fade-in-up">
-            <h2 className="text-3xl md:text-4.5xl font-semibold mb-4 text-white tracking-tight opacity-90">
-              {slide.title}
-            </h2>
-            {slide.highlight_number && (
-              <div className="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#ffffff] to-[#a0a0a0] mb-6 tracking-tighter">
-                {slide.highlight_number}
-              </div>
-            )}
-            <div className="flex flex-col gap-4 max-h-[35vh] overflow-y-auto pr-2 custom-scrollbar">
-              {slide.points.map((point, idx) => (
-                <p key={idx} className="text-[16px] md:text-[18px] text-gray-400 font-light leading-relaxed">{point}</p>
-              ))}
-              
-              {/* Lời giải thích chi tiết / Phần hồn chữ viết */}
-              {slide.speech_text && (
-                <div className="mt-6 pt-5 border-t border-white/10 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-                  <p className="text-[17px] md:text-[19px] text-gray-500 font-light italic leading-relaxed">
-                    "{slide.speech_text}"
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Image Section */}
-          <div className="flex-1 relative flex items-center justify-center p-6 border-l border-neutral-900/40 bg-[#070707]">
-            {renderImageGrid()}
-          </div>
-        </div>
-      );
-    }
+        {/* Khối ảnh (không có ảnh -> bỏ qua, text chiếm trọn) */}
+        {renderImages()}
 
-    return null;
+        {/* Bullet points */}
+        {slide.points && slide.points.length > 0 && (
+          <ul className="shrink-0 space-y-[1vh]">
+            {slide.points.slice(0, 5).map((p, i) => (
+              <li key={i} className="line-mask">
+                <span
+                  className="line-in flex items-start gap-3 text-neutral-800 font-medium leading-snug text-[clamp(16px,2.1vw,32px)]"
+                  style={{ animationDelay: `${1000 + i * 160}ms` }}
+                >
+                  <span className="mt-[0.5em] w-2.5 h-2.5 rounded-full bg-[#2E9E5B] shrink-0" />
+                  <span>{p}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Lời thoại chi tiết — từng câu trượt lên lần lượt */}
+        {speechLines.length > 0 && (
+          <div className="mt-auto shrink-0 border-l-4 border-[#2E9E5B] pl-4 pb-1">
+            {speechLines.map((ln, i) => (
+              <Line key={i} delay={1350 + i * 200} className="text-neutral-500 italic font-light leading-relaxed text-[clamp(13px,1.6vw,24px)]">
+                {ln}
+              </Line>
+            ))}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
-    <div className="h-screen max-h-screen text-white overflow-hidden flex flex-col relative slide-page-bg" style={{ fontFamily: "'Google Sans', 'Product Sans', 'Be Vietnam Pro', sans-serif" }}>
-
+    <div
+      className="h-screen max-h-screen overflow-hidden flex flex-col relative text-[#161616] bg-[#F5F3EC]"
+      style={{ fontFamily: "'Be Vietnam Pro', 'Inter', 'Google Sans', system-ui, sans-serif" }}
+    >
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes floatSlow1 {
-          0% { transform: translate(-10%, -10%) scale(1); }
-          50% { transform: translate(15%, 20%) scale(1.15); }
-          100% { transform: translate(-10%, -10%) scale(1); }
+        .dots { background-image: radial-gradient(rgba(22,22,22,.28) 1.6px, transparent 1.6px); background-size: 16px 16px; }
+        .line-mask { overflow: hidden; }
+        .line-in {
+          animation: lineUp .7s cubic-bezier(.22,1,.36,1) both, glowFade 1.15s ease-out both;
+          will-change: transform, opacity;
         }
-        @keyframes floatSlow2 {
-          0% { transform: translate(20%, 30%) scale(1.1); }
-          50% { transform: translate(-5%, -10%) scale(0.9); }
-          100% { transform: translate(20%, 30%) scale(1.1); }
+        @keyframes lineUp {
+          0% { transform: translateY(112%); opacity: 0; }
+          55% { opacity: 1; }
+          100% { transform: translateY(0); opacity: 1; }
         }
-        @keyframes particleFloat1 {
-          0% { transform: translate(15vw, 105vh) scale(0.8); opacity: 0; }
-          10% { opacity: 0.15; }
-          90% { opacity: 0.15; }
-          100% { transform: translate(25vw, -5vh) scale(1.2); opacity: 0; }
+        @keyframes glowFade {
+          0% { text-shadow: 0 0 16px rgba(255,255,255,.95), 0 4px 28px rgba(46,158,91,.45); }
+          100% { text-shadow: 0 0 0 rgba(255,255,255,0), 0 0 0 rgba(46,158,91,0); }
         }
-        @keyframes particleFloat2 {
-          0% { transform: translate(75vw, 105vh) scale(1.2); opacity: 0; }
-          10% { opacity: 0.12; }
-          90% { opacity: 0.12; }
-          100% { transform: translate(65vw, -5vh) scale(0.8); opacity: 0; }
+        .img-card { animation: imgIn .85s cubic-bezier(.22,1,.36,1) both; will-change: transform, opacity; }
+        @keyframes imgIn {
+          0% { opacity: 0; transform: translateY(26px) scale(.965); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
         }
-        @keyframes particleFloat3 {
-          0% { transform: translate(45vw, 105vh) scale(1); opacity: 0; }
-          10% { opacity: 0.18; }
-          90% { opacity: 0.18; }
-          100% { transform: translate(55vw, -5vh) scale(1.3); opacity: 0; }
+        .marquee-track { animation: marquee 26s linear infinite; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        @keyframes wave { 0%,100% { height: 30%; } 50% { height: 100%; } }
+        .animate-sound-wave { animation: wave .9s ease-in-out infinite; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn .4s ease-out both; }
+        @keyframes scaleUp { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .animate-scale-up { animation: scaleUp .3s cubic-bezier(.22,1,.36,1) both; }
+        @media (prefers-reduced-motion: reduce) {
+          .line-in, .img-card, .marquee-track, .animate-sound-wave {
+            animation-duration: .01ms !important;
+            animation-iteration-count: 1 !important;
+          }
         }
-        @keyframes particleFloat4 {
-          0% { transform: translate(5vw, 105vh) scale(1.1); opacity: 0; }
-          10% { opacity: 0.1; }
-          90% { opacity: 0.1; }
-          100% { transform: translate(15vw, -5vh) scale(0.7); opacity: 0; }
-        }
-        @keyframes particleFloat5 {
-          0% { transform: translate(90vw, 105vh) scale(0.7); opacity: 0; }
-          10% { opacity: 0.15; }
-          90% { opacity: 0.15; }
-          100% { transform: translate(80vw, -5vh) scale(1.1); opacity: 0; }
-        }
-        @keyframes particleFloat6 {
-          0% { transform: translate(30vw, 105vh) scale(1); opacity: 0; }
-          10% { opacity: 0.16; }
-          90% { opacity: 0.16; }
-          100% { transform: translate(40vw, -5vh) scale(1.2); opacity: 0; }
-        }
-        @keyframes particleFloat7 {
-          0% { transform: translate(60vw, 105vh) scale(1.3); opacity: 0; }
-          10% { opacity: 0.1; }
-          90% { opacity: 0.1; }
-          100% { transform: translate(50vw, -5vh) scale(0.9); opacity: 0; }
-        }
-        @keyframes particleFloat8 {
-          0% { transform: translate(80vw, 105vh) scale(0.9); opacity: 0; }
-          10% { opacity: 0.14; }
-          90% { opacity: 0.14; }
-          100% { transform: translate(85vw, -5vh) scale(1.1); opacity: 0; }
-        }
-
-        .animate-float-slow-1 {
-          animation: floatSlow1 35s ease-in-out infinite;
-          top: -20%; left: -10%;
-          will-change: transform;
-        }
-        .animate-float-slow-2 {
-          animation: floatSlow2 40s ease-in-out infinite;
-          bottom: -15%; right: -10%;
-          will-change: transform;
-        }
-        .animate-particle-1 { animation: particleFloat1 25s linear infinite; }
-        .animate-particle-2 { animation: particleFloat2 30s linear infinite; animation-delay: 3s; }
-        .animate-particle-3 { animation: particleFloat3 22s linear infinite; animation-delay: 7s; }
-        .animate-particle-4 { animation: particleFloat4 28s linear infinite; animation-delay: 11s; }
-        .animate-particle-5 { animation: particleFloat5 35s linear infinite; animation-delay: 5s; }
-        .animate-particle-6 { animation: particleFloat6 24s linear infinite; animation-delay: 15s; }
-        .animate-particle-7 { animation: particleFloat7 32s linear infinite; animation-delay: 9s; }
-        .animate-particle-8 { animation: particleFloat8 20s linear infinite; animation-delay: 18s; }
       ` }} />
 
-      {/* Background Decor (bokeh glow + floating particles) */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0 bg-[#060b16]">
-        {/* Lớp mây sáng lớn di chuyển chậm */}
-        <div className="absolute w-[65vw] h-[65vh] bg-[radial-gradient(circle,rgba(232,184,75,0.025)_0%,transparent_70%)] rounded-full blur-[100px] animate-float-slow-1"></div>
-        <div className="absolute w-[55vw] h-[55vh] bg-[radial-gradient(circle,rgba(30,58,138,0.05)_0%,transparent_70%)] rounded-full blur-[100px] animate-float-slow-2"></div>
-        
-        {/* Các hạt bụi vàng (bokeh particles) bay lơ lửng */}
-        <div className="absolute w-2.5 h-2.5 rounded-full bg-[#e8b84b] blur-[0.5px] animate-particle-1"></div>
-        <div className="absolute w-3 h-3 rounded-full bg-[#e8b84b] blur-[1px] animate-particle-2"></div>
-        <div className="absolute w-1.5 h-1.5 rounded-full bg-[#e8b84b] blur-[0.5px] animate-particle-3"></div>
-        <div className="absolute w-2 h-2 rounded-full bg-[#e8b84b] blur-[1px] animate-particle-4"></div>
-        <div className="absolute w-3.5 h-3.5 rounded-full bg-[#e8b84b] blur-[1.5px] animate-particle-5"></div>
-        <div className="absolute w-2 h-2 rounded-full bg-[#e8b84b] blur-[0.5px] animate-particle-6"></div>
-        <div className="absolute w-3.5 h-3.5 rounded-full bg-[#e8b84b] blur-[1px] animate-particle-7"></div>
-        <div className="absolute w-1.5 h-1.5 rounded-full bg-[#e8b84b] blur-[0.5px] animate-particle-8"></div>
+      {/* Trang trí editorial: chấm bi + vòng tròn (không bắt sự kiện chuột) */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="dots absolute top-[8%] right-[5%] w-44 h-28 opacity-70" />
+        <div className="dots absolute top-[46%] left-[3%] w-28 h-44 opacity-60" />
+        <div className="absolute -top-[10vh] -left-[10vh] w-[26vw] h-[26vw] rounded-full bg-[#E3F0E3]" />
+        <div className="absolute top-[17%] -right-16 w-[18vw] h-[18vw] rounded-full border-[3px] border-[#2E9E5B]/20" />
+        <div className="absolute bottom-[15%] -left-10 w-[12vw] h-[12vw] rounded-full border-2 border-[#2E9E5B]/15" />
       </div>
 
-      {/* Header */}
-      <header className="px-4 md:px-6 py-2 z-10 flex justify-between items-center border-b border-[#1e2a45] bg-[#0a0f1e]/80 backdrop-blur-md shrink-0">
-        {/* Brand */}
-        <div className="flex items-center gap-2.5">
-          <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-lg shrink-0"><img src="/logo.svg" alt="Ny'ah Phú Định" className="w-[82%] h-[82%] object-contain" /></span>
+      {/* Header: badge logo + tên | trạng thái + điều hướng */}
+      <header className="relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <span className="w-12 h-12 rounded-2xl overflow-hidden bg-white shadow-md border border-black/5 flex items-center justify-center shrink-0">
+            <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
+          </span>
           <div>
-            <h1 className="font-bold text-sm leading-tight">Ny'ah Phú Định</h1>
-            <p className="text-[10px] text-gray-400 leading-tight">Trình chiếu thông minh · Nhã Đạt AI</p>
+            <p className="font-black tracking-tight leading-none text-[clamp(15px,1.6vw,26px)]">NY&apos;AH PHÚ ĐỊNH</p>
+            <p className="text-neutral-500 font-semibold tracking-[0.22em] uppercase mt-1 text-[clamp(9px,0.9vw,13px)]">A development by Nhã Đạt</p>
           </div>
         </div>
-
-        <div className="flex items-center gap-2 md:gap-3">
-          {/* Status Indicator */}
-          <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-[#161d30] border border-[#1e2a45]">
-            <div className="text-sm font-medium">
-              {state === 'idle' && <span className="text-gray-400">Đang chờ</span>}
-              {state === 'listening' && <span className="text-green-400 animate-pulse">Đang nghe...</span>}
-              {state === 'processing' && <span className="text-blue-400">Đang suy nghĩ...</span>}
-              {state === 'speaking' && <span className="text-[#e8b84b]">Đang trả lời</span>}
-            </div>
-            {state === 'speaking' && (
-              <div className="flex items-end gap-[2px] h-4">
-                <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite] h-[30%]"></div>
-                <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.2s] h-[70%]"></div>
-                <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.4s] h-[100%]"></div>
-                <div className="w-1 bg-[#e8b84b] rounded-full animate-[wave_1s_ease-in-out_infinite_0.6s] h-[50%]"></div>
-              </div>
+        <div className="flex items-center gap-2">
+          <div className={`px-4 py-2 rounded-full font-bold uppercase tracking-wide flex items-center gap-2 border text-[clamp(10px,1vw,15px)] ${
+            state === 'listening' ? 'bg-[#E3F0E3] text-[#0E5A34] border-[#2E9E5B]/30'
+            : state === 'processing' ? 'bg-amber-50 text-amber-700 border-amber-200'
+            : state === 'speaking' ? 'bg-[#2E9E5B] text-white border-[#2E9E5B]'
+            : 'bg-white text-neutral-400 border-black/10'
+          }`}>
+            {state === 'listening' && (
+              <span className="flex items-end gap-0.5 h-3" aria-hidden>
+                <span className="w-0.5 bg-[#0E5A34] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
+                <span className="w-0.5 bg-[#0E5A34] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
+                <span className="w-0.5 bg-[#0E5A34] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+              </span>
             )}
+            {state === 'idle' && 'Đang chờ'}
+            {state === 'listening' && 'Đang nghe'}
+            {state === 'processing' && 'Đang suy nghĩ…'}
+            {state === 'speaking' && 'Đang trả lời'}
           </div>
-
-          {/* Điều hướng: sang Voice / thoát về trang chủ */}
           <Link
             href="/voice"
             title="Chuyển sang đàm thoại giọng nói"
-            className="hidden sm:flex items-center gap-1.5 text-sm px-3 py-2 rounded-full bg-[#161d30] border border-[#1e2a45] text-gray-300 hover:text-white hover:border-[#e8b84b]/50 transition"
+            className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full bg-white border border-black/10 text-neutral-500 hover:text-[#0E5A34] hover:border-[#2E9E5B]/40 transition"
           >
-            🎧 <span className="hidden md:inline">Voice</span>
+            🎧
           </Link>
           <Link
             href="/"
             onClick={() => { isListeningLoopActive.current = false; if (activeAudioRef.current) activeAudioRef.current.pause(); stopAmbientListening(); teardownVAD(); }}
             title="Thoát về trang chủ"
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-[#161d30] border border-[#1e2a45] text-gray-400 hover:text-white hover:border-red-500/50 transition"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-black/10 text-neutral-500 hover:text-red-500 hover:border-red-300 transition"
           >
             ✕
           </Link>
         </div>
       </header>
 
-      {/* Main Content Area - The Slide */}
-      <main className="flex-1 min-h-0 z-10 flex items-center justify-center p-3">
-        {slide ? (
-          <div className="w-full h-full flex items-center justify-center">
-            {renderSlideContent()}
-          </div>
-        ) : (
-          <div className="text-center p-12 max-w-2xl mx-auto">
-            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-[#e8b84b] to-[#c49a2a] rounded-full flex items-center justify-center text-4xl mb-8 shadow-[0_0_50px_rgba(232,184,75,0.3)] animate-bounce-slow">
-              🎙️
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Xin chào! Tôi là Slide Bot</h2>
-            <p className="text-gray-400 text-lg">Hãy nhấn nút Micro bên dưới và đặt câu hỏi về dự án. Tôi sẽ tạo ngay một Slide trả lời trực quan cho bạn.</p>
-          </div>
-        )}
+      {/* Nội dung slide */}
+      <main className="relative z-10 flex-1 min-h-0 px-[5vw] flex flex-col">
+        {renderSlideBody()}
       </main>
 
-      {/* Footer / Controls */}
-      <footer className="px-4 py-3 z-10 flex flex-wrap items-center justify-center gap-2.5 bg-gradient-to-t from-[#0a0f1e] to-transparent shrink-0">
-        <div className={`text-sm font-medium bg-[#161d30]/80 backdrop-blur px-4 py-2.5 rounded-2xl border text-gray-300 min-w-0 max-w-[42vw] flex-1 flex items-center justify-center gap-2.5 transition-colors ${
-          state === 'listening' ? 'border-green-500/60' : state === 'processing' ? 'border-blue-500/60' : 'border-[#1e2a45]'
+      {/* Marquee slogan CTA */}
+      <div className="relative z-10 shrink-0 overflow-hidden bg-[#0E5A34] py-[1.1vh]">
+        <div className="marquee-track flex w-max items-center gap-12 whitespace-nowrap font-black uppercase tracking-wider text-[#F5F3EC] text-[clamp(14px,1.9vw,30px)]">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <span key={i} className="flex items-center gap-12">
+              <span>{SLOGAN}</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#A8D94A] inline-block" />
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Điều khiển: transcript + toggle đọc + micro */}
+      <footer className="relative z-10 px-[4vw] py-[1.2vh] flex items-center justify-center gap-3 shrink-0">
+        <div className={`flex-1 max-w-[46vw] min-w-0 flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white border font-medium text-neutral-600 transition-colors text-[clamp(11px,1.2vw,17px)] ${
+          state === 'listening' ? 'border-[#2E9E5B]/50' : state === 'processing' ? 'border-amber-300' : 'border-black/10'
         }`}>
           {state === 'listening' && (
-            // Tín hiệu sóng âm "đang nghe" — 3 vạch nhấp nháy lệch pha
             <span className="flex items-end gap-0.5 h-4 shrink-0" aria-hidden>
-              <span className="w-0.5 bg-green-400 rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
-              <span className="w-0.5 bg-green-400 rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
-              <span className="w-0.5 bg-green-400 rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+              <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
+              <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
+              <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
             </span>
           )}
           {state === 'processing' && (
-            <span className="w-3.5 h-3.5 shrink-0 border-2 border-blue-400/40 border-t-blue-400 rounded-full animate-spin" aria-hidden />
+            <span className="w-3.5 h-3.5 shrink-0 border-2 border-amber-400/40 border-t-amber-500 rounded-full animate-spin" aria-hidden />
           )}
           <span className="truncate">{transcript}</span>
         </div>
 
-        {/* Chỉ còn toggle Đọc to (nghe ngầm điều khiển bằng nút mic) */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              const newVal = !voiceOn;
-              setVoiceOn(newVal);
-              // Khi tắt đọc: dừng audio đang phát ngay lập tức
-              if (!newVal) {
-                if (activeAudioRef.current) {
-                  try { activeAudioRef.current.onended = null; activeAudioRef.current.pause(); } catch (e) {}
-                  activeAudioRef.current = null;
-                }
-                audioQueueRef.current = [];
-                isPlayingRef.current = false;
-                onSpeakDone();
+        <button
+          onClick={() => {
+            const newVal = !voiceOn;
+            setVoiceOn(newVal);
+            // Khi tắt đọc: dừng audio đang phát ngay lập tức
+            if (!newVal) {
+              if (activeAudioRef.current) {
+                try { activeAudioRef.current.onended = null; activeAudioRef.current.pause(); } catch (e) {}
+                activeAudioRef.current = null;
               }
-            }}
-            title="Bật/tắt giọng đọc khi slide hiện"
-            className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 ${
-              voiceOn
-                ? 'bg-[#e8b84b]/15 border-[#e8b84b]/50 text-[#e8b84b]'
-                : 'bg-[#161d30] border-[#1e2a45] text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            {voiceOn ? '🔊 Đọc: Bật' : '🔇 Đọc: Tắt'}
-          </button>
-        </div>
+              audioQueueRef.current = [];
+              isPlayingRef.current = false;
+              onSpeakDone();
+            }
+          }}
+          title="Bật/tắt giọng đọc khi slide hiện"
+          className={`px-4 py-2.5 rounded-full font-semibold border transition-all flex items-center gap-1.5 text-[clamp(11px,1.1vw,16px)] ${
+            voiceOn
+              ? 'bg-[#E3F0E3] border-[#2E9E5B]/50 text-[#0E5A34]'
+              : 'bg-white border-black/10 text-neutral-400 hover:text-neutral-600'
+          }`}
+        >
+          {voiceOn ? '🔊 Đọc: Bật' : '🔇 Đọc: Tắt'}
+        </button>
 
         <div className="relative">
-          {/* Vòng tròn lan tỏa sáng nhấp nháy theo âm lượng giọng nói thực tế (VAD RMS) kiểu ChatGPT Voice */}
+          {/* Vòng lan tỏa theo âm lượng thật (VAD RMS) */}
           {state !== 'idle' && (
-            <div 
+            <div
               ref={volumeVisualRef}
               className="absolute inset-0 rounded-full transition-transform duration-75 pointer-events-none z-0"
-              style={{ transform: 'scale(1)', backgroundColor: 'rgba(239, 68, 68, 0.2)', willChange: 'transform' }}
+              style={{ transform: 'scale(1)', backgroundColor: 'rgba(46,158,91,0.18)', willChange: 'transform' }}
             />
           )}
           <button
             onClick={toggleMic}
-            className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-xl transition-all duration-300 relative z-10 ${
+            className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-xl transition-all duration-300 relative z-10 ${
               state !== 'idle'
-                ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20'
-                : 'bg-[#e8b84b] hover:bg-[#c49a2a] shadow-[#e8b84b]/30 text-gray-900'
+                ? 'bg-red-500 hover:bg-red-600 shadow-red-500/25 text-white'
+                : 'bg-[#2E9E5B] hover:bg-[#0E5A34] shadow-[#2E9E5B]/30 text-white'
             }`}
           >
             {state !== 'idle' ? '⏹️' : '🎤'}
           </button>
         </div>
-
       </footer>
 
-      {/* Fullscreen Image Lightbox Modal */}
+      {/* Lightbox phóng to ảnh */}
       {selectedImage && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md cursor-zoom-out animate-fade-in"
           onClick={() => setSelectedImage(null)}
         >
-          <button 
+          <button
             className="absolute top-6 right-6 text-white/70 hover:text-white text-4xl transition-colors font-light"
             onClick={() => setSelectedImage(null)}
           >
             &times;
           </button>
-          <img 
-            src={selectedImage} 
-            alt="Fullscreen" 
-            className="max-w-[95vw] max-h-[90vh] object-contain rounded-xl shadow-2xl border border-neutral-800/80 animate-scale-up"
+          <img
+            src={selectedImage}
+            alt="Fullscreen"
+            className="max-w-[95vw] max-h-[90vh] object-contain rounded-xl shadow-2xl animate-scale-up"
           />
         </div>
       )}
-
-      {/* Global styles for animation & scrollbar */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes wave {
-          0%, 100% { height: 30%; }
-          50% { height: 100%; }
-        }
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes scaleUp {
-          from { transform: scale(0.95); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          will-change: transform, opacity;
-        }
-        .animate-fade-in {
-          animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          will-change: opacity;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .animate-fade-in-up, .animate-fade-in, .animate-scale-up, .animate-slide-up, .animate-bounce-slow {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-          }
-        }
-        .animate-scale-up {
-          animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .animate-sound-wave {
-          animation: wave 0.9s ease-in-out infinite;
-          will-change: height;
-        }
-        /* Nền trang: tối sang, hơi ngả navy/charcoal như ảnh bokeh */
-        .slide-page-bg {
-          background:
-            radial-gradient(120% 80% at 50% 0%, #14161f 0%, #0b0c12 45%, #06070b 100%);
-        }
-        /* Khung slide: gradient charcoal đậm + ánh sáng nhẹ ở góc */
-        .slide-stage {
-          background:
-            radial-gradient(90% 120% at 15% 10%, rgba(40,44,60,0.55) 0%, transparent 55%),
-            radial-gradient(80% 100% at 100% 100%, rgba(60,50,80,0.30) 0%, transparent 60%),
-            linear-gradient(140deg, #101218 0%, #0a0b10 50%, #0c0d14 100%);
-        }
-        .animate-slide-up {
-          animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .delay-100 { animation-delay: 100ms; }
-        .animate-bounce-slow {
-          animation: bounce 3s infinite;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(30, 42, 69, 0.3);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(232, 184, 75, 0.5);
-          border-radius: 10px;
-        }
-      `}} />
     </div>
   );
 }
