@@ -702,8 +702,16 @@ export async function POST(req: NextRequest) {
     }
 
     // 2) Fallback Gemini (responseSchema ép đúng cấu trúc)
+    // Groq + Gemini đều có the rate-limit/loi mang. Neu ca 2 deu hong MA da co
+    // staticSlide (tu khoa khop san, anh + text du phong deterministic) -> DUNG
+    // staticSlide thay vi 500 trang tay. Client gap loi se hien "xin loi co loi
+    // xay ra" roi nghe lai -> tuong nhu mic khong nhan, that ra la backend chet.
     if (!rawText) {
-      if (!GEMINI_API_KEY) return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
+      if (!GEMINI_API_KEY) {
+        if (staticSlide) { rawText = '{}'; } else {
+          return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
+        }
+      } else {
       const reqBody = {
         contents: [{ role: 'user', parts: [{ text: message }] }],
         system_instruction: { parts: [{ text: systemWithAmbient }] },
@@ -734,10 +742,17 @@ export async function POST(req: NextRequest) {
       if (!geminiResponse.ok) {
         const errText = await geminiResponse.text();
         console.error(`Slide Gemini lỗi ${geminiResponse.status}: ${errText}`);
-        return NextResponse.json({ error: 'Có lỗi xảy ra, vui lòng thử lại.' }, { status: geminiResponse.status });
+        if (staticSlide) {
+          console.warn('[Slide] Gemini loi nhung co staticSlide khop tu khoa -> dung fallback tinh thay vi 500');
+          rawText = '{}';
+        } else {
+          return NextResponse.json({ error: 'Có lỗi xảy ra, vui lòng thử lại.' }, { status: geminiResponse.status });
+        }
+      } else {
+        const data = await geminiResponse.json();
+        rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
       }
-      const data = await geminiResponse.json();
-      rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+      }
     }
 
     const parsed: any = parseSlide(rawText);

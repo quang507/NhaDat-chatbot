@@ -531,7 +531,8 @@ export default function SlideBotPage() {
             <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
           </span>
           <div>
-            <p className="font-black tracking-tight leading-none text-[clamp(15px,1.6vw,26px)]">NY&apos;AH PHÚ ĐỊNH</p>
+            {/* leading-none cat dau nang duoi ĐỊNH — dung leading-[1.2] de chua du dau */}
+            <p className="font-black tracking-tight leading-[1.2] text-[clamp(15px,1.6vw,26px)]">NY&apos;AH PHÚ ĐỊNH</p>
             <p className="text-neutral-500 font-semibold tracking-[0.22em] uppercase mt-1 text-[clamp(9px,0.9vw,13px)]">A development by Nhã Đạt</p>
           </div>
         </div>
