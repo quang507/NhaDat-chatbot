@@ -484,12 +484,17 @@ async function main() {
       filesToEmbed.push({ file, relativePath, hash: currentHash });
     }
 
-    // Ưu tiên embed file metadata ảnh TRƯỚC, để nếu dính 429 giữa chừng thì URL ảnh vẫn kịp vào index
-    filesToEmbed.sort((a, b) => {
-      const am = a.relativePath.includes('generated_images_metadata') ? 0 : 1;
-      const bm = b.relativePath.includes('generated_images_metadata') ? 0 : 1;
-      return am - bm;
-    });
+    // Ưu tiên embed các file QUAN TRỌNG trước, để nếu dính 429 giữa chừng thì dữ liệu
+    // cốt lõi (URL ảnh, bảng giá/diện tích từng lô) vẫn kịp vào index.
+    // Số càng nhỏ càng được nhúng sớm.
+    const embedPriority = (p) => {
+      if (p.includes('generated_images_metadata')) return 0; // URL ảnh cho slide
+      if (p.includes('Data_productlist')) return 1;          // bảng giá + diện tích GCN từng lô
+      if (p.includes('05_ThongTinCacLo')) return 2;          // bảng gộp thông tin lô
+      if (p.includes('qa-generated')) return 3;              // Q&A chuẩn văn phong
+      return 10;
+    };
+    filesToEmbed.sort((a, b) => embedPriority(a.relativePath) - embedPriority(b.relativePath));
 
     console.log(`Giữ nguyên: ${filesSkipped} files. Cần sinh vector mới cho: ${filesToEmbed.length} files.`);
 
