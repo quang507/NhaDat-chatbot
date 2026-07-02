@@ -20,71 +20,81 @@ interface DemoCase {
   images: DemoImg[];
 }
 
-const IMG_A = '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png';
-const IMG_B = '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg';
-const IMG_C = '/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg';
+// ẢNH THẬT từ thư viện public/images — hướng ghi đúng theo kích thước file thật
+// (đã quét naturalWidth/naturalHeight toàn bộ 183 ảnh: 123 ngang, 60 dọc)
+const BEP_COSMO = '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png';                      // 1920x1080 NGANG
+const CONG_VAO = '/images/01_NyAh-PhuDinh/tien_ich/cong_vao/tien-ich-1.jpg';                                    // 1920x1080 NGANG
+const TIEN_DO = '/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_05-2026-1-jpg.jpg';                             // 1623x1080 NGANG
+const MAP_18P = '/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg';                      // 1728x1080 NGANG
+const THANG_XOAN = '/images/01_NyAh-PhuDinh/noi_that/thang_xoan/thang-xoan.jpg';                                // 720x1080 DỌC
+const PK_FUSION = '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png';     // 945x1080 DỌC
+const PK_COSMO = '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png';        // 887x1080 DỌC
+const PHAN_LO = '/images/01_NyAh-PhuDinh/mat_bang/ban-do-phan-lo-dien-tich.jpg';                                // 1449x2048 DỌC
+const PK_SIGNATURE = '/images/01_NyAh-PhuDinh/noi_that/signature_by_codinachs/phong-khach-01.jpg';              // 1707x2048 DỌC
+const KHUON_VIEN = '/images/01_NyAh-PhuDinh/tien_ich/lanscape-khuon-vien-anh-chup/enscape_2021-08-09-14-00-56.jpg'; // 1707x2048 DỌC
+const MAT_TIEN_FUSION = '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_mat-tien.jpg';              // 1447x2048 DỌC
 
 const SLOGAN = 'Sống đẹp hơn chung cư — Sinh lời hơn thổ cư';
 
 const CASES: DemoCase[] = [
   {
-    id: '1-ngang', label: '1 ảnh — NGANG', title: 'Mặt bằng tầng trệt',
-    points: ['Garage trong nhà, cửa cuốn tự động', 'Thông tầng trần cao, siêu sáng'],
-    speech: 'Tầng trệt có garage riêng và phòng khách thông tầng rất thoáng ạ.',
-    images: [{ src: IMG_B, orient: 'landscape' }],
+    id: '1-ngang', label: '1 ảnh — NGANG', title: 'Bếp và phòng ăn',
+    points: ['Đảo bếp kiêm quầy bar', 'Tủ lạnh side by side, máy rửa chén'],
+    speech: 'Gian bếp mở với đảo bar là nơi cả nhà quây quần mỗi ngày ạ.',
+    images: [{ src: BEP_COSMO, orient: 'landscape' }],
   },
   {
-    id: '1-doc', label: '1 ảnh — DỌC', title: 'Phối cảnh phòng khách',
-    points: ['Trần cao 5.8m nhìn lên lửng', 'Ánh sáng trực tiếp từ giếng trời'],
-    speech: 'Phòng khách thông tầng là điểm nhấn đắt giá nhất của căn nhà.',
-    images: [{ src: IMG_A, orient: 'portrait' }],
+    id: '1-doc', label: '1 ảnh — DỌC', title: 'Thang xoắn biến hóa',
+    points: ['Giải phóng không gian từng tầng', 'Điểm nhấn kiến trúc độc bản'],
+    speech: 'Thang xoắn biến hóa là chữ ký thiết kế riêng của Nhã Đạt.',
+    images: [{ src: THANG_XOAN, orient: 'portrait' }],
   },
   {
-    id: '2-ngang', label: '2 ảnh — cùng NGANG', title: 'Mặt bằng hai tầng',
-    points: ['Tầng trệt: garage + khách', 'Tầng 2: bếp, bar và phòng ăn'],
-    speech: 'Hai tầng dưới được bố trí trọn vẹn cho sinh hoạt chung ạ.',
-    images: [{ src: IMG_B, orient: 'landscape' }, { src: IMG_C, orient: 'landscape' }],
+    id: '2-ngang', label: '2 ảnh — cùng NGANG', title: 'Tiện ích và tiến độ',
+    points: ['Cổng chính tự động, compound biệt lập', 'Tiến độ xây dựng cập nhật tháng 5'],
+    speech: 'Khu compound đã hoàn thiện cổng chào và đang xây đúng tiến độ ạ.',
+    images: [{ src: CONG_VAO, orient: 'landscape' }, { src: TIEN_DO, orient: 'landscape' }],
   },
   {
-    id: '2-doc', label: '2 ảnh — cùng DỌC', title: 'Không gian sống',
-    points: ['Phòng khách thông tầng', 'Bếp mở với đảo bar'],
-    speech: 'Mỗi không gian đều có ánh sáng tự nhiên trực tiếp.',
-    images: [{ src: IMG_A, orient: 'portrait' }, { src: IMG_C, orient: 'portrait' }],
+    id: '2-doc', label: '2 ảnh — cùng DỌC', title: 'Hai phong cách phòng khách',
+    points: ['Fusion Gen 5 — thông tầng siêu sáng', 'Cosmo Gen 2 — mặt tiền 5 mét'],
+    speech: 'Anh chị so sánh trực tiếp hai mẫu phòng khách được yêu thích nhất.',
+    images: [{ src: PK_FUSION, orient: 'portrait' }, { src: PK_COSMO, orient: 'portrait' }],
   },
   {
-    id: '2-tron', label: '2 ảnh — TRỘN (dọc + ngang)', title: 'Thiết kế và mặt bằng',
-    points: ['Phối cảnh thực tế bàn giao', 'Mặt bằng công năng từng tầng'],
-    speech: 'Anh chị xem phối cảnh bên trái và mặt bằng chi tiết bên phải ạ.',
-    images: [{ src: IMG_A, orient: 'portrait' }, { src: IMG_B, orient: 'landscape' }],
+    id: '2-tron', label: '2 ảnh — TRỘN (dọc + ngang)', title: 'Vị trí và phân lô',
+    points: ['Bản đồ phân lô kèm diện tích từng căn', 'Chỉ 18 phút về Quận 1'],
+    speech: 'Bên trái là sơ đồ phân lô chi tiết, bên phải là đường về Quận 1 ạ.',
+    images: [{ src: PHAN_LO, orient: 'portrait' }, { src: MAP_18P, orient: 'landscape' }],
   },
   {
-    id: '3-ngang', label: '3 ảnh — cùng NGANG', title: 'Mặt bằng ba tầng',
-    points: ['Trệt, lửng và lầu 1 liền mạch'],
-    speech: 'Ba tầng dưới xếp chồng để anh chị dễ hình dung luồng di chuyển.',
+    id: '3-ngang', label: '3 ảnh — cùng NGANG', title: 'Một vòng dự án',
+    points: ['Cổng vào — Bếp mẫu — Công trường thật'],
+    speech: 'Ba góc nhìn từ tiện ích, nhà mẫu đến tiến độ thi công thực tế.',
     images: [
-      { src: IMG_B, orient: 'landscape' },
-      { src: IMG_C, orient: 'landscape' },
-      { src: IMG_B, orient: 'landscape' },
+      { src: CONG_VAO, orient: 'landscape' },
+      { src: BEP_COSMO, orient: 'landscape' },
+      { src: TIEN_DO, orient: 'landscape' },
     ],
   },
   {
-    id: '3-doc', label: '3 ảnh — cùng DỌC', title: 'Ba góc nội thất',
-    points: ['Khách — Bếp — Phòng ngủ master'],
-    speech: 'Ba không gian chính của căn nhà, góc nào cũng có view đẹp.',
+    id: '3-doc', label: '3 ảnh — cùng DỌC', title: 'Ba chất sống Ny’ah',
+    points: ['Thang xoắn — Khuôn viên xanh — Signature'],
+    speech: 'Từ kiến trúc, cảnh quan đến nội thất, góc nào cũng đáng sống.',
     images: [
-      { src: IMG_A, orient: 'portrait' },
-      { src: IMG_C, orient: 'portrait' },
-      { src: IMG_A, orient: 'portrait' },
+      { src: THANG_XOAN, orient: 'portrait' },
+      { src: KHUON_VIEN, orient: 'portrait' },
+      { src: PK_SIGNATURE, orient: 'portrait' },
     ],
   },
   {
-    id: '3-tron', label: '3 ảnh — TRỘN', title: 'Tổng quan căn nhà',
-    points: ['Ảnh nổi bật + 2 ảnh chi tiết'],
-    speech: 'Ảnh lớn là phối cảnh tổng thể, hai ảnh dưới là chi tiết công năng.',
+    id: '3-tron', label: '3 ảnh — TRỘN', title: 'Tổng quan Fusion Gen 5',
+    points: ['Vị trí — Mặt tiền — Gian bếp'],
+    speech: 'Ảnh lớn là kết nối giao thông, hai ảnh dưới là mặt tiền và bếp ạ.',
     images: [
-      { src: IMG_B, orient: 'landscape' },
-      { src: IMG_A, orient: 'portrait' },
-      { src: IMG_C, orient: 'landscape' },
+      { src: MAP_18P, orient: 'landscape' },
+      { src: MAT_TIEN_FUSION, orient: 'portrait' },
+      { src: BEP_COSMO, orient: 'landscape' },
     ],
   },
   {
