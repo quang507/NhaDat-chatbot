@@ -41,11 +41,19 @@ export function useVoiceAgent({
   const VAD_FRAMES = 6;
   const SPEAK_GRACE_MS = 900;
 
+  const onSpeechResultRef = useRef(onSpeechResult);
+  const onStateChangeRef = useRef(onStateChange);
+
+  useEffect(() => {
+    onSpeechResultRef.current = onSpeechResult;
+    onStateChangeRef.current = onStateChange;
+  }, [onSpeechResult, onStateChange]);
+
   const setState = useCallback((newState: ChatState) => {
     setStateInternal(newState);
     chatStateRef.current = newState;
-    if (onStateChange) onStateChange(newState);
-  }, [onStateChange]);
+    if (onStateChangeRef.current) onStateChangeRef.current(newState);
+  }, []);
 
   const teardownVAD = useCallback(() => {
     if (vadRafRef.current != null) { cancelAnimationFrame(vadRafRef.current); vadRafRef.current = null; }
@@ -228,6 +236,8 @@ export function useVoiceAgent({
     playNextAudio();
   }, [voiceOn, playNextAudio, startListening, setState]);
 
+
+
   useEffect(() => {
     if (!voiceOn) {
       if (activeAudioRef.current) {
@@ -275,8 +285,8 @@ export function useVoiceAgent({
 
       setTranscript(`🎧 Nhận diện: "${resultText}"`);
       setState('processing');
-      if (onSpeechResult) {
-        onSpeechResult(resultText);
+      if (onSpeechResultRef.current) {
+        onSpeechResultRef.current(resultText);
       }
     };
 
@@ -309,8 +319,7 @@ export function useVoiceAgent({
     return () => {
       stopAllVoiceActivities();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [voiceOn]);
+  }, [setState, startListening, stopAllVoiceActivities]);
 
   return {
     state,
