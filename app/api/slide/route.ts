@@ -477,7 +477,7 @@ export async function POST(req: NextRequest) {
           title: "Phòng ngủ Master Cosmo",
           points: ["Phòng ngủ master rộng lớn", "Bố trí giường king-size thoải mái", "Hệ tủ quần áo kính sang trọng"],
           speech_text: "Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_ngu-master.png']
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png']
         };
       } else if (model === 'fusion_gen_5') {
         staticSlide = {
@@ -927,7 +927,7 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = getImagesForSpace(model, 'phong_ngu', 'master');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_ngu-master.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png'];
           } else if (model === 'fusion_gen_5') {
             parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png'];
           } else {
@@ -961,7 +961,7 @@ export async function POST(req: NextRequest) {
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_ngu-master.png',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png',
               '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png',
               '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-3.png'
             ];

@@ -292,9 +292,6 @@ export default function SlideBotPage() {
 
   const SLOGAN = 'Sống đẹp hơn chung cư — Sinh lời hơn thổ cư';
 
-  const toLines = (t: string): string[] =>
-    (t || '').replace(/\s+/g, ' ').match(/[^.!?…]+[.!?…]?/g)?.map(s => s.trim()).filter(Boolean) || [];
-
   const splitTitle = (t: string): [string, string] => {
     const w = (t || '').trim().split(/\s+/);
     if (w.length <= 2) return [w.join(' '), ''];
@@ -433,7 +430,6 @@ export default function SlideBotPage() {
     }
 
     const [t1, t2] = splitTitle(slide.title);
-    const speechLines = toLines(slide.speech_text || '').slice(0, 4);
 
     return (
       <div key={slideKey} className="flex-1 min-h-0 flex flex-col gap-[2.2vh] py-1">
@@ -472,15 +468,6 @@ export default function SlideBotPage() {
           </ul>
         )}
 
-        {speechLines.length > 0 && (
-          <div className="mt-auto shrink-0 border-l-4 border-[#2E9E5B] pl-4 pb-1">
-            {speechLines.map((ln, i) => (
-              <Line key={i} delay={1350 + i * 200} className="text-neutral-500 italic font-light leading-relaxed text-[clamp(13px,1.6vw,24px)]">
-                {ln}
-              </Line>
-            ))}
-          </div>
-        )}
       </div>
     );
   };
