@@ -170,10 +170,11 @@ export default function SlideBotPage() {
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // KHÔNG gửi ambient lên API: client đã lọc bằng classifyAmbientIntent rồi.
-        // Gửi ambient:true làm server thêm luật skip quá gắt -> LLM hay trả skip/không
-        // ảnh, trong khi trang voice gọi cùng API không cờ này thì luôn có ảnh.
-        body: JSON.stringify({ message: text })
+        // Gửi cờ ambient để server áp CỔNG TIN CẬY (chỉ tạo slide khi RAG đủ điểm hoặc khớp
+        // slide tĩnh; câu mơ hồ -> skip). Trước đây bỏ cờ này vì server skip quá gắt + mất ảnh,
+        // nhưng đã sửa: bỏ luật ép LLM skip (AMBIENT_RULE) nên chủ đề thật luôn có ảnh, chỉ câu
+        // mơ hồ/nghe nhầm mới bị bỏ. Kết hợp cổng intent client (scoring) -> 2 lớp lọc slide sai.
+        body: JSON.stringify({ message: text, ambient })
       });
 
       if (!res.ok) throw new Error('API lỗi');
