@@ -2,10 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { cleanTextForTTS, splitSentences, ttsUrl, normalizeVietnameseSpeech } from '@/lib/speech';
+import { splitSentences } from '@/lib/speech';
 import { classifyAmbientIntent } from '@/lib/intent';
-
-type ChatState = 'idle' | 'listening' | 'processing' | 'speaking' | 'error';
+import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -20,11 +19,6 @@ interface LogItem {
 }
 
 export default function VoicePage() {
-  const [state, setState] = useState<ChatState>('idle');
-  const [transcript, setTranscript] = useState('');
-  const [response, setResponse] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
-  
   // Background images state
   const [backgroundImages, setBackgroundImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -34,28 +28,8 @@ export default function VoicePage() {
   const [showDebug, setShowDebug] = useState(false);
   const [logFilter, setLogFilter] = useState<'ALL' | 'SPEECH' | 'API' | 'ERROR'>('ALL');
   
-  const recognitionRef = useRef<any>(null);
-  const audioQueueRef = useRef<{ text: string; url: string; audio: HTMLAudioElement }[]>([]);
-  const isPlayingAudioRef = useRef<boolean>(false);
-  const activeAudioRef = useRef<HTMLAudioElement | null>(null);
-  const isStreamFinishedRef = useRef<boolean>(false);
   const chatHistoryRef = useRef<Message[]>([]);
-  const isListeningLoopActive = useRef(false);
-  const isWakeWordModeRef = useRef(false);
-  const audioChunksBuffer = useRef<string>('');
-
-  const chatStateRef = useRef<ChatState>('idle');
-  const isRecognitionRunningRef = useRef<boolean>(false);
-
-  // Barge-in (nói chèn lúc AI đang đọc) — dùng VAD trên stream có khử vọng (echoCancellation)
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const vadRafRef = useRef<number | null>(null);
-  const speakStartRef = useRef<number>(0); // mốc thời gian câu hiện tại bắt đầu đọc
-  const VAD_THRESHOLD = 0.06;  // ngưỡng âm lượng coi là "người dùng đang nói"
-  const VAD_FRAMES = 6;        // số khung liên tiếp vượt ngưỡng mới cắt lời (chống nhiễu)
-  const SPEAK_GRACE_MS = 400;  // bỏ qua 400ms đầu mỗi câu (tránh dư âm/echo)
-
+  
   // Helper to store log function to avoid dependency cycles in useEffect
   const addLogRef = useRef<(type: LogItem['type'], message: string) => void>(() => {});
   
@@ -73,6 +47,34 @@ export default function VoicePage() {
     };
   });
 
+  const addLog = (type: LogItem['type'], message: string) => {
+    addLogRef.current(type, message);
+  };
+
+  const {
+    state,
+    transcript,
+    response,
+    errorMsg,
+    setResponse,
+    setState,
+    startListening,
+    stopAllVoiceActivities,
+    bargeIn,
+    speakSentence,
+    toggleMic,
+    isListeningLoopActive,
+  } = useVoiceAgent({
+    voiceOn: true,
+    onSpeechResult: (text) => {
+      addLog('SPEECH', `Nhận diện kết quả: "${text}"`);
+      handleUserSpeech(text);
+    },
+    onStateChange: (newState) => {
+      addLog('INFO', `Chuyển trạng thái: -> ${newState}`);
+    }
+  });
+
   // Slideshow interval
   useEffect(() => {
     if (backgroundImages.length <= 1) return;
@@ -82,375 +84,10 @@ export default function VoicePage() {
     return () => clearInterval(interval);
   }, [backgroundImages]);
 
-  const addLog = (type: LogItem['type'], message: string) => {
-    addLogRef.current(type, message);
-  };
-
-  // Synchronous state update helper
-  const updateState = (newState: ChatState) => {
-    addLog('INFO', `Chuyển trạng thái: ${chatStateRef.current} -> ${newState}`);
-    setState(newState);
-    chatStateRef.current = newState;
-  };
-
-  // 1. Initialize Web APIs
-  useEffect(() => {
-    addLog('INFO', 'Khởi tạo trang VoicePage...');
-    if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        const rec = new SpeechRecognition();
-        rec.continuous = false;
-        rec.interimResults = false;
-        rec.lang = 'vi-VN';
-        
-        // Trì hoãn 60ms trước khi tự bật "chờ gọi tên": nếu cử chỉ đầu tiên là chạm
-        // thẳng vào orb/nút mic, onClick của nó chạy gần như ngay sau pointerdown và
-        // đã set isListeningLoopActive=true + tự gọi recognition.start() cho đàm thoại
-        // đầy đủ. Không trì hoãn thì 2 cái start() đụng nhau: cái này start() trước,
-        // startListening() sau đó thấy "đã đang chạy" nên bỏ qua -> phải bấm 2 lần mới
-        // thực sự vào đàm thoại.
-        const handleFirstGesture = () => {
-          setTimeout(() => {
-            if (!isListeningLoopActive.current && !isWakeWordModeRef.current) {
-              isWakeWordModeRef.current = true;
-              try { rec.start(); } catch(e) {}
-              setTranscript('Đang chờ gọi tên (Hey Ny\'ah)...');
-            }
-          }, 60);
-        };
-        window.addEventListener('pointerdown', handleFirstGesture, { once: true });
-        window.addEventListener('keydown', handleFirstGesture, { once: true });
-        
-        rec.onstart = () => {
-          isRecognitionRunningRef.current = true;
-          if (isListeningLoopActive.current) {
-            addLog('SPEECH', 'Nhận diện giọng nói bắt đầu (onstart)');
-            updateState('listening');
-            setTranscript('Mời anh/chị nói chuyện ạ...');
-          }
-          setErrorMsg('');
-        };
-        
-        rec.onresult = (event: any) => {
-          const rawText = event.results[0][0].transcript;
-          const resultText = normalizeVietnameseSpeech(rawText) || rawText;
-          
-          if (!isListeningLoopActive.current) {
-            const clean = resultText.toLowerCase();
-            const wakeWords = ['nhã ơi', 'ê nhã', 'hey nhã', 'hey ny', 'hey nỉ', 'ny\'ah ơi', 'hey ny\'ah', 'ny ah ơi', 'hi ny\'ah', 'chào ny\'ah'];
-            if (wakeWords.some(kw => clean.includes(kw))) {
-               addLog('SPEECH', 'Wake word detected!');
-               isListeningLoopActive.current = true;
-               isWakeWordModeRef.current = false;
-               setupVAD();
-               updateState('listening');
-               setTranscript("👋 Dạ, Ny'ah đang nghe đây ạ!");
-               const tts = new Audio(ttsUrl("Dạ, Ny'ah đang nghe đây ạ"));
-               tts.play().catch(() => {});
-            }
-            return;
-          }
-
-          addLog('SPEECH', `Nhận diện kết quả: "${resultText}" (gốc: "${rawText}")`);
-          setTranscript(resultText);
-          updateState('processing');
-          handleUserSpeech(resultText);
-        };
-        
-        rec.onerror = (event: any) => {
-          addLog('ERROR', `Lỗi SpeechRecognition: ${event.error}`);
-          console.error('Speech recognition error', event.error);
-          
-          if (event.error === 'no-speech' || event.error === 'aborted') {
-            // Quietly handle no-speech and abort.
-            // onend event will handle restarting if listening loop is active.
-          } else if (event.error === 'network') {
-            // Web Speech API network error recovery (very common on Chrome/Safari when connection fluctuates or long silence)
-            // Lỗi này xảy ra rất thường xuyên, ta nên phục hồi ngầm thay vì nhá lỗi lên UI làm phiền user.
-            addLog('WARN', 'Lỗi mạng SpeechRecognition (network error), sẽ phục hồi ngầm...');
-            // KHÔNG gọi updateState('error') và setErrorMsg() ở đây.
-            // Do state vẫn là 'listening', sự kiện onend (chạy ngay sau onerror) sẽ tự động kích hoạt startListening() lại.
-            // Có thể thêm delay nhẹ ở onend nếu cần, nhưng thường tự động phục hồi ngay là tốt nhất.
-          } else if (event.error === 'not-allowed') {
-            setErrorMsg('Quyền truy cập Micro bị chặn. Hãy cấp quyền trong cài đặt trình duyệt.');
-            updateState('error');
-            stopAllVoiceActivities();
-          } else {
-            setErrorMsg(`Lỗi micro: ${event.error}`);
-            updateState('error');
-            if (isListeningLoopActive.current) {
-              setTimeout(() => {
-                if (isListeningLoopActive.current) {
-                  startListening();
-                }
-              }, 4000);
-            }
-          }
-        };
-        
-        rec.onend = () => {
-          isRecognitionRunningRef.current = false;
-          addLog('SPEECH', `Nhận diện kết quả kết thúc (onend). Trạng thái hiện tại: ${chatStateRef.current}`);
-          
-          if (isListeningLoopActive.current && chatStateRef.current === 'listening') {
-            addLog('SPEECH', 'Nhận diện dừng bất thường, tự động khởi động lại...');
-            startListening();
-          } else if (!isListeningLoopActive.current && isWakeWordModeRef.current) {
-             setTimeout(() => {
-                if (!isListeningLoopActive.current && isWakeWordModeRef.current) {
-                  try { recognitionRef.current?.start(); } catch(e) {}
-                }
-             }, 100);
-          }
-        };
-        
-        recognitionRef.current = rec;
-        addLog('INFO', 'Đã khởi tạo Web Speech API thành công.');
-      } else {
-        addLog('ERROR', 'Trình duyệt không hỗ trợ Web Speech API.');
-        setErrorMsg('Trình duyệt của bạn không hỗ trợ nhận diện giọng nói (Web Speech API). Hãy thử Chrome hoặc Safari.');
-        updateState('error');
-      }
-    }
-    
-    return () => {
-      addLog('INFO', 'Tắt/dọn dẹp VoicePage.');
-      stopAllVoiceActivities();
-    };
-  }, []);
-
-  const stopAllVoiceActivities = () => {
-    addLog('INFO', 'Gọi stopAllVoiceActivities() - Dừng mọi hoạt động.');
-    isListeningLoopActive.current = false;
-    
-    if (recognitionRef.current) {
-      try {
-        addLog('SPEECH', 'Hủy nhận diện (abort)');
-        recognitionRef.current.abort();
-      } catch(e) {}
-    }
-    
-    if (activeAudioRef.current) {
-      try {
-        addLog('SPEECH', 'Dừng âm thanh đang phát');
-        activeAudioRef.current.pause();
-      } catch(e) {}
-      activeAudioRef.current = null;
-    }
-    
-    audioQueueRef.current = [];
-    isPlayingAudioRef.current = false;
-    isStreamFinishedRef.current = false;
-    isRecognitionRunningRef.current = false;
-    teardownVAD();
-  };
-
-  // Cắt lời AI: dừng audio đang đọc + hàng đợi, chuyển sang nghe ngay (giống ChatGPT Voice)
-  const bargeIn = () => {
-    if (chatStateRef.current !== 'speaking') return;
-    addLog('SPEECH', 'Người dùng chèn lời (barge-in) → dừng đọc, chuyển sang nghe.');
-    if (activeAudioRef.current) {
-      try { activeAudioRef.current.pause(); } catch (e) {}
-      activeAudioRef.current = null;
-    }
-    audioQueueRef.current = [];
-    isPlayingAudioRef.current = false;
-    isStreamFinishedRef.current = false;
-    startListening();
-  };
-
-  // Thiết lập VAD: getUserMedia (khử vọng) + đo âm lượng để phát hiện người dùng nói lúc AI đang đọc
-  const setupVAD = async () => {
-    if (mediaStreamRef.current) return;
-    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) return;
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-      });
-      mediaStreamRef.current = stream;
-      const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
-      const ctx: AudioContext = new Ctx();
-      audioCtxRef.current = ctx;
-      const source = ctx.createMediaStreamSource(stream);
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 512;
-      source.connect(analyser);
-      const data = new Uint8Array(analyser.fftSize);
-      let loudFrames = 0;
-      const tick = () => {
-        vadRafRef.current = requestAnimationFrame(tick);
-        analyser.getByteTimeDomainData(data);
-        let sum = 0;
-        for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
-        const rms = Math.sqrt(sum / data.length);
-        // Chỉ xét cắt lời khi AI đang đọc và đã qua mốc grace (tránh dư âm chính câu vừa phát)
-        if (chatStateRef.current === 'speaking' && Date.now() - speakStartRef.current > SPEAK_GRACE_MS) {
-          if (rms > VAD_THRESHOLD) loudFrames++; else loudFrames = Math.max(0, loudFrames - 1);
-          if (loudFrames >= VAD_FRAMES) { loudFrames = 0; bargeIn(); }
-        } else {
-          loudFrames = 0;
-        }
-      };
-      tick();
-      addLog('INFO', 'Đã bật phát hiện chèn lời (VAD + khử vọng).');
-    } catch (e) {
-      addLog('WARN', 'Không bật được VAD (vẫn dùng được, chạm orb để cắt lời): ' + e);
-    }
-  };
-
-  const teardownVAD = () => {
-    if (vadRafRef.current != null) { cancelAnimationFrame(vadRafRef.current); vadRafRef.current = null; }
-    if (mediaStreamRef.current) { try { mediaStreamRef.current.getTracks().forEach(t => t.stop()); } catch (e) {} mediaStreamRef.current = null; }
-    if (audioCtxRef.current) { try { audioCtxRef.current.close(); } catch (e) {} audioCtxRef.current = null; }
-  };
-
-  const toggleVoiceSession = () => {
-    if (isListeningLoopActive.current) {
-      addLog('INFO', 'Người dùng bấm nút: DỪNG ĐÀM THOẠI.');
-      stopAllVoiceActivities();
-      updateState('idle');
-      
-      // Khôi phục lại wake word mode khi dừng đàm thoại chủ động
-      isWakeWordModeRef.current = true;
-      try { recognitionRef.current?.start(); } catch(e) {}
-      setTranscript('Đã dừng. Đang chờ gọi tên (Hey Ny\'ah)...');
-    } else {
-      addLog('INFO', 'Người dùng bấm nút: BẮT ĐẦU ĐÀM THOẠI.');
-      isListeningLoopActive.current = true;
-      setupVAD();
-      startListening();
-    }
-  };
-
-  // Chạm orb: đang đọc -> cắt lời; đang idle -> bắt đầu; còn lại (listening/processing) -> no-op
-  const onOrbClick = () => {
-    if (chatStateRef.current === 'speaking') { bargeIn(); return; }
-    if (!isListeningLoopActive.current) { toggleVoiceSession(); }
-  };
-
-  const startListening = () => {
-    addLog('INFO', 'Gọi startListening()...');
-    
-    if (activeAudioRef.current) {
-      try {
-        addLog('SPEECH', 'Dừng âm thanh cũ để chuẩn bị nghe...');
-        activeAudioRef.current.pause();
-      } catch(e) {}
-      activeAudioRef.current = null;
-    }
-    
-    audioQueueRef.current = [];
-    isPlayingAudioRef.current = false;
-    isStreamFinishedRef.current = false;
-
-    if (recognitionRef.current) {
-      if (isRecognitionRunningRef.current) {
-        addLog('WARN', 'Nhận diện giọng nói đang chạy, bỏ qua gọi start() trùng lặp.');
-        return;
-      }
-      try {
-        addLog('SPEECH', 'Khởi động SpeechRecognition (start)...');
-        recognitionRef.current.start();
-      } catch (e: any) {
-        addLog('ERROR', `Lỗi khi gọi recognition.start(): ${e.message}`);
-      }
-    } else {
-      addLog('ERROR', 'recognitionRef.current chưa sẵn sàng.');
-    }
-  };
-
-  // 2-3. Làm sạch chữ + tách câu: dùng chung từ lib/speech.ts (xem import ở đầu file)
-  //      Sentence-by-sentence TTS streaming playback via Server API
-  const speakSentence = (sentence: string, isLast = false) => {
-    if (isLast) {
-      isStreamFinishedRef.current = true;
-    }
-
-    const cleanText = cleanTextForTTS(sentence);
-    if (!cleanText) {
-      addLog('WARN', `Bỏ qua câu trống/không hợp lệ: "${sentence}"`);
-      if (isLast && !isPlayingAudioRef.current && audioQueueRef.current.length === 0) {
-        if (isListeningLoopActive.current) {
-          addLog('SPEECH', 'Chuỗi stream hết, không có audio phát, quay lại nghe.');
-          startListening();
-        } else {
-          updateState('idle');
-        }
-      }
-      return;
-    }
-    
-    const audioUrl = ttsUrl(cleanText);
-    addLog('SPEECH', `Thêm vào hàng đợi phát âm thanh: "${cleanText}"`);
-    
-    // Pre-create and preload the audio element to achieve near-zero latency playback (ChatGPT Voice style)
-    const audio = new Audio(audioUrl);
-    audio.preload = 'auto';
-    
-    audioQueueRef.current.push({ text: sentence, url: audioUrl, audio });
-    
-    playNextAudio();
-  };
-
-  const playNextAudio = () => {
-    if (isPlayingAudioRef.current) {
-      addLog('INFO', `Đang phát âm thanh khác. Hàng đợi còn lại: ${audioQueueRef.current.length}`);
-      return;
-    }
-
-    if (audioQueueRef.current.length === 0) {
-      if (isStreamFinishedRef.current) {
-        addLog('SPEECH', 'Đã phát hết tất cả các câu phản hồi.');
-        if (isListeningLoopActive.current) {
-          addLog('SPEECH', 'Tiếp tục lắng nghe (đàm thoại rảnh tay)...');
-          startListening();
-        } else {
-          updateState('idle');
-        }
-      }
-      return;
-    }
-
-    const nextAudio = audioQueueRef.current.shift()!;
-    isPlayingAudioRef.current = true;
-    updateState('speaking');
-    speakStartRef.current = Date.now(); // mốc để VAD bỏ qua dư âm đầu câu
-    setResponse(nextAudio.text);
-    addLog('SPEECH', `Bắt đầu phát âm thanh: "${nextAudio.text}"`);
-
-    const audio = nextAudio.audio;
-    activeAudioRef.current = audio;
-
-    audio.onended = () => {
-      addLog('SPEECH', `Đã phát xong câu: "${nextAudio.text}"`);
-      isPlayingAudioRef.current = false;
-      activeAudioRef.current = null;
-      playNextAudio();
-    };
-
-    audio.onerror = (e) => {
-      addLog('ERROR', `Lỗi tải/phát tệp âm thanh: ${nextAudio.url}`);
-      console.error('Audio playback error', e);
-      isPlayingAudioRef.current = false;
-      activeAudioRef.current = null;
-      playNextAudio();
-    };
-
-    audio.play().catch(err => {
-      addLog('ERROR', `Lỗi tự động phát (Autoplay): ${err.message}`);
-      console.error('Audio autoplay error', err);
-      isPlayingAudioRef.current = false;
-      activeAudioRef.current = null;
-      playNextAudio();
-    });
-  };
-
-  // 4. Handle sending speech to Vercel API and stream response
+  // Handle sending speech to Vercel API and stream response
   const handleUserSpeech = async (speechText: string) => {
     addLog('API', `Bắt đầu gửi văn bản nhận diện: "${speechText}"`);
     setResponse('Đang suy nghĩ...');
-    audioChunksBuffer.current = '';
     const startTime = Date.now();
     
     try {
@@ -494,7 +131,6 @@ export default function VoicePage() {
           const errData = await res.json();
           errorDetail = errData.friendly || errData.error || errorDetail;
         } catch (e) {
-          // not JSON, fallback to status text or response text
           try {
             const errText = await res.text();
             if (errText) errorDetail = errText.slice(0, 150);
@@ -536,15 +172,8 @@ export default function VoicePage() {
         addLog('SPEECH', `Phát nốt câu cuối cùng: "${sentenceBuffer.trim()}"`);
         speakSentence(sentenceBuffer.trim(), true);
       } else {
-        isStreamFinishedRef.current = true;
-        if (!isPlayingAudioRef.current && audioQueueRef.current.length === 0) {
-          if (isListeningLoopActive.current) {
-            addLog('SPEECH', 'Hoàn tất luồng xử lý câu thoại. Quay lại chế độ lắng nghe.');
-            startListening();
-          } else {
-            updateState('idle');
-          }
-        }
+        // Just call with empty and isLast=true to finish stream
+        speakSentence('', true);
       }
       
       // Update history
@@ -557,65 +186,21 @@ export default function VoicePage() {
     } catch (err: any) {
       addLog('ERROR', `Lỗi trong quá trình kết nối API: ${err.message}`);
       console.error(err);
-      setErrorMsg(err.message || 'Không thể kết nối đến máy chủ.');
-      updateState('error');
+      setState('error');
       
       if (isListeningLoopActive.current) {
         addLog('INFO', 'Tự động thử lắng nghe lại sau 3 giây...');
-        setTimeout(startListening, 3000);
+        setTimeout(() => {
+           if (isListeningLoopActive.current) startListening();
+        }, 3000);
       }
     }
   };
 
-  // 5. CSS Animations styles injected dynamically
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      @keyframes orbPulse {
-        0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(59, 130, 246, 0.4), inset 0 0 20px rgba(59, 130, 246, 0.2); }
-        50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(96, 165, 250, 0.6), inset 0 0 30px rgba(96, 165, 250, 0.4); }
-      }
-      @keyframes orbSpin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-      @keyframes ripple {
-        0% { transform: scale(0.95); opacity: 1; }
-        100% { transform: scale(1.6); opacity: 0; }
-      }
-      @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      @keyframes scaleUp {
-        from { transform: scale(0.95); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-      }
-      .animate-pulse-orb {
-        animation: orbPulse 3s infinite ease-in-out;
-      }
-      .animate-spin-orb {
-        animation: orbSpin 2s infinite linear;
-      }
-      .animate-slide-up {
-        animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-      .animate-fade-in {
-        animation: fadeIn 0.8s ease-out forwards;
-      }
-      .animate-scale-up {
-        animation: scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
+  const onOrbClick = () => {
+    if (state === 'speaking') { bargeIn(); return; }
+    if (!isListeningLoopActive.current) { toggleMic(); }
+  };
 
   const filteredLogs = logs.filter(log => {
     if (logFilter === 'ALL') return true;
@@ -633,6 +218,47 @@ export default function VoicePage() {
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white flex flex-col justify-between items-center p-6 relative overflow-hidden select-none">
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes orbPulse {
+          0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(59, 130, 246, 0.4), inset 0 0 20px rgba(59, 130, 246, 0.2); }
+          50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(96, 165, 250, 0.6), inset 0 0 30px rgba(96, 165, 250, 0.4); }
+        }
+        @keyframes orbSpin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes ripple {
+          0% { transform: scale(0.95); opacity: 1; }
+          100% { transform: scale(1.6); opacity: 0; }
+        }
+        @keyframes slideUp {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes scaleUp {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        .animate-pulse-orb {
+          animation: orbPulse 3s infinite ease-in-out;
+        }
+        .animate-spin-orb {
+          animation: orbSpin 2s infinite linear;
+        }
+        .animate-slide-up {
+          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+        .animate-scale-up {
+          animation: scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+      `}} />
       
       {/* Background images logic */}
       {backgroundImages.length > 0 ? (
@@ -706,10 +332,7 @@ export default function VoicePage() {
 
       {/* Dynamic Content Area (Orb + Text) */}
       {layoutMode === 'image-focus' ? (
-        /* Image Focus Layout: Clean, responsive Flexbox sidebar for Orb + Text (never overlaps) */
         <div className="absolute left-4 right-4 bottom-24 top-auto md:top-28 md:bottom-28 md:left-auto md:right-12 md:w-[35%] md:max-w-md z-10 flex flex-col justify-end md:justify-between items-center pointer-events-none gap-6">
-          
-          {/* The Text / Captions */}
           <div className="w-full flex flex-col items-center md:items-end text-center md:text-right pointer-events-auto px-4">
             {state === 'listening' && (
               <p className="italic select-text drop-shadow-md text-neutral-400 text-sm">
@@ -735,7 +358,6 @@ export default function VoicePage() {
             )}
           </div>
 
-          {/* The Orb */}
           <div className="pointer-events-auto flex items-center justify-center shrink-0 scale-75 md:scale-90 transition-transform">
             {state === 'listening' && (
               <>
@@ -785,10 +407,7 @@ export default function VoicePage() {
           </div>
         </div>
       ) : (
-        /* Default / Text Focus Layout: Standard Absolute Positions */
         <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-          
-          {/* The Text / Captions */}
           <div 
             className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col pointer-events-auto px-6
               ${layoutMode === 'default' ? 'top-[calc(50%+110px)] left-1/2 -translate-x-1/2 w-full max-w-md text-center items-center' : ''}
@@ -821,14 +440,12 @@ export default function VoicePage() {
             )}
           </div>
   
-          {/* The Orb */}
           <div 
             className={`absolute transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] pointer-events-auto flex items-center justify-center
               ${layoutMode === 'default' ? 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-100' : ''}
               ${layoutMode === 'text-focus' ? 'bottom-28 left-1/2 -translate-x-1/2 scale-75' : ''}
             `}
           >
-            {/* Ripple effects for active states */}
             {state === 'listening' && (
               <>
                 <div className="absolute w-48 h-48 rounded-full border border-blue-500/30 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out' }} />
@@ -841,7 +458,6 @@ export default function VoicePage() {
               </>
             )}
   
-            {/* The Main Glowing Orb */}
             <button
               onClick={onOrbClick}
               className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative overflow-hidden focus:outline-none shadow-2xl
@@ -852,7 +468,6 @@ export default function VoicePage() {
                 ${state === 'error' ? 'bg-gradient-to-tr from-red-950 to-red-800 border border-red-500/40' : ''}
               `}
             >
-              {/* Inner details of the orb */}
               <div className="absolute inset-2 rounded-full bg-black/10 backdrop-blur-[2px] flex items-center justify-center">
                 {state === 'idle' && (
                   <span className="text-neutral-400 text-sm font-medium tracking-wide">Chạm để nói</span>
@@ -883,7 +498,6 @@ export default function VoicePage() {
       {/* Footer controls — kiểu ChatGPT Voice: [Logs] [Stop/Start] [Exit] */}
       <div className="w-full max-w-md z-10 flex flex-col items-center gap-3 pb-6">
         <div className="flex items-center justify-between w-full px-10">
-          {/* Trái: Logs */}
           <button
             onClick={() => setShowDebug(!showDebug)}
             title={showDebug ? 'Ẩn nhật ký' : 'Xem nhật ký'}
@@ -895,9 +509,8 @@ export default function VoicePage() {
             </svg>
           </button>
 
-          {/* Giữa: Dừng / Bắt đầu phiên */}
           <button
-            onClick={toggleVoiceSession}
+            onClick={toggleMic}
             title={isListeningLoopActive.current ? 'Dừng cuộc gọi' : 'Bắt đầu đàm thoại'}
             className={`w-16 h-16 rounded-full flex items-center justify-center transition-all shadow-lg
               ${isListeningLoopActive.current
@@ -916,7 +529,6 @@ export default function VoicePage() {
             )}
           </button>
 
-          {/* Phải: Thoát trang */}
           <Link
             href="/"
             onClick={stopAllVoiceActivities}
@@ -937,10 +549,8 @@ export default function VoicePage() {
         </p>
       </div>
 
-      {/* Debug & Audit Drawer Overlay */}
       {showDebug && (
         <div className="fixed inset-x-0 bottom-0 h-[45vh] bg-neutral-900/95 backdrop-blur-md border-t border-neutral-800 z-50 flex flex-col animate-slide-up shadow-[0_-10px_30px_rgba(0,0,0,0.5)] select-text">
-          {/* Header */}
           <div className="flex justify-between items-center px-4 py-2 border-b border-neutral-800 bg-neutral-950/80">
             <div className="flex items-center gap-2">
               <span className="flex h-2 w-2 relative">
@@ -950,7 +560,6 @@ export default function VoicePage() {
               <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-300">Nhật Ký Đàm Thoại & Audit</h3>
             </div>
             
-            {/* Filter buttons */}
             <div className="flex gap-1 select-none">
               {(['ALL', 'SPEECH', 'API', 'ERROR'] as const).map(f => (
                 <button
@@ -967,11 +576,10 @@ export default function VoicePage() {
               ))}
             </div>
 
-            {/* Action buttons */}
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => {
-                  const txt = logs.map(l => `[${l.type}] ${l.time} - ${l.message}`).join('\n');
+                  const txt = logs.map(l => `[${l.type}] ${l.time} - ${l.message}`).join('\\n');
                   navigator.clipboard.writeText(txt);
                   alert('Đã sao chép toàn bộ log!');
                 }}
@@ -994,7 +602,6 @@ export default function VoicePage() {
             </div>
           </div>
 
-          {/* Logs List */}
           <div className="flex-1 overflow-y-auto p-3 font-mono text-[11px] leading-relaxed space-y-1 scrollbar-thin scrollbar-thumb-neutral-850">
             {filteredLogs.length === 0 ? (
               <div className="h-full flex items-center justify-center text-neutral-500 italic">
@@ -1031,11 +638,8 @@ export default function VoicePage() {
             )}
           </div>
 
-          {/* Quick Metrics Bar */}
           <div className="px-4 py-1 bg-neutral-950 border-t border-neutral-800 flex justify-between text-[10px] text-neutral-500 font-mono select-none">
             <span>Trạng thái: <strong className="text-neutral-300">{state.toUpperCase()}</strong></span>
-            <span>Microphone: <strong className={isRecognitionRunningRef.current ? "text-emerald-400" : "text-neutral-400"}>{isRecognitionRunningRef.current ? "Đang ghi âm" : "Tắt"}</strong></span>
-            <span>Hàng đợi TTS: <strong className="text-neutral-300">{audioQueueRef.current.length} câu</strong></span>
             <span>Session: <strong className={isListeningLoopActive.current ? "text-emerald-400" : "text-neutral-400"}>{isListeningLoopActive.current ? "Đang mở" : "Đã đóng"}</strong></span>
           </div>
         </div>
