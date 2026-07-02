@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-30T04:58:00.000Z",
+  "title": "Design System: Ny'ah Phú Định SlideBot",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Golden Amber", "canonical": "#e8b84b" },
+      "neutral-bg": { "role": "neutral", "displayName": "Charcoal Navy", "canonical": "#0b0c12" },
+      "neutral-surface": { "role": "neutral", "displayName": "Deep Slate", "canonical": "#101218" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Title", "purpose": "Main headlines and slide titles." },
+      "body": { "displayName": "Body Text", "purpose": "Bullet points and details." }
+    },
+    "shadows": [
+      { "name": "glow-active", "value": "0 0 50px rgba(232,184,75,0.3)", "purpose": "Mic glow indicator." }
+    ],
+    "motion": [
+      { "name": "fade-in", "value": "fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default page entrance." },
+      { "name": "fade-in-up", "value": "fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Text content fade-in." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "768px" },
+      { "name": "xl", "value": "1200px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Slide Container",
+      "kind": "card",
+      "refersTo": "slide-container",
+      "description": "The main 16:9 cinematic presentation frame",
+      "html": "<div class=\"ds-slide-stage\"><h2>Slide Title</h2><p>Slide point content</p></div>",
+      "css": ".ds-slide-stage { aspect-ratio: 16/9; width: 100%; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); padding: 48px; background: linear-gradient(140deg, #101218 0%, #0a0b10 50%, #0c0d14 100%); color: #fff; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Gallery Cinema",
+    "overview": "A cinematic, high-contrast, dark-mode presentation interface designed specifically to be viewed from a distance in a boutique sales gallery environment (3-5 meters from a TV screen). Spacing is large, layout density is low, and visual imagery is elevated to be the hero of the canvas.",
+    "keyCharacteristics": [
+      "Dark navy and charcoal canvas that feels premium and recedes into the background.",
+      "Warm golden-amber highlights that draw attention to key project details.",
+      "Balanced split layouts that pair copy and images in a stable 16:9 aspect ratio.",
+      "Highly readable, light-weight Vietnamese typography."
+    ],
+    "rules": [
+      { "name": "The Golden Ratio Rule", "body": "The primary Golden Amber accent must represent <=10% of any given slide's surface area. Its rarity is what gives it premium emphasis.", "section": "colors" },
+      { "name": "The Glow-On-State Rule", "body": "Card surfaces remain flat with a thin border. Soft, gold-tinted glow filters should only appear during active states.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do maintain a strict 16:9 aspect-ratio on all slide layouts.",
+      "Do balance text-only slides with balanced center alignments.",
+      "Do use text-wrap: balance on H2 titles to prevent orphaned words."
+    ],
+    "donts": [
+      "Don't use low-contrast grey body text that is unreadable from a distance.",
+      "Don't use neon, generic SaaS blue/violet gradients.",
+      "Don't use rounded corners larger than 24px (keep inputs at 12px, slides at 24px).",
+      "Don't pair borders with heavy drop-shadows on cards."
+    ]
+  }
+}

@@ -1,0 +1,173 @@
+Đang đọc chỉ mục index.json cũ từ nhánh chatbot-logs...
+Switched to branch 'chatbot-logs'
+From https://github.com/quang507/NhaDat-chatbot
+ * branch            chatbot-logs -> FETCH_HEAD
+Đã nạp bộ nhớ đệm RAG thành công cho 160 files.
+Switched to branch 'main'
+2. Đang đồng bộ dữ liệu văn bản từ OneDrive vào Git local...
+Đồng bộ thư mục văn bản thành công!
+3. Đang phân tích files dữ liệu...
+Tìm thấy 167 file dữ liệu.
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part2_part1.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part2_part2.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part3.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Thiết kế & Công năng/NPD_tinh_nang_san_pham.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tiến độ/03 - Tiến độ.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tiến độ/2026-06-22-17-56_2-ke-hoach-trien-khai-roadmap.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/2026-06-22-17-56_bai-viet-nyah-coviddocx.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/2026-06-22-17-56_npd_leaflet_v3-mat1pdf.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/2026-06-22-17-56_npd_leaflet_v3-mat2pdf.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/NPD_noi_dung_marketing_extra.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/NPD_noi_dung_marketing_part1_part1.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/NPD_noi_dung_marketing_part1_part2.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/NPD_noi_dung_marketing_part2.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/NPD_sale_kit.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Tài liệu Marketing/_NYAH_markdown.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Vị trí/01 - Vị trí.md
+Phát hiện file mới/thay đổi: 01_NyAh-PhuDinh/Vị trí/2026-06-22-17-56_tap-2-vi-tri-ke-song-can-thuy-duoi-.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/2 - ai là người thích nhịp sống Homestay.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/2026-06-22-17-56_homestay-co-gi-khien-nguoi-ta-chon_part1.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/2026-06-22-17-56_homestay-co-gi-khien-nguoi-ta-chon_part2.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/2026-06-22-17-56_homestay-co-gi-khien-nguoi-ta-chon_part3.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/2026-06-22-17-56_homestay-co-gi-khien-nguoi-ta-chon_part4.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/2026-06-22-17-56_homestay-co-gi-khien-nguoi-ta-chon_part5a.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/2026-06-22-17-56_homestay-co-gi-khien-nguoi-ta-chon_part5b.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/2026-06-22-17-56_homestay-co-gi-khien-nguoi-ta-chon_part5c.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/homestay everyday.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-02-23, Metro & Villa_part1.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-02-23, Metro & Villa_part2.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-02-23, Metro & Villa_part3.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-02-23, Metro & Villa_part4.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-02-23, Metro & Villa_part5.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-02-23, Metro & Villa_part6.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-03-10, Shophouses_part1.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-03-10, Shophouses_part2.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-03-10, Shophouses_part3.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-03-10, Shophouses_part4.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-03-10, Shophouses_part5.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-03-10, Shophouses_part6.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-03-10, Shophouses_part7.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Thiết kế & Công năng/mau-nha/2021-03-10, Shophouses_part8.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/1 - Bối cảnh vĩ mô & Hạ tầng Long An Cập nhật quy hoạch Khu siêu kinh tế 32.000 ha và tác động đến phân khúc bất.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/1 - lời giới thiệu.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/2026-06-22-17-56_4-beed-burn-energy-every-day-su-van.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/2026-06-22-17-56_4-nhan-su-trien-khai.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/2026-06-22-17-56_bao-cao-phan-tich-chuyen-sau-oi-thu.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/2026-06-22-17-56_kich-ban-chi-tiet-villa-nyah-bien-m.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/2026-06-22-17-56_mo-ta-logo-bytelifedocx.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/2026-06-22-17-56_series-cau-chuyen-garagedocx.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/3 - kịch bản teaser giới thiệu.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/Mục lục - khung chiến lược.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Tài liệu Marketing/VillaNyahBI.md
+Phát hiện file mới/thay đổi: 02_Villa-NyAh/Vị trí/location clip.md
+Phát hiện file mới/thay đổi: 2 - trình chiếu/NhaDat-AI-Chatbot-Presentation.md
+Phát hiện file mới/thay đổi: BÁO CÁO CƠ SỞ DỮ LIỆU TỔNG LỰC_ DỰ ÁN NY'AH PHÚ ĐỊNH.xlsx
+Phát hiện file mới/thay đổi: drive-extracted/03_Human-QA__nội dung chat với khách hàng.md
+Phát hiện file mới/thay đổi: drive-extracted/03_Human-QA__v1- kịch bản chatbot.md
+Phát hiện file mới/thay đổi: drive-extracted/03_Human-QA__v2 - kịch bản chatbot (max & air).md
+Phát hiện file mới/thay đổi: drive-extracted/05_ThongTinCacLo.md
+Phát hiện file mới/thay đổi: drive-extracted/1 - rổ hàng__PTTT v7d [2026].md
+Phát hiện file mới/thay đổi: drive-extracted/1 - rổ hàng__[T3.2026] bảng giá Ny'ah Phú Định v12.md
+Phát hiện file mới/thay đổi: drive-extracted/2 - trình chiếu__2a - bản đồ phân lô__[2a1a] bản đồ phân lô.md
+Phát hiện file mới/thay đổi: drive-extracted/2 - trình chiếu__2b - datasheet__2c2 - mẫu nhà Opus datasheet__[2c2a] mẫu nhà Opus datasheet.md
+Phát hiện file mới/thay đổi: drive-extracted/2 - trình chiếu__2b - datasheet__2c3 - mẫu nhà Cosmo datasheet__[2c3a] mẫu nhà Cosmo datasheet.md
+Phát hiện file mới/thay đổi: drive-extracted/2 - trình chiếu__2b - datasheet__2c5 - mẫu nhà Fusion Gen 5 datasheet__[2c5a] mẫu nhà Fusion Gen 5 datasheet.md
+Phát hiện file mới/thay đổi: drive-extracted/2 - trình chiếu__2b - datasheet__2c6 -  mẫu nhà Cosmo Gen 2 datasheet__[2c6a] mẫu nhà Cosmo Gen 2 datasheet.md
+Phát hiện file mới/thay đổi: drive-extracted/2 - trình chiếu__2b - datasheet__2c7 - mẫu nhà Office 1,2__[2c7a] mẫu nhà office 1, 2 - Ny'ah Phú Định.md
+Phát hiện file mới/thay đổi: drive-extracted/2 - trình chiếu__2d - ALL-NEW mẫu nhà Cashmere hoàn toàn mới__2d1 - ALL-NEW Cashmere.md
+Phát hiện file mới/thay đổi: drive-extracted/2 - trình chiếu__Nhã Đạt company profile.md
+Phát hiện file mới/thay đổi: drive-extracted/3 - biểu mẫu__3a. Hợp đồng đặt cọc mẫu.md
+Phát hiện file mới/thay đổi: drive-extracted/3 - biểu mẫu__3b. Hợp đồng xây dựng mẫu.md
+Phát hiện file mới/thay đổi: drive-extracted/3 - biểu mẫu__3c. PL C, quy cách bàn giao v2b.md
+Phát hiện file mới/thay đổi: drive-extracted/3 - biểu mẫu__3d. PL D, bảo hành v2.md
+Phát hiện file mới/thay đổi: drive-extracted/3 - biểu mẫu__3e. PL1-pham-vi-va quy-cach-v6 (1).md
+Phát hiện file mới/thay đổi: drive-extracted/4 - pháp lý__[2] chủ đầu tư__NhaDat-ProfileCompany -v3.md
+Phát hiện file mới/thay đổi: drive-extracted/6 - tài liệu training__Bộ câu hỏi về Ny'ah Phú Định.md
+Phát hiện file mới/thay đổi: drive-extracted/6 - tài liệu training__Rổ hàng thang máy lên tận sân thượng và chính sách.md
+Phát hiện file mới/thay đổi: qa-generated.md
+Giữ nguyên: 86 files. Cần sinh vector mới cho: 77 files.
+[1/77] Đang xử lý: 01_NyAh-PhuDinh/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part2_part1.md (18 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 18... (Tổng: 18)
+-> Thành công sinh vector cho 18 chunks.
+[2/77] Đang xử lý: 01_NyAh-PhuDinh/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part2_part2.md (4 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 4... (Tổng: 4)
+-> Thành công sinh vector cho 4 chunks.
+[3/77] Đang xử lý: 01_NyAh-PhuDinh/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part3.md (13 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 13... (Tổng: 13)
+-> Thành công sinh vector cho 13 chunks.
+[4/77] Đang xử lý: 01_NyAh-PhuDinh/Thiết kế & Công năng/NPD_tinh_nang_san_pham.md (3 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 3... (Tổng: 3)
+-> Thành công sinh vector cho 3 chunks.
+[5/77] Đang xử lý: 01_NyAh-PhuDinh/Tiến độ/03 - Tiến độ.md (1 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 1... (Tổng: 1)
+-> Thành công sinh vector cho 1 chunks.
+[6/77] Đang xử lý: 01_NyAh-PhuDinh/Tiến độ/2026-06-22-17-56_2-ke-hoach-trien-khai-roadmap.md (2 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 2... (Tổng: 2)
+-> Thành công sinh vector cho 2 chunks.
+[7/77] Đang xử lý: 01_NyAh-PhuDinh/Tài liệu Marketing/2026-06-22-17-56_bai-viet-nyah-coviddocx.md (3 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 3... (Tổng: 3)
+-> Thành công sinh vector cho 3 chunks.
+[8/77] Đang xử lý: 01_NyAh-PhuDinh/Tài liệu Marketing/2026-06-22-17-56_npd_leaflet_v3-mat1pdf.md (1 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 1... (Tổng: 1)
+-> Thành công sinh vector cho 1 chunks.
+[9/77] Đang xử lý: 01_NyAh-PhuDinh/Tài liệu Marketing/2026-06-22-17-56_npd_leaflet_v3-mat2pdf.md (18 chunks)...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 18... (Tổng: 18)
+⚠️ Cảnh báo: Lỗi sinh vector (Lần thử 1): Batch embedding lỗi 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+Đang tạm dừng 10 giây trước khi thử lại...
+[Gemini] Đang tạo vector embedding cho chunks 0 đến 18... (Tổng: 18)
+⚠️ Cảnh báo: Lỗi sinh vector (Lần thử 2): Batch embedding lỗi 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+❌ Lỗi: Không thể sinh vector cho file: 01_NyAh-PhuDinh/Tài liệu Marketing/2026-06-22-17-56_npd_leaflet_v3-mat2pdf.md. Dừng sinh vector mới để lưu tiến trình.
+
+Tổng kết: Giữ nguyên 86 files. Đã sinh vector mới cho 8 files. Các file còn lại được giữ nguyên hoặc bỏ qua.
+5. Đã lưu index tạm thời.
+6. Đang chuyển sang nhánh chatbot-logs...
+Switched to branch 'chatbot-logs'
+From https://github.com/quang507/NhaDat-chatbot
+ * branch            chatbot-logs -> FETCH_HEAD
+7. Đã copy index.json vào nhánh chatbot-logs.
+8. Đang push index.json lên GitHub...
+To https://github.com/quang507/NhaDat-chatbot.git
+   d71fa0d..19e5ac5  chatbot-logs -> chatbot-logs
+Đã cập nhật chỉ mục (index.json) thành công!
+9. Đang trở về nhánh main...
+Switched to branch 'main'
+10. Đang push các file thư mục data và hình ảnh lên GitHub...
+Không có thay đổi dữ liệu hay hình ảnh nào cần commit trên main branch.
+
+⚠️ LƯU Ý: Quá trình đồng bộ chưa hoàn thành 100% do giới hạn hạn mức (rate limit) của API. Hãy chạy lại file BAT sau vài phút để tiếp tục đồng bộ phần còn lại.

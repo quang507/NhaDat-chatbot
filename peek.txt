@@ -1,0 +1,24 @@
+Sheets: ['Sheet1', 'Data']
+
+--- Sheet: Sheet1 ---
+Columns: []
+Head:
+
+Shape: (0, 0)
+
+--- Sheet: Data ---
+Columns: ['Data_Product_List', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13']
+Head:
+|    | Data_Product_List   | Unnamed: 1      | Unnamed: 2           | Unnamed: 3       | Unnamed: 4                                 | Unnamed: 5       | Unnamed: 6                      | Unnamed: 7   | Unnamed: 8   |   Unnamed: 9 | Unnamed: 10   | Unnamed: 11                    | Unnamed: 12   | Unnamed: 13   |
+|---:|:--------------------|:----------------|:---------------------|:-----------------|:-------------------------------------------|:-----------------|:--------------------------------|:-------------|:-------------|-------------:|:--------------|:-------------------------------|:--------------|:--------------|
+|  0 | update đến ngày     | 24/6/2026       | nan                  | nan              | nan                                        | nan              | nan                             | nan          | nan          |          nan | nan           | nan                            | nan           | nan           |
+|  1 | nan                 | nan             | nan                  | nan              | nan                                        | nan              | nan                             | nan          | nan          |          nan | nan           | nan                            | nan           | nan           |
+|  2 | Lô đất              | Mẫu nhà         | DT đất theo GCN (m2) | DT sàn GPXD (m2) | Kích thước lô đất ( theo sơ đồ phân lô)    | DT hầm GPXD (m2) | Hướng nhà                       | Chủ nhà      | Mobile       |          nan | Địa chỉ       | Biển số nhà                    | Follow-up     | Deal Notes    |
+|  3 | 1                   | Office 1        | 67.3                 | 472.53           | 3.33m (mặt tiền) x 17.57m x 15.67m x 4.29m | 58.48            | Nam ( Tây Tứ Mệnh)              | nan          | nan          |          nan | nan           | nan                            | nan           | nan           |
+|  4 | 2                   | Office 1        | 62.9                 | 396.07           | 4.01m (mặt tiền) x 15.67m x 15.47m x 4.29m | 54.65            | Nam ( Tây Tứ Mệnh)              | nan          | nan          |          nan | nan           | nan                            | nan           | nan           |
+|  5 | 3                   | Cosmo v2        | 49                   | 211              | 5.00m (mặt tiền) x 8.99m x 10.76m x 4.29m  | nan              | Đông  - Đông Nam (Đông Tứ Mệnh) | nan          | nan          |          nan | nan           | 198/1 Trương Đình Hội, P16, Q8 | nan           | nan           |
+|  6 | 4                   | Fusion Gen 5 v2 | 42.9                 | 211.4            | 4.00m (mặt tiền) x 10.76m x 10.81m x 4.01m | nan              | Đông - Đông Nam (Đông Tứ Mệnh)  | nan          | nan          |          nan | nan           | 198/3 Trương Đình Hội, P16, Q8 | nan           | nan           |
+|  7 | 5                   | Fusion Gen 5 v2 | 43.1                 | 213.7            | 4.00m (mặt tiền) x 10.81m x 10.91m x 4.03m | nan              | Đông - Đông Nam (Đông Tứ Mệnh)  | nan          | nan          |          nan | nan           | 198/5 Trương Đinh Hội, P16, Q8 | nan           | nan           |
+|  8 | 6                   | Fusion Gen 5 v2 | 43.3                 | 213.41           | 4.00m (mặt tiền) x 10.91m x 10.94m x 4.02m | nan              | Đông - Đông Nam (Đông Tứ Mệnh)  | nan          | nan          |          nan | nan           | 198/7 Trương Đình Hội, P16, Q8 | nan           | nan           |
+|  9 | 7                   | Fusion Gen 5 v2 | 43.5                 | 214.21           | 4.00m (mặt tiền) x 10.94m x 10.97m x 4.03m | nan              | Đông - Đông Nam (Đông Tứ Mệnh)  | nan          | nan          |          nan | nan           | 198/9 Trương Đình Hội, P16, Q8 | nan           | nan           |
+Shape: (57, 14)
