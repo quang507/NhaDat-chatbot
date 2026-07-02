@@ -68,14 +68,24 @@ export default function SlideBotPage() {
       }
       if (images.length > 0) {
         setSelectedImage(images[0]);
-        setState('idle');
+        if (isListeningLoopActive.current) {
+           setState('listening');
+           startListening();
+        } else {
+           setState('idle');
+        }
         return true;
       }
     }
     const zoomOutKeywords = ['thu nhỏ', 'đóng ảnh', 'đóng hình', 'thoát ảnh', 'quay lại', 'tắt ảnh'];
     if (zoomOutKeywords.some(kw => clean.includes(kw))) {
       setSelectedImage(null);
-      setState('idle');
+      if (isListeningLoopActive.current) {
+         setState('listening');
+         startListening();
+      } else {
+         setState('idle');
+      }
       return true;
     }
     return false;
@@ -92,12 +102,14 @@ export default function SlideBotPage() {
     if (!query) {
        setState('listening');
        setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
+       startListening();
        return;
     }
     const intent = classifyAmbientIntent(query);
     if (!intent.shouldGenerate) {
        setState('listening');
        setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
+       startListening();
        return;
     }
     const now = Date.now();
@@ -105,6 +117,7 @@ export default function SlideBotPage() {
     if (wait > 0 && intent.reason !== 'explicit_slide_request') {
        setState('listening');
        setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
+       startListening();
        return;
     }
     
@@ -128,6 +141,8 @@ export default function SlideBotPage() {
       if (data.skip || !data.speech_text || !data.title || data.title === 'Lỗi hiển thị' || data.title.includes('Lỗi hiển thị')) {
         if (ambient) {
           setTranscript('🎧 Đang nghe ngầm… (chưa có chủ đề rõ ràng)');
+          setState('listening');
+          startListening();
         } else {
           setTranscript('Không tìm thấy thông tin phù hợp trong dữ liệu dự án.');
           setState('idle');

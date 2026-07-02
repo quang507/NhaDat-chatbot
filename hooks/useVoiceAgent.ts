@@ -39,7 +39,7 @@ export function useVoiceAgent({
   
   const VAD_THRESHOLD = 0.06;
   const VAD_FRAMES = 6;
-  const SPEAK_GRACE_MS = 400;
+  const SPEAK_GRACE_MS = 900;
 
   const setState = useCallback((newState: ChatState) => {
     setStateInternal(newState);
@@ -63,6 +63,10 @@ export function useVoiceAgent({
     isPlayingAudioRef.current = false;
     isStreamFinishedRef.current = false;
 
+    if (isListeningLoopActive.current && chatStateRef.current !== 'listening') {
+      setState('listening');
+    }
+
     if (recognitionRef.current) {
       if (isRecognitionRunningRef.current) return;
       try {
@@ -71,7 +75,7 @@ export function useVoiceAgent({
         console.error('[useVoiceAgent] start error:', e);
       }
     }
-  }, []);
+  }, [setState]);
 
   const bargeIn = useCallback(() => {
     if (chatStateRef.current !== 'speaking') return;
