@@ -170,7 +170,10 @@ export default function SlideBotPage() {
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, ambient })
+        // KHÔNG gửi ambient lên API: client đã lọc bằng classifyAmbientIntent rồi.
+        // Gửi ambient:true làm server thêm luật skip quá gắt -> LLM hay trả skip/không
+        // ảnh, trong khi trang voice gọi cùng API không cờ này thì luôn có ảnh.
+        body: JSON.stringify({ message: text })
       });
 
       if (!res.ok) throw new Error('API lỗi');
@@ -489,13 +492,15 @@ export default function SlideBotPage() {
     >
       <style dangerouslySetInnerHTML={{ __html: `
         .dots { background-image: radial-gradient(rgba(22,22,22,.28) 1.6px, transparent 1.6px); background-size: 16px 16px; }
-        .line-mask { overflow: hidden; }
+        /* Mặt nạ nới thêm trên/dưới để KHÔNG cắt dấu tiếng Việt (dấu nặng dưới Ị/Ụ,
+           dấu mũ trên Ấ/Ề) khi leading < 1 — margin âm bù lại nên khoảng cách giữ nguyên. */
+        .line-mask { overflow: hidden; padding: 0.14em 0 0.2em; margin: -0.14em 0 -0.2em; }
         .line-in {
           animation: lineUp .7s cubic-bezier(.22,1,.36,1) both, glowFade 1.15s ease-out both;
           will-change: transform, opacity;
         }
         @keyframes lineUp {
-          0% { transform: translateY(112%); opacity: 0; }
+          0% { transform: translateY(140%); opacity: 0; }
           55% { opacity: 1; }
           100% { transform: translateY(0); opacity: 1; }
         }
@@ -526,10 +531,11 @@ export default function SlideBotPage() {
 
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <div className="dots absolute top-[8%] right-[5%] w-44 h-28 opacity-70" />
-        <div className="dots absolute top-[46%] left-[3%] w-28 h-44 opacity-60" />
         <div className="absolute -top-[10vh] -left-[10vh] w-[26vw] h-[26vw] rounded-full bg-[#E3F0E3]" />
         <div className="absolute top-[17%] -right-16 w-[18vw] h-[18vw] rounded-full border-[3px] border-[#2E9E5B]/20" />
-        <div className="absolute bottom-[15%] -left-10 w-[12vw] h-[12vw] rounded-full border-2 border-[#2E9E5B]/15" />
+        {/* Vòng tròn dưới-trái + chấm bi nhỏ đè LÊN TRÊN, sát mép dưới (render sau = nằm trên) */}
+        <div className="absolute bottom-[13%] -left-10 w-[12vw] h-[12vw] rounded-full border-2 border-[#2E9E5B]/15" />
+        <div className="dots absolute bottom-[6%] left-[3.5%] w-20 h-28 opacity-60" />
       </div>
 
       <header className="relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0">

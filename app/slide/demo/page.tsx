@@ -335,9 +335,9 @@ export default function SlideDemoPage() {
     <div className="min-h-screen bg-[#0E1512] text-white p-8" style={{ fontFamily: "'Be Vietnam Pro', 'Inter', system-ui, sans-serif" }}>
       <style dangerouslySetInnerHTML={{ __html: `
         .dots { background-image: radial-gradient(rgba(22,22,22,.28) 1.4px, transparent 1.4px); background-size: 13px 13px; }
-        .line-mask { overflow: hidden; }
+        .line-mask { overflow: hidden; padding: 0.14em 0 0.2em; margin: -0.14em 0 -0.2em; }
         .line-in { animation: lineUp .7s cubic-bezier(.22,1,.36,1) both, glowFade 1.15s ease-out both; will-change: transform, opacity; }
-        @keyframes lineUp { 0% { transform: translateY(112%); opacity: 0; } 55% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes lineUp { 0% { transform: translateY(140%); opacity: 0; } 55% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
         @keyframes glowFade { 0% { text-shadow: 0 0 16px rgba(255,255,255,.95), 0 4px 28px rgba(46,158,91,.45); } 100% { text-shadow: 0 0 0 rgba(255,255,255,0), 0 0 0 rgba(46,158,91,0); } }
         .img-card { animation: imgIn .85s cubic-bezier(.22,1,.36,1) both; will-change: transform, opacity; }
         @keyframes imgIn { 0% { opacity: 0; transform: translateY(22px) scale(.965); } 100% { opacity: 1; transform: translateY(0) scale(1); } }

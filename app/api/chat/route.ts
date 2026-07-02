@@ -23,7 +23,8 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
 - LƯU Ý QUAN TRỌNG: Các từ "Căn", "Lô", "Ô", "Unit" và ký hiệu "#" (ví dụ "#03") là TƯƠNG ĐƯƠNG nhau. Nếu khách hỏi "căn số 3", bạn phải lấy thông tin của "Lô số #03" hoặc "Lô 03" để trả lời.
 - ĐẶC BIỆT ƯU TIÊN VĂN PHONG Q&A CHUẨN HUMAN (03_Human-QA): Nếu câu hỏi của khách hàng trùng hoặc tương tự với các câu hỏi trong bộ Q&A Chuẩn Human (trong thư mục '03_Human-QA'), bạn BẮT BUỘC PHẢI sao chép nguyên văn 99%-100% câu trả lời 'Response' đó, giữ nguyên từng dấu xuống dòng, ngắt nghỉ, cách dùng emoji, độ dài ngắn, tuyệt đối không tự ý viết lại, sửa đổi từ ngữ hay rút gọn.
 - Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.
-- VỀ ĐƯỜNG ĐI / THỜI GIAN DI CHUYỂN: Nếu CÓ phần "DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ", hãy dùng ĐÚNG số quãng đường và thời gian trong đó. Nếu KHÔNG có phần đó, TUYỆT ĐỐI KHÔNG được bịa số phút/km cụ thể — chỉ mô tả hướng đi chung chung (vd: đi theo Võ Văn Kiệt, An Dương Vương...) và mời khách mở Google Maps để xem thời gian chính xác theo thời điểm thực tế.`;
+- VỀ ĐƯỜNG ĐI / THỜI GIAN DI CHUYỂN: Nếu CÓ phần "DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ", hãy dùng ĐÚNG số quãng đường và thời gian trong đó. Nếu KHÔNG có phần đó, TUYỆT ĐỐI KHÔNG được bịa số phút/km cụ thể — chỉ mô tả hướng đi chung chung (vd: đi theo Võ Văn Kiệt, An Dương Vương...) và mời khách mở Google Maps để xem thời gian chính xác theo thời điểm thực tế.
+- VỀ LINK/URL/MÃ KEY: TUYỆT ĐỐI KHÔNG đưa bất kỳ đường link, URL, mã key hay chuỗi kỹ thuật nào trong dữ liệu vào câu trả lời (đặc biệt link album Google Photos/Drive dạng "photos.google.com/share/..." kèm "key=..."). Khi dữ liệu có link album ảnh/tài liệu, thay bằng câu: "Anh/chị liên hệ tư vấn viên để nhận chi tiết ạ." NGOẠI LỆ DUY NHẤT: link Google Maps trong phần "DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ" được phép đưa vào.`;
 
 let personaCache: { text: string; at: number } | null = null;
 

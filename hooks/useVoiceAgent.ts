@@ -62,6 +62,14 @@ export function useVoiceAgent({
     setRmsVolume(0);
   }, []);
 
+  // Chỉ khởi động lại recognition, KHÔNG đụng vào audio/hàng đợi TTS/state.
+  // Dùng cho onend + watchdog để mic sống liên tục kể cả khi đang 'processing'
+  // (startListening() thì phá hàng đợi TTS nên không được gọi bừa lúc đó).
+  const restartRecognitionOnly = useCallback(() => {
+    if (!recognitionRef.current || isRecognitionRunningRef.current) return;
+    try { recognitionRef.current.start(); } catch (e) { /* đang start dở — watchdog sẽ thử lại */ }
+  }, []);
+
   const startListening = useCallback(() => {
     if (activeAudioRef.current) {
       try { activeAudioRef.current.pause(); } catch(e) {}
@@ -309,17 +317,34 @@ export function useVoiceAgent({
 
     rec.onend = () => {
       isRecognitionRunningRef.current = false;
-      if (isListeningLoopActive.current && chatStateRef.current === 'listening') {
-        startListening();
+      // Mic phải SỐNG LIÊN TỤC khi session đang mở — kể cả lúc 'processing' (đang gọi
+      // API tạo slide 1-3s) để người ta nói chèn không bị rớt. Chỉ tắt khi 'speaking'
+      // (đang phát TTS — tránh STT nghe nhầm giọng máy; barge-in đã có VAD lo).
+      // Dùng restartRecognitionOnly (không phá hàng đợi TTS đang build lúc processing).
+      if (isListeningLoopActive.current && chatStateRef.current !== 'speaking') {
+        setTimeout(() => {
+          if (isListeningLoopActive.current && chatStateRef.current !== 'speaking') {
+            restartRecognitionOnly();
+          }
+        }, 120);
       }
     };
 
     recognitionRef.current = rec;
 
+    // WATCHDOG: Chrome thỉnh thoảng ngắt recognition im lặng (không onend, hoặc start()
+    // ném lỗi đúng lúc). Cứ 3s kiểm tra: session mở + không phát TTS + mic chết -> hồi sinh.
+    const watchdog = setInterval(() => {
+      if (!isListeningLoopActive.current) return;
+      if (chatStateRef.current === 'speaking') return;
+      if (!isRecognitionRunningRef.current) restartRecognitionOnly();
+    }, 3000);
+
     return () => {
+      clearInterval(watchdog);
       stopAllVoiceActivities();
     };
-  }, [setState, startListening, stopAllVoiceActivities]);
+  }, [setState, startListening, stopAllVoiceActivities, restartRecognitionOnly]);
 
   return {
     state,
