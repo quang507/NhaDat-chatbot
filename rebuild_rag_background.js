@@ -129,29 +129,7 @@ async function getIndexFile() {
     }
 }
 
-async function saveFileToGithub(repoPath, branch, contentString, githubToken, message) {
-    const sha = await getFileSha(repoPath, branch, githubToken);
-    const res = await fetch(`https://api.github.com/repos/quang507/NhaDat-chatbot/contents/${repoPath}`, {
-        method: 'PUT',
-        headers: {
-            'Authorization': `Bearer ${githubToken}`,
-            'Accept': 'application/vnd.github+json',
-            'Content-Type': 'application/json',
-            'User-Agent': 'NodeJS'
-        },
-        body: JSON.stringify({
-            message: message,
-            content: Buffer.from(contentString, 'utf-8').toString('base64'),
-            branch: branch,
-            ...(sha ? { sha } : {})
-        })
-    });
-    if(!res.ok) {
-        console.error("Failed to push to GitHub:", await res.text());
-    } else {
-        console.log("Successfully pushed to GitHub branch:", branch);
-    }
-}
+// Removed saveFileToGithub
 
 async function run() {
     let GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -220,9 +198,9 @@ async function run() {
         builtAt: new Date().toISOString(),
     };
     
-    console.log("Saving index.json to GitHub chatbot-logs branch...");
-    await saveFileToGithub('index.json', 'chatbot-logs', JSON.stringify(index), GITHUB_TOKEN, 'Auto-rebuild full index (Optimized with Tier 1 and reuse)');
-    console.log("Done!");
+    console.log("Saving index.json locally...");
+    fs.writeFileSync('index.json', JSON.stringify(index, null, 2));
+    console.log("Done! You can now commit and push index.json using git.");
 }
 
 run();
