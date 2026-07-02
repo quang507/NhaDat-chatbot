@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { splitCleanSentences } from '@/lib/speech';
+import { splitCleanSentences, splitSentences } from '@/lib/speech';
 import { classifyAmbientIntent } from '@/lib/intent';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 
@@ -125,10 +125,48 @@ export default function SlideBotPage() {
     fetchSlideData(query, true);
   };
 
+  const streamChatForVoice = async (speechText: string, history: any[] = []) => {
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: speechText, history }),
+      });
+      if (!res.ok || !res.body) return;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let sentenceBuffer = '';
+      
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        sentenceBuffer += chunk;
+        const { sentences, remaining } = splitSentences(sentenceBuffer);
+        sentenceBuffer = remaining;
+        sentences.forEach(sentence => speakSentence(sentence, false));
+      }
+      if (sentenceBuffer.trim()) {
+        speakSentence(sentenceBuffer.trim(), true);
+      } else {
+        speakSentence('', true);
+      }
+    } catch (err) {
+      console.error('Lỗi stream chat:', err);
+    }
+  };
+
   const fetchSlideData = async (text: string, ambient = false) => {
     try {
       isGeneratingRef.current = true;
       if (!ambient) setState('processing');
+      
+      // Mở luồng giọng nói TỨC THÌ nếu voiceOn = true
+      if (voiceOn) {
+        streamChatForVoice(text);
+      }
+
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -159,14 +197,8 @@ export default function SlideBotPage() {
       }
 
       if (voiceOn) {
-        const sentences = splitCleanSentences(data.speech_text);
-        if (sentences.length > 0) {
-          sentences.forEach((s, i) => speakSentence(s, i === sentences.length - 1));
-        } else {
-          setState('listening');
-          setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
-          startListening();
-        }
+        // Đã được đọc bởi streamChatForVoice, không đọc lại data.speech_text nữa
+        // Chỉ lưu lại text để hiển thị hoặc xử lý sau nếu cần
       } else {
         setState('listening');
         setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
