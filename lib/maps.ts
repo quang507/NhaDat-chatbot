@@ -66,7 +66,9 @@ export async function getDrivingRoute(
         'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters',
       },
       body: JSON.stringify({
-        origin: { address: origin },
+        // Them "TP.HCM, Viet Nam" neu khach chi noi ten dia diem tran (vd "benh vien hung
+        // vuong") khong kem thanh pho -> geocode de bi mo ho/sai, tra ve route rong (0m/0s).
+        origin: { address: /tp\.?\s*hcm|hồ chí minh|ho chi minh|việt nam|viet nam/i.test(origin) ? origin : `${origin}, TP.HCM, Việt Nam` },
         destination: { address: destination },
         travelMode: 'DRIVE',
         routingPreference: 'TRAFFIC_AWARE',
@@ -86,12 +88,19 @@ export async function getDrivingRoute(
 
     // distanceMeters -> "5,2 km" ; duration "1080s" -> "18 phút"
     const meters = route.distanceMeters || 0;
+    const rawSeconds = parseInt(String(route.duration || '0').replace('s', ''), 10) || 0;
+    // Routes API doi khi tra ve route "rong" (meters=0, duration=0s) khi dia chi origin
+    // khong geocode duoc ro rang -> KHONG duoc coi la du lieu that, keo AI se noi "0 phut
+    // di chuyen" vo ly. Coi day la that bai giong nhu khong co route.
+    if (meters <= 0 || rawSeconds <= 0) {
+      console.warn(`Routes API tra ve route rong (meters=${meters}, seconds=${rawSeconds}) cho origin="${origin}" -> coi nhu that bai.`);
+      return null;
+    }
     const distanceText = meters >= 1000
       ? `${(meters / 1000).toFixed(1).replace('.', ',')} km`
       : `${meters} m`;
 
-    const seconds = parseInt(String(route.duration || '0').replace('s', ''), 10) || 0;
-    const minutes = Math.round(seconds / 60);
+    const minutes = Math.round(rawSeconds / 60);
     const durationText = minutes >= 60
       ? `${Math.floor(minutes / 60)} giờ ${minutes % 60} phút`
       : `${minutes} phút`;
