@@ -133,7 +133,7 @@ export function isCompetitor(text: string): boolean {
 
 // ── Classifier chính ─────────────────────────────────────────────────────────
 export function classifyAmbientIntent(text: string): AmbientIntent {
-  const clean = text.toLowerCase().trim();
+  const clean = text.normalize('NFC').toLowerCase().trim();  // NFD (STT) -> NFC để khớp từ khóa
   const wordCount = clean.split(/\s+/).length;
 
   // 1. Quá ngắn (< 3 từ) và không phải explicit trigger → bỏ qua

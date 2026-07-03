@@ -65,17 +65,14 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   let routeAnswer: string | undefined;
   try {
     const { isRoute, origin } = detectRouteIntent(message);
-    (globalThis as any).__routeDbg = { isRoute, origin, routeFound: null, err: null };
     if (isRoute && origin) {
       const route = await getDrivingRoute(origin);
-      (globalThis as any).__routeDbg.routeFound = !!route;
       if (route) {
         routeContext = routeSummaryToPrompt(route);
         routeAnswer = `Dạ, từ ${route.origin} đến dự án Ny'ah Phú Định (58A Trương Đình Hội, P.16, Q.8) khoảng ${route.distanceText}, đi ô tô mất tầm ${route.durationText} tùy tình hình giao thông ạ.\n\nAnh/chị có thể mở Google Maps để xem lộ trình chi tiết theo thời gian thực: ${route.mapsUrl} 📍`;
       }
     }
   } catch (e) {
-    (globalThis as any).__routeDbg = { err: String(e) };
     console.warn('Route lookup failed:', e);
   }
 
@@ -232,7 +229,6 @@ export async function POST(req: NextRequest) {
               'Content-Type': 'text/plain; charset=utf-8',
               'Cache-Control': 'no-cache',
               'X-Accel-Buffering': 'no',
-              'x-ra': routeAnswer ? 'SET' : 'UNSET',
             },
           });
         } else {
@@ -323,9 +319,6 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'text/plain; charset=utf-8',
         'Cache-Control': 'no-cache',
         'X-Accel-Buffering': 'no',
-        'x-ra': routeAnswer ? 'SET' : 'UNSET',
-        'x-path': 'gemini',
-        'x-dbg': encodeURIComponent(JSON.stringify((globalThis as any).__routeDbg || {})),
       },
     });
   } catch (error) {

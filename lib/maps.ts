@@ -20,7 +20,9 @@ export interface RouteSummary {
 // Phát hiện câu hỏi có ý hỏi đường / khoảng cách / thời gian di chuyển
 // Trả về { isRoute, origin } — origin có thể rỗng nếu khách chưa nói rõ điểm xuất phát.
 export function detectRouteIntent(message: string): { isRoute: boolean; origin: string } {
-  const q = (message || '').toLowerCase().trim();
+  // normalize('NFC'): STT/1 số client gửi tiếng Việt dạng NFD (tổ hợp) -> "đi từ" khác
+  // byte với chuỗi so khớp NFC -> includes() trượt -> KHÔNG nhận ra ý hỏi đường. Ép NFC.
+  const q = (message || '').normalize('NFC').toLowerCase().trim();
 
   // Tín hiệu hỏi đường / khoảng cách / thời gian
   const routeSignals = [
