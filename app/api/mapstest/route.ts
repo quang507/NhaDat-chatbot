@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { detectRouteIntent, getDrivingRoute } from '@/lib/maps';
 
 export const runtime = 'nodejs';
 
@@ -48,6 +49,17 @@ export async function GET() {
       out.geminiApi = { status: r.status, body: (await r.text()).slice(0, 200) };
     } catch (e) { out.geminiApi = { error: String(e) }; }
   } else out.geminiApi = 'NO KEY';
+
+  // 4) PIPELINE THAT: detectRouteIntent -> getDrivingRoute
+  const msg = 'đi từ bệnh viện chợ rẫy qua ny ah phú định bao nhiêu phút đi đường nào';
+  const intent = detectRouteIntent(msg);
+  out.pipeline = { message: msg, detected: intent };
+  if (intent.isRoute) {
+    try {
+      const route = await getDrivingRoute(intent.origin);
+      out.pipeline.route = route;
+    } catch (e) { out.pipeline.routeError = String(e); }
+  }
 
   return NextResponse.json(out);
 }
