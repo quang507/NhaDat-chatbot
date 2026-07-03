@@ -873,7 +873,11 @@ export async function POST(req: NextRequest) {
         return null;
       };
 
-      const category = getCategoryMatch(queryText) || getCategoryMatch(contentText);
+      // Uu tien category tu CAU HOI. Chi suy tu NOI DUNG LLM khi khach KHONG neu
+      // ro mau nha — neu khong, points nhac "cong vien noi khu" se keo ca slide
+      // "cho xem Fusion" ve anh cong vien. Co model + cau hoi khong neu phong ->
+      // category=null -> roi ve anh TONG QUAN cua dung model do.
+      const category = getCategoryMatch(queryText) || (model ? null : getCategoryMatch(contentText));
 
       if (category === 'vi_tri') {
         parsed.image_urls = [
