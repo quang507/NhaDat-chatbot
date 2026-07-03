@@ -118,13 +118,15 @@ export async function getDrivingRoute(
   }
 }
 
-// Biến kết quả route thành đoạn context để nhét vào prompt (AI chỉ diễn giải, không bịa)
+// Biến kết quả route thành đoạn context để nhét vào prompt (AI chỉ diễn giải, không bịa).
+// Lệnh CỨNG + đặt ở ĐẦU prompt vì llama hay bỏ qua/đọc méo số khi bị vùi dưới 12 chunk RAG.
 export function routeSummaryToPrompt(r: RouteSummary): string {
-  return `\n\n=== DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ (Google Maps, dùng ĐÚNG số này, KHÔNG được bịa số khác) ===
-- Điểm xuất phát: ${r.origin}
-- Điểm đến: Ny'ah Phú Định (58A Trương Đình Hội, P.16, Q.8)
+  return `\n\n★★★ DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ (Google Maps — ƯU TIÊN TUYỆT ĐỐI) ★★★
+Khách đang hỏi đường/thời gian di chuyển. BẮT BUỘC trả lời NGAY bằng đúng 2 con số dưới đây,
+KHÔNG được hỏi lại tên địa điểm, KHÔNG được bịa số khác, KHÔNG nói "cần biết thêm":
+- Từ "${r.origin}" đến dự án Ny'ah Phú Định (58A Trương Đình Hội, P.16, Q.8):
 - Quãng đường: ${r.distanceText}
 - Thời gian di chuyển (theo giao thông hiện tại): ${r.durationText}
-- Link Google Maps để gửi khách: ${r.mapsUrl}
-Hãy trả lời tự nhiên dựa trên đúng các số liệu trên. Nếu khách cần, mời họ mở link Google Maps để dẫn đường trực tiếp.`;
+Câu trả lời PHẢI nêu rõ "${r.durationText}" và "${r.distanceText}", sau đó có thể mô tả hướng đi
+chung và mời khách mở Google Maps (${r.mapsUrl}) để dẫn đường trực tiếp.`;
 }

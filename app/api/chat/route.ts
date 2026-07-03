@@ -92,7 +92,8 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
       const chunks = await retrieve(ragQuery, index, 12);
       const data = chunks.join('\n\n');
       return {
-        text: `${persona}${profileNote}${timeContext}${routeContext}${unitContextStr}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
+        // routeContext ĐẶT TRƯỚC persona: llama hay bỏ qua số khi bị vùi dưới data RAG.
+        text: `${routeContext}${persona}${profileNote}${timeContext}${unitContextStr}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
         usedRag: true,
       };
     }
@@ -106,7 +107,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   const data = await readRepoFile('data.md');
   const truncated = data.length > limit ? data.slice(0, limit) + '\n\n[... dữ liệu đã được rút ngắn để tránh quá tải API ...]' : data;
   return {
-    text: `${persona}${profileNote}${timeContext}${routeContext}${unitContextStr}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
+    text: `${routeContext}${persona}${profileNote}${timeContext}${unitContextStr}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     usedRag: false,
   };
 }
