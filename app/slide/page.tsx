@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { splitCleanSentences, splitSentences } from '@/lib/speech';
 import { classifyAmbientIntent } from '@/lib/intent';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
+import { SlideBody } from '@/components/SlideBody';
 
 type SlideData = {
   layout_type?: 'split_image_right' | 'split_image_left' | 'full_background' | 'dark_minimal' | 'text_only';
@@ -292,127 +293,16 @@ export default function SlideBotPage() {
 
   const SLOGAN = 'Sống đẹp hơn chung cư — Sinh lời hơn thổ cư';
 
-  const splitTitle = (t: string): [string, string] => {
-    const w = (t || '').trim().split(/\s+/);
-    if (w.length <= 2) return [w.join(' '), ''];
-    const cut = Math.ceil(w.length / 2);
-    return [w.slice(0, cut).join(' '), w.slice(cut).join(' ')];
-  };
-
   const Line = ({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) => (
     <span className="line-mask block">
       <span className={`line-in block ${className}`} style={{ animationDelay: `${delay}ms` }}>{children}</span>
     </span>
   );
 
-  const renderImages = () => {
-    const imgs = collectImages(slide);
-    if (imgs.length === 0) return null;
-    const o = (u: string) => imgOrient[u] || 'landscape';
-    const baseDelay = 550;
-
-    const Card = ({ src, delay, className = '' }: { src: string; delay: number; className?: string }) => {
-      const isMap = src.includes('vi_tri') || src.includes('18_phut');
-      const qrUrl = slide?.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
-      return (
-        <div
-          className={`img-card relative rounded-[28px] overflow-hidden bg-white border border-black/[0.06] shadow-[0_24px_60px_-24px_rgba(14,90,52,0.35)] cursor-zoom-in ${className}`}
-          style={{ animationDelay: `${delay}ms` }}
-          onClick={() => setSelectedImage(src)}
-        >
-          <img
-            src={src}
-            alt="Hình ảnh dự án"
-            className="w-full h-full object-contain"
-            onError={() => setBrokenImages(prev => ({ ...prev, [src]: true }))}
-          />
-          {isMap && (
-            <a
-              href={qrUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="absolute bottom-3 left-3 bg-white/95 rounded-xl p-2 shadow-lg border border-black/5 flex flex-col items-center"
-              onClick={e => e.stopPropagation()}
-            >
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrUrl)}`} alt="QR bản đồ" className="w-16 h-16" />
-              <span className="text-[9px] font-bold text-neutral-600 mt-1">Quét bản đồ</span>
-            </a>
-          )}
-        </div>
-      );
-    };
-
-    if (imgs.length === 1) {
-      const one = imgs[0];
-      return o(one) === 'portrait'
-        ? <div className="flex justify-center min-h-0"><Card src={one} delay={baseDelay} className="h-[42vh] w-[74%]" /></div>
-        : <Card src={one} delay={baseDelay} className="h-[30vh] w-full" />;
-    }
-
-    if (imgs.length === 2) {
-      const [a, b] = imgs;
-      const twoP = o(a) === 'portrait' && o(b) === 'portrait';
-      const twoL = o(a) === 'landscape' && o(b) === 'landscape';
-      if (twoP) {
-        return (
-          <div className="grid grid-cols-2 gap-4 h-[38vh] min-h-0">
-            <Card src={a} delay={baseDelay} className="h-full" />
-            <Card src={b} delay={baseDelay + 420} className="h-full" />
-          </div>
-        );
-      }
-      if (twoL) {
-        return (
-          <div className="grid grid-rows-2 gap-4 h-[44vh] min-h-0">
-            <Card src={a} delay={baseDelay} className="h-full min-h-0" />
-            <Card src={b} delay={baseDelay + 420} className="h-full min-h-0" />
-          </div>
-        );
-      }
-      const p = o(a) === 'portrait' ? a : b;
-      const l = p === a ? b : a;
-      return (
-        <div className="grid grid-cols-5 gap-4 h-[40vh] min-h-0">
-          <Card src={p} delay={baseDelay} className="col-span-2 h-full" />
-          <div className="col-span-3 flex items-center min-h-0">
-            <Card src={l} delay={baseDelay + 420} className="h-[72%] w-full" />
-          </div>
-        </div>
-      );
-    }
-
-    const [a, b, c] = imgs;
-    const allP = imgs.every(u => o(u) === 'portrait');
-    const allL = imgs.every(u => o(u) === 'landscape');
-    if (allP) {
-      return (
-        <div className="grid grid-cols-3 gap-4 h-[34vh] min-h-0">
-          {imgs.map((u, i) => <Card key={u} src={u} delay={baseDelay + i * 380} className="h-full" />)}
-        </div>
-      );
-    }
-    if (allL) {
-      return (
-        <div className="grid grid-rows-3 gap-3 h-[50vh] min-h-0">
-          {imgs.map((u, i) => <Card key={u} src={u} delay={baseDelay + i * 380} className="h-full min-h-0" />)}
-        </div>
-      );
-    }
-    return (
-      <div className="flex flex-col gap-4 min-h-0">
-        <Card src={a} delay={baseDelay} className="h-[26vh] w-full" />
-        <div className="grid grid-cols-2 gap-4 h-[18vh]">
-          <Card src={b} delay={baseDelay + 420} className="h-full" />
-          <Card src={c} delay={baseDelay + 800} className="h-full" />
-        </div>
-      </div>
-    );
-  };
-
   const renderSlideBody = () => {
     if (!slide) {
       return (
-        <div className="flex-1 flex flex-col items-center justify-center text-center gap-[2.5vh]">
+        <div className="flex-1 flex flex-col items-center justify-center text-center gap-[2.5vh] px-[5vw]">
           <Line delay={100}>
             <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold tracking-[0.2em] uppercase text-[clamp(11px,1.2vw,17px)]">
               Smart Showroom · Nhã Đạt
@@ -429,46 +319,17 @@ export default function SlideBotPage() {
       );
     }
 
-    const [t1, t2] = splitTitle(slide.title);
-
+    // Dung CHUNG <SlideBody> voi trang demo -> bo cuc/anh/chu y het nhau.
+    // collectImages da loc anh 404 + gioi han 3. imgOrient = huong that (da do runtime).
+    const cleanData = { ...slide, image_urls: collectImages(slide) };
     return (
-      <div key={slideKey} className="flex-1 min-h-0 flex flex-col gap-[2.2vh] py-1">
-        <div className="shrink-0">
-          <Line delay={60}>
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold tracking-[0.2em] uppercase text-[clamp(10px,1.1vw,15px)]">
-              Ny&apos;ah Phú Định
-            </span>
-          </Line>
-          <h1 className="mt-[1.2vh] uppercase font-black leading-[0.98] tracking-tight">
-            <Line delay={180} className="text-[#2E9E5B] text-[clamp(30px,4.6vw,84px)]">{t1}</Line>
-            {t2 && <Line delay={330} className="text-[#161616] text-[clamp(34px,5.4vw,100px)]">{t2}</Line>}
-          </h1>
-          {slide.highlight_number && (
-            <Line delay={470} className="mt-1 font-black leading-none text-transparent text-[clamp(40px,7vw,120px)]">
-              <span style={{ WebkitTextStroke: '3px #2E9E5B' }}>{slide.highlight_number}</span>
-            </Line>
-          )}
-        </div>
-
-        {renderImages()}
-
-        {slide.points && slide.points.length > 0 && (
-          <ul className="shrink-0 space-y-[1vh]">
-            {slide.points.slice(0, 5).map((p, i) => (
-              <li key={i} className="line-mask">
-                <span
-                  className="line-in flex items-start gap-3 text-neutral-800 font-medium leading-snug text-[clamp(16px,2.1vw,32px)]"
-                  style={{ animationDelay: `${1000 + i * 160}ms` }}
-                >
-                  <span className="mt-[0.5em] w-2.5 h-2.5 rounded-full bg-[#2E9E5B] shrink-0" />
-                  <span>{p}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-
-      </div>
+      <SlideBody
+        data={cleanData}
+        orientOf={(s) => imgOrient[s] || 'landscape'}
+        onImageClick={setSelectedImage}
+        onImageError={(s) => setBrokenImages(prev => ({ ...prev, [s]: true }))}
+        replayKey={slideKey}
+      />
     );
   };
 
@@ -573,7 +434,7 @@ export default function SlideBotPage() {
         </div>
       </header>
 
-      <main className="relative z-10 flex-1 min-h-0 px-[5vw] flex flex-col">
+      <main className="relative z-10 flex-1 min-h-0 flex flex-col">
         {renderSlideBody()}
       </main>
 
