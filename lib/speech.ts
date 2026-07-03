@@ -298,29 +298,11 @@ function fuzzyName(token: string): string | null {
   return bestScore >= 0.72 ? best : null;
 }
 
-// Quet tung tu + cum 2 tu lien nhau (STT hay tach "cosmo" thanh "cot mo"),
-// snap ve ten chuan neu gan giong. Chi dung cho tu "la" (>=3 ky tu, khong phai
-// so). Giu nguyen dau cach.
+// Chi snap TUNG TU DON gan giong ten chuan (khong ghep 2 tu — ghep de nham
+// "co mo"/"co so" -> cosmo). Cac ca meo tach 2 tu ("cot mo", "o put", "op phit")
+// da co bang regex VN_SPEECH_FIXES lo truoc, nen fuzzy chi can vet tu don.
 function applyFuzzyNames(text: string): string {
-  const words = text.split(/(\s+)/); // giu ca khoang trang
-  const out: string[] = [];
-  for (let i = 0; i < words.length; i++) {
-    const w = words[i];
-    if (/^\s+$/.test(w) || !w) { out.push(w); continue; }
-    // Thu cum 2 tu truoc (bat "cot mo" -> cosmo)
-    const next = words[i + 2]; // i+1 la khoang trang
-    if (next && !/^\s+$/.test(next)) {
-      const pairHit = fuzzyName(w + next);
-      if (pairHit && editDistance(stripDiacritics((w + next).toLowerCase()).replace(/[^a-z]/g, ''), pairHit) <= 2) {
-        out.push(pairHit);
-        i += 2; // nuot ca khoang trang + tu ke
-        continue;
-      }
-    }
-    const hit = fuzzyName(w);
-    out.push(hit || w);
-  }
-  return out.join('');
+  return text.replace(/[^\s]+/g, (w) => fuzzyName(w) || w);
 }
 
 export function normalizeVietnameseSpeech(text: string): string {
