@@ -19,6 +19,17 @@ type SlideData = {
   skip?: boolean;
 };
 
+// Nhan chu de than thien — hien "Nguoi ta dang noi ve [nhan]" khi bat duoc topic.
+const TOPIC_LABELS: Record<string, string> = {
+  price: 'Giá & Thanh toán',
+  location: 'Vị trí & Đường đi',
+  unit: 'Không gian & Công năng',
+  legal: 'Pháp lý & Tiến độ',
+  amenity: 'Tiện ích',
+  design: 'Thiết kế & Nội thất',
+  general: "Dự án Ny'ah Phú Định",
+};
+
 export default function SlideBotPage() {
   const [slide, setSlide] = useState<SlideData | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -26,6 +37,9 @@ export default function SlideBotPage() {
 
   const [voiceOn, setVoiceOn] = useState(false);
   const [slideKey, setSlideKey] = useState(0);
+  // Chu de bat duoc tu giong noi khach — '' = chua bat, dang lang nghe.
+  const [topicLabel, setTopicLabel] = useState('');
+  const [heardText, setHeardText] = useState('');
 
   const bufferRef = useRef('');
   const lastGenRef = useRef(0);
@@ -56,6 +70,9 @@ export default function SlideBotPage() {
       handleAmbientSpeech(text);
     }
   });
+
+  // Dung han -> xoa chu de dang hien.
+  useEffect(() => { if (state === 'idle') { setTopicLabel(''); setHeardText(''); } }, [state]);
 
   const handleVoiceCommands = (text: string): boolean => {
     const clean = text.toLowerCase().trim();
@@ -97,32 +114,31 @@ export default function SlideBotPage() {
     maybeGenerateAmbient();
   };
 
+  // Ve trang thai "dang lang nghe" (chua bat duoc chu de nao).
+  const backToListening = () => {
+    setTopicLabel('');
+    setHeardText('');
+    setState('listening');
+    setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
+    startListening();
+  };
+
   const maybeGenerateAmbient = () => {
     if (!isListeningLoopActive.current || isGeneratingRef.current) return;
     const query = bufferRef.current.trim();
-    if (!query) {
-       setState('listening');
-       setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
-       startListening();
-       return;
-    }
+    if (!query) { backToListening(); return; }
+
     const intent = classifyAmbientIntent(query);
-    if (!intent.shouldGenerate) {
-       setState('listening');
-       setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
-       startListening();
-       return;
-    }
+    if (!intent.shouldGenerate) { backToListening(); return; }
+
     const now = Date.now();
     const wait = AMBIENT_COOLDOWN_MS - (now - lastGenRef.current);
-    if (wait > 0 && intent.reason !== 'explicit_slide_request') {
-       setState('listening');
-       setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
-       startListening();
-       return;
-    }
-    
-    setTranscript('💡 Chuẩn bị slide...');
+    if (wait > 0 && intent.reason !== 'explicit_slide_request') { backToListening(); return; }
+
+    // BAT DUOC CHU DE -> hien "Nguoi ta dang noi ve [chu de]" + cau hoi that.
+    setTopicLabel(TOPIC_LABELS[intent.topic || 'general'] || TOPIC_LABELS.general);
+    setHeardText(query);
+    setTranscript(query);
     fetchSlideData(query, true);
   };
 
@@ -369,6 +385,9 @@ export default function SlideBotPage() {
         .animate-fade-in { animation: fadeIn .4s ease-out both; }
         @keyframes scaleUp { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .animate-scale-up { animation: scaleUp .3s cubic-bezier(.22,1,.36,1) both; }
+        /* Doi noi dung o transcript (lang nghe <-> nguoi ta dang noi ve) truot len + hien dan */
+        .transcript-swap { animation: swapIn .38s cubic-bezier(.22,1,.36,1) both; }
+        @keyframes swapIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
         @media (prefers-reduced-motion: reduce) {
           .line-in, .img-card, .marquee-track, .animate-sound-wave {
             animation-duration: .01ms !important;
@@ -450,20 +469,38 @@ export default function SlideBotPage() {
       </div>
 
       <footer className="relative z-10 px-[4vw] py-[1.2vh] flex items-center justify-center gap-3 shrink-0">
-        <div className={`flex-1 max-w-[46vw] min-w-0 flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white border font-medium text-neutral-600 transition-colors text-[clamp(11px,1.2vw,17px)] ${
-          state === 'listening' ? 'border-[#2E9E5B]/50' : state === 'processing' ? 'border-amber-300' : 'border-black/10'
-        }`}>
-          {state === 'listening' && (
-            <span className="flex items-end gap-0.5 h-4 shrink-0" aria-hidden>
-              <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
-              <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
-              <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
-            </span>
+        <div
+          key={topicLabel ? `t:${topicLabel}` : `s:${state}`}
+          className={`transcript-swap flex-1 max-w-[52vw] min-w-0 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white border font-medium transition-colors text-[clamp(11px,1.2vw,17px)] ${
+            topicLabel ? 'border-[#2E9E5B]/60 justify-start' : `justify-center ${state === 'processing' ? 'border-amber-300' : state === 'listening' ? 'border-[#2E9E5B]/50' : 'border-black/10'}`
+          }`}
+        >
+          {topicLabel ? (
+            <>
+              <span className="flex items-end gap-0.5 h-4 shrink-0" aria-hidden>
+                <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
+                <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
+                <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+              </span>
+              <span className="shrink-0 text-neutral-500">Người ta đang nói về</span>
+              <span className="shrink-0 px-3 py-1 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold whitespace-nowrap">{topicLabel}</span>
+              {heardText && <span className="truncate text-neutral-400 italic hidden md:inline">“{heardText}”</span>}
+            </>
+          ) : (
+            <>
+              {state === 'listening' && (
+                <span className="flex items-end gap-0.5 h-4 shrink-0" aria-hidden>
+                  <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
+                  <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
+                  <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+                </span>
+              )}
+              {state === 'processing' && (
+                <span className="w-3.5 h-3.5 shrink-0 border-2 border-amber-400/40 border-t-amber-500 rounded-full animate-spin" aria-hidden />
+              )}
+              <span className="truncate text-neutral-600">{transcript}</span>
+            </>
           )}
-          {state === 'processing' && (
-            <span className="w-3.5 h-3.5 shrink-0 border-2 border-amber-400/40 border-t-amber-500 rounded-full animate-spin" aria-hidden />
-          )}
-          <span className="truncate">{transcript}</span>
         </div>
 
         <button
