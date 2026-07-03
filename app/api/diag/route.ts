@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getDrivingRoute, detectRouteIntent } from '@/lib/maps';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // PROBE TAM — do trang thai Routes API ngay luc goi (rate-limit? quota?). XOA sau.
 export async function GET() {
