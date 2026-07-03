@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDrivingRoute } from '@/lib/maps';
+import { getDrivingRoute, detectRouteIntent } from '@/lib/maps';
 
 export const runtime = 'nodejs';
 
@@ -18,10 +18,17 @@ export async function GET() {
     out.raw = { status: r.status, body: (await r.text()).slice(0, 400) };
   } catch (e) { out.raw = { error: String(e) }; }
 
-  // getDrivingRoute that (qua ham cua app)
+  // Mo phong DUNG luong chat: detectRouteIntent(message) -> getDrivingRoute(origin) -> routeAnswer
+  const msg = 'đi từ bệnh viện chợ rẫy qua ny ah phú định bao nhiêu phút đi đường nào';
   try {
-    out.getDrivingRoute = await getDrivingRoute('bệnh viện chợ rẫy');
-  } catch (e) { out.getDrivingRouteError = String(e); }
+    const intent = detectRouteIntent(msg);
+    out.intent = intent;
+    if (intent.isRoute && intent.origin) {
+      const route = await getDrivingRoute(intent.origin);
+      out.route = route;
+      out.routeAnswerSet = route ? true : false;
+    }
+  } catch (e) { out.pipelineError = String(e); }
 
   return NextResponse.json(out);
 }
