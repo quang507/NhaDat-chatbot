@@ -256,9 +256,77 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
   [vnWord('gen\\s*năm'), 'gen 5'],
 ];
 
+// ───────────────────────────────────────────────────────────────────────────
+// 6) FUZZY MATCH tên riêng — "quy tắc chung" thay vì liệt kê tay từng biến thể.
+//    STT hay nghe méo tên nước ngoài (cosmo, fusion, opus...). Thay vì chỉ bắt
+//    các biến thể đã viết sẵn ở VN_SPEECH_FIXES, ta so KHOẢNG CÁCH CHỈNH SỬA
+//    (Levenshtein) của mỗi từ / cụm 2 từ với danh sách tên chuẩn — GẦN GIỐNG
+//    đủ mức thì tự nắn về đúng tên. Bắt được cả biến thể MỚI chưa gặp.
+//    (Ca méo QUÁ XA vd "danh hài" thì fuzzy không với tới — vẫn cần thêm tay.)
+// ───────────────────────────────────────────────────────────────────────────
+const FUZZY_NAMES = ['cosmo', 'fusion', 'opus', 'signature', 'cashmere', 'office', 'airtop'];
+
+function stripDiacritics(s: string): string {
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+}
+
+function editDistance(a: string, b: string): number {
+  const m = a.length, n = b.length;
+  if (!m) return n; if (!n) return m;
+  let prev = Array.from({ length: n + 1 }, (_, i) => i);
+  let cur = new Array(n + 1).fill(0);
+  for (let i = 1; i <= m; i++) {
+    cur[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      cur[j] = Math.min(cur[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost);
+    }
+    [prev, cur] = [cur, prev];
+  }
+  return prev[n];
+}
+
+// Tra ve ten chuan neu token gan giong (>=72%), nguoc lai null.
+function fuzzyName(token: string): string | null {
+  const t = stripDiacritics(token.toLowerCase()).replace(/[^a-z]/g, '');
+  if (t.length < 3) return null;
+  let best: string | null = null, bestScore = 0;
+  for (const v of FUZZY_NAMES) {
+    const score = 1 - editDistance(t, v) / Math.max(t.length, v.length);
+    if (score > bestScore) { bestScore = score; best = v; }
+  }
+  return bestScore >= 0.72 ? best : null;
+}
+
+// Quet tung tu + cum 2 tu lien nhau (STT hay tach "cosmo" thanh "cot mo"),
+// snap ve ten chuan neu gan giong. Chi dung cho tu "la" (>=3 ky tu, khong phai
+// so). Giu nguyen dau cach.
+function applyFuzzyNames(text: string): string {
+  const words = text.split(/(\s+)/); // giu ca khoang trang
+  const out: string[] = [];
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    if (/^\s+$/.test(w) || !w) { out.push(w); continue; }
+    // Thu cum 2 tu truoc (bat "cot mo" -> cosmo)
+    const next = words[i + 2]; // i+1 la khoang trang
+    if (next && !/^\s+$/.test(next)) {
+      const pairHit = fuzzyName(w + next);
+      if (pairHit && editDistance(stripDiacritics((w + next).toLowerCase()).replace(/[^a-z]/g, ''), pairHit) <= 2) {
+        out.push(pairHit);
+        i += 2; // nuot ca khoang trang + tu ke
+        continue;
+      }
+    }
+    const hit = fuzzyName(w);
+    out.push(hit || w);
+  }
+  return out.join('');
+}
+
 export function normalizeVietnameseSpeech(text: string): string {
   if (!text) return '';
   let clean = ' ' + text.toLowerCase() + ' ';
   for (const [re, to] of VN_SPEECH_FIXES) clean = clean.replace(re, (_m, b) => b + to);
+  clean = applyFuzzyNames(clean);   // lop 2: fuzzy bat bien the moi chua co trong bang
   return clean.trim();
 }
