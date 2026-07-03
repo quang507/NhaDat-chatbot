@@ -773,9 +773,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(base);
     }
 
-    // Lọc bỏ mọi đường dẫn không hợp lệ không bắt đầu bằng /images/
+    // Lọc đường dẫn ảnh: phải bắt đầu /images/ VA file phải TON TAI THUC.
+    // LLM hay nhat path "ma" tu du lieu RAG cu (vd /images/2023/05/Cover-Fusion-3.webp
+    // tu noi dung website 2023) — dung dinh dang /images/ nen loc cu cho qua, nhung file
+    // khong co trong repo -> trinh duyet 404 -> slide TRANG ANH. existsSync loai het path
+    // ma (chay duoc tren Vercel vi da bundle public/images qua outputFileTracingIncludes).
+    // Loc rong -> khoi if ben duoi tu dap anh tinh dung theo tu khoa.
     if (parsed.image_urls && Array.isArray(parsed.image_urls)) {
-      parsed.image_urls = parsed.image_urls.filter((url: string) => url.startsWith('/images/'));
+      parsed.image_urls = parsed.image_urls.filter((url: string) => {
+        if (typeof url !== 'string' || !url.startsWith('/images/')) return false;
+        try { return existsSync(path.join(process.cwd(), 'public', url)); } catch { return false; }
+      });
     } else {
       parsed.image_urls = [];
     }

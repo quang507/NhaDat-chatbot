@@ -202,6 +202,13 @@ export function useVoiceAgent({
     speakStartRef.current = Date.now();
     setResponse(nextAudio.text);
 
+    // continuous=true nen mic van mo luc phat TTS -> se nghe nham chinh giong may
+    // (echo). Tat STT trong luc 'speaking'; VAD (luong getUserMedia rieng) van chay
+    // lo barge-in. Xong TTS -> startListening() bat lai recognition.
+    if (recognitionRef.current && isRecognitionRunningRef.current) {
+      try { recognitionRef.current.stop(); } catch (e) {}
+    }
+
     const audio = nextAudio.audio;
     activeAudioRef.current = audio;
 
@@ -272,8 +279,11 @@ export function useVoiceAgent({
     }
 
     const rec = new SpeechRecognition();
-    rec.continuous = false;
-    rec.interimResults = false;
+    // NGHE LIEN TUC: continuous=false khien mic TAT sau moi cau -> phai restart ->
+    // khoang "diec" 120ms+latency Chrome moi lan -> noi dung luc do la MAT TIENG
+    // ("lau lau noi khong nghe"). continuous=true giu mic mo suot, gan nhu het diec.
+    rec.continuous = true;
+    rec.interimResults = true;
     rec.lang = 'vi-VN';
 
     rec.onstart = () => {
@@ -286,11 +296,17 @@ export function useVoiceAgent({
     };
 
     rec.onresult = (event: any) => {
-      const rawText = event.results[0][0].transcript;
-      const resultText = normalizeVietnameseSpeech(rawText) || rawText;
-
       if (!isListeningLoopActive.current) return;
+      // continuous=true: duyet tu resultIndex, CHI lay ket qua da CHOT (isFinal).
+      // Bo qua interim (dang doan dở) de khong trigger slide lung tung nua chung.
+      let finalText = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) finalText += event.results[i][0].transcript + ' ';
+      }
+      finalText = finalText.trim();
+      if (!finalText) return;   // moi co interim, cau chua chot -> cho tiep
 
+      const resultText = normalizeVietnameseSpeech(finalText) || finalText;
       setTranscript(`🎧 Nhận diện: "${resultText}"`);
       setState('processing');
       if (onSpeechResultRef.current) {
@@ -333,12 +349,13 @@ export function useVoiceAgent({
     recognitionRef.current = rec;
 
     // WATCHDOG: Chrome thỉnh thoảng ngắt recognition im lặng (không onend, hoặc start()
-    // ném lỗi đúng lúc). Cứ 3s kiểm tra: session mở + không phát TTS + mic chết -> hồi sinh.
+    // ném lỗi đúng lúc). Cứ 1.2s kiểm tra: session mở + không phát TTS + mic chết -> hồi
+    // sinh (trước để 3s -> điếc tới 3s; giờ tối đa ~1.2s).
     const watchdog = setInterval(() => {
       if (!isListeningLoopActive.current) return;
       if (chatStateRef.current === 'speaking') return;
       if (!isRecognitionRunningRef.current) restartRecognitionOnly();
-    }, 3000);
+    }, 1200);
 
     return () => {
       clearInterval(watchdog);
