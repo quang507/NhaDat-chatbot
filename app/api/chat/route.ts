@@ -320,6 +320,8 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'text/plain; charset=utf-8',
         'Cache-Control': 'no-cache',
         'X-Accel-Buffering': 'no',
+        'x-ra': routeAnswer ? 'SET' : 'UNSET',
+        'x-path': 'gemini',
       },
     });
   } catch (error) {
