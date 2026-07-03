@@ -44,7 +44,7 @@ async function getPersona(): Promise<string> {
 }
 
 // Build system prompt nhỏ gọn: persona + chỉ các đoạn liên quan tới câu hỏi
-async function buildPrompt(message: string, profile?: string): Promise<{ text: string; usedRag: boolean }> {
+async function buildPrompt(message: string, profile?: string): Promise<{ text: string; usedRag: boolean; routeAnswer?: string }> {
   const persona = await getPersona();
   const profileNote = profile?.trim()
     ? `\n\nTHÔNG TIN ĐÃ BIẾT VỀ KHÁCH (dùng để cá nhân hóa, đừng hỏi lại thứ đã biết):\n${profile.trim()}`
@@ -58,13 +58,19 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   const dateStr = vnTime.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
   const timeContext = `\n\nTHỜI GIAN HIỆN TẠI (GMT+7): ${timeStr}, ngày ${dateStr}. Bạn có thể dùng thông tin này để trả lời nếu khách hỏi giờ/ngày hiện tại.`;
 
-  // Nếu khách hỏi đường / khoảng cách / thời gian -> gọi Google Maps lấy số liệu THẬT
+  // Nếu khách hỏi đường / khoảng cách / thời gian -> gọi Google Maps lấy số liệu THẬT.
+  // llama KHÔNG đáng tin để nhắc lại đúng con số (hay bịa 10-15 phút thay vì số thật) ->
+  // khi có route hợp lệ, dựng luôn câu trả lời CỐ ĐỊNH server-side, bỏ qua LLM (routeAnswer).
   let routeContext = '';
+  let routeAnswer: string | undefined;
   try {
     const { isRoute, origin } = detectRouteIntent(message);
     if (isRoute && origin) {
       const route = await getDrivingRoute(origin);
-      if (route) routeContext = routeSummaryToPrompt(route);
+      if (route) {
+        routeContext = routeSummaryToPrompt(route);
+        routeAnswer = `Dạ, từ ${route.origin} đến dự án Ny'ah Phú Định (58A Trương Đình Hội, P.16, Q.8) khoảng ${route.distanceText}, đi ô tô mất tầm ${route.durationText} tùy tình hình giao thông ạ.\n\nAnh/chị có thể mở Google Maps để xem lộ trình chi tiết theo thời gian thực: ${route.mapsUrl} 📍`;
+      }
     }
   } catch (e) {
     console.warn('Route lookup failed:', e);
@@ -95,6 +101,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
         // routeContext ĐẶT TRƯỚC persona: llama hay bỏ qua số khi bị vùi dưới data RAG.
         text: `${routeContext}${persona}${profileNote}${timeContext}${unitContextStr}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${data}`,
         usedRag: true,
+        routeAnswer,
       };
     }
   } catch (e) {
@@ -109,6 +116,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   return {
     text: `${routeContext}${persona}${profileNote}${timeContext}${unitContextStr}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     usedRag: false,
+    routeAnswer,
   };
 }
 
@@ -130,7 +138,20 @@ export async function POST(req: NextRequest) {
       { role: 'user', parts: [{ text: message }] },
     ];
 
-    const { text: systemText } = await buildPrompt(message, profile);
+    const { text: systemText, routeAnswer } = await buildPrompt(message, profile);
+
+    // Cau hoi chi duong co so lieu Maps that -> tra loi CO DINH, khong cho LLM che so sai.
+    if (routeAnswer) {
+      const enc = new TextEncoder();
+      const time = new Date().toISOString();
+      await writeLog('chats', { time, question: message, answer: routeAnswer });
+      const phone = extractPhone(message);
+      if (phone) await writeLog('leads', { time, phone, message });
+      const stream = new ReadableStream({
+        start(controller) { controller.enqueue(enc.encode(routeAnswer)); controller.close(); },
+      });
+      return new Response(stream, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache' } });
+    }
 
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 
