@@ -320,7 +320,7 @@ export default function SlideBotPage() {
           {/* Khong dung tracking-tight o day: tracking tinh theo em, o co chu toi 190px
               no co moi cap chu lai ~5px — qua nhieu voi chu hoa dam co dau tieng Viet,
               lam dau (mu, moc, nang) bi de len chu ben canh. */}
-          <h1 className="uppercase font-black leading-[0.95] tracking-[0.05em]">
+          <h1 className="uppercase font-black leading-[1.5] tracking-[0.05em]">
             <Line delay={240} className="text-[#2E9E5B] text-[clamp(44px,9vw,150px)]">Ny&apos;ah</Line>
             <Line delay={400} className="text-[#161616] text-[clamp(52px,11vw,190px)]">Phú Định</Line>
           </h1>
