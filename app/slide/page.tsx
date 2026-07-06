@@ -41,6 +41,18 @@ export default function SlideBotPage() {
   const [topicLabel, setTopicLabel] = useState('');
   const [heardText, setHeardText] = useState('');
 
+  // ===== DEBUG HUD: mo trang voi /slide?debug=1 de xem trang thai + loi truc tiep =====
+  const [debugOn, setDebugOn] = useState(false);
+  const [debugLog, setDebugLog] = useState<string[]>([]);
+  useEffect(() => {
+    setDebugOn(new URLSearchParams(window.location.search).has('debug'));
+  }, []);
+  const dbg = (msg: string) => {
+    console.log('[SlideDebug]', msg);
+    const t = new Date().toLocaleTimeString('vi-VN', { hour12: false });
+    setDebugLog(prev => [`${t}  ${msg}`, ...prev].slice(0, 14));
+  };
+
   const bufferRef = useRef('');
   // Quyết định đổi/giữ slide dùng chung shouldRefreshSlide() (lib/intent.ts) với /voice,
   // để 2 nơi không lệch logic.
@@ -125,15 +137,28 @@ export default function SlideBotPage() {
   };
 
   const maybeGenerateAmbient = () => {
-    if (!isListeningLoopActive.current || isGeneratingRef.current) return;
+    if (!isListeningLoopActive.current || isGeneratingRef.current) {
+      dbg(isGeneratingRef.current ? '⏳ Đang tạo slide, bỏ qua câu mới' : '⏸ Loop nghe đã tắt');
+      return;
+    }
     const query = bufferRef.current.trim();
     if (!query) { backToListening(); return; }
+    dbg(`🎙 Nghe: "${query.slice(0, 60)}"`);
 
     const intent = classifyAmbientIntent(query);
-    if (!intent.shouldGenerate) { backToListening(); return; }
+    if (!intent.shouldGenerate) {
+      dbg(`🚫 Intent BỎ QUA — lý do: ${intent.reason}, topic: ${intent.topic || '—'}`);
+      backToListening();
+      return;
+    }
+    dbg(`✅ Intent OK — topic: ${intent.topic}, lý do: ${intent.reason}`);
 
     const now = Date.now();
-    if (!shouldRefreshSlide(intent, lastSlideRef.current, now)) { backToListening(); return; }
+    if (!shouldRefreshSlide(intent, lastSlideRef.current, now)) {
+      dbg('⏱ Giữ slide cũ (chưa đủ thời gian đổi)');
+      backToListening();
+      return;
+    }
 
     // BAT DUOC CHU DE -> hien "Nguoi ta dang noi ve [chu de]" + cau hoi that.
     lastSlideRef.current = { topic: intent.topic || null, at: now };
@@ -176,10 +201,12 @@ export default function SlideBotPage() {
   };
 
   const fetchSlideData = async (text: string, ambient = false) => {
+    const t0 = Date.now();
     try {
       isGeneratingRef.current = true;
       if (!ambient) setState('processing');
-      
+      dbg(`📡 Gọi /api/slide (ambient=${ambient})…`);
+
       // Mở luồng giọng nói TỨC THÌ nếu voiceOn = true
       if (voiceOn) {
         streamChatForVoice(text);
@@ -195,10 +222,15 @@ export default function SlideBotPage() {
         body: JSON.stringify({ message: text, ambient })
       });
 
-      if (!res.ok) throw new Error('API lỗi');
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        throw new Error(`API ${res.status}: ${body.slice(0, 120) || res.statusText}`);
+      }
       const data: SlideData = await res.json();
+      const secs = ((Date.now() - t0) / 1000).toFixed(1);
 
       if (data.skip || !data.speech_text || !data.title || data.title === 'Lỗi hiển thị' || data.title.includes('Lỗi hiển thị')) {
+        dbg(`⚪ Server SKIP sau ${secs}s (skip=${!!data.skip}, title="${data.title || ''}")`);
         if (ambient) {
           setTranscript('🎧 Đang nghe ngầm… (chưa có chủ đề rõ ràng)');
           setState('listening');
@@ -209,6 +241,9 @@ export default function SlideBotPage() {
         }
         return;
       }
+
+      const nImgs = (data.image_urls?.length ?? (data.image_url ? 1 : 0));
+      dbg(`🖼 Slide OK sau ${secs}s — "${data.title}", ${nImgs} ảnh, layout: ${data.layout_type || 'mặc định'}`);
 
       if (!data.layout_type) data.layout_type = 'split_image_right';
       setBrokenImages({});
@@ -223,17 +258,13 @@ export default function SlideBotPage() {
         setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
         startListening();
       }
-    } catch (e) {
-      if (ambient) {
+    } catch (e: any) {
+      const msg = e?.message || String(e);
+      dbg(`🔴 LỖI sau ${((Date.now() - t0) / 1000).toFixed(1)}s: ${msg}`);
+      // Hien loi that len thanh transcript (thay vi im lang gia vo nghe tiep)
+      setTranscript(`⚠️ Lỗi tạo slide: ${msg.slice(0, 90)} — vẫn đang nghe…`);
+      if (ambient || isListeningLoopActive.current) {
         setState('listening');
-        setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
-        startListening();
-        return;
-      }
-      setTranscript('Xin lỗi, có lỗi xảy ra khi xử lý.');
-      if (isListeningLoopActive.current) {
-        setState('listening');
-        setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
         startListening();
       } else {
         setState('idle');
@@ -391,6 +422,24 @@ export default function SlideBotPage() {
           }
         }
       ` }} />
+
+      {/* DEBUG HUD — chi hien khi mo /slide?debug=1 */}
+      {debugOn && (
+        <div className="fixed top-2 left-2 z-[70] w-[420px] max-w-[92vw] rounded-xl bg-black/85 text-white p-3 font-mono text-[11px] leading-relaxed shadow-2xl">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="font-bold text-[#A8D94A]">🔧 DEBUG</span>
+            <span>
+              state: <b className="text-amber-300">{state}</b>
+              {' · '}voice: <b className="text-amber-300">{voiceOn ? 'ON' : 'OFF'}</b>
+              {' · '}slide: <b className="text-amber-300">{slide ? 'CÓ' : 'CHƯA'}</b>
+            </span>
+          </div>
+          <div className="max-h-[38vh] overflow-y-auto space-y-0.5">
+            {debugLog.length === 0 && <div className="text-white/50">Chưa có sự kiện — bấm mic và nói thử…</div>}
+            {debugLog.map((l, i) => <div key={i} className={i === 0 ? 'text-white' : 'text-white/60'}>{l}</div>)}
+          </div>
+        </div>
+      )}
 
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <div className="dots absolute top-[8%] right-[5%] w-44 h-28 opacity-70" />
