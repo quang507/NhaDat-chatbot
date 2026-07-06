@@ -79,6 +79,7 @@ function listImages(absDir: string, urlPrefix: string, opts: { fileKeyword?: str
 }
 
 // Ưu tiên thư mục riêng của model; nếu rỗng thì rớt về thư mục chung (shared) của không gian đó.
+// Nếu ko tìm thấy ảnh với keyword, rớt về toàn bộ ảnh của space (bỏ keyword).
 function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
   if (model) {
     const specific = listImages(
@@ -88,14 +89,21 @@ function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null
     );
     if (specific.length > 0) return specific;
   }
-  return listImages(
+  const general = listImages(
     path.join(IMAGES_ROOT, 'noi_that', spaceName),
     `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`,
     { fileKeyword }
   );
+  if (general.length > 0) return general;
+  // Fallback: nếu ko có ảnh với keyword, lấy tất cả ảnh của space
+  return listImages(
+    path.join(IMAGES_ROOT, 'noi_that', spaceName),
+    `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`
+  );
 }
 
 // Gom ảnh của 1 không gian (vd "bep") từ CẢ 3 model + thư mục chung — dùng khi chưa rõ model.
+// Nếu ko tìm thấy ảnh với keyword, fallback lấy toàn bộ ảnh của space.
 function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): string[] {
   const models: Array<'cosmo_gen_2' | 'fusion_gen_5' | 'opus'> = ['cosmo_gen_2', 'fusion_gen_5', 'opus'];
   const allImgs = models.flatMap(m => listImages(
@@ -108,6 +116,17 @@ function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): stri
     `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`,
     { fileKeyword }
   ));
+  // Fallback: nếu ko có ảnh với keyword, lấy tất cả ảnh của space từ tất cả model
+  if (allImgs.length === 0) {
+    allImgs.push(...models.flatMap(m => listImages(
+      path.join(IMAGES_ROOT, 'noi_that', m, spaceName),
+      `/images/01_NyAh-PhuDinh/noi_that/${m}/${spaceName}`
+    )));
+    allImgs.push(...listImages(
+      path.join(IMAGES_ROOT, 'noi_that', spaceName),
+      `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`
+    ));
+  }
   return allImgs;
 }
 
