@@ -12,8 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 add_shortcode('nhadat_chatbot', function() {
-    // Thay đổi URL này thành domain chatbot của bạn
-    $chatbot_url = 'https://nhadat-chatbot.vercel.app';
+    $chatbot_url = 'https://nha-dat-chatbot.vercel.app';
 
     return sprintf(
         '<div id="nhadat-chatbot-container" style="width:100%%;height:600px;border:1px solid #ddd;border-radius:8px;overflow:hidden;">
