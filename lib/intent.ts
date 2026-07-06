@@ -94,6 +94,8 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
     'mặt bằng', 'mẫu nhà', 'thiết kế nhà', 'nội thất', 'phối cảnh',
     'kiến trúc nhà', 'sa bàn', 'ngoại thất', 'toàn cảnh', 'sofa', 'giường',
     'nhà mẫu', 'kiến trúc', 'thiết kế',
+    // Đồ nội thất cụ thể — khách hay hỏi thẳng tên món đồ thay vì nói "nội thất" chung chung
+    'bàn ăn', 'bàn bếp', 'tủ bếp', 'tủ quần áo', 'kệ tivi', 'bàn trà', 'đèn trang trí',
   ],
 
   // 🏢 Tên riêng dự án / thương hiệu (general anchor)
