@@ -14,9 +14,11 @@ export type IntentTopic = 'price' | 'location' | 'unit' | 'legal' | 'amenity' | 
 
 export type AmbientIntent = {
   shouldGenerate: boolean;
-  reason: 'too_short' | 'filler' | 'competitor' | 'has_project_topic' | 'explicit_slide_request';
+  reason: 'too_short' | 'filler' | 'competitor' | 'has_project_topic' | 'explicit_slide_request' | 'weak_signal';
   confidence: number;
   topic?: IntentTopic;
+  score?: number;   // tổng điểm tín hiệu (dùng để chẩn đoán/log)
+  hits?: string[];  // các từ khóa đã khớp
 };
 
 // ── Câu chêm / phản hồi xã giao không cần slide ──────────────────────────────
@@ -131,47 +133,120 @@ export function isCompetitor(text: string): boolean {
   return COMPETITORS.some(kw => lower.includes(kw));
 }
 
+// ── Chấm điểm tín hiệu (chống false-positive từ 1 từ phổ thông) ───────────────
+// Nguyên tắc: mở slide khi có TÍN HIỆU MẠNH (điểm >= NGƯỠNG), thay vì chỉ cần
+// 1 keyword bất kỳ. Mỗi từ khóa có trọng số:
+//   2 = tín hiệu mạnh, tự-đủ (tên dự án/mẫu nhà, danh từ đặc thù: sổ hồng, mặt bằng, bảng giá...)
+//   1 = tín hiệu yếu, chung chung (đầu tư, thiết kế, ở đâu, công ty, nhà phố...)
+// => 1 từ mạnh (2đ) là đủ; nhưng phải có 2 từ yếu (1+1) mới đủ. 1 từ yếu đơn độc → BỎ QUA.
+const STRONG_THRESHOLD = 2;
+
+// Tên riêng dự án / thương hiệu / mẫu nhà — anchor mạnh (trong nhóm general).
+const GENERAL_ANCHORS = new Set<string>([
+  'phú định', "ny'ah", 'nyah', 'niah', 'nhã đạt', 'nha dat', 'nhà đạt',
+  'chủ đầu tư', 'founder',
+  'cosmo', 'cót mô', 'cốt mô', 'cot mo', 'côt mô',
+  'fusion', 'phiêu dân', 'phiêu-dân', 'fiu',
+  'opus', 'ô-pút', 'ô pút', 'o pút', 'opút',
+  'cashmere', 'signature',
+]);
+
+// Từ khóa CHUNG CHUNG (weight 1) — dễ xuất hiện trong tám chuyện, cần tín hiệu thứ 2 đi kèm.
+const GENERIC_KEYWORDS = new Set<string>([
+  // general yếu
+  'công ty', 'nhà phố', 'nhà mẫu', 'gen 2', 'gen 5', 'gen hai', 'gen năm',
+  // price yếu
+  'vay', 'ngân hàng', 'lãi suất', 'đầu tư', 'lợi nhuận', 'cho thuê',
+  // location yếu
+  'trung tâm', 'metro', 'quận 1', 'bình chánh', 'di chuyển', 'bao lâu', 'bao xa',
+  'ở đâu', 'chỗ nào', 'đường đi', 'nằm ở',
+  // unit yếu
+  'master', 'hướng nhà',
+  // legal yếu
+  'xây dựng', 'cam kết', 'tiến độ',
+  // amenity yếu
+  'xanh', 'sinh thái', 'coffee', 'cà phê',
+  // design yếu
+  'thiết kế', 'toàn cảnh', 'ngoại thất',
+]);
+
+function weightOf(topic: IntentTopic, kw: string): number {
+  if (topic === 'general') return GENERAL_ANCHORS.has(kw) ? 2 : 1;
+  return GENERIC_KEYWORDS.has(kw) ? 1 : 2;
+}
+
+// Chấm điểm toàn bộ text: gom điểm theo topic, trả topic mạnh nhất + tổng điểm.
+function scoreTopics(clean: string): { total: number; strong: number; topic?: IntentTopic; hits: string[] } {
+  const topicOrder: IntentTopic[] = ['unit', 'price', 'location', 'legal', 'design', 'amenity', 'general'];
+  const perTopic = new Map<IntentTopic, number>();
+  const hits: string[] = [];
+  let total = 0;
+  let strong = 0;
+  for (const topic of topicOrder) {
+    for (const kw of TOPIC_KEYWORDS[topic]) {
+      if (clean.includes(kw)) {
+        const w = weightOf(topic, kw);
+        perTopic.set(topic, (perTopic.get(topic) || 0) + w);
+        total += w;
+        if (w >= 2) strong++;
+        hits.push(kw);
+      }
+    }
+  }
+  // topic đại diện = topic có điểm cao nhất; hòa điểm -> ưu tiên theo topicOrder (cụ thể trước general)
+  let best: IntentTopic | undefined;
+  let bestScore = 0;
+  for (const topic of topicOrder) {
+    const s = perTopic.get(topic) || 0;
+    if (s > bestScore) { bestScore = s; best = topic; }
+  }
+  return { total, strong, topic: best, hits };
+}
+
 // ── Classifier chính ─────────────────────────────────────────────────────────
 export function classifyAmbientIntent(text: string): AmbientIntent {
   const clean = text.normalize('NFC').toLowerCase().trim();  // NFD (STT) -> NFC để khớp từ khóa
-  const wordCount = clean.split(/\s+/).length;
+  const wordCount = clean.split(/\s+/).filter(Boolean).length;
 
-  // 1. Quá ngắn (< 3 từ) và không phải explicit trigger → bỏ qua
-  if (wordCount < 3 && !EXPLICIT_TRIGGERS.some(t => clean.includes(t))) {
-    return { shouldGenerate: false, reason: 'too_short', confidence: 1.0 };
-  }
-
-  // 2. Câu chêm xã giao ngắn → bỏ qua
-  const isFiller = FILLER_WORDS.some(f => clean === f || clean.startsWith(f + ' ') || clean.endsWith(' ' + f) || clean.includes(' ' + f + ' '));
-  if (isFiller && wordCount < 6) {
-    return { shouldGenerate: false, reason: 'filler', confidence: 0.9 };
-  }
-
-  // 3. Đối thủ cạnh tranh → chặn ngay (không cần gọi slide)
-  if (isCompetitor(clean)) {
-    return { shouldGenerate: false, reason: 'competitor', confidence: 1.0 };
-  }
-
-  // 4. Explicit trigger — sale chủ động yêu cầu → bắn ngay
+  // 1. Explicit trigger — sale chủ động yêu cầu → bắn ngay (ưu tiên cao nhất, kể cả câu ngắn)
   for (const trigger of EXPLICIT_TRIGGERS) {
     if (clean.includes(trigger)) {
       return { shouldGenerate: true, reason: 'explicit_slide_request', confidence: 1.0, topic: 'general' };
     }
   }
 
-  // 5. Nhận dạng topic theo nhóm ngữ nghĩa — ưu tiên theo thứ tự cụ thể → chung
-  const topicOrder: IntentTopic[] = ['unit', 'price', 'location', 'legal', 'design', 'amenity', 'general'];
-  for (const topic of topicOrder) {
-    if (TOPIC_KEYWORDS[topic].some(kw => clean.includes(kw))) {
-      return {
-        shouldGenerate: true,
-        reason: 'has_project_topic',
-        confidence: topic === 'general' ? 0.75 : 0.9,
-        topic,
-      };
-    }
+  // 2. Đối thủ cạnh tranh → chặn ngay (không cần gọi slide)
+  if (isCompetitor(clean)) {
+    return { shouldGenerate: false, reason: 'competitor', confidence: 1.0 };
   }
 
-  // 6. Không khớp gì → bỏ qua
-  return { shouldGenerate: false, reason: 'filler', confidence: 0.6 };
+  // 3. Quá ngắn (< 3 từ) → bỏ qua (explicit đã xử lý ở trên)
+  if (wordCount < 3) {
+    return { shouldGenerate: false, reason: 'too_short', confidence: 1.0 };
+  }
+
+  // 4. Câu chêm xã giao ngắn → bỏ qua
+  const isFiller = FILLER_WORDS.some(f => clean === f || clean.startsWith(f + ' ') || clean.endsWith(' ' + f) || clean.includes(' ' + f + ' '));
+  if (isFiller && wordCount < 6) {
+    return { shouldGenerate: false, reason: 'filler', confidence: 0.9 };
+  }
+
+  // 5. Chấm điểm tín hiệu chủ đề dự án
+  const { total, strong, topic, hits } = scoreTopics(clean);
+
+  // Không có tín hiệu nào → bỏ qua
+  if (total === 0 || !topic) {
+    return { shouldGenerate: false, reason: 'filler', confidence: 0.6, score: 0, hits };
+  }
+
+  // Cần TÍN HIỆU MẠNH: ít nhất 1 từ khóa đặc thù (weight 2), HOẶC tổng điểm >= 3.
+  // 1 từ chung chung đơn độc (đầu tư / ở đâu / công ty...) hoặc 2 từ chung chung → BỎ QUA.
+  const hasStrongSignal = strong >= 1 || total >= STRONG_THRESHOLD + 1;
+  if (!hasStrongSignal) {
+    return { shouldGenerate: false, reason: 'weak_signal', confidence: 0.5, topic, score: total, hits };
+  }
+
+  // Đủ tín hiệu → tạo slide. Confidence tỉ lệ theo điểm (cao hơn nếu topic cụ thể).
+  const confidence = Math.min(0.6 + total * 0.12 + (topic !== 'general' ? 0.1 : 0), 0.98);
+  return { shouldGenerate: true, reason: 'has_project_topic', confidence, topic, score: total, hits };
 }

@@ -246,19 +246,11 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
         console.log(`[Slide] Ambient SKIP (no keyword): "${message.slice(0, 60)}"`);
         return { prompt: '', hasChunks: false };
       }
-      const hasModelKeyword = message.toLowerCase().includes('opus') || 
-                              message.toLowerCase().includes('ô-pút') || 
-                              message.toLowerCase().includes('ô pút') || 
-                              message.toLowerCase().includes('o pút') || 
-                              message.toLowerCase().includes('cosmo') || 
-                              message.toLowerCase().includes('cót mô') || 
-                              message.toLowerCase().includes('cót-mô') || 
-                              message.toLowerCase().includes('cốt mô') || 
-                              message.toLowerCase().includes('fusion') ||
-                              message.toLowerCase().includes('phiêu dân') ||
-                              message.toLowerCase().includes('phiêu-dân');
+      // CHỈ nới cổng confidence khi khách nói RÕ số căn/lô (tín hiệu chắc chắn).
+      // KHÔNG nới theo tên mẫu nhà (opus/cosmo/fusion) — STT rất hay nghe NHẦM ra các tên này
+      // (xem VN_SPEECH_FIXES), làm cổng tin cậy bị tắt oan -> slide sai. Tên mẫu nhà vẫn qua ngưỡng RAG.
       const hasUnit = detectUnit(message) !== null;
-      const minScore = (ambient && !hasModelKeyword && !hasUnit) ? 0.71 : 0;
+      const minScore = (ambient && !hasUnit) ? 0.71 : 0;
       // Nghe ngầm: ít chunk hơn (6) -> prompt ngắn -> LLM trả NHANH hơn; chat trực tiếp giữ 10.
       const chunks = await retrieve(ragQuery, index, ambient ? 6 : 10, minScore);
       // Có facts của căn cụ thể -> luôn tạo slide kể cả khi RAG rỗng (đã có dữ liệu chính xác)
@@ -303,10 +295,10 @@ function parseSlide(text: string | null): Record<string, unknown> {
   }
 }
 
-const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM (AMBIENT): Đoạn dưới đây là HỘI THOẠI đang diễn ra (tư vấn viên nói chuyện với khách), KHÔNG phải câu hỏi trực tiếp cho bạn.
-- Nếu đoạn vừa nghe KHÔNG nhắm tới một chủ đề RÕ RÀNG về dự án, HOẶC không có dữ liệu liên quan trong phần dưới (vd: chào hỏi, tám chuyện, nói nửa câu) → BẮT BUỘC trả về {"skip": true} và để mọi field khác rỗng. TUYỆT ĐỐI không bịa slide.
-- CHỈ tạo slide khi hội thoại chạm tới một chủ đề CỤ THỂ có dữ liệu (mặt bằng, giá, pháp lý, tiện ích, mẫu nhà, chính sách, vị trí...). Khi đó đặt "skip": false.
-- QUAN TRỌNG: Tại chế độ này, TỐC ĐỘ là quan trọng nhất. "speech_text" phải CỰC KỲ NGẮN GỌN (tối đa 2-3 câu, khoảng 15-20 giây đọc). Trực tiếp vào trọng tâm, không chào hỏi dài dòng.`;
+// CHẾ ĐỘ NGHE NGẦM: chỉ ép "speech ngắn gọn". KHÔNG còn ép LLM tự quyết {"skip":true} —
+// việc lọc câu mơ hồ đã do CỔNG TIN CẬY xử lý ở tầng deterministic (intent client + minScore RAG
+// + slide tĩnh). Trước đây luật ép-skip khiến LLM trả skip/không ảnh cho cả chủ đề thật -> mất slide.
+const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM: Đây là hội thoại đang diễn ra; hãy tạo slide bám sát chủ đề vừa nghe từ phần dữ liệu bên dưới. "speech_text" phải CỰC KỲ NGẮN GỌN (1-2 câu, ~15 giây đọc), đi thẳng trọng tâm, không chào hỏi dài dòng.`;
 
 export async function POST(req: NextRequest) {
   try {
