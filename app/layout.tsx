@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Be_Vietnam_Pro } from 'next/font/google';
 import './globals.css';
-import ChatWidget from '@/components/ChatWidget';
+import ChatWidgetWrapper from '@/components/ChatWidgetWrapper';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['latin', 'vietnamese'] });
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="vi">
       <body className={`${inter.className} ${beVietnamPro.variable}`}>
         {children}
-        <ChatWidget />
+        <ChatWidgetWrapper />
         <SpeedInsights />
       </body>
     </html>
