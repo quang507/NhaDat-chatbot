@@ -235,21 +235,25 @@ export function useVoiceAgent({
   const speakSentence = useCallback((sentence: string, isLast = false) => {
     if (isLast) isStreamFinishedRef.current = true;
     const cleanText = cleanTextForTTS(sentence);
-    
+
     if (!cleanText || !voiceOn) {
+      // Câu không có gì đọc được (vd chỉ toàn link Google Maps) nhưng vẫn có nội
+      // dung thật từ backend -> vẫn phải hiện lên UI, không thì màn hình kẹt
+      // "Đang suy nghĩ..." mãi dù bot đã trả lời xong.
+      if (sentence.trim()) setResponse(sentence.trim());
       if (isLast && !isPlayingAudioRef.current && audioQueueRef.current.length === 0) {
         if (isListeningLoopActive.current) startListening();
         else setState('idle');
       }
       return;
     }
-    
+
     const audioUrl = ttsUrl(cleanText);
     const audio = new Audio(audioUrl);
     audio.preload = 'auto';
     audioQueueRef.current.push({ text: sentence, url: audioUrl, audio });
     playNextAudio();
-  }, [voiceOn, playNextAudio, startListening, setState]);
+  }, [voiceOn, playNextAudio, startListening, setState, setResponse]);
 
 
 
