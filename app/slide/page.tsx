@@ -46,7 +46,20 @@ export default function SlideBotPage() {
   const [debugOn, setDebugOn] = useState(false);
   const [debugLog, setDebugLog] = useState<string[]>([]);
   useEffect(() => {
-    setDebugOn(new URLSearchParams(window.location.search).has('debug'));
+    const qs = new URLSearchParams(window.location.search);
+    setDebugOn(qs.has('debug'));
+    // ?demo=1 -> tu nap slide mau KHONG can mic (de xem/chinh giao dien + chup test)
+    if (qs.has('demo')) {
+      setSlideKey(k => k + 1);
+      setSlide({
+        layout_type: 'split_image_right',
+        title: 'Vị trí dự án',
+        points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'],
+        speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút.",
+        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'],
+        maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
+      });
+    }
   }, []);
   const dbg = (msg: string) => {
     console.log('[SlideDebug]', msg);
@@ -62,6 +75,29 @@ export default function SlideBotPage() {
 
   const slideRef = useRef<SlideData | null>(null);
   const brokenImagesRef = useRef<Record<string, boolean>>({});
+  const mainRef = useRef<HTMLElement | null>(null);
+
+  // CHỐT AN TOÀN RENDER: nội dung slide vào màn bằng CSS animation (line-in/img-card,
+  // fill-mode both -> frame 0 là TÀNG HÌNH). Nếu trình duyệt không chạy animation
+  // (extension chặn, chế độ tiết kiệm pin, forced reduced-motion...) thì chữ + ảnh
+  // kẹt ở frame 0 vĩnh viễn -> "slide: CÓ" mà màn hình trắng. Sau 1.5s kiểm tra:
+  // chữ vẫn tàng hình -> ép hiện toàn bộ + ghi log để biết máy đó bị chặn animation.
+  useEffect(() => {
+    if (!slide) return;
+    const t = setTimeout(() => {
+      const el = mainRef.current?.querySelector('.line-in') as HTMLElement | null;
+      if (!el) { dbg('📐 Render check: không thấy .line-in trong DOM!'); return; }
+      const cs = getComputedStyle(el);
+      const rect = el.getBoundingClientRect();
+      dbg(`📐 Render: op=${cs.opacity}, anim=${cs.animationName.split(',')[0]}/${cs.animationPlayState.split(',')[0]}, y=${Math.round(rect.top)}, h=${Math.round(rect.height)}`);
+      if (parseFloat(cs.opacity) < 0.5) {
+        mainRef.current?.classList.add('anim-failsafe');
+        dbg('🩹 Animation bị chặn — ép hiện nội dung ngay');
+      }
+    }, 1500);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slide, slideKey]);
   
   useEffect(() => { slideRef.current = slide; }, [slide]);
   useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
@@ -428,6 +464,12 @@ export default function SlideBotPage() {
         /* Doi noi dung o transcript (lang nghe <-> nguoi ta dang noi ve) truot len + hien dan */
         .transcript-swap { animation: swapIn .38s cubic-bezier(.22,1,.36,1) both; }
         @keyframes swapIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+        /* Chot an toan: trinh duyet khong chay animation -> ep hien noi dung (JS gan class nay) */
+        .anim-failsafe .line-in, .anim-failsafe .img-card {
+          animation: none !important;
+          opacity: 1 !important;
+          transform: none !important;
+        }
         @media (prefers-reduced-motion: reduce) {
           .line-in, .img-card, .marquee-track, .animate-sound-wave {
             animation-duration: .01ms !important;
@@ -512,7 +554,7 @@ export default function SlideBotPage() {
         </div>
       </header>
 
-      <main className="relative z-10 flex-1 min-h-0 flex flex-col">
+      <main ref={mainRef} className="relative z-10 flex-1 min-h-0 flex flex-col">
         {renderSlideBody()}
       </main>
 
