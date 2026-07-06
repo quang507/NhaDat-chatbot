@@ -32,3 +32,12 @@ add_action('wp_head', function() {
         }
     </style>';
 });
+
+add_action('wp_footer', function() {
+    echo '<div id="nhadat-chatbot-container" style="width:100%;height:600px;border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-top:20px;">
+        <iframe src="https://nha-dat-chatbot.vercel.app"
+                style="width:100%;height:100%;border:none;border-radius:8px;"
+                allow="microphone;camera;">
+        </iframe>
+    </div>';
+});
