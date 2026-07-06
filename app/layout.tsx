@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Be_Vietnam_Pro } from 'next/font/google';
 import './globals.css';
 import ChatWidgetWrapper from '@/components/ChatWidgetWrapper';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['latin', 'vietnamese'] });
 // Font hiển thị tiêu đề slide — Be Vietnam Pro hỗ trợ đầy đủ dấu tiếng Việt
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.className} ${beVietnamPro.variable}`}>
         {children}
         <ChatWidgetWrapper />
+        <SpeedInsights />
       </body>
     </html>
   );

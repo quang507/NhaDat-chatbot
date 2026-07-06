@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { splitSentences } from '@/lib/speech';
-import { classifyAmbientIntent } from '@/lib/intent';
+import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 
 interface Message {
@@ -30,12 +30,9 @@ export default function VoicePage() {
   
   const chatHistoryRef = useRef<Message[]>([]);
 
-  // Chống nhảy slide liên tục: giữ 1 chủ đề tối thiểu MIN_SLIDE_DISPLAY_MS trước khi
-  // đổi sang chủ đề khác, và bỏ qua hoàn toàn nếu chủ đề không đổi (khách vẫn đang nói
-  // về cùng 1 thứ). Sale chủ động yêu cầu ("mở slide"...) thì luôn đổi ngay.
-  const MIN_SLIDE_DISPLAY_MS = 4500;
-  const lastSlideTopicRef = useRef<string | null>(null);
-  const lastSlideAtRef = useRef(0);
+  // Chống nhảy slide liên tục — quyết định đổi/giữ ảnh dùng chung shouldRefreshSlide()
+  // (lib/intent.ts) với trang /slide, để 2 nơi không lệch logic.
+  const lastSlideRef = useRef<{ topic: IntentTopic | null; at: number }>({ topic: null, at: 0 });
   const slideReqIdRef = useRef(0);
 
   // Helper to store log function to avoid dependency cycles in useEffect
@@ -101,21 +98,15 @@ export default function VoicePage() {
     try {
       const history = chatHistoryRef.current;
 
-      // Fire and forget /api/slide to get images if intent matches — nhưng chỉ khi
-      // chủ đề thực sự đổi và slide hiện tại đã hiện đủ MIN_SLIDE_DISPLAY_MS, để
-      // tránh nhảy ảnh liên tục mỗi câu nói. Sale chủ động yêu cầu thì luôn đổi ngay.
+      // Fire and forget /api/slide để lấy ảnh nếu khớp chủ đề — nhưng chỉ khi
+      // shouldRefreshSlide() nói nên đổi (chủ đề thực sự đổi + đã hiện đủ lâu),
+      // tránh nhảy ảnh liên tục mỗi câu nói.
       const intent = classifyAmbientIntent(speechText);
       if (intent.shouldGenerate) {
         const now = Date.now();
-        const sameTopic = !!intent.topic && intent.topic === lastSlideTopicRef.current;
-        const isExplicit = intent.reason === 'explicit_slide_request';
-        const minDisplayElapsed = backgroundImages.length === 0
-          || now - lastSlideAtRef.current >= MIN_SLIDE_DISPLAY_MS;
-
-        if (isExplicit || (!sameTopic && minDisplayElapsed)) {
+        if (shouldRefreshSlide(intent, lastSlideRef.current, now)) {
           const reqId = ++slideReqIdRef.current;
-          lastSlideTopicRef.current = intent.topic || null;
-          lastSlideAtRef.current = now;
+          lastSlideRef.current = { topic: intent.topic || null, at: now };
 
           fetch('/api/slide', {
             method: 'POST',

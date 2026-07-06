@@ -59,124 +59,69 @@ const FLOOR_GENERAL: Record<number, FloorInfo> = {
   6: { name: 'Sân thượng', points: ['Sân thượng thoáng đãng', 'Thang máy lên tận nơi', 'Thư giãn, trồng cây, phơi đồ'], speech: 'Trên cùng là sân thượng thoáng đãng, có thang máy lên tận nơi để thư giãn và trồng cây.' },
 };
 
-function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
-  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  
-  if (model) {
-    try {
-      const specificPath = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', model, spaceName);
-      if (existsSync(specificPath)) {
-        const files = readdirSync(specificPath);
-        let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
-        
-        if (fileKeyword) {
-          matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
-        }
-        
-        const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${model}/${spaceName}/${f}`);
-        if (imgs.length > 0) return imgs;
-      }
-    } catch (e) {
-      console.error(`Error reading specific space folder for ${model}/${spaceName}:`, e);
-    }
-  }
+const IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+const IMAGES_ROOT = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh');
 
+// Đọc ảnh trong 1 thư mục (không đệ quy), lọc theo đuôi file + từ khóa tùy chọn.
+// filesOnly=true: bỏ qua thư mục con (dùng cho "ảnh gốc" của 1 model/dự án).
+function listImages(absDir: string, urlPrefix: string, opts: { fileKeyword?: string; filesOnly?: boolean } = {}): string[] {
   try {
-    const sharedPath = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', spaceName);
-    if (existsSync(sharedPath)) {
-      const files = readdirSync(sharedPath);
-      let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
-      
-      if (fileKeyword) {
-        matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
-      }
-      
-      const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${spaceName}/${f}`);
-      if (imgs.length > 0) return imgs;
-    }
+    if (!existsSync(absDir)) return [];
+    const entries = readdirSync(absDir, { withFileTypes: true });
+    let names = opts.filesOnly ? entries.filter(e => !e.isDirectory()).map(e => e.name) : entries.map(e => e.name);
+    names = names.filter(f => IMAGE_EXTS.includes(path.extname(f).toLowerCase()));
+    if (opts.fileKeyword) names = names.filter(f => f.toLowerCase().includes(opts.fileKeyword!));
+    return names.map(f => `${urlPrefix}/${f}`);
   } catch (e) {
-    console.error(`Error reading shared space folder ${spaceName}:`, e);
+    console.error(`Lỗi đọc thư mục ảnh ${absDir}:`, e);
+    return [];
   }
-
-  return [];
 }
 
-function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): string[] {
-  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  const allImgs: string[] = [];
-  const models: Array<'cosmo_gen_2' | 'fusion_gen_5' | 'opus'> = ['cosmo_gen_2', 'fusion_gen_5', 'opus'];
-
-  for (const m of models) {
-    try {
-      const p = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', m, spaceName);
-      if (existsSync(p)) {
-        const files = readdirSync(p);
-        let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
-        
-        if (fileKeyword) {
-          matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
-        }
-        
-        const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${m}/${spaceName}/${f}`);
-        allImgs.push(...imgs);
-      }
-    } catch {}
+// Ưu tiên thư mục riêng của model; nếu rỗng thì rớt về thư mục chung (shared) của không gian đó.
+function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
+  if (model) {
+    const specific = listImages(
+      path.join(IMAGES_ROOT, 'noi_that', model, spaceName),
+      `/images/01_NyAh-PhuDinh/noi_that/${model}/${spaceName}`,
+      { fileKeyword }
+    );
+    if (specific.length > 0) return specific;
   }
+  return listImages(
+    path.join(IMAGES_ROOT, 'noi_that', spaceName),
+    `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`,
+    { fileKeyword }
+  );
+}
 
-  try {
-    const p = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', spaceName);
-    if (existsSync(p)) {
-      const files = readdirSync(p);
-      let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
-      
-      if (fileKeyword) {
-        matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
-      }
-      
-      const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${spaceName}/${f}`);
-      allImgs.push(...imgs);
-    }
-  } catch {}
-
+// Gom ảnh của 1 không gian (vd "bep") từ CẢ 3 model + thư mục chung — dùng khi chưa rõ model.
+function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): string[] {
+  const models: Array<'cosmo_gen_2' | 'fusion_gen_5' | 'opus'> = ['cosmo_gen_2', 'fusion_gen_5', 'opus'];
+  const allImgs = models.flatMap(m => listImages(
+    path.join(IMAGES_ROOT, 'noi_that', m, spaceName),
+    `/images/01_NyAh-PhuDinh/noi_that/${m}/${spaceName}`,
+    { fileKeyword }
+  ));
+  allImgs.push(...listImages(
+    path.join(IMAGES_ROOT, 'noi_that', spaceName),
+    `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`,
+    { fileKeyword }
+  ));
   return allImgs;
 }
 
 // Lấy ẢNH GỐC (root) của 1 model — KHÔNG lấy trong các thư mục con (bep, gara, phong_khach...).
 // Dùng khi hỏi chung chung "cosmo gen 2" mà không chỉ rõ phòng nào.
 function getRootImagesForModel(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus'): string[] {
-  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  try {
-    const modelDir = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', model);
-    if (!existsSync(modelDir)) return [];
-    const entries = readdirSync(modelDir, { withFileTypes: true });
-    // Chỉ lấy FILE trực tiếp ở root, bỏ qua thư mục con
-    const rootFiles = entries
-      .filter(e => !e.isDirectory() && imageExts.includes(path.extname(e.name).toLowerCase()))
-      .map(e => `/images/01_NyAh-PhuDinh/noi_that/${model}/${e.name}`);
-    return rootFiles;
-  } catch {
-    return [];
-  }
+  return listImages(path.join(IMAGES_ROOT, 'noi_that', model), `/images/01_NyAh-PhuDinh/noi_that/${model}`, { filesOnly: true });
 }
 
 // Lấy ẢNH GỐC (root) của toàn dự án (không thuộc model nào cụ thể).
 function getRootImagesForProject(): string[] {
-  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  try {
-    const projectDir = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh');
-    if (!existsSync(projectDir)) return [];
-    const entries = readdirSync(projectDir, { withFileTypes: true });
-    const rootFiles = entries
-      .filter(e => !e.isDirectory() && imageExts.includes(path.extname(e.name).toLowerCase()))
-      .map(e => `/images/01_NyAh-PhuDinh/${e.name}`);
-    // Trả về ngẫu nhiên 3 tấm nếu có nhiều
-    if (rootFiles.length > 3) {
-      return rootFiles.sort(() => 0.5 - Math.random()).slice(0, 3);
-    }
-    return rootFiles;
-  } catch {
-    return [];
-  }
+  const rootFiles = listImages(IMAGES_ROOT, '/images/01_NyAh-PhuDinh', { filesOnly: true });
+  // Trả về ngẫu nhiên 3 tấm nếu có nhiều
+  return rootFiles.length > 3 ? rootFiles.sort(() => 0.5 - Math.random()).slice(0, 3) : rootFiles;
 }
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):
@@ -246,19 +191,11 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
         console.log(`[Slide] Ambient SKIP (no keyword): "${message.slice(0, 60)}"`);
         return { prompt: '', hasChunks: false };
       }
-      const hasModelKeyword = message.toLowerCase().includes('opus') || 
-                              message.toLowerCase().includes('ô-pút') || 
-                              message.toLowerCase().includes('ô pút') || 
-                              message.toLowerCase().includes('o pút') || 
-                              message.toLowerCase().includes('cosmo') || 
-                              message.toLowerCase().includes('cót mô') || 
-                              message.toLowerCase().includes('cót-mô') || 
-                              message.toLowerCase().includes('cốt mô') || 
-                              message.toLowerCase().includes('fusion') ||
-                              message.toLowerCase().includes('phiêu dân') ||
-                              message.toLowerCase().includes('phiêu-dân');
+      // CHỈ nới cổng confidence khi khách nói RÕ số căn/lô (tín hiệu chắc chắn).
+      // KHÔNG nới theo tên mẫu nhà (opus/cosmo/fusion) — STT rất hay nghe NHẦM ra các tên này
+      // (xem VN_SPEECH_FIXES), làm cổng tin cậy bị tắt oan -> slide sai. Tên mẫu nhà vẫn qua ngưỡng RAG.
       const hasUnit = detectUnit(message) !== null;
-      const minScore = (ambient && !hasModelKeyword && !hasUnit) ? 0.71 : 0;
+      const minScore = (ambient && !hasUnit) ? 0.71 : 0;
       // Nghe ngầm: ít chunk hơn (6) -> prompt ngắn -> LLM trả NHANH hơn; chat trực tiếp giữ 10.
       const chunks = await retrieve(ragQuery, index, ambient ? 6 : 10, minScore);
       // Có facts của căn cụ thể -> luôn tạo slide kể cả khi RAG rỗng (đã có dữ liệu chính xác)
@@ -303,10 +240,10 @@ function parseSlide(text: string | null): Record<string, unknown> {
   }
 }
 
-const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM (AMBIENT): Đoạn dưới đây là HỘI THOẠI đang diễn ra (tư vấn viên nói chuyện với khách), KHÔNG phải câu hỏi trực tiếp cho bạn.
-- Nếu đoạn vừa nghe KHÔNG nhắm tới một chủ đề RÕ RÀNG về dự án, HOẶC không có dữ liệu liên quan trong phần dưới (vd: chào hỏi, tám chuyện, nói nửa câu) → BẮT BUỘC trả về {"skip": true} và để mọi field khác rỗng. TUYỆT ĐỐI không bịa slide.
-- CHỈ tạo slide khi hội thoại chạm tới một chủ đề CỤ THỂ có dữ liệu (mặt bằng, giá, pháp lý, tiện ích, mẫu nhà, chính sách, vị trí...). Khi đó đặt "skip": false.
-- QUAN TRỌNG: Tại chế độ này, TỐC ĐỘ là quan trọng nhất. "speech_text" phải CỰC KỲ NGẮN GỌN (tối đa 2-3 câu, khoảng 15-20 giây đọc). Trực tiếp vào trọng tâm, không chào hỏi dài dòng.`;
+// CHẾ ĐỘ NGHE NGẦM: chỉ ép "speech ngắn gọn". KHÔNG còn ép LLM tự quyết {"skip":true} —
+// việc lọc câu mơ hồ đã do CỔNG TIN CẬY xử lý ở tầng deterministic (intent client + minScore RAG
+// + slide tĩnh). Trước đây luật ép-skip khiến LLM trả skip/không ảnh cho cả chủ đề thật -> mất slide.
+const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM: Đây là hội thoại đang diễn ra; hãy tạo slide bám sát chủ đề vừa nghe từ phần dữ liệu bên dưới. "speech_text" phải CỰC KỲ NGẮN GỌN (1-2 câu, ~15 giây đọc), đi thẳng trọng tâm, không chào hỏi dài dòng.`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -643,6 +580,38 @@ export async function POST(req: NextRequest) {
           image_urls: [g.img || `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 4)}.jpg`],
         };
       }
+    } else if (hasExplicitModel && model) {
+      // Khách nhắc TÊN MẪU NHÀ mà không hỏi phòng/chủ đề cụ thể nào ("hình ảnh cosmo gen 2",
+      // "cho xem opus"...) -> LUÔN có slide giới thiệu mẫu + ảnh gốc của mẫu đó. Không có nhánh
+      // này thì câu kiểu vậy rơi vào cổng RAG minScore 0.71, câu ngắn dễ dưới ngưỡng -> skip oan.
+      const intro = {
+        cosmo_gen_2: {
+          title: 'Mẫu nhà Cosmo Gen 2',
+          points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'],
+          speech: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.',
+        },
+        fusion_gen_5: {
+          title: 'Mẫu nhà Fusion Gen 5',
+          points: ['Thiết kế lệch tầng phá cách', 'Không gian bếp đảo rộng mở', 'Tối ưu ánh sáng và gió tự nhiên'],
+          speech: 'Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.',
+        },
+        opus: {
+          title: 'Mẫu nhà Opus',
+          points: ['Phù hợp vừa ở vừa kinh doanh', 'Thiết kế 6 tầng bề thế', 'Mặt tiền thương mại đắt giá'],
+          speech: 'Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.',
+        },
+      }[model];
+      const imgs = getRootImagesForModel(model);
+      // Ưu tiên ảnh tổng quan/mặt tiền lên đầu cho slide giới thiệu
+      const prio = (u: string) => (u.includes('tong-quan') ? 0 : u.includes('mat-tien') ? 1 : 2);
+      imgs.sort((a, b) => prio(a) - prio(b));
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: intro.title,
+        points: intro.points,
+        speech_text: intro.speech,
+        image_urls: imgs.slice(0, 3),
+      };
     }
 
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
