@@ -401,7 +401,7 @@ export default function SlideBotPage() {
         <div className="dots absolute bottom-[6%] left-[3.5%] w-20 h-28 opacity-60" />
       </div>
 
-      <header className="relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0">
+      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-opacity duration-300 ${slide ? 'opacity-0 pointer-events-none' : ''}`}>
         <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl overflow-hidden bg-white shadow-md border border-black/5 flex items-center justify-center shrink-0">
             <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
@@ -453,7 +453,7 @@ export default function SlideBotPage() {
         {renderSlideBody()}
       </main>
 
-      <div className="relative z-10 shrink-0 overflow-hidden bg-[#0E5A34] py-[1.1vh]">
+      <div className={`relative z-10 shrink-0 overflow-hidden bg-[#0E5A34] py-[1.1vh] transition-all duration-300 ${voiceOn || state === 'listening' ? 'opacity-0 h-0 py-0' : ''}`}>
         <div className="marquee-track flex w-max items-center gap-12 whitespace-nowrap font-black uppercase tracking-wider text-[#F5F3EC] text-[clamp(14px,1.9vw,30px)]">
           {Array.from({ length: 8 }).map((_, i) => (
             <span key={i} className="flex items-center gap-12">
