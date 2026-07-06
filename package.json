@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
     "adm-zip": "^0.5.17",
     "edge-tts-universal": "^1.4.0",
     "html-to-text": "^10.0.0",
