@@ -59,124 +59,69 @@ const FLOOR_GENERAL: Record<number, FloorInfo> = {
   6: { name: 'Sân thượng', points: ['Sân thượng thoáng đãng', 'Thang máy lên tận nơi', 'Thư giãn, trồng cây, phơi đồ'], speech: 'Trên cùng là sân thượng thoáng đãng, có thang máy lên tận nơi để thư giãn và trồng cây.' },
 };
 
-function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
-  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  
-  if (model) {
-    try {
-      const specificPath = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', model, spaceName);
-      if (existsSync(specificPath)) {
-        const files = readdirSync(specificPath);
-        let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
-        
-        if (fileKeyword) {
-          matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
-        }
-        
-        const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${model}/${spaceName}/${f}`);
-        if (imgs.length > 0) return imgs;
-      }
-    } catch (e) {
-      console.error(`Error reading specific space folder for ${model}/${spaceName}:`, e);
-    }
-  }
+const IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+const IMAGES_ROOT = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh');
 
+// Đọc ảnh trong 1 thư mục (không đệ quy), lọc theo đuôi file + từ khóa tùy chọn.
+// filesOnly=true: bỏ qua thư mục con (dùng cho "ảnh gốc" của 1 model/dự án).
+function listImages(absDir: string, urlPrefix: string, opts: { fileKeyword?: string; filesOnly?: boolean } = {}): string[] {
   try {
-    const sharedPath = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', spaceName);
-    if (existsSync(sharedPath)) {
-      const files = readdirSync(sharedPath);
-      let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
-      
-      if (fileKeyword) {
-        matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
-      }
-      
-      const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${spaceName}/${f}`);
-      if (imgs.length > 0) return imgs;
-    }
+    if (!existsSync(absDir)) return [];
+    const entries = readdirSync(absDir, { withFileTypes: true });
+    let names = opts.filesOnly ? entries.filter(e => !e.isDirectory()).map(e => e.name) : entries.map(e => e.name);
+    names = names.filter(f => IMAGE_EXTS.includes(path.extname(f).toLowerCase()));
+    if (opts.fileKeyword) names = names.filter(f => f.toLowerCase().includes(opts.fileKeyword!));
+    return names.map(f => `${urlPrefix}/${f}`);
   } catch (e) {
-    console.error(`Error reading shared space folder ${spaceName}:`, e);
+    console.error(`Lỗi đọc thư mục ảnh ${absDir}:`, e);
+    return [];
   }
-
-  return [];
 }
 
-function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): string[] {
-  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  const allImgs: string[] = [];
-  const models: Array<'cosmo_gen_2' | 'fusion_gen_5' | 'opus'> = ['cosmo_gen_2', 'fusion_gen_5', 'opus'];
-
-  for (const m of models) {
-    try {
-      const p = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', m, spaceName);
-      if (existsSync(p)) {
-        const files = readdirSync(p);
-        let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
-        
-        if (fileKeyword) {
-          matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
-        }
-        
-        const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${m}/${spaceName}/${f}`);
-        allImgs.push(...imgs);
-      }
-    } catch {}
+// Ưu tiên thư mục riêng của model; nếu rỗng thì rớt về thư mục chung (shared) của không gian đó.
+function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
+  if (model) {
+    const specific = listImages(
+      path.join(IMAGES_ROOT, 'noi_that', model, spaceName),
+      `/images/01_NyAh-PhuDinh/noi_that/${model}/${spaceName}`,
+      { fileKeyword }
+    );
+    if (specific.length > 0) return specific;
   }
+  return listImages(
+    path.join(IMAGES_ROOT, 'noi_that', spaceName),
+    `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`,
+    { fileKeyword }
+  );
+}
 
-  try {
-    const p = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', spaceName);
-    if (existsSync(p)) {
-      const files = readdirSync(p);
-      let matchedFiles = files.filter(f => imageExts.includes(path.extname(f).toLowerCase()));
-      
-      if (fileKeyword) {
-        matchedFiles = matchedFiles.filter(f => f.toLowerCase().includes(fileKeyword));
-      }
-      
-      const imgs = matchedFiles.map(f => `/images/01_NyAh-PhuDinh/noi_that/${spaceName}/${f}`);
-      allImgs.push(...imgs);
-    }
-  } catch {}
-
+// Gom ảnh của 1 không gian (vd "bep") từ CẢ 3 model + thư mục chung — dùng khi chưa rõ model.
+function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): string[] {
+  const models: Array<'cosmo_gen_2' | 'fusion_gen_5' | 'opus'> = ['cosmo_gen_2', 'fusion_gen_5', 'opus'];
+  const allImgs = models.flatMap(m => listImages(
+    path.join(IMAGES_ROOT, 'noi_that', m, spaceName),
+    `/images/01_NyAh-PhuDinh/noi_that/${m}/${spaceName}`,
+    { fileKeyword }
+  ));
+  allImgs.push(...listImages(
+    path.join(IMAGES_ROOT, 'noi_that', spaceName),
+    `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`,
+    { fileKeyword }
+  ));
   return allImgs;
 }
 
 // Lấy ẢNH GỐC (root) của 1 model — KHÔNG lấy trong các thư mục con (bep, gara, phong_khach...).
 // Dùng khi hỏi chung chung "cosmo gen 2" mà không chỉ rõ phòng nào.
 function getRootImagesForModel(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus'): string[] {
-  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  try {
-    const modelDir = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh', 'noi_that', model);
-    if (!existsSync(modelDir)) return [];
-    const entries = readdirSync(modelDir, { withFileTypes: true });
-    // Chỉ lấy FILE trực tiếp ở root, bỏ qua thư mục con
-    const rootFiles = entries
-      .filter(e => !e.isDirectory() && imageExts.includes(path.extname(e.name).toLowerCase()))
-      .map(e => `/images/01_NyAh-PhuDinh/noi_that/${model}/${e.name}`);
-    return rootFiles;
-  } catch {
-    return [];
-  }
+  return listImages(path.join(IMAGES_ROOT, 'noi_that', model), `/images/01_NyAh-PhuDinh/noi_that/${model}`, { filesOnly: true });
 }
 
 // Lấy ẢNH GỐC (root) của toàn dự án (không thuộc model nào cụ thể).
 function getRootImagesForProject(): string[] {
-  const imageExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  try {
-    const projectDir = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh');
-    if (!existsSync(projectDir)) return [];
-    const entries = readdirSync(projectDir, { withFileTypes: true });
-    const rootFiles = entries
-      .filter(e => !e.isDirectory() && imageExts.includes(path.extname(e.name).toLowerCase()))
-      .map(e => `/images/01_NyAh-PhuDinh/${e.name}`);
-    // Trả về ngẫu nhiên 3 tấm nếu có nhiều
-    if (rootFiles.length > 3) {
-      return rootFiles.sort(() => 0.5 - Math.random()).slice(0, 3);
-    }
-    return rootFiles;
-  } catch {
-    return [];
-  }
+  const rootFiles = listImages(IMAGES_ROOT, '/images/01_NyAh-PhuDinh', { filesOnly: true });
+  // Trả về ngẫu nhiên 3 tấm nếu có nhiều
+  return rootFiles.length > 3 ? rootFiles.sort(() => 0.5 - Math.random()).slice(0, 3) : rootFiles;
 }
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):

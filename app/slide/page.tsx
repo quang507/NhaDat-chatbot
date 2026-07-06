@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { splitCleanSentences, splitSentences } from '@/lib/speech';
-import { classifyAmbientIntent } from '@/lib/intent';
+import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 import { SlideBody } from '@/components/SlideBody';
 
@@ -42,13 +42,10 @@ export default function SlideBotPage() {
   const [heardText, setHeardText] = useState('');
 
   const bufferRef = useRef('');
-  const lastGenRef = useRef(0);
-  const lastTopicRef = useRef<string | null>(null);
+  // Quyết định đổi/giữ slide dùng chung shouldRefreshSlide() (lib/intent.ts) với /voice,
+  // để 2 nơi không lệch logic.
+  const lastSlideRef = useRef<{ topic: IntentTopic | null; at: number }>({ topic: null, at: 0 });
   const isGeneratingRef = useRef(false);
-  // Giữ 1 chủ đề tối thiểu ngần này trước khi đổi sang chủ đề khác — tránh nhảy slide
-  // liên tục khi khách nói nhanh/lặp ý. Cùng chủ đề thì giữ slide hiện tại vô thời hạn
-  // (không tự bung do timeout) cho tới khi khách đổi chủ đề thật.
-  const AMBIENT_COOLDOWN_MS = 4500;
 
   const slideRef = useRef<SlideData | null>(null);
   const brokenImagesRef = useRef<Record<string, boolean>>({});
@@ -135,17 +132,11 @@ export default function SlideBotPage() {
     const intent = classifyAmbientIntent(query);
     if (!intent.shouldGenerate) { backToListening(); return; }
 
-    const isExplicit = intent.reason === 'explicit_slide_request';
-    // Cung chu de dang hien -> giu nguyen slide, khong goi lai (tranh doi anh vo ich
-    // trong khi khach van dang noi ve dung 1 thu). Sale chu dong yeu cau thi luon lam moi.
-    if (!isExplicit && intent.topic && intent.topic === lastTopicRef.current) { backToListening(); return; }
-
     const now = Date.now();
-    const wait = AMBIENT_COOLDOWN_MS - (now - lastGenRef.current);
-    if (wait > 0 && !isExplicit) { backToListening(); return; }
+    if (!shouldRefreshSlide(intent, lastSlideRef.current, now)) { backToListening(); return; }
 
     // BAT DUOC CHU DE -> hien "Nguoi ta dang noi ve [chu de]" + cau hoi that.
-    lastTopicRef.current = intent.topic || null;
+    lastSlideRef.current = { topic: intent.topic || null, at: now };
     setTopicLabel(TOPIC_LABELS[intent.topic || 'general'] || TOPIC_LABELS.general);
     setHeardText(query);
     setTranscript(query);
@@ -223,9 +214,6 @@ export default function SlideBotPage() {
       setBrokenImages({});
       setSlideKey(k => k + 1);
       setSlide(data);
-      if (ambient) {
-        lastGenRef.current = Date.now();
-      }
 
       if (voiceOn) {
         // Đã được đọc bởi streamChatForVoice, không đọc lại data.speech_text nữa

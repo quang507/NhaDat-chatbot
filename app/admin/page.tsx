@@ -1587,7 +1587,7 @@ export default function AdminPage() {
                         </div>
                         <p className="text-slate-400 leading-relaxed">
                           <span className="text-slate-600 font-bold block mb-0.5 text-[10px] uppercase">Tin nhắn tương tác:</span>
-                          "{l.message}"
+                          &quot;{l.message}&quot;
                         </p>
                       </div>
                     ))
