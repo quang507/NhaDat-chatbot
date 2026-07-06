@@ -5,8 +5,8 @@ import EmbedChatContent from '@/components/EmbedChatContent';
 export default function EmbedPage() {
   return (
     <>
-      <style>{`html,body{background:transparent !important;margin:0;padding:0;overflow:hidden;}`}</style>
-      <div style={{ width: '100%', height: '100%', display: 'flex' }}>
+      <style>{`html,body{background:transparent !important;margin:0;padding:0;overflow:hidden;height:100%;}`}</style>
+      <div style={{ width: '100%', height: '100vh', display: 'flex' }}>
         <EmbedChatContent />
       </div>
     </>
