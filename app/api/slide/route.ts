@@ -669,6 +669,17 @@ export async function POST(req: NextRequest) {
       };
     }
 
+    // NGHE NGẦM + đã khớp slide tĩnh -> TRẢ NGAY (~0ms), KHÔNG chờ LLM viết lại text
+    // (LLM mất 3-5s — khách đang nói chuyện mà slide lên chậm 5s là hỏng nhịp sale).
+    // Chat trực tiếp (ambient=false) vẫn giữ LLM viết text bám ngữ cảnh câu hỏi.
+    if (ambient && staticSlide) {
+      const imgs: string[] = staticSlide.image_urls || [];
+      const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|ban-do|datasheet/.test(u));
+      if (!staticSlide.layout_type) staticSlide.layout_type = isDiagram ? 'split_image_right' : 'full_background';
+      console.log(`[Slide] Ambient FAST static: "${message.slice(0, 50)}" -> "${staticSlide.title}"`);
+      return NextResponse.json(staticSlide);
+    }
+
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
     // viết lại text theo ngữ cảnh câu hỏi. (Ảnh luôn cố định theo từ khóa, text bám câu nói.)
 
