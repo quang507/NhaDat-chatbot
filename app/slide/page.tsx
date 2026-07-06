@@ -68,6 +68,7 @@ export default function SlideBotPage() {
   const {
     state,
     transcript,
+    errorMsg,
     rmsVolume,
     setTranscript,
     setState,
@@ -81,7 +82,8 @@ export default function SlideBotPage() {
     onSpeechResult: (text) => {
       if (handleVoiceCommands(text)) return;
       handleAmbientSpeech(text);
-    }
+    },
+    onDebug: (m) => dbg(m),
   });
 
   // Dung han -> xoa chu de dang hien.
@@ -434,6 +436,7 @@ export default function SlideBotPage() {
               {' · '}slide: <b className="text-amber-300">{slide ? 'CÓ' : 'CHƯA'}</b>
             </span>
           </div>
+          {errorMsg && <div className="text-red-400 font-bold mb-1">⛔ {errorMsg}</div>}
           <div className="max-h-[38vh] overflow-y-auto space-y-0.5">
             {debugLog.length === 0 && <div className="text-white/50">Chưa có sự kiện — bấm mic và nói thử…</div>}
             {debugLog.map((l, i) => <div key={i} className={i === 0 ? 'text-white' : 'text-white/60'}>{l}</div>)}
@@ -543,7 +546,9 @@ export default function SlideBotPage() {
               {state === 'processing' && (
                 <span className="w-3.5 h-3.5 shrink-0 border-2 border-amber-400/40 border-t-amber-500 rounded-full animate-spin" aria-hidden />
               )}
-              <span className="truncate text-neutral-600">{transcript}</span>
+              {errorMsg
+                ? <span className="truncate text-red-600 font-semibold">⚠️ {errorMsg}</span>
+                : <span className="truncate text-neutral-600">{transcript}</span>}
             </>
           )}
         </div>

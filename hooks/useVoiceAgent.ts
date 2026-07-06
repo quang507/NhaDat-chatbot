@@ -8,12 +8,15 @@ export type ChatState = 'idle' | 'listening' | 'processing' | 'speaking' | 'erro
 export interface UseVoiceAgentProps {
   onSpeechResult?: (text: string) => void;
   onStateChange?: (state: ChatState) => void;
+  /** Nhận log chẩn đoán STT (bật/lỗi/kết quả) — trang /slide?debug=1 hiện lên HUD. */
+  onDebug?: (msg: string) => void;
   voiceOn?: boolean;
 }
 
 export function useVoiceAgent({
   onSpeechResult,
   onStateChange,
+  onDebug,
   voiceOn = true,
 }: UseVoiceAgentProps = {}) {
   const [state, setStateInternal] = useState<ChatState>('idle');
@@ -43,11 +46,19 @@ export function useVoiceAgent({
 
   const onSpeechResultRef = useRef(onSpeechResult);
   const onStateChangeRef = useRef(onStateChange);
+  const onDebugRef = useRef(onDebug);
+  // Đếm lỗi 'network' LIÊN TIẾP: Brave/Firefox chặn dịch vụ STT của Google -> mọi lần
+  // nghe đều fail 'network'. Trước đây bị nuốt im lặng -> mic "câm" không rõ vì sao.
+  const networkErrCountRef = useRef(0);
+  const sttBlockedWarnedRef = useRef(false);
 
   useEffect(() => {
     onSpeechResultRef.current = onSpeechResult;
     onStateChangeRef.current = onStateChange;
-  }, [onSpeechResult, onStateChange]);
+    onDebugRef.current = onDebug;
+  }, [onSpeechResult, onStateChange, onDebug]);
+
+  const dbg = useCallback((msg: string) => { try { onDebugRef.current?.(msg); } catch (e) {} }, []);
 
   const setState = useCallback((newState: ChatState) => {
     setStateInternal(newState);
@@ -282,6 +293,17 @@ export function useVoiceAgent({
       return;
     }
 
+    // Brave có webkitSpeechRecognition nhưng CHẶN dịch vụ nhận diện phía sau
+    // -> mic mở mà không bao giờ ra chữ. Cảnh báo ngay từ đầu thay vì để câm.
+    try {
+      (navigator as any).brave?.isBrave?.().then((yes: boolean) => {
+        if (yes) {
+          dbg('⚠️ Phát hiện Brave — trình duyệt này chặn nhận diện giọng nói');
+          setErrorMsg('Brave chặn nhận diện giọng nói. Hãy mở trang này bằng Chrome hoặc Edge.');
+        }
+      });
+    } catch (e) {}
+
     const rec = new SpeechRecognition();
     // NGHE LIEN TUC: continuous=false khien mic TAT sau moi cau -> phai restart ->
     // khoang "diec" 120ms+latency Chrome moi lan -> noi dung luc do la MAT TIENG
@@ -310,6 +332,8 @@ export function useVoiceAgent({
       finalText = finalText.trim();
       if (!finalText) return;   // moi co interim, cau chua chot -> cho tiep
 
+      // Nghe được câu thật -> reset bộ đếm lỗi network (mạng chỉ chập chờn, không phải bị chặn)
+      networkErrCountRef.current = 0;
       const resultText = normalizeVietnameseSpeech(finalText) || finalText;
       setTranscript(`🎧 Nhận diện: "${resultText}"`);
       setState('processing');
@@ -319,12 +343,25 @@ export function useVoiceAgent({
     };
 
     rec.onerror = (event: any) => {
-      if (event.error === 'no-speech' || event.error === 'aborted' || event.error === 'network') {
+      if (event.error === 'no-speech' || event.error === 'aborted') {
+        // Bình thường: im lặng lâu / bị abort chủ động — không cần báo.
+      } else if (event.error === 'network') {
+        // Brave/Firefox chặn dịch vụ STT -> fail 'network' LIÊN TỤC dù mic vẫn mở.
+        // 3 lần liên tiếp = gần như chắc chắn trình duyệt không hỗ trợ -> báo rõ cho user.
+        networkErrCountRef.current++;
+        dbg(`🔴 STT lỗi network (lần ${networkErrCountRef.current})`);
+        if (networkErrCountRef.current >= 3 && !sttBlockedWarnedRef.current) {
+          sttBlockedWarnedRef.current = true;
+          setErrorMsg('Trình duyệt này đang chặn nhận diện giọng nói (Brave/Firefox không hỗ trợ). Hãy mở bằng Chrome hoặc Edge.');
+          dbg('⛔ STT bị trình duyệt chặn — cần Chrome/Edge');
+        }
       } else if (event.error === 'not-allowed') {
+        dbg('⛔ Quyền micro bị chặn');
         setErrorMsg('Quyền truy cập Micro bị chặn. Hãy cấp quyền trong cài đặt trình duyệt.');
         setState('error');
         stopAllVoiceActivities();
       } else {
+        dbg(`🔴 STT lỗi: ${event.error}`);
         setErrorMsg(`Lỗi micro: ${event.error}`);
         setState('error');
         if (isListeningLoopActive.current) {
@@ -365,7 +402,7 @@ export function useVoiceAgent({
       clearInterval(watchdog);
       stopAllVoiceActivities();
     };
-  }, [setState, startListening, stopAllVoiceActivities, restartRecognitionOnly]);
+  }, [setState, startListening, stopAllVoiceActivities, restartRecognitionOnly, dbg]);
 
   return {
     state,
