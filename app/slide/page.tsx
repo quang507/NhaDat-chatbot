@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { splitCleanSentences, splitSentences } from '@/lib/speech';
 import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
+import { matchStaticSlide } from '@/lib/static_slides';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 import { SlideBody } from '@/components/SlideBody';
 
@@ -147,13 +148,23 @@ export default function SlideBotPage() {
     if (!query) { backToListening(); return; }
     dbg(`🎙 Nghe: "${query.slice(0, 60)}"`);
 
-    const intent = classifyAmbientIntent(query);
+    let intent = classifyAmbientIntent(query);
     if (!intent.shouldGenerate) {
-      dbg(`🚫 Intent BỎ QUA — lý do: ${intent.reason}, topic: ${intent.topic || '—'}`);
-      backToListening();
-      return;
+      // Intent chấm điểm yếu NHƯNG câu khớp catalog slide tĩnh (lib/static_slides.ts
+      // — cùng nguồn với server) -> vẫn cho qua. Sửa vụ "tiến độ đến đâu rồi" bị
+      // weak_signal chặn oan dù server có sẵn slide tiến độ.
+      const catalogHit = matchStaticSlide(query, 'combo') || matchStaticSlide(query, 'general');
+      if (catalogHit) {
+        dbg(`📚 Catalog khớp "${catalogHit.title}" — cho qua dù intent ${intent.reason}`);
+        intent = { ...intent, shouldGenerate: true, topic: intent.topic || 'general', reason: 'has_project_topic' };
+      } else {
+        dbg(`🚫 Intent BỎ QUA — lý do: ${intent.reason}, topic: ${intent.topic || '—'}`);
+        backToListening();
+        return;
+      }
+    } else {
+      dbg(`✅ Intent OK — topic: ${intent.topic}, lý do: ${intent.reason}`);
     }
-    dbg(`✅ Intent OK — topic: ${intent.topic}, lý do: ${intent.reason}`);
 
     const now = Date.now();
     if (!shouldRefreshSlide(intent, lastSlideRef.current, now)) {
