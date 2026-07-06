@@ -6,6 +6,7 @@ import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
 import { detectUnit, unitContext, imageFamily } from '@/lib/units';
 import { hasProjectKeyword, isCompetitor, COMPETITORS } from '@/lib/intent';
+import { matchStaticSlide } from '@/lib/static_slides';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -309,9 +310,11 @@ export async function POST(req: NextRequest) {
     // null = không rõ model → dùng ảnh chung của dự án
     const hasExplicitModel = model !== null;
 
-    let staticSlide: any = null;
+    // (0) Catalog COMBO (lib/static_slides.ts, entry có allOf như "bếp + signature")
+    // — chạy TRƯỚC chuỗi nhánh generic để tổ hợp cụ thể thắng nhánh chung.
+    let staticSlide: any = matchStaticSlide(cleanMsg, 'combo');
 
-    if (has('vị trí', 'bản đồ', 'maps', 'địa chỉ', 'đường đi', 'ở đâu', 'chỗ nào', 'nằm ở', 'võ văn kiệt', 'quận 8', 'nguyễn văn linh', 'trương đình hội')) {
+    if (!staticSlide && has('vị trí', 'bản đồ', 'maps', 'địa chỉ', 'đường đi', 'ở đâu', 'chỗ nào', 'nằm ở', 'võ văn kiệt', 'quận 8', 'nguyễn văn linh', 'trương đình hội')) {
       staticSlide = {
         layout_type: 'split_image_right',
         title: "Vị trí dự án",
@@ -643,11 +646,16 @@ export async function POST(req: NextRequest) {
         speech_text: intro.speech,
         image_urls: imgs.slice(0, 3),
       };
-    } else if (has('tổng quan', 'giới thiệu', 'dự án', 'phú định', "ny'ah", 'nyah', 'nhã đạt')) {
-      // Nhắc chung đến DỰ ÁN mà không rơi vào chủ đề cụ thể nào ở trên ("tổng quan của em
-      // phú định", "giới thiệu dự án"...) -> slide GIỚI THIỆU TỔNG QUAN + ảnh gốc dự án.
-      // Trước đây câu kiểu này rớt xuống cổng RAG minScore 0.71, câu ngắn dễ dưới ngưỡng
-      // -> server trả skip -> client đã hiện "bắt được chủ đề" nhưng slide không bao giờ lên.
+    }
+
+    // (1) Catalog GENERAL (~80 slide tĩnh theo chủ đề: tiến độ, giá, pháp lý, tiện ích,
+    // signature, thang xoắn, phong thủy...) — lấp các chủ đề chưa có nhánh riêng ở trên.
+    if (!staticSlide) staticSlide = matchStaticSlide(cleanMsg, 'general');
+
+    // (2) Fallback cuối: nhắc chung đến DỰ ÁN ("tổng quan của em phú định", "giới thiệu
+    // dự án"...) -> slide GIỚI THIỆU TỔNG QUAN + ảnh gốc dự án. Trước đây câu kiểu này
+    // rớt xuống cổng RAG minScore 0.71, câu ngắn dễ dưới ngưỡng -> skip oan.
+    if (!staticSlide && has('tổng quan', 'giới thiệu', 'dự án', 'phú định', "ny'ah", 'nyah', 'nhã đạt')) {
       staticSlide = {
         layout_type: 'full_background',
         title: "Ny'ah Phú Định",
