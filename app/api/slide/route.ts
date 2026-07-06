@@ -305,7 +305,7 @@ export async function POST(req: NextRequest) {
         speech_text: "Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.",
         image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png']
       };
-    } else if (has('bếp', 'nhà ăn', 'nấu ăn', 'phòng ăn')) {
+    } else if (has('bếp', 'nhà ăn', 'nấu ăn', 'phòng ăn', 'bàn ăn')) {
       if (model === 'cosmo_gen_2') {
         staticSlide = {
           layout_type: 'split_image_right',
@@ -785,7 +785,7 @@ export async function POST(req: NextRequest) {
         if (text.includes('tiện ích') || text.includes('công viên') || text.includes(' landmark coffee') || text.includes('sân chơi') || text.includes('sân cầu lông') || text.includes('bóng rổ') || text.includes('tiện nghi')) {
           return 'tien_ich';
         }
-        if (text.includes('bếp') || text.includes('nhà ăn') || text.includes('nấu ăn') || text.includes('phòng ăn')) {
+        if (text.includes('bếp') || text.includes('nhà ăn') || text.includes('nấu ăn') || text.includes('phòng ăn') || text.includes('bàn ăn')) {
           return 'bep';
         }
         if (text.includes('gara') || text.includes('xe hơi') || text.includes('đỗ xe') || text.includes('ô tô') || text.includes('đậu xe') || text.includes('xe ô tô')) {
