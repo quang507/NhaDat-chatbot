@@ -320,7 +320,7 @@ export default function SlideBotPage() {
           {/* Khong dung tracking-tight o day: tracking tinh theo em, o co chu toi 190px
               no co moi cap chu lai ~5px — qua nhieu voi chu hoa dam co dau tieng Viet,
               lam dau (mu, moc, nang) bi de len chu ben canh. */}
-          <h1 className="uppercase font-black leading-[0.95] tracking-normal">
+          <h1 className="uppercase font-black leading-[0.95] tracking-[0.05em]">
             <Line delay={240} className="text-[#2E9E5B] text-[clamp(44px,9vw,150px)]">Ny&apos;ah</Line>
             <Line delay={400} className="text-[#161616] text-[clamp(52px,11vw,190px)]">Phú Định</Line>
           </h1>
@@ -354,7 +354,7 @@ export default function SlideBotPage() {
         .dots { background-image: radial-gradient(rgba(22,22,22,.28) 1.6px, transparent 1.6px); background-size: 16px 16px; }
         /* Mặt nạ nới thêm trên/dưới để KHÔNG cắt dấu tiếng Việt (dấu nặng dưới Ị/Ụ,
            dấu mũ trên Ấ/Ề) khi leading < 1 — margin âm bù lại nên khoảng cách giữ nguyên. */
-        .line-mask { overflow: hidden; padding: 0.14em 0 0.2em; margin: -0.14em 0 -0.2em; }
+        .line-mask { overflow: hidden; padding: 0.25em 0 0.2em; margin: -0.25em 0 -0.2em; }
         .line-in {
           animation: lineUp .7s cubic-bezier(.22,1,.36,1) both, glowFade 1.15s ease-out both;
           will-change: transform, opacity;
