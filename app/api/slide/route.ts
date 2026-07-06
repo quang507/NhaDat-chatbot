@@ -643,6 +643,22 @@ export async function POST(req: NextRequest) {
         speech_text: intro.speech,
         image_urls: imgs.slice(0, 3),
       };
+    } else if (has('tổng quan', 'giới thiệu', 'dự án', 'phú định', "ny'ah", 'nyah', 'nhã đạt')) {
+      // Nhắc chung đến DỰ ÁN mà không rơi vào chủ đề cụ thể nào ở trên ("tổng quan của em
+      // phú định", "giới thiệu dự án"...) -> slide GIỚI THIỆU TỔNG QUAN + ảnh gốc dự án.
+      // Trước đây câu kiểu này rớt xuống cổng RAG minScore 0.71, câu ngắn dễ dưới ngưỡng
+      // -> server trả skip -> client đã hiện "bắt được chủ đề" nhưng slide không bao giờ lên.
+      staticSlide = {
+        layout_type: 'full_background',
+        title: "Ny'ah Phú Định",
+        points: [
+          'Khu nhà phố compound mặt tiền Trương Đình Hội, Quận 8',
+          'Sống đẹp hơn chung cư — sinh lời hơn thổ cư',
+          'Chỉ 18 phút đến Quận 1 qua đại lộ Võ Văn Kiệt',
+        ],
+        speech_text: "Ny'ah Phú Định là khu nhà phố compound tại mặt tiền Trương Đình Hội, Quận 8, chỉ 18 phút đến Quận 1 qua đại lộ Võ Văn Kiệt.",
+        image_urls: getRootImagesForProject(),
+      };
     }
 
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
@@ -651,9 +667,10 @@ export async function POST(req: NextRequest) {
     const { prompt: systemText, hasChunks } = await buildPrompt(message, ambient);
 
     // Ambient + RAG rỗng + KHÔNG có slide tĩnh khớp → mơ hồ, bỏ qua.
+    // (reason trả về để DEBUG HUD trên /slide?debug=1 hiện được vì sao skip)
     if (ambient && !hasChunks && !staticSlide) {
       console.log(`[Slide] Ambient skip (no RAG match): "${message.slice(0, 60)}"`);
-      return NextResponse.json({ skip: true });
+      return NextResponse.json({ skip: true, reason: 'RAG không khớp dữ liệu + không trúng từ khóa slide tĩnh' });
     }
 
     const systemWithAmbient = ambient ? systemText + AMBIENT_RULE : systemText;
