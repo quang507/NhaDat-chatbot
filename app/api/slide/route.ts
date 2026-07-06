@@ -580,6 +580,38 @@ export async function POST(req: NextRequest) {
           image_urls: [g.img || `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 4)}.jpg`],
         };
       }
+    } else if (hasExplicitModel && model) {
+      // Khách nhắc TÊN MẪU NHÀ mà không hỏi phòng/chủ đề cụ thể nào ("hình ảnh cosmo gen 2",
+      // "cho xem opus"...) -> LUÔN có slide giới thiệu mẫu + ảnh gốc của mẫu đó. Không có nhánh
+      // này thì câu kiểu vậy rơi vào cổng RAG minScore 0.71, câu ngắn dễ dưới ngưỡng -> skip oan.
+      const intro = {
+        cosmo_gen_2: {
+          title: 'Mẫu nhà Cosmo Gen 2',
+          points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'],
+          speech: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.',
+        },
+        fusion_gen_5: {
+          title: 'Mẫu nhà Fusion Gen 5',
+          points: ['Thiết kế lệch tầng phá cách', 'Không gian bếp đảo rộng mở', 'Tối ưu ánh sáng và gió tự nhiên'],
+          speech: 'Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.',
+        },
+        opus: {
+          title: 'Mẫu nhà Opus',
+          points: ['Phù hợp vừa ở vừa kinh doanh', 'Thiết kế 6 tầng bề thế', 'Mặt tiền thương mại đắt giá'],
+          speech: 'Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.',
+        },
+      }[model];
+      const imgs = getRootImagesForModel(model);
+      // Ưu tiên ảnh tổng quan/mặt tiền lên đầu cho slide giới thiệu
+      const prio = (u: string) => (u.includes('tong-quan') ? 0 : u.includes('mat-tien') ? 1 : 2);
+      imgs.sort((a, b) => prio(a) - prio(b));
+      staticSlide = {
+        layout_type: 'split_image_right',
+        title: intro.title,
+        points: intro.points,
+        speech_text: intro.speech,
+        image_urls: imgs.slice(0, 3),
+      };
     }
 
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
