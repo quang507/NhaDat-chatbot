@@ -230,7 +230,7 @@ export default function SlideBotPage() {
       const secs = ((Date.now() - t0) / 1000).toFixed(1);
 
       if (data.skip || !data.speech_text || !data.title || data.title === 'Lỗi hiển thị' || data.title.includes('Lỗi hiển thị')) {
-        dbg(`⚪ Server SKIP sau ${secs}s (skip=${!!data.skip}, title="${data.title || ''}")`);
+        dbg(`⚪ Server SKIP sau ${secs}s — ${(data as any).reason || `title="${data.title || ''}"`}`);
         if (ambient) {
           setTranscript('🎧 Đang nghe ngầm… (chưa có chủ đề rõ ràng)');
           setState('listening');
