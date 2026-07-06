@@ -164,7 +164,7 @@ export default function SlideDemoPage() {
     <div className="min-h-screen bg-[#0E1512] text-white p-8" style={{ fontFamily: "'Be Vietnam Pro', 'Inter', system-ui, sans-serif" }}>
       <style dangerouslySetInnerHTML={{ __html: `
         .dots { background-image: radial-gradient(rgba(22,22,22,.28) 1.4px, transparent 1.4px); background-size: 13px 13px; }
-        .line-mask { overflow: hidden; padding: 0.14em 0 0.2em; margin: -0.14em 0 -0.2em; }
+        .line-mask { overflow: hidden; padding: 0.25em 0 0.2em; margin: -0.25em 0 -0.2em; }
         .line-in { animation: lineUp .6s cubic-bezier(.22,1,.36,1) both, glowFade .95s ease-out both; will-change: transform, opacity; }
         @keyframes lineUp { 0% { transform: translateY(140%); opacity: 0; } 55% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
         @keyframes glowFade { 0% { text-shadow: 0 0 16px rgba(255,255,255,.9), 0 4px 24px rgba(46,158,91,.4); } 100% { text-shadow: 0 0 0 rgba(255,255,255,0), 0 0 0 rgba(46,158,91,0); } }
@@ -177,7 +177,7 @@ export default function SlideDemoPage() {
       <div className="max-w-[1560px] mx-auto">
         <div className="flex items-end justify-between flex-wrap gap-3 mb-6">
           <div>
-            <h1 className="text-3xl font-black tracking-tight">Demo Slide — 9 trường hợp (bản Framer)</h1>
+            <h1 className="text-3xl font-black tracking-[0.05em]">Demo Slide — 9 trường hợp (bản Framer)</h1>
             <p className="text-neutral-400 mt-1 text-sm">
               Ảnh không crop, hiện hết cùng lúc theo số lượng &amp; hướng. Dùng chung <strong className="text-[#A8D94A]">SlideBody</strong> với trang thật. <strong className="text-[#A8D94A]">Bấm vào khung để chạy lại animation.</strong>
             </p>
