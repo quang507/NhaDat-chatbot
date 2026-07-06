@@ -43,8 +43,12 @@ export default function SlideBotPage() {
 
   const bufferRef = useRef('');
   const lastGenRef = useRef(0);
+  const lastTopicRef = useRef<string | null>(null);
   const isGeneratingRef = useRef(false);
-  const AMBIENT_COOLDOWN_MS = 3500;
+  // Giữ 1 chủ đề tối thiểu ngần này trước khi đổi sang chủ đề khác — tránh nhảy slide
+  // liên tục khi khách nói nhanh/lặp ý. Cùng chủ đề thì giữ slide hiện tại vô thời hạn
+  // (không tự bung do timeout) cho tới khi khách đổi chủ đề thật.
+  const AMBIENT_COOLDOWN_MS = 4500;
 
   const slideRef = useRef<SlideData | null>(null);
   const brokenImagesRef = useRef<Record<string, boolean>>({});
@@ -131,11 +135,17 @@ export default function SlideBotPage() {
     const intent = classifyAmbientIntent(query);
     if (!intent.shouldGenerate) { backToListening(); return; }
 
+    const isExplicit = intent.reason === 'explicit_slide_request';
+    // Cung chu de dang hien -> giu nguyen slide, khong goi lai (tranh doi anh vo ich
+    // trong khi khach van dang noi ve dung 1 thu). Sale chu dong yeu cau thi luon lam moi.
+    if (!isExplicit && intent.topic && intent.topic === lastTopicRef.current) { backToListening(); return; }
+
     const now = Date.now();
     const wait = AMBIENT_COOLDOWN_MS - (now - lastGenRef.current);
-    if (wait > 0 && intent.reason !== 'explicit_slide_request') { backToListening(); return; }
+    if (wait > 0 && !isExplicit) { backToListening(); return; }
 
     // BAT DUOC CHU DE -> hien "Nguoi ta dang noi ve [chu de]" + cau hoi that.
+    lastTopicRef.current = intent.topic || null;
     setTopicLabel(TOPIC_LABELS[intent.topic || 'general'] || TOPIC_LABELS.general);
     setHeardText(query);
     setTranscript(query);
@@ -247,37 +257,31 @@ export default function SlideBotPage() {
   // Preload images
   useEffect(() => {
     const staticImages = [
-      '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg',
-      '/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png',
-      '/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg',
-      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png',
-      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png',
-      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-wc.png',
-      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg',
-      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg',
-      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-3.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_bep.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-2.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_phong-ngu-master.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tang-2.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_wc.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_bep.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_gara.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-khach.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_ngu-master.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-2.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_phong-ngu-3.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tang-2.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_wc.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_gara.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-khach.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_master-bedroom.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-hoc.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_phong-ngu-con.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-2.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tang-3.png',
+      '/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg',
+      '/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg',
+      '/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png',
+      '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg',
+      '/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg',
+      '/images/01_NyAh-PhuDinh/mat_bang/opus_cau-truc-1-2-3.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-1.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/opus/wc/opus_wc.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_wc.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png',
     ];
     staticImages.forEach(src => {
       const img = new window.Image();

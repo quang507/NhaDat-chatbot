@@ -29,7 +29,15 @@ export default function VoicePage() {
   const [logFilter, setLogFilter] = useState<'ALL' | 'SPEECH' | 'API' | 'ERROR'>('ALL');
   
   const chatHistoryRef = useRef<Message[]>([]);
-  
+
+  // Chống nhảy slide liên tục: giữ 1 chủ đề tối thiểu MIN_SLIDE_DISPLAY_MS trước khi
+  // đổi sang chủ đề khác, và bỏ qua hoàn toàn nếu chủ đề không đổi (khách vẫn đang nói
+  // về cùng 1 thứ). Sale chủ động yêu cầu ("mở slide"...) thì luôn đổi ngay.
+  const MIN_SLIDE_DISPLAY_MS = 4500;
+  const lastSlideTopicRef = useRef<string | null>(null);
+  const lastSlideAtRef = useRef(0);
+  const slideReqIdRef = useRef(0);
+
   // Helper to store log function to avoid dependency cycles in useEffect
   const addLogRef = useRef<(type: LogItem['type'], message: string) => void>(() => {});
   
@@ -93,28 +101,43 @@ export default function VoicePage() {
     try {
       const history = chatHistoryRef.current;
 
-      // Fire and forget /api/slide to get images if intent matches
+      // Fire and forget /api/slide to get images if intent matches — nhưng chỉ khi
+      // chủ đề thực sự đổi và slide hiện tại đã hiện đủ MIN_SLIDE_DISPLAY_MS, để
+      // tránh nhảy ảnh liên tục mỗi câu nói. Sale chủ động yêu cầu thì luôn đổi ngay.
       const intent = classifyAmbientIntent(speechText);
       if (intent.shouldGenerate) {
-        fetch('/api/slide', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: speechText }),
-        })
-        .then(res => res.json())
-        .then(data => {
-          let imgs: string[] = [];
-          if (data.image_urls && Array.isArray(data.image_urls)) {
-            imgs = data.image_urls;
-          } else if (data.image_url) {
-            imgs = [data.image_url];
-          }
-          if (imgs.length > 0) {
-            setBackgroundImages(imgs);
-            setCurrentImageIndex(0);
-          }
-        })
-        .catch(err => addLog('ERROR', 'Lỗi tải ảnh nền: ' + err));
+        const now = Date.now();
+        const sameTopic = !!intent.topic && intent.topic === lastSlideTopicRef.current;
+        const isExplicit = intent.reason === 'explicit_slide_request';
+        const minDisplayElapsed = backgroundImages.length === 0
+          || now - lastSlideAtRef.current >= MIN_SLIDE_DISPLAY_MS;
+
+        if (isExplicit || (!sameTopic && minDisplayElapsed)) {
+          const reqId = ++slideReqIdRef.current;
+          lastSlideTopicRef.current = intent.topic || null;
+          lastSlideAtRef.current = now;
+
+          fetch('/api/slide', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: speechText }),
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (reqId !== slideReqIdRef.current) return; // đã có câu hỏi mới hơn, bỏ kết quả cũ này
+            let imgs: string[] = [];
+            if (data.image_urls && Array.isArray(data.image_urls)) {
+              imgs = data.image_urls;
+            } else if (data.image_url) {
+              imgs = [data.image_url];
+            }
+            if (imgs.length > 0) {
+              setBackgroundImages(imgs);
+              setCurrentImageIndex(0);
+            }
+          })
+          .catch(err => addLog('ERROR', 'Lỗi tải ảnh nền: ' + err));
+        }
       }
 
       const res = await fetch('/api/chat', {
