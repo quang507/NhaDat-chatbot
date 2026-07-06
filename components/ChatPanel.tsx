@@ -20,17 +20,32 @@ function renderMarkdown(text: string) {
     .replace(/>/g, '&gt;');
 
   let html = escaped;
+
+  // 1. Render markdown images: ![alt](url) (supports relative paths /images/... or full URLs)
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded-xl my-2 border border-gray-200 shadow-sm max-h-[250px] object-cover" />');
+
+  // 2. Render normal links: [text](url). Ảnh ![..](..) đã được thay ở bước 1 nên không cần lookbehind.
+  // (Tránh lookbehind (?<!) vì Safari/iOS ≤ 16.3 ném lỗi -> crash widget.)
   html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">$1</a>');
+
+  // 3. Render raw Google Drive links — bỏ qua URL đã nằm trong href="..." (nhóm bắt tùy chọn thay lookbehind)
   html = html.replace(/(href=")?(https:\/\/drive\.google\.com\/[^\s\)"]+)/g, (m, href, url) =>
     href ? m : `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">Link Google Drive</a>`);
+
+  // 3b. Render raw Google Maps links — tương tự, bỏ qua URL đã trong href
   html = html.replace(/(href=")?(https:\/\/maps\.(?:app\.goo\.gl|google\.com)\/[^\s\)\]"]+)/g, (m, href, url) =>
     href ? m : `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">📍 Xem đường đi trên Google Maps</a>`);
+
+  // 4. Render bold text: **text**
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // 5. Render bullet points
   html = html.replace(/^\s*[\*\-]\s+/gm, '• ');
+
   return html;
 }
 
+// Trí nhớ phiên: rút thông tin khách từ hội thoại để bot không hỏi lại
 function extractProfile(messages: Message[]): string {
   const userText = messages.filter(m => m.role === 'user').map(m => m.content).join('\n');
   const facts: string[] = [];
@@ -43,12 +58,20 @@ function extractProfile(messages: Message[]): string {
   return facts.join('\n');
 }
 
-// Chat content only (no button, always open) - cho /embed page nhúng vào WordPress
-export default function EmbedChatContent() {
+interface ChatPanelProps {
+  // true khi panel này chạy trong iframe nhúng (/embed) — 🎧/📊 phải mở tab mới
+  // thay vì điều hướng ngay trong iframe (iframe nhỏ 360x600 không đủ chỗ hiển thị
+  // trang /voice, /slide full-screen; điều hướng tại chỗ sẽ "kẹt" widget ở đó).
+  embedded?: boolean;
+}
+
+// Component chat dùng chung cho cả ChatWidget (nút nổi trên trang chính) và
+// trang /embed (nhúng qua iframe vào WordPress) — tránh 2 bản logic lệch nhau.
+export default function ChatPanel({ embedded = false }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [streaming, setStreaming] = useState(false);
+  const [loading, setLoading] = useState(false);   // hiện 3 chấm chờ
+  const [streaming, setStreaming] = useState(false); // khóa nút send khi chờ API
   const [cfg, setCfg] = useState<Config>({ suggestions: [], phone: '', zalo: '' });
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -66,8 +89,8 @@ export default function EmbedChatContent() {
     setInput('');
     const history = messages;
     setMessages(prev => [...prev, { role: 'user', content: msg }]);
-    setStreaming(true);
-    setLoading(true);
+    setStreaming(true); // khóa nút send ngay
+    setLoading(true);   // hiện 3 chấm chờ
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -75,6 +98,7 @@ export default function EmbedChatContent() {
         body: JSON.stringify({ message: msg, history, profile: extractProfile([...history, { role: 'user', content: msg }]) }),
       });
 
+      // Lỗi -> chỉ hiển thị thông báo thân thiện ngắn gọn (không dump JSON cho khách)
       if (!res.ok || !res.body) {
         let friendly = 'Có lỗi xảy ra, vui lòng thử lại.';
         try {
@@ -85,6 +109,7 @@ export default function EmbedChatContent() {
         return;
       }
 
+      // Bắt đầu streaming: tạo slot trả lời trống
       setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -96,6 +121,7 @@ export default function EmbedChatContent() {
         const { done, value } = await reader.read();
         if (done) break;
         acc += decoder.decode(value, { stream: true });
+        // Khi nhận được chữ đầu tiên -> mở khóa nút send ngay
         if (firstChunk && acc.trim()) {
           firstChunk = false;
           setStreaming(false);
@@ -130,6 +156,8 @@ export default function EmbedChatContent() {
   }
 
   const showContact = (cfg.phone || cfg.zalo) && messages.length >= 2;
+  // Trong iframe nhúng: mở /voice, /slide ở tab mới để không điều hướng mất khung chat nhỏ.
+  const linkTarget = embedded ? '_blank' : undefined;
 
   return (
     <div className="w-full h-full flex flex-col rounded-2xl shadow-2xl bg-white border border-gray-200 overflow-hidden">
@@ -140,10 +168,10 @@ export default function EmbedChatContent() {
           <p className="font-semibold text-sm truncate">Nhã Đạt AI</p>
           <p className="text-xs opacity-80 truncate">NyAh Phú Định · Villa NyAh</p>
         </div>
-        <Link href="/voice" className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Đàm thoại giọng nói">
+        <Link href="/voice" target={linkTarget} className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Đàm thoại giọng nói">
           🎧
         </Link>
-        <Link href="/slide" className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Trình chiếu slide">
+        <Link href="/slide" target={linkTarget} className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Trình chiếu slide">
           📊
         </Link>
         {cfg.phone && (
