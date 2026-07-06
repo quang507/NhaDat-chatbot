@@ -113,8 +113,20 @@ function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): stri
 
 // Lấy ẢNH GỐC (root) của 1 model — KHÔNG lấy trong các thư mục con (bep, gara, phong_khach...).
 // Dùng khi hỏi chung chung "cosmo gen 2" mà không chỉ rõ phòng nào.
+// Lấy ảnh từ các subfolder chính: bep, gara, phong_khach, phong_ngu, etc.
 function getRootImagesForModel(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus'): string[] {
-  return listImages(path.join(IMAGES_ROOT, 'noi_that', model), `/images/01_NyAh-PhuDinh/noi_that/${model}`, { filesOnly: true });
+  const spaces = ['bep', 'gara', 'phong_khach', 'phong_ngu', 'wc', 'tang-2'];
+  const allImgs: string[] = [];
+  for (const space of spaces) {
+    const imgs = listImages(
+      path.join(IMAGES_ROOT, 'noi_that', model, space),
+      `/images/01_NyAh-PhuDinh/noi_that/${model}/${space}`,
+      { filesOnly: true }
+    );
+    allImgs.push(...imgs);
+    if (allImgs.length >= 6) break;
+  }
+  return allImgs;
 }
 
 // Lấy ẢNH GỐC (root) của toàn dự án (không thuộc model nào cụ thể).
