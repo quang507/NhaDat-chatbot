@@ -250,3 +250,23 @@ export function classifyAmbientIntent(text: string): AmbientIntent {
   const confidence = Math.min(0.6 + total * 0.12 + (topic !== 'general' ? 0.1 : 0), 0.98);
   return { shouldGenerate: true, reason: 'has_project_topic', confidence, topic, score: total, hits };
 }
+
+// ── Chống nhảy slide/ảnh liên tục — DÙNG CHUNG cho app/voice và app/slide ────
+// Giữ 1 chủ đề tối thiểu ngần này trước khi đổi sang chủ đề khác. Cùng chủ đề thì
+// giữ nguyên slide/ảnh đang hiện (không timeout, không đổi) cho tới khi khách đổi
+// chủ đề thật — khớp yêu cầu "mỗi chủ đề hiện ổn định, đừng nhảy liên tục".
+export const SLIDE_MIN_DISPLAY_MS = 4500;
+
+export interface SlideDisplayState {
+  topic: IntentTopic | null;
+  at: number; // Date.now() lúc slide/ảnh hiện tại được set
+}
+
+// Trả về true nếu nên gọi API lấy slide/ảnh mới; false nếu nên giữ nguyên cái đang hiện.
+export function shouldRefreshSlide(intent: AmbientIntent, prev: SlideDisplayState, now: number): boolean {
+  if (!intent.shouldGenerate) return false;
+  if (intent.reason === 'explicit_slide_request') return true; // sale chủ động -> luôn làm mới
+  const sameTopic = !!intent.topic && intent.topic === prev.topic;
+  if (sameTopic) return false;
+  return now - prev.at >= SLIDE_MIN_DISPLAY_MS;
+}
