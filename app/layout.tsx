@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Be_Vietnam_Pro } from 'next/font/google';
 import './globals.css';
-import ChatWidget from '@/components/ChatWidget';
+import ChatWidgetWrapper from '@/components/ChatWidgetWrapper';
 
 const inter = Inter({ subsets: ['latin', 'vietnamese'] });
 // Font hiển thị tiêu đề slide — Be Vietnam Pro hỗ trợ đầy đủ dấu tiếng Việt
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="vi">
       <body className={`${inter.className} ${beVietnamPro.variable}`}>
         {children}
-        <ChatWidget />
+        <ChatWidgetWrapper />
       </body>
     </html>
   );

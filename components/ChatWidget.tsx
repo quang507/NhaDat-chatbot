@@ -169,7 +169,7 @@ export default function ChatWidget() {
 
   const showContact = (cfg.phone || cfg.zalo) && messages.length >= 2;
 
-  if (pathname === '/voice' || pathname === '/slide' || pathname === '/embed') return null;
+  if (pathname === '/voice' || pathname === '/slide') return null;
 
   const positionClass = isEmbedded ? 'absolute' : 'fixed';
 
