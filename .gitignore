@@ -27,3 +27,6 @@ api_key.txt
 cohere_key.txt
 /scratch/
 
+
+# temp artifact cua rebuild_rag_background.js
+old_index.json
