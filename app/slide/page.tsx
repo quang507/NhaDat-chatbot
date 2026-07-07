@@ -404,7 +404,6 @@ export default function SlideBotPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slide, brokenImages]);
 
-  const SLOGAN = 'Sống đẹp hơn chung cư — Sinh lời hơn thổ cư';
 
   const Line = ({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) => (
     <span className="line-mask block">
@@ -582,17 +581,7 @@ export default function SlideBotPage() {
         {renderSlideBody()}
       </main>
 
-      <div className={`relative z-10 shrink-0 overflow-hidden bg-[#0E5A34] py-[1.1vh] transition-all duration-300 ${voiceOn || state === 'listening' ? 'opacity-0 h-0 py-0' : ''}`}>
-        <div className="marquee-track flex w-max items-center gap-12 whitespace-nowrap font-black uppercase tracking-wider text-[#F5F3EC] text-[clamp(14px,1.9vw,30px)]">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <span key={i} className="flex items-center gap-12">
-              <span>{SLOGAN}</span>
-              <span className="w-2.5 h-2.5 rounded-full bg-[#A8D94A] inline-block" />
-            </span>
-          ))}
-        </div>
-      </div>
-
+      {/* Marquee slogan đã BỎ theo yêu cầu (chạy chạy gây rối khi trình chiếu) */}
       <footer className="relative z-10 px-[4vw] py-[1.2vh] flex items-center justify-center gap-3 shrink-0">
         <div
           key={topicLabel ? `t:${topicLabel}` : `s:${state}`}
