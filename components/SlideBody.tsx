@@ -1,36 +1,28 @@
 'use client';
 
 // ============================================================================
-// SlideBody — THAN SLIDE DUNG CHUNG cho ca trang /slide (that) va /slide/demo.
-// Muc tieu: demo va that KHONG BAO GIO lech nhau nua (truoc day 2 noi code rieng).
+// SlideBody — THÂN SLIDE dùng chung ("impeccable style" — chốt từ bản Framer).
 //
-// NGUYEN TAC THIET KE (chot tu ban Framer cua Quang — "impeccable style"):
-//  1. TIEU DE: 1 mau (den #161616), IN HOA, dam, KHONG tach 2 mau/2 dong (tranh loi
-//     dinh chu "CACHPHONG"). Nhan xanh nho "NY'AH PHU DINH" o tren.
-//  2. ANH: KHONG BAO GIO crop -> object-contain, nen trang. Toi da 3 anh.
-//     Bo cuc theo SO LUONG + HUONG anh:
-//        1 ngang        -> 1 the full be ngang
-//        1 doc          -> 1 the doc, hep, canh giua
-//        2 cung ngang   -> xep DOC 2 hang
-//        2 cung doc     -> chia DOI 2 cot
-//        2 tron         -> doc trai | ngang phai (canh giua)
-//        3 cung ngang   -> xep DOC 3 hang
-//        3 cung doc     -> chia BA 3 cot
-//        3 tron         -> 1 tren + 2 duoi
-//        0 anh          -> layout text-only canh giua, co so noi bat (highlight)
-//  3. ANIMATION: chu truot len trong "mat na" (line-mask/line-in), anh fade+scale vao
-//     co so le (stagger). KHONG dung carousel tu xoay nua — hien het anh 1 luc.
-//  4. MO TA anh: "points" -> may dong chu XAM NHAT ngay duoi anh.
-//  5. SECTION CHU khong tran: cqw scale theo be ngang the + clamp chan tran + line-clamp.
-//  6. FOOTER marquee xanh do trang page tu ve (khong nam trong SlideBody).
+// BỐ CỤC THEO layout_type + HƯỚNG MÀN HÌNH (trước đây xếp dọc tất cả -> màn
+// ngang chữ chiếm hết chỗ, ảnh bị ép còn vài chục px "như không có hình"):
 //
-// Co giãn: root dat container-type:inline-size -> font dung don vi cqw (theo be ngang
-// CUA THE, khong theo viewport) nen chay dung ca o khung demo nho lan man hinh 85".
+//  • full_background : ảnh TRÀN MÀN (object-cover + ken-burns), phủ gradient
+//                      tối, chữ trắng đè góc dưới-trái. Ảnh phụ = thumbnail
+//                      góc dưới-phải. Dùng cho ảnh chụp thực tế/phối cảnh.
+//  • split_image_*   : MÀN NGANG -> 2 cột (chữ | ảnh, đảo theo left/right),
+//                      ảnh object-contain KHÔNG crop (bản đồ, mặt bằng, sơ đồ).
+//                      MÀN DỌC  -> xếp chồng nhưng ảnh được BẢO ĐẢM >= 45%.
+//  • text_only       : căn giữa, tiêu đề + số nổi bật + ý chính.
+//
+//  ANIMATION: chữ trượt lên trong mặt nạ (line-mask/line-in), ảnh fade+scale
+//  (img-card) — giữ nguyên hệ animation cũ (đã có failsafe ép hiện ở page).
+//  CO GIÃN: container-type inline-size -> đơn vị cqw theo bề ngang thẻ.
 // ============================================================================
 
 import React from 'react';
 
 export interface SlideBodyData {
+  layout_type?: string;
   title: string;
   points?: string[];
   speech_text?: string;
@@ -49,7 +41,7 @@ interface SlideBodyProps {
   replayKey?: number | string;
 }
 
-// 1 dong chu truot tu duoi len trong mat na, loe sang roi mo dan.
+// 1 dòng chữ trượt từ dưới lên trong mặt nạ, lóe sáng rồi mờ dần.
 const Line = ({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) => (
   <span className="line-mask block">
     <span className={`line-in block ${className}`} style={{ animationDelay: `${delay}ms` }}>{children}</span>
@@ -65,193 +57,229 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   const speechLines = splitSentences(data.speech_text || '');
   const hasImg = imgs.length > 0;
   const o = (u: string) => orientOf(u);
+  const isMapImg = (src: string) => src.includes('vi_tri') || src.includes('18_phut');
+  const qrUrl = data.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
 
-  // ---- 1 the anh (dung chung moi bo cuc) ----
-  const Card = ({ src, className = '', delay = 0 }: { src: string; className?: string; delay?: number }) => {
-    const isMap = src.includes('vi_tri') || src.includes('18_phut');
-    const qrUrl = data.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
-    return (
-      <figure
-        className={`img-card relative rounded-[clamp(16px,3.2cqw,38px)] overflow-hidden bg-white border border-black/[0.05] shadow-[0_18px_46px_-22px_rgba(14,90,52,0.30)] ${onImageClick ? 'cursor-zoom-in' : ''} ${className}`}
-        style={{ animationDelay: `${delay}ms` }}
-        onClick={onImageClick ? () => onImageClick(src) : undefined}
-      >
-        <img
-          src={src}
-          alt=""
-          className="w-full h-full object-contain"
-          onError={onImageError ? () => onImageError(src) : undefined}
-        />
-        {isMap && (
-          <a
-            href={qrUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="absolute bottom-[3cqw] left-[3cqw] bg-white/95 rounded-[2cqw] p-[1.5cqw] shadow-lg border border-black/5 flex flex-col items-center"
-            onClick={e => e.stopPropagation()}
-          >
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrUrl)}`}
-              alt="QR ban do"
-              className="w-[11cqw] h-[11cqw] max-w-[80px] max-h-[80px]"
-            />
-            <span className="text-[1.6cqw] font-bold text-neutral-600 mt-[0.5cqw]">Quét bản đồ</span>
-          </a>
-        )}
-      </figure>
-    );
-  };
+  // Nhãn QR bản đồ (đè lên ảnh có bản đồ)
+  const QrChip = ({ big = false }: { big?: boolean }) => (
+    <a
+      href={qrUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`absolute bottom-[2.5cqw] left-[2.5cqw] bg-white/95 rounded-[1.6cqw] p-[1.2cqw] shadow-lg border border-black/5 flex flex-col items-center ${big ? '' : ''}`}
+      onClick={e => e.stopPropagation()}
+    >
+      <img
+        src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrUrl)}`}
+        alt="QR bản đồ"
+        className="w-[8cqw] h-[8cqw] max-w-[92px] max-h-[92px] min-w-[52px] min-h-[52px]"
+      />
+      <span className="text-[clamp(9px,1.3cqw,14px)] font-bold text-neutral-600 mt-[0.4cqw]">Quét bản đồ</span>
+    </a>
+  );
 
-  // ---- Khoi anh theo so luong + huong (KHONG crop) ----
+  // Thẻ ảnh object-contain (KHÔNG crop) — cho bản đồ/mặt bằng/sơ đồ.
+  const Card = ({ src, className = '', delay = 0 }: { src: string; className?: string; delay?: number }) => (
+    <figure
+      className={`img-card relative rounded-[clamp(14px,2.4cqw,32px)] overflow-hidden bg-white border border-black/[0.05] shadow-[0_18px_46px_-22px_rgba(14,90,52,0.30)] ${onImageClick ? 'cursor-zoom-in' : ''} ${className}`}
+      style={{ animationDelay: `${delay}ms` }}
+      onClick={onImageClick ? () => onImageClick(src) : undefined}
+    >
+      <img src={src} alt="" className="absolute inset-0 w-full h-full object-contain" onError={onImageError ? () => onImageError(src) : undefined} />
+      {isMapImg(src) && <QrChip />}
+    </figure>
+  );
+
+  // Khối ảnh cho layout SPLIT — lấp đầy cột, chia theo số ảnh.
   const ImageBlock = () => {
-    const n = imgs.length;
-    const D = 520; // do tre base cho anh vao sau chu
-
-    if (n === 1) {
-      return o(imgs[0]) === 'portrait'
-        ? <div className="h-full flex items-center justify-center"><Card src={imgs[0]} delay={D} className="h-full w-[62%]" /></div>
-        : <div className="h-full flex items-center"><Card src={imgs[0]} delay={D} className="w-full h-full" /></div>;
-    }
-
-    if (n === 2) {
-      const [a, b] = imgs;
-      const bothL = o(a) === 'landscape' && o(b) === 'landscape';
-      const bothP = o(a) === 'portrait' && o(b) === 'portrait';
-      if (bothL) {
-        return (
-          <div className="h-full grid grid-rows-2 gap-[3cqw]">
-            <Card src={a} delay={D} className="w-full h-full" />
-            <Card src={b} delay={D + 260} className="w-full h-full" />
-          </div>
-        );
-      }
-      if (bothP) {
-        return (
-          <div className="h-full grid grid-cols-2 gap-[3cqw]">
-            <Card src={a} delay={D} className="w-full h-full" />
-            <Card src={b} delay={D + 260} className="w-full h-full" />
-          </div>
-        );
-      }
-      // tron: doc trai | ngang phai (canh giua theo chieu cao)
-      const p = o(a) === 'portrait' ? a : b;
-      const l = p === a ? b : a;
+    const D = 480;
+    if (imgs.length === 1) {
+      // Man doc: card om theo ti le anh (khong nong het chieu cao -> het khoang trang).
+      // Man ngang: lap day cot nhu cu.
+      const land = o(imgs[0]) === 'landscape';
       return (
-        <div className="h-full grid grid-cols-2 gap-[3cqw]">
-          <Card src={p} delay={D} className="w-full h-full" />
-          <div className="h-full flex items-center"><Card src={l} delay={D + 260} className="w-full h-[70%]" /></div>
+        <div className="h-full w-full flex items-center justify-center">
+          <Card
+            src={imgs[0]}
+            delay={D}
+            className={land
+              ? 'w-full max-h-full aspect-[16/10] landscape:aspect-auto landscape:h-full'
+              : 'h-full max-w-full aspect-[3/4] landscape:aspect-auto landscape:w-full'}
+          />
         </div>
       );
     }
-
-    // n === 3
-    const [a, b, c] = imgs;
-    const allL = imgs.every(u => o(u) === 'landscape');
-    const allP = imgs.every(u => o(u) === 'portrait');
-    if (allL) {
+    if (imgs.length === 2) {
+      const bothP = imgs.every(u => o(u) === 'portrait');
       return (
-        <div className="h-full grid grid-rows-3 gap-[2.4cqw]">
+        <div className={`h-full grid gap-[2.2cqw] ${bothP ? 'grid-cols-2' : 'grid-rows-2'}`}>
           {imgs.map((u, i) => <Card key={u} src={u} delay={D + i * 220} className="w-full h-full" />)}
         </div>
       );
     }
+    const allP = imgs.every(u => o(u) === 'portrait');
     if (allP) {
       return (
-        <div className="h-full grid grid-cols-3 gap-[2.4cqw]">
-          {imgs.map((u, i) => <Card key={u} src={u} delay={D + i * 220} className="w-full h-full" />)}
+        <div className="h-full grid grid-cols-3 gap-[2cqw]">
+          {imgs.map((u, i) => <Card key={u} src={u} delay={D + i * 200} className="w-full h-full" />)}
         </div>
       );
     }
-    // tron: 1 tren + 2 duoi
     return (
-      <div className="h-full flex flex-col gap-[3cqw]">
-        <Card src={a} delay={D} className="w-full h-[46%]" />
-        <div className="grid grid-cols-2 gap-[3cqw] flex-1 min-h-0">
-          <Card src={b} delay={D + 240} className="w-full h-full" />
-          <Card src={c} delay={D + 480} className="w-full h-full" />
+      <div className="h-full grid grid-rows-[1.3fr_1fr] gap-[2.2cqw] min-h-0">
+        <Card src={imgs[0]} delay={D} className="w-full h-full" />
+        <div className="grid grid-cols-2 gap-[2.2cqw] min-h-0">
+          <Card src={imgs[1]} delay={D + 220} className="w-full h-full" />
+          <Card src={imgs[2]} delay={D + 440} className="w-full h-full" />
         </div>
       </div>
     );
   };
 
-  const TitleGroup = ({ center = false }: { center?: boolean }) => (
-    <div className={`shrink-0 ${center ? 'text-center' : ''}`}>
-      <Line delay={60} className={center ? 'flex justify-center' : ''}>
-        <span className="inline-flex px-[3cqw] py-[1cqw] rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold tracking-[0.18em] uppercase text-[clamp(9px,2.5cqw,18px)]">
-          Ny&apos;ah Phú Định
-        </span>
-      </Line>
-      <h1 className="mt-[2.4cqw] uppercase font-black leading-[1.06] tracking-tight text-[#161616] text-[clamp(22px,7cqw,96px)]">
-        <Line delay={190}>{data.title}</Line>
-      </h1>
-    </div>
+  const Badge = ({ light = false, delay = 60 }: { light?: boolean; delay?: number }) => (
+    <Line delay={delay}>
+      <span className={`inline-flex px-[2.2cqw] py-[0.7cqw] rounded-full font-bold tracking-[0.18em] uppercase text-[clamp(9px,1.5cqw,17px)] ${
+        light ? 'bg-white/20 text-white backdrop-blur-sm' : 'bg-[#E3F0E3] text-[#0E5A34]'
+      }`}>
+        Ny&apos;ah Phú Định
+      </span>
+    </Line>
   );
 
-  // ---- MO TA anh (points) -> chu xam nhat duoi anh ----
-  const Captions = () => (
-    <div className="shrink-0 mt-[2.6cqw] space-y-[0.6cqw]">
-      {points.slice(0, 3).map((p, i) => (
-        <Line key={i} delay={860 + i * 150} className="text-neutral-400 font-normal leading-snug text-[clamp(10px,3cqw,26px)]">
-          {p}
-        </Line>
-      ))}
-    </div>
-  );
-
-  // ---- MO TA dai (speech_text) -> chu xam dam hon, vien xanh mong ----
-  const Description = ({ mt = '3cqw' }: { mt?: string }) => {
-    if (speechLines.length === 0) return null;
+  // ══════════════ LAYOUT 1: FULL BACKGROUND (ảnh tràn màn + chữ đè) ══════════════
+  if (hasImg && (data.layout_type === 'full_background' || !data.layout_type)) {
+    const [bg, ...thumbs] = imgs;
     return (
-      <div className="shrink-0 border-l-[3px] border-[#2E9E5B]/60 pl-[3cqw]" style={{ marginTop: `var(--mt, ${mt})` }}>
-        {speechLines.slice(0, 4).map((ln, i) => (
-          <Line key={i} delay={1120 + i * 160} className="text-neutral-600 font-normal leading-[1.75] text-[clamp(11px,3.1cqw,27px)]">
-            {ln}
-          </Line>
-        ))}
+      <div style={{ containerType: 'inline-size' }} className="w-full h-full">
+        <div key={replayKey} className="relative w-full h-full overflow-hidden">
+          {/* Ảnh nền tràn màn + ken-burns nhẹ */}
+          <div className="img-card absolute inset-0" style={{ animationDelay: '0ms', borderRadius: 0 }}>
+            <img
+              src={bg}
+              alt=""
+              className="w-full h-full object-cover animate-ken-burns"
+              onError={onImageError ? () => onImageError(bg) : undefined}
+              onClick={onImageClick ? () => onImageClick(bg) : undefined}
+            />
+          </div>
+          {/* Gradient tối để chữ trắng luôn đọc được */}
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-transparent" />
+
+          {/* Khối chữ góc dưới-trái */}
+          <div className="absolute left-[5cqw] right-[5cqw] bottom-[4.5cqw] max-w-[72cqw]">
+            <Badge light />
+            <h1 className="mt-[1.6cqw] uppercase font-black leading-[1.08] tracking-tight text-white text-[clamp(24px,6cqw,110px)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]">
+              <Line delay={190}>{data.title}</Line>
+            </h1>
+            <div className="mt-[1.8cqw] space-y-[0.5cqw]">
+              {points.slice(0, 3).map((p, i) => (
+                <Line key={i} delay={700 + i * 150} className="text-white/90 font-medium leading-snug text-[clamp(12px,2.2cqw,30px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
+                  <span className="inline-block w-[0.9cqw] h-[0.9cqw] min-w-[7px] min-h-[7px] rounded-full bg-[#A8D94A] mr-[1.2cqw] align-middle" />{p}
+                </Line>
+              ))}
+            </div>
+          </div>
+
+          {/* Ảnh phụ: thumbnail góc dưới-phải */}
+          {thumbs.length > 0 && (
+            <div className="absolute right-[3cqw] bottom-[4.5cqw] hidden md:flex flex-col gap-[1.4cqw]">
+              {thumbs.map((u, i) => (
+                <figure
+                  key={u}
+                  className={`img-card w-[16cqw] max-w-[260px] min-w-[120px] aspect-[4/3] rounded-[1.6cqw] overflow-hidden border-2 border-white/70 shadow-2xl ${onImageClick ? 'cursor-zoom-in' : ''}`}
+                  style={{ animationDelay: `${900 + i * 220}ms` }}
+                  onClick={onImageClick ? () => onImageClick(u) : undefined}
+                >
+                  <img src={u} alt="" className="w-full h-full object-cover" onError={onImageError ? () => onImageError(u) : undefined} />
+                </figure>
+              ))}
+            </div>
+          )}
+          {isMapImg(bg) && <QrChip />}
+        </div>
       </div>
     );
-  };
+  }
 
+  // ══════════════ LAYOUT 2: SPLIT (chữ | ảnh — 2 cột khi màn ngang) ══════════════
+  if (hasImg) {
+    const imgLeft = data.layout_type === 'split_image_left';
+    return (
+      <div style={{ containerType: 'inline-size' }} className="w-full h-full">
+        <div
+          key={replayKey}
+          className={`h-full min-h-0 flex flex-col gap-[3cqw] px-[5cqw] py-[2.5cqw] landscape:grid landscape:items-center landscape:gap-[4cqw] ${
+            imgLeft ? 'landscape:grid-cols-[1.15fr_1fr]' : 'landscape:grid-cols-[1fr_1.15fr]'
+          }`}
+        >
+          {/* CỘT CHỮ */}
+          <div className={`shrink-0 min-w-0 landscape:self-center ${imgLeft ? 'landscape:order-2' : ''}`}>
+            <Badge />
+            <h1 className="mt-[1.8cqw] uppercase font-black leading-[1.08] tracking-tight text-[#161616] text-[clamp(20px,4.6cqw,92px)]">
+              <Line delay={190}>{data.title}</Line>
+            </h1>
+            <div className="mt-[2.2cqw] space-y-[0.8cqw]">
+              {points.slice(0, 3).map((p, i) => (
+                <Line key={i} delay={620 + i * 150} className="text-neutral-500 font-medium leading-snug text-[clamp(11px,2cqw,28px)]">
+                  <span className="inline-block w-[0.8cqw] h-[0.8cqw] min-w-[6px] min-h-[6px] rounded-full bg-[#2E9E5B] mr-[1.1cqw] align-middle" />{p}
+                </Line>
+              ))}
+            </div>
+            {speechLines.length > 0 && (
+              <div className="mt-[2.4cqw] border-l-[3px] border-[#2E9E5B]/60 pl-[2.2cqw] hidden landscape:block">
+                {speechLines.slice(0, 3).map((ln, i) => (
+                  <Line key={i} delay={1050 + i * 160} className="text-neutral-600 font-normal leading-[1.7] text-[clamp(11px,1.7cqw,24px)]">
+                    {ln}
+                  </Line>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* CỘT ẢNH — màn dọc được bảo đảm tối thiểu 45% chiều cao */}
+          <div className={`flex-1 min-h-[45cqh] landscape:min-h-0 landscape:h-full landscape:max-h-full min-w-0 ${imgLeft ? 'landscape:order-1' : ''}`}>
+            <ImageBlock />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ══════════════ LAYOUT 3: TEXT-ONLY (căn giữa + số nổi bật) ══════════════
   return (
     <div style={{ containerType: 'inline-size' }} className="w-full h-full flex flex-col">
-      {hasImg ? (
-        <div key={replayKey} className="flex-1 min-h-0 flex flex-col px-[6cqw] pt-[1.5cqw] pb-[3cqw]">
-          <TitleGroup />
-          <div className="flex-1 min-h-0 flex flex-col mt-[3cqw]">
-            <div className="flex-1 min-h-0"><ImageBlock /></div>
-            {points.length > 0 && <Captions />}
+      <div key={replayKey} className="flex-1 min-h-0 flex flex-col justify-center items-center text-center px-[8cqw] gap-[3cqw]">
+        <div className="shrink-0 text-center">
+          <Line delay={60} className="flex justify-center"><Badge /></Line>
+          <h1 className="mt-[2cqw] uppercase font-black leading-[1.08] tracking-tight text-[#161616] text-[clamp(22px,6cqw,96px)]">
+            <Line delay={190}>{data.title}</Line>
+          </h1>
+        </div>
+        {data.highlight_number && (
+          <Line delay={340} className="font-black leading-none text-transparent text-[clamp(34px,11cqw,150px)]">
+            <span style={{ WebkitTextStroke: '0.55cqw #2E9E5B' }}>{data.highlight_number}</span>
+          </Line>
+        )}
+        {points.length > 0 && (
+          <div className="space-y-[1.2cqw]">
+            {points.slice(0, 4).map((p, i) => (
+              <Line key={i} delay={520 + i * 150} className="text-neutral-600 font-medium leading-snug text-[clamp(12px,3cqw,30px)]">
+                {p}
+              </Line>
+            ))}
           </div>
-          <Description />
-        </div>
-      ) : (
-        // TEXT-ONLY: canh giua, tieu de + so noi bat + y chinh + mo ta
-        <div key={replayKey} className="flex-1 min-h-0 flex flex-col justify-center items-center text-center px-[8cqw] gap-[3.5cqw]">
-          <TitleGroup center />
-          {data.highlight_number && (
-            <Line delay={340} className="font-black leading-none text-transparent text-[clamp(34px,12cqw,150px)]">
-              <span style={{ WebkitTextStroke: '0.6cqw #2E9E5B' }}>{data.highlight_number}</span>
-            </Line>
-          )}
-          {points.length > 0 && (
-            <div className="space-y-[1.4cqw]">
-              {points.slice(0, 4).map((p, i) => (
-                <Line key={i} delay={520 + i * 150} className="text-neutral-600 font-medium leading-snug text-[clamp(12px,3.4cqw,30px)]">
-                  {p}
-                </Line>
-              ))}
-            </div>
-          )}
-          {speechLines.length > 0 && (
-            <div className="max-w-[80cqw]">
-              {speechLines.slice(0, 3).map((ln, i) => (
-                <Line key={i} delay={900 + i * 160} className="text-neutral-400 font-normal leading-[1.7] text-[clamp(11px,2.9cqw,25px)]">
-                  {ln}
-                </Line>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+        )}
+        {speechLines.length > 0 && (
+          <div className="max-w-[76cqw]">
+            {speechLines.slice(0, 3).map((ln, i) => (
+              <Line key={i} delay={880 + i * 160} className="text-neutral-400 font-normal leading-[1.7] text-[clamp(11px,2.4cqw,25px)]">
+                {ln}
+              </Line>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
