@@ -48,17 +48,41 @@ export default function SlideBotPage() {
   useEffect(() => {
     const qs = new URLSearchParams(window.location.search);
     setDebugOn(qs.has('debug'));
-    // ?demo=1 -> tu nap slide mau KHONG can mic (de xem/chinh giao dien + chup test)
-    if (qs.has('demo')) {
+    // ?demo=1|2|3 -> tu nap slide mau KHONG can mic (xem/chinh giao dien + chup test)
+    // 1 = split (ban do + QR), 2 = full_background (3 anh), 3 = text_only
+    const demo = qs.get('demo');
+    if (demo) {
+      const samples: Record<string, SlideData> = {
+        '1': {
+          layout_type: 'split_image_right',
+          title: 'Vị trí dự án',
+          points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'],
+          speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút.",
+          image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'],
+          maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
+        },
+        '2': {
+          layout_type: 'full_background',
+          title: 'Mẫu nhà Cosmo Gen 2',
+          points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'],
+          speech_text: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng.',
+          image_urls: [
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png',
+          ],
+        },
+        '3': {
+          layout_type: 'text_only',
+          title: 'Chỉ 18 phút đến Quận 1',
+          points: ['Kết nối thẳng đại lộ Võ Văn Kiệt', 'Tránh kẹt xe giờ cao điểm'],
+          speech_text: 'Từ dự án chỉ mười tám phút là vào tới trung tâm.',
+          highlight_number: '18 phút',
+          image_urls: [],
+        },
+      };
       setSlideKey(k => k + 1);
-      setSlide({
-        layout_type: 'split_image_right',
-        title: 'Vị trí dự án',
-        points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'],
-        speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút.",
-        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'],
-        maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
-      });
+      setSlide(samples[demo] || samples['1']);
     }
   }, []);
   const dbg = (msg: string) => {
