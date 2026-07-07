@@ -111,13 +111,13 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     src: string; className?: string; delay?: number;
   }) => (
     <figure
-      className={`img-card relative overflow-hidden bg-white ${onImageClick ? 'cursor-zoom-in' : ''} ${className}`}
+      className={`img-card relative overflow-hidden ${onImageClick ? 'cursor-zoom-in' : ''} ${className}`}
       style={{ animationDelay: `${delay}ms` }}
       onClick={onImageClick ? () => onImageClick(src) : undefined}
     >
       <img
         src={src} alt=""
-        className="absolute inset-0 w-full h-full object-contain"
+        className="absolute inset-0 w-full h-full object-contain object-top"
         onError={onImageError ? () => onImageError(src) : undefined}
       />
       {isMapImg(src) && <QrChip />}
@@ -256,23 +256,32 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
         {/* ── MÀN DỌC: TITLE trên → ẢNH giữa → TEXT cố định dưới ── */}
         <div key={replayKey} className="h-full flex flex-col landscape:hidden overflow-hidden">
 
-          {/* 1. Badge + Tiêu đề — NẰM TRÊN ảnh */}
-          <div className="shrink-0 px-[5cqw] pt-[4cqw] pb-[2cqw]">
+          {/* 1. Badge + Tiêu đề — NẰM TRÊN ảnh, 1 dòng duy nhất */}
+          <div className="shrink-0 px-[5cqw] pt-[3cqw] pb-[1.5cqw]">
             <Badge />
-            <h1 className="mt-[1.5cqw] uppercase font-black leading-[1.1] tracking-tight text-[#161616] text-[clamp(22px,6cqw,80px)]">
-              <Line delay={190}>{data.title}</Line>
+            <h1 className="mt-[1.2cqw] uppercase font-black leading-[1.1] tracking-tight text-[#161616] text-[clamp(15px,4.3cqw,52px)] overflow-hidden">
+              <Line delay={190} className="whitespace-nowrap overflow-hidden text-ellipsis">{data.title}</Line>
             </h1>
           </div>
 
           {/* 2. Ảnh:
-               • Dọc → flex-1, fill không gian còn lại, object-contain (không overflow)
-               • Ngang → shrink-0, aspect-ratio tự nhiên (không bị khoảng trắng lớn) */}
-          <div className={firstPortrait ? 'flex-1 min-h-0 w-full relative' : 'shrink-0 w-full aspect-[16/10] relative'}>
-            <ImgPortrait />
-          </div>
+               • Dọc → flex-1 capped 56vh: ảnh fit trong không gian, ko gap lớn với text
+               • Ngang → shrink-0 aspect-ratio tự nhiên + spacer đẩy text xuống đáy */}
+          {firstPortrait ? (
+            <div className="flex-1 min-h-0 max-h-[56vh] w-full relative">
+              <ImgPortrait />
+            </div>
+          ) : (
+            <>
+              <div className="shrink-0 w-full aspect-[16/10] relative">
+                <ImgPortrait />
+              </div>
+              <div className="flex-1" />
+            </>
+          )}
 
           {/* 3. Text câu trả lời — shrink-0, luôn bên dưới, chữ to */}
-          <div className="shrink-0 flex flex-col px-[5cqw] pb-[4cqw] pt-[2cqw] gap-[1.8cqw]">
+          <div className="shrink-0 flex flex-col px-[5cqw] pb-[3cqw] pt-[2cqw] gap-[1.5cqw]">
             {points.slice(0, 3).map((p, i) => (
               <Line key={i} delay={600 + i * 140}
                 className="text-neutral-700 font-semibold leading-[1.4] text-[clamp(14px,3.8cqw,36px)]">

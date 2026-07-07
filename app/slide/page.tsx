@@ -537,15 +537,12 @@ export default function SlideBotPage() {
       )}
 
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="dots absolute top-[8%] right-[5%] w-44 h-28 opacity-70" />
         <div className="absolute -top-[10vh] -left-[10vh] w-[26vw] h-[26vw] rounded-full bg-[#E3F0E3]" />
         <div className="absolute top-[17%] -right-16 w-[18vw] h-[18vw] rounded-full border-[3px] border-[#2E9E5B]/20" />
-        {/* Vòng tròn dưới-trái + chấm bi nhỏ đè LÊN TRÊN, sát mép dưới (render sau = nằm trên) */}
         <div className="absolute bottom-[13%] -left-10 w-[12vw] h-[12vw] rounded-full border-2 border-[#2E9E5B]/15" />
-        <div className="dots absolute bottom-[6%] left-[3.5%] w-20 h-28 opacity-60" />
       </div>
 
-      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-opacity duration-300 ${slide ? 'opacity-0 pointer-events-none' : ''}`}>
+      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-all duration-300 ${slide ? 'h-0 overflow-hidden opacity-0 pointer-events-none !p-0' : ''}`}>
         <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl overflow-hidden bg-white shadow-md border border-black/5 flex items-center justify-center shrink-0">
             <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
