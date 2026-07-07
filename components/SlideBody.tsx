@@ -81,7 +81,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   // Thẻ ảnh object-contain (KHÔNG crop) — cho bản đồ/mặt bằng/sơ đồ.
   const Card = ({ src, className = '', delay = 0 }: { src: string; className?: string; delay?: number }) => (
     <figure
-      className={`img-card relative rounded-[clamp(14px,2.4cqw,32px)] overflow-hidden bg-white border border-black/[0.05] shadow-[0_18px_46px_-22px_rgba(14,90,52,0.30)] ${onImageClick ? 'cursor-zoom-in' : ''} ${className}`}
+      className={`img-card relative rounded-none landscape:rounded-[clamp(14px,2.4cqw,32px)] overflow-hidden bg-white border border-black/[0.05] shadow-[0_18px_46px_-22px_rgba(14,90,52,0.30)] ${onImageClick ? 'cursor-zoom-in' : ''} ${className}`}
       style={{ animationDelay: `${delay}ms` }}
       onClick={onImageClick ? () => onImageClick(src) : undefined}
     >
@@ -103,8 +103,8 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             src={imgs[0]}
             delay={D}
             className={land
-              ? 'w-full max-h-full aspect-[16/10] landscape:aspect-auto landscape:h-full'
-              : 'h-full max-w-full aspect-[3/4] landscape:aspect-auto landscape:w-full'}
+              ? 'w-full max-h-full aspect-[16/10]'
+              : 'h-full max-w-full aspect-[3/4]'}
           />
         </div>
       );
@@ -202,19 +202,23 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     );
   }
 
-  // ══════════════ LAYOUT 2: SPLIT (chữ | ảnh — 2 cột khi màn ngang) ══════════════
+  // ══════════════ LAYOUT 2: SPLIT — ẢNH BÊN TRÁI (màn ngang) / ẢNH TRÊN (màn dọc) ══════════════
+  // Chốt theo yêu cầu sếp: ảnh luôn nằm TRÁI trên màn ngang; khi responsive (màn dọc)
+  // ảnh lên TRÊN fill hết chiều ngang (cách mép trên ~250px), text nằm DƯỚI.
   if (hasImg) {
-    const imgLeft = data.layout_type === 'split_image_left';
     return (
       <div style={{ containerType: 'inline-size' }} className="w-full h-full">
         <div
           key={replayKey}
-          className={`h-full min-h-0 flex flex-col gap-[3cqw] px-[5cqw] py-[2.5cqw] landscape:grid landscape:items-center landscape:gap-[4cqw] ${
-            imgLeft ? 'landscape:grid-cols-[1.15fr_1fr]' : 'landscape:grid-cols-[1fr_1.15fr]'
-          }`}
+          className="h-full min-h-0 flex flex-col gap-[3cqw] px-[5cqw] pb-[2.5cqw] pt-[clamp(24px,calc(250px_-_12vh),170px)] landscape:pt-[2.5cqw] landscape:grid landscape:items-center landscape:gap-[4cqw] landscape:grid-cols-[1.15fr_1fr]"
         >
-          {/* CỘT CHỮ */}
-          <div className={`shrink-0 min-w-0 landscape:self-center ${imgLeft ? 'landscape:order-2' : ''}`}>
+          {/* ẢNH — trái (ngang) / trên + full ngang (dọc, -mx bù padding wrapper) */}
+          <div className="shrink-0 -mx-[5cqw] landscape:mx-0 landscape:flex-none landscape:min-h-0 landscape:h-full landscape:max-h-full min-w-0">
+            <ImageBlock />
+          </div>
+
+          {/* CHỮ — phải (ngang) / dưới (dọc) */}
+          <div className="flex-1 min-w-0 landscape:flex-none landscape:self-center">
             <Badge />
             <h1 className="mt-[1.8cqw] uppercase font-black leading-[1.08] tracking-tight text-[#161616] text-[clamp(20px,4.6cqw,92px)]">
               <Line delay={190}>{data.title}</Line>
@@ -235,11 +239,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
                 ))}
               </div>
             )}
-          </div>
-
-          {/* CỘT ẢNH — màn dọc được bảo đảm tối thiểu 45% chiều cao */}
-          <div className={`flex-1 min-h-[45cqh] landscape:min-h-0 landscape:h-full landscape:max-h-full min-w-0 ${imgLeft ? 'landscape:order-1' : ''}`}>
-            <ImageBlock />
           </div>
         </div>
       </div>
