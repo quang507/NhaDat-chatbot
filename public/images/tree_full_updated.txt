@@ -1,0 +1,323 @@
+ChatBotImages_Upload/
+├── 01_NyAh-PhuDinh
+│   ├── an_ninh
+│   │   ├── camera_giam_sat
+│   │   └── khoa_thong_minh
+│   ├── canh_quan
+│   │   ├── khuon_vien
+│   │   ├── san_thuong
+│   │   └── san_vuon
+│   ├── chinh_sach
+│   │   ├── chiet_khau
+│   │   ├── ngan_hang
+│   │   └── thanh_toan
+│   ├── chu_dau_tu
+│   │   └── nha_dat
+│   │       ├── logo_nha-dat-1.jpg
+│   │       ├── logo_nha-dat-1.png
+│   │       ├── logo_nha-dat-2.png
+│   │       ├── nha-dat-tieu-chi-1.jpg
+│   │       ├── nha-dat-tieu-chi-3.jpg
+│   │       ├── nha-dat-tieu-chi-4.jpg
+│   │       ├── nha-dat-tieu-chi-5.jpg
+│   │       ├── nha-dat_cong-nghe-1.jpg
+│   │       ├── nha-dat_cong-nghe-2.jpg
+│   │       ├── nha-dat_cong-nghe-3.jpg
+│   │       ├── nha-dat_doi-tac.jpg
+│   │       ├── nha-dat_du-an-1.jpg
+│   │       ├── nha-dat_du-an-2.jpg
+│   │       ├── nha-dat_du-an-3.jpg
+│   │       ├── nha-dat_du-an-4.jpg
+│   │       ├── nha-dat_du-an-5.jpg
+│   │       ├── nha-dat_du-an-6.jpg
+│   │       ├── nha-dat_du-an-7.jpg
+│   │       └── nha-dat_timeline.jpg
+│   ├── gia_ban
+│   ├── mat_bang
+│   │   ├── ban-do-phan-lo-dien-tich.jpg
+│   │   ├── ban-do-phan-lo_can-nha.jpg
+│   │   ├── ban-do-phan-lo_tinh-nang.jpg
+│   │   └── opus_cau-truc-1-2-3.jpg
+│   ├── ngoai_that
+│   │   ├── cosmo_gen_2
+│   │   │   ├── mat_tien
+│   │   │   └── phoi_canh
+│   │   ├── fusion_gen_5
+│   │   │   ├── mat_tien
+│   │   │   └── phoi_canh
+│   │   ├── opus
+│   │   │   ├── mat_tien
+│   │   │   └── phoi_canh
+│   │   └── signature_by_codinachs
+│   │       ├── mat_tien
+│   │       └── phoi_canh
+│   ├── noi_that
+│   │   ├── cosmo_gen_2
+│   │   │   ├── bep
+│   │   │   │   └── cosmo-gen-2_bep.png
+│   │   │   ├── cosmo-gen-2_cau-truc-1-2-3.jpg
+│   │   │   ├── cosmo-gen-2_cau-truc-4-5-6.jpg
+│   │   │   ├── cosmo-gen-2_mat-cat.jpg
+│   │   │   ├── cosmo-gen-2_tinh-nang-tang-1.jpg
+│   │   │   ├── cosmo-gen-2_tinh-nang-tang-2.jpg
+│   │   │   ├── cosmo-gen-2_tinh-nang-tang-3.jpg
+│   │   │   ├── cosmo-gen-2_tinh-nang-tang-4.jpg
+│   │   │   ├── cosmo-gen-2_tong-quan.jpg
+│   │   │   ├── cosmo-ultra-gach-bong-gio.jpg
+│   │   │   ├── enscape_2023-07-11-17-01-28-them-nen.jpg
+│   │   │   ├── gara
+│   │   │   │   └── cosmo-gen-2_gara.png
+│   │   │   ├── khac
+│   │   │   ├── opus-ultra-gach-bong-gio.jpg
+│   │   │   ├── phong_khach
+│   │   │   │   └── cosmo-gen-2_phong-khach.png
+│   │   │   ├── phong_ngu
+│   │   │   │   ├── cosmo-gen-2_noi-that-ngu-master.png
+│   │   │   │   ├── cosmo-gen-2_phong-ngu-con-2.png
+│   │   │   │   ├── cosmo-gen-2_phong-ngu-con-3.png
+│   │   │   │   └── cosmo-gen-2_tang-2-phong-ngu-ong-ba-1.png
+│   │   │   ├── tang_1_gara_phong_khach
+│   │   │   ├── tang_2_lung_phong_ngu_ong_ba
+│   │   │   ├── tang_3_bep_phong_an
+│   │   │   ├── tang_4_master_suite
+│   │   │   ├── tang_5_phong_ngu_tre_em
+│   │   │   ├── tang_6_ban_cong
+│   │   │   └── wc
+│   │   │       └── cosmo-gen-2_wc.png
+│   │   ├── fusion_gen_5
+│   │   │   ├── bep
+│   │   │   │   ├── fusion-gen-5_tang-3.png
+│   │   │   │   └── nyah-phu-dinh_mat-bang-tang-3.jpg
+│   │   │   ├── enscape_2025-10-22-14-44-00.jpg
+│   │   │   ├── fusion-gen-5_cau-truc-1-2-3.jpg
+│   │   │   ├── fusion-gen-5_cau-truc-4-5-6.jpg
+│   │   │   ├── fusion-gen-5_mat-tien.jpg
+│   │   │   ├── fusion-gen-5_tinh-nang-tang-1.jpg
+│   │   │   ├── fusion-gen-5_tinh-nang-tang-2.jpg
+│   │   │   ├── fusion-gen-5_tinh-nang-tang-3.jpg
+│   │   │   ├── fusion-gen-5_tinh-nang-tang-4.jpg
+│   │   │   ├── fusion-gen-5_tong-quan.jpg
+│   │   │   ├── gara
+│   │   │   │   └── fusion-gen-5_gara.png
+│   │   │   ├── khac
+│   │   │   ├── phong_khach
+│   │   │   │   ├── fusion-gen-5_phong-khach.png
+│   │   │   │   └── nyah-phu-ding_mat-bang-tang-1.jpg
+│   │   │   ├── phong_ngu
+│   │   │   │   ├── fusion-gen-5_master-bedroom.png
+│   │   │   │   ├── fusion-gen-5_phong-hoc.png
+│   │   │   │   ├── fusion-gen-5_phong-ngu-con.png
+│   │   │   │   ├── nyah-phu-dinh_mat-bang-tang-2.jpg
+│   │   │   │   ├── nyah-phu-dinh_mat-bang-tang-4.jpg
+│   │   │   │   └── nyah-phu-dinh_mat-bang-tang-5.jpg
+│   │   │   ├── tang-2
+│   │   │   │   └── fusion-gen-5_tang-2.png
+│   │   │   ├── tang_1_gara_phong_khach
+│   │   │   ├── tang_2_lung_phong_ngu_ong_ba
+│   │   │   ├── tang_3_bep_phong_an
+│   │   │   ├── tang_4_master_suite
+│   │   │   ├── tang_5_phong_ngu_tre_em
+│   │   │   ├── tang_6_ban_cong
+│   │   │   └── wc
+│   │   ├── mat-tien-so-sanh.jpg
+│   │   ├── opus
+│   │   │   ├── bep
+│   │   │   │   └── opus_bep.jpg
+│   │   │   ├── opus_mat-tien.jpg
+│   │   │   ├── opus_tinh-nang-tang-1-2.jpg
+│   │   │   ├── opus_tinh-nang-tang-1.jpg
+│   │   │   ├── opus_tinh-nang-tang-3.jpg
+│   │   │   ├── opus_tinh-nang-tang-4.jpg
+│   │   │   ├── opus_tong-quan.jpg
+│   │   │   ├── opus_vi-tri.jpg
+│   │   │   ├── phong_ngu
+│   │   │   │   ├── opus_phong-ngu-1.jpg
+│   │   │   │   ├── opus_phong-ngu-2.jpg
+│   │   │   │   ├── opus_phong-ngu-master.jpg
+│   │   │   │   └── opus_sanh-master.jpg
+│   │   │   ├── showroom
+│   │   │   │   └── enscape_2023-01-16-20-23-36.jpg
+│   │   │   ├── tang_1_gara_phong_khach
+│   │   │   ├── tang_2_lung_phong_ngu_ong_ba
+│   │   │   ├── tang_3_bep_phong_an
+│   │   │   ├── tang_4_master_suite
+│   │   │   ├── tang_5_phong_ngu_tre_em
+│   │   │   ├── tang_6_ban_cong
+│   │   │   ├── van phong
+│   │   │   │   ├── enscape_2023-01-16-19-33-57.jpg
+│   │   │   │   ├── enscape_2023-01-16-19-59-50.jpg
+│   │   │   │   ├── opus_tang-1.jpg
+│   │   │   │   └── opus_tang-2.jpg
+│   │   │   └── wc
+│   │   │       └── opus_wc.jpg
+│   │   ├── signature_by_codinachs
+│   │   │   ├── 6-mbr-1.jpg
+│   │   │   ├── bep-1.jpg
+│   │   │   ├── bep-2.jpg
+│   │   │   ├── desktop.ini
+│   │   │   ├── phong-khach-01-kt-pc.jpg
+│   │   │   ├── phong-khach-01.jpg
+│   │   │   ├── phong-khach-01b.jpg
+│   │   │   ├── phong-khach-02.jpg
+│   │   │   ├── phong-khach-03-kt-pc.jpg
+│   │   │   ├── phong-khach-03.jpg
+│   │   │   ├── phong-khach-04.jpg
+│   │   │   ├── phong-ngu-master-bedroom-1.jpg
+│   │   │   ├── phong-ngu-master-bedroom-2.jpg
+│   │   │   ├── phong-ngu-master-bedroom-3.jpg
+│   │   │   ├── phong-ngu-master-bedroom-4.jpg
+│   │   │   ├── phong-ngu-master-bedroom-5.jpg
+│   │   │   ├── san-thuong-1.jpg
+│   │   │   ├── san-thuong-2.jpg
+│   │   │   ├── san-thuong-3.jpg
+│   │   │   ├── signature_by_codinachs-mat-bang-1.jpg
+│   │   │   ├── signature_by_codinachs-mat-bang-2.jpg
+│   │   │   ├── signature_by_codinachs-mat-bang-3.jpg
+│   │   │   ├── signature_by_codinachs-mat-bang-4.jpg
+│   │   │   ├── signature_by_codinachs-mat-bang-5.jpg
+│   │   │   ├── signature_by_codinachs-mat-bang-6.jpg
+│   │   │   ├── signature_by_codinachs-mat-tien-43-44.jpg
+│   │   │   ├── signature_by_codinachs-mat-tien-43.jpg
+│   │   │   ├── signature_by_codinachs-mat-tien-44.jpg
+│   │   │   ├── signature_by_codinachs-phoi-canh-1.jpg
+│   │   │   ├── signature_by_codinachs-phoi-canh-2.jpg
+│   │   │   ├── signature_by_codinachs-phoi-canh-3.jpg
+│   │   │   ├── signature_by_codinachs-phoi-canh-4.jpg
+│   │   │   ├── tang_1_gara_phong_khach
+│   │   │   ├── tang_2_lung_phong_ngu_ong_ba
+│   │   │   ├── tang_3_bep_phong_an
+│   │   │   ├── tang_4_master_suite
+│   │   │   ├── tang_5_phong_ngu_tre_em
+│   │   │   └── tang_6_ban_cong
+│   │   └── thang_xoan
+│   │       ├── 1.jpg
+│   │       ├── 5v5a3952-png.jpg
+│   │       ├── 5v5a3970-png.jpg
+│   │       ├── 5v5a3981-png.jpg
+│   │       ├── generated-image-march-25-2026-10_18am.jpg
+│   │       └── thang-xoan.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-1.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-10.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-11.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-12.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-13.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-2.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-3.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-4.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-5.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-6.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-7.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-8.jpg
+│   ├── ny'ah-phu-dinh-tong-quan-9.jpg
+│   ├── phap_ly
+│   │   ├── giay_phep
+│   │   ├── logo_nyahphudinh_210531_f-02.png
+│   │   └── so_hong
+│   ├── tien_do
+│   │   └── xay_dung
+│   │       ├── thang_05-2026-1-jpg.jpg
+│   │       ├── thang_05-2026-2.jpg
+│   │       ├── thang_05-2026-3.jpg
+│   │       ├── thang_05-2026-4.jpg
+│   │       ├── thang_05-2026-5.jpg
+│   │       ├── thang_05-2026-6.jpg
+│   │       ├── thang_05-2026-7.jpg
+│   │       ├── thang_05-2026-8.jpg
+│   │       ├── thang_05-2026-9-jpg.jpg
+│   │       ├── thang_06-2026-1.jpg
+│   │       ├── thang_06-2026-10.jpg
+│   │       ├── thang_06-2026-11.jpg
+│   │       ├── thang_06-2026-12.jpg
+│   │       ├── thang_06-2026-2.jpg
+│   │       ├── thang_06-2026-3.jpg
+│   │       ├── thang_06-2026-4.jpg
+│   │       ├── thang_06-2026-5.jpg
+│   │       ├── thang_06-2026-6.jpg
+│   │       ├── thang_06-2026-7.jpg
+│   │       ├── thang_06-2026-8.jpg
+│   │       └── thang_06-2026-9.jpg
+│   ├── tien_ich
+│   │   ├── cong_vao
+│   │   │   ├── tien-ich-1.jpg
+│   │   │   ├── tien-ich-2.jpg
+│   │   │   ├── tien-ich-3.jpg
+│   │   │   ├── tien-ich-4.jpg
+│   │   │   └── tien-ich-7.jpg
+│   │   ├── cong_vien
+│   │   │   ├── nyah-phu-dinh_cong-vien.png
+│   │   │   └── tien-ich-12.jpg
+│   │   ├── ho_boi
+│   │   ├── landmark_coffee
+│   │   │   ├── enscape_2021-08-16-11-21-00.jpg
+│   │   │   └── tien-ich-8.jpg
+│   │   ├── lanscape-khuon-vien-anh-chup
+│   │   │   ├── enscape_2021-08-09-13-01-55.jpg
+│   │   │   ├── enscape_2021-08-09-14-00-56.jpg
+│   │   │   ├── enscape_2021-08-09-14-31-04.jpg
+│   │   │   ├── enscape_2021-08-09-16-04-21.jpg
+│   │   │   ├── enscape_2021-08-11-11-15-00.jpg
+│   │   │   ├── enscape_2021-08-11-12-23-26.jpg
+│   │   │   ├── enscape_2021-08-11-14-11-29.jpg
+│   │   │   ├── enscape_2021-08-11-14-27-41.jpg
+│   │   │   └── enscape_2021-08-11-14-38-46.jpg
+│   │   ├── san_choi_tre_em
+│   │   │   ├── enscape_2021-08-11-12-23-26.jpg
+│   │   │   ├── tien-ich-5.jpg
+│   │   │   └── tien-ich-6.jpg
+│   │   └── san_the_thao
+│   │       ├── enscape_2021-08-09-12-13-47-copy.jpg
+│   │       ├── enscape_2021-08-09-13-19-05.jpg
+│   │       ├── tien-ich-11.jpg
+│   │       └── tien-ich-9.jpg
+│   ├── tong_quan
+│   └── vi_tri
+│       ├── ban_do
+│       │   ├── cosmo-gen-2_vi-tri.jpg
+│       │   └── fusion-gen-5_vi-tri.jpg
+│       └── duong_di
+│           ├── 18_phut_den_quan_1_chi_tiet.jpg
+│           └── vi_tri.jpg
+├── 02_Villa-NyAh
+│   ├── an_ninh
+│   │   ├── camera_giam_sat
+│   │   └── khoa_thong_minh
+│   ├── canh_quan
+│   │   ├── khuon_vien
+│   │   └── san_vuon
+│   ├── chinh_sach
+│   │   ├── chiet_khau
+│   │   ├── ngan_hang
+│   │   └── thanh_toan
+│   ├── chu_dau_tu
+│   ├── gia_ban
+│   ├── mat_bang
+│   ├── ngoai_that
+│   │   ├── mat_tien
+│   │   └── phoi_canh
+│   ├── noi_that
+│   │   ├── tang_1_gara_phong_khach
+│   │   ├── tang_2_lung_phong_ngu_ong_ba
+│   │   ├── tang_3_bep_phong_an
+│   │   ├── tang_4_master_suite
+│   │   ├── tang_5_phong_ngu_tre_em
+│   │   └── tang_6_ban_cong
+│   ├── phap_ly
+│   │   ├── giay_phep
+│   │   └── so_hong
+│   ├── phoi_canh
+│   ├── tien_do
+│   │   └── xay_dung
+│   ├── tien_ich
+│   │   ├── cong_vao
+│   │   ├── cong_vien
+│   │   ├── ho_boi
+│   │   ├── san_choi_tre_em
+│   │   └── san_the_thao
+│   ├── tong_quan
+│   └── vi_tri
+│       ├── ban_do
+│       └── duong_di
+└── cong_ty
+    ├── doi_ngu
+    ├── logo
+    └── van_phong
