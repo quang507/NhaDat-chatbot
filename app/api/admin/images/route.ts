@@ -31,7 +31,7 @@ async function getTree(dir: string, baseDir: string): Promise<ImgNode[]> {
 
     if (entry.isDirectory()) {
       const children = await getTree(full, baseDir);
-      if (children.length) nodes.push({ name: entry.name, path: rel, type: 'directory', children });
+      nodes.push({ name: entry.name, path: rel, type: 'directory', children });
     } else {
       const ext = path.extname(entry.name).toLowerCase();
       if (!IMG_EXT.includes(ext)) continue;
