@@ -148,3 +148,16 @@ ${PRICES[n] ? `- Bảng giá T6/2026: ${PRICES[n]}\n` : ''}- Đặc điểm dòn
   const modelKeywords = `${l.model} ${FAMILY_NAME[l.fam]} mẫu nhà diện tích DT mặt tiền hướng datasheet giá bán giá tiền bảng giá`;
   return { facts, modelKeywords };
 }
+
+export function getGeneralUnsoldContext(): string {
+  const unsoldList = Array.from(UNSOLD).sort((a, b) => a - b);
+  let str = "=== DANH SÁCH CÁC CĂN/LÔ CÒN TRỐNG (CHƯA BÁN) & GIÁ BÁN TỪNG CĂN ===\n";
+  for (const n of unsoldList) {
+    const l = LOTS[n];
+    if (!l) continue;
+    const price = PRICES[n] || 'Liên hệ trực tiếp để có giá chính xác';
+    str += `- Lô #${String(n).padStart(2, '0')}: Mẫu ${l.model}, DT đất: ${l.dtDat}m², DT sàn: ${l.dtSan}m², Hướng: ${l.huong}. ${price}\n`;
+  }
+  str += "\nLƯU Ý: Tất cả các căn/lô khác ngoài danh sách này đều ĐÃ BÁN.";
+  return str;
+}

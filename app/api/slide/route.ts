@@ -4,7 +4,7 @@ import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
-import { detectUnit, unitContext, imageFamily } from '@/lib/units';
+import { detectUnit, unitContext, imageFamily, getGeneralUnsoldContext } from '@/lib/units';
 import { hasProjectKeyword, isCompetitor, COMPETITORS } from '@/lib/intent';
 import { matchStaticSlide } from '@/lib/static_slides';
 
@@ -200,7 +200,6 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
   const persona = await getPersona();
 
   // Khách hỏi 1 căn cụ thể -> nhét THÔNG TIN CHÍNH XÁC (mẫu nhà, diện tích, mặt tiền, tầng)
-  // thẳng từ bảng tra cứu, không phụ thuộc may rủi của RAG. Đồng thời tăng cường query.
   let unitFacts = '';
   let ragQuery = message;
   try {
@@ -209,6 +208,14 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
       const { facts, modelKeywords } = unitContext(unit);
       unitFacts = `\n\n=== ${facts} ===`;
       ragQuery = `${message} ${modelKeywords}`;
+    } else {
+      const qLower = message.toLowerCase();
+      const isGeneralUnsold = /(chưa\s*bán|còn\s*trống|rổ\s*hàng|bảng\s*giá|giá\s*bán|giá\s*cả|còn\s*căn|còn\s*lô|còn\s*hàng)/i.test(qLower) || 
+                              (/(căn|lô)\s*nào/i.test(qLower) && /giá/i.test(qLower)) ||
+                              /giá\s*(bao\s*nhiêu|thế\s*nào|mấy)/i.test(qLower);
+      if (isGeneralUnsold) {
+        unitFacts = `\n\n${getGeneralUnsoldContext()}`;
+      }
     }
   } catch (e) { console.warn('Slide unit lookup failed:', e); }
 

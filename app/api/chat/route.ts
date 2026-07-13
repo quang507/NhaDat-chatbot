@@ -5,7 +5,7 @@ import { DEFAULT_PERSONA } from '@/lib/admin';
 import { writeLog, extractPhone } from '@/lib/logs';
 import { loadIndex, retrieve } from '@/lib/rag';
 import { detectRouteIntent, getDrivingRoute, routeSummaryToPrompt } from '@/lib/maps';
-import { detectUnit, unitContext } from '@/lib/units';
+import { detectUnit, unitContext, getGeneralUnsoldContext } from '@/lib/units';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -86,6 +86,14 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
       const { facts, modelKeywords } = unitContext(unit);
       unitContextStr = `\n\n=== ${facts} ===`;
       ragQuery = `${message} ${modelKeywords}`; // kéo thêm datasheet/tính năng đúng mẫu nhà
+    } else {
+      const qLower = message.toLowerCase();
+      const isGeneralUnsold = /(chưa\s*bán|còn\s*trống|rổ\s*hàng|bảng\s*giá|giá\s*bán|giá\s*cả|còn\s*căn|còn\s*lô|còn\s*hàng)/i.test(qLower) || 
+                              (/(căn|lô)\s*nào/i.test(qLower) && /giá/i.test(qLower)) ||
+                              /giá\s*(bao\s*nhiêu|thế\s*nào|mấy)/i.test(qLower);
+      if (isGeneralUnsold) {
+        unitContextStr = `\n\n${getGeneralUnsoldContext()}`;
+      }
     }
   } catch (e) {
     console.warn('Unit lookup failed:', e);
