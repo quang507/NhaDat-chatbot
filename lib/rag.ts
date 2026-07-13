@@ -377,13 +377,20 @@ export interface ScoredChunk {
 // Trả kèm score để caller có thể áp ngưỡng confidence (tránh slide sai khi query mơ hồ)
 export async function retrieve(query: string, index: Index, k = 20, minScore = 0): Promise<string[]> {
   const indexDim = index.chunks[0]?.vec?.length || 0;
-  const q = await embedQuery(query, indexDim);
-  if (!q.length) return [];
+  let q: number[] = [];
+  let isVectorFailed = false;
 
-  if (indexDim > 0 && q.length !== indexDim) {
-    console.error(`[RAG LỖI] Lệch số chiều Vector! Query có ${q.length} chiều, nhưng Database có ${indexDim} chiều.`);
-    return [];
+  try {
+    q = await embedQuery(query, indexDim);
+  } catch (err: any) {
+    console.warn(`[RAG WARNING] Gọi Gemini Embedding thất bại (hết tiền hoặc quá tải), chuyển sang tìm kiếm từ khóa offline: ${err.message}`);
+    isVectorFailed = true;
   }
+
+  // Tách từ khóa chung từ câu hỏi nếu chế độ offline được kích hoạt
+  const stopWords = new Set(['là', 'ở', 'nào', 'có', 'không', 'thì', 'mà', 'được', 'của', 'cho', 'với', 'nhà', 'đất', 'bất', 'động', 'sản', 'cho', 'hỏi', 'em', 'tôi', 'ad', 'bot', 'với', 'ạ', 'dạ', 'này', 'cái', 'nằm', 'ở', 'đâu']);
+  const words = query.toLowerCase().split(/[\s,.\-?!\(\)]+/).filter(w => w.length > 1 && !stopWords.has(w));
+  const textKeywords = words.map(w => new RegExp(w, 'i'));
 
   const keywords = extractKeywords(query);
 
@@ -402,7 +409,7 @@ export async function retrieve(query: string, index: Index, k = 20, minScore = 0
   });
 
   const scored = phuDinhChunks.map(c => {
-    let score = dot(q, c.vec);
+    let score = 0;
     let hits = 0;
     let headerHits = 0;
 
@@ -417,20 +424,37 @@ export async function retrieve(query: string, index: Index, k = 20, minScore = 0
       }
     }
     
-    // Boost cực mạnh (+0.5) cho các keyword chính xác (như Mã căn, Lô, Số nhà)
-    score += Math.min(hits * 0.5, 1.0);
-
-    // Boost thêm (+0.2) cho tiêu đề/header khớp chính xác để ưu tiên nội dung chính chủ của lô đất
-    score += Math.min(headerHits * 0.2, 0.4);
-
-    // Ưu tiên cực cao (+0.35) cho các câu trả lời Q&A chuẩn Human được trích xuất
-    if (c.file && c.file.includes('03_Human-QA')) {
-      score += 0.35;
+    if (isVectorFailed) {
+      // Offline mode: Đếm số lượng từ khóa chung khớp
+      let wordHits = 0;
+      let wordHeaderHits = 0;
+      for (const re of textKeywords) {
+        if (re.test(c.text)) {
+          wordHits++;
+          const firstLine = c.text.split('\n')[0] || '';
+          if (re.test(firstLine)) wordHeaderHits++;
+        }
+      }
+      // Điểm số offline dựa vào hits của từ khóa thường + từ khóa đặc biệt
+      score = (hits * 15) + (wordHits * 10) + (headerHits * 10) + (wordHeaderHits * 5);
+      
+      // Ưu tiên độ dài phù hợp của câu và file Q&A
+      if (score > 0 && c.file && c.file.includes('03_Human-QA')) score += 5;
+    } else {
+      // Online mode: Tính cosine similarity + boost từ khóa
+      if (q.length === indexDim) {
+        score = dot(q, c.vec);
+        score += Math.min(hits * 0.5, 1.0);
+        score += Math.min(headerHits * 0.2, 0.4);
+      }
     }
 
-    // Ưu tiên dữ liệu mới được trích xuất từ Google Drive (drive-extracted/) bằng cách cộng điểm nhẹ (+0.05)
+    // Boost chung
+    if (c.file && c.file.includes('03_Human-QA')) {
+      score += isVectorFailed ? 5 : 0.35;
+    }
     if (c.file && c.file.includes('drive-extracted')) {
-      score += 0.05;
+      score += isVectorFailed ? 2 : 0.05;
     }
 
     return { ...c, score };
@@ -438,10 +462,15 @@ export async function retrieve(query: string, index: Index, k = 20, minScore = 0
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Nếu có minScore, kiểm tra top item trước — nếu tất cả rất thấp thì trả rỗng
-  // (tránh ambient mode tạo slide từ câu nghe mơ hồ như "ừ cái đó đẹp")
-  const topScore = scored[0]?.score ?? 0;
-  if (minScore > 0 && topScore < minScore) {
+  // Nếu ở chế độ offline, lọc bỏ các chunk hoàn toàn không khớp từ khóa nào
+  let filtered = scored;
+  if (isVectorFailed) {
+    filtered = scored.filter(item => item.score > 2.0); // phải có ít nhất 1 hit từ khóa
+  }
+
+  // Nếu có minScore (ở chế độ vector), kiểm tra top item trước — nếu tất cả rất thấp thì trả rỗng
+  const topScore = filtered[0]?.score ?? 0;
+  if (!isVectorFailed && minScore > 0 && topScore < minScore) {
     console.log(`[RAG] Top score ${topScore.toFixed(3)} < minScore ${minScore} → bỏ qua (query quá mơ hồ)`);
     return [];
   }
@@ -449,7 +478,7 @@ export async function retrieve(query: string, index: Index, k = 20, minScore = 0
   // Lọc trùng lặp văn bản để tránh gửi các đoạn giống hệt nhau làm loãng prompt
   const uniqueTexts: string[] = [];
   const seen = new Set<string>();
-  for (const item of scored) {
+  for (const item of filtered) {
     const normalized = item.text.trim().toLowerCase().replace(/\s+/g, ' ');
     if (!seen.has(normalized)) {
       seen.add(normalized);
