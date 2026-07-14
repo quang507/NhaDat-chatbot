@@ -102,8 +102,11 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
-      // Khôi phục về 12 chunks theo yêu cầu của bạn
-      const chunks = await retrieve(ragQuery, index, 12);
+      // Nếu dùng Groq (hạn mức TPM rất thấp ~6000), ta chỉ lấy 6 chunks để tránh lỗi 429 quá tải.
+      // Nếu dùng Gemini (hạn mức cao hơn), ta lấy đủ 12 chunks.
+      const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
+      const chunkCount = GROQ_API_KEY ? 6 : 12;
+      const chunks = await retrieve(ragQuery, index, chunkCount);
       const data = chunks.join('\n\n');
       return {
         // routeContext ĐẶT TRƯỚC persona: llama hay bỏ qua số khi bị vùi dưới data RAG.
