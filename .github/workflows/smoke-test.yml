@@ -1,0 +1,98 @@
+name: Smoke Test Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Test chat API (5 câu liên tiếp)
+        run: |
+          BASE="https://nha-dat-chatbot.vercel.app"
+          FAIL=0
+          QUESTIONS=(
+            "Dự án Ny'ah Phú Định ở đâu?"
+            "diện tích và mặt tiền căn số 9"
+            "pháp lý dự án đầy đủ chưa?"
+            "chính sách thanh toán như thế nào?"
+            "còn căn nào chưa bán không, giá bao nhiêu?"
+          )
+          for i in "${!QUESTIONS[@]}"; do
+            q="${QUESTIONS[$i]}"
+            echo ""
+            echo "=== Câu $((i+1)): $q"
+            body=$(jq -n --arg m "$q" '{message: $m, history: []}')
+            start=$(date +%s)
+            http=$(curl -s -o /tmp/resp.txt -w '%{http_code}' --max-time 90 \
+              -X POST "$BASE/api/chat" -H 'Content-Type: application/json' -d "$body")
+            dur=$(( $(date +%s) - start ))
+            head -c 400 /tmp/resp.txt; echo ""
+            if [ "$http" != "200" ] || grep -q '"friendly"\|"error"' /tmp/resp.txt || [ ! -s /tmp/resp.txt ]; then
+              echo "❌ CHAT $((i+1)) FAIL (HTTP $http, ${dur}s)"
+              FAIL=1
+            else
+              echo "✅ CHAT $((i+1)) OK (HTTP $http, ${dur}s)"
+            fi
+            [ $i -lt 4 ] && sleep 15
+          done
+          exit $FAIL
+
+      - name: Test slide API (5 câu)
+        if: always()
+        run: |
+          BASE="https://nha-dat-chatbot.vercel.app"
+          FAIL=0
+          SLIDES=(
+            "cho khách xem vị trí dự án"
+            "mở slide mẫu nhà cosmo gen 2"
+            "tiện ích nội khu có gì"
+            "giá bán bao nhiêu"
+            "thông tin căn số 5"
+          )
+          for i in "${!SLIDES[@]}"; do
+            q="${SLIDES[$i]}"
+            body=$(jq -n --arg m "$q" '{message: $m}')
+            start=$(date +%s)
+            http=$(curl -s -o /tmp/resp.txt -w '%{http_code}' --max-time 60 \
+              -X POST "$BASE/api/slide" -H 'Content-Type: application/json' -d "$body")
+            dur=$(( $(date +%s) - start ))
+            title=$(jq -r '.title // (if .skip then "SKIP" else "?" end)' /tmp/resp.txt 2>/dev/null || echo "PARSE_FAIL")
+            if [ "$http" = "200" ] && [ "$title" != "?" ] && [ "$title" != "PARSE_FAIL" ] && [ "$title" != "Lỗi hiển thị" ]; then
+              echo "✅ SLIDE $((i+1)) OK (${dur}s) \"$q\" -> $title"
+            else
+              echo "❌ SLIDE $((i+1)) FAIL (HTTP $http, ${dur}s) \"$q\" -> $title"
+              head -c 300 /tmp/resp.txt; echo ""
+              FAIL=1
+            fi
+            sleep 8
+          done
+          exit $FAIL
+
+      - name: Test TTS + Transcribe (voice 2 chiều)
+        if: always()
+        run: |
+          BASE="https://nha-dat-chatbot.vercel.app"
+          FAIL=0
+          http=$(curl -s -o /tmp/tts.mp3 -w '%{http_code}' --max-time 60 \
+            "$BASE/api/tts?text=Xin%20ch%C3%A0o%2C%20em%20l%C3%A0%20tr%E1%BB%A3%20l%C3%BD%20Nyah%20Ph%C3%BA%20%C4%90%E1%BB%8Bnh")
+          size=$(stat -c%s /tmp/tts.mp3 2>/dev/null || echo 0)
+          if [ "$http" = "200" ] && [ "$size" -gt 5000 ]; then
+            echo "✅ TTS OK ($size bytes)"
+          else
+            echo "❌ TTS FAIL (HTTP $http, $size bytes)"; head -c 300 /tmp/tts.mp3; echo ""
+            FAIL=1
+          fi
+          if [ "$size" -gt 5000 ]; then
+            resp=$(curl -s --max-time 60 -X POST "$BASE/api/transcribe" \
+              -F "file=@/tmp/tts.mp3;type=audio/mpeg")
+            echo "Transcribe: $resp"
+            if echo "$resp" | jq -e '.text | length > 0' >/dev/null 2>&1; then
+              echo "✅ TRANSCRIBE OK"
+            else
+              echo "❌ TRANSCRIBE FAIL"
+              FAIL=1
+            fi
+          fi
+          exit $FAIL
