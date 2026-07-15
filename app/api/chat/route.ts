@@ -175,10 +175,11 @@ export async function POST(req: NextRequest) {
         })),
       ];
 
-      // Thử Groq tối đa 2 lần (lần 2 chờ 1.5s để rate limit hồi)
-      for (let attempt = 0; attempt < 2; attempt++) {
+      // Thử Groq tối đa 3 lần (chờ lâu dần: 2s, 5s) vì Groq TPM limit cần ~5s để hồi
+      const GROQ_RETRY_DELAYS = [2000, 5000];
+      for (let attempt = 0; attempt < 3; attempt++) {
         try {
-          if (attempt > 0) await new Promise(r => setTimeout(r, 1500));
+          if (attempt > 0) await new Promise(r => setTimeout(r, GROQ_RETRY_DELAYS[attempt - 1]));
 
           const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
@@ -249,11 +250,11 @@ export async function POST(req: NextRequest) {
             const errText = await groqResponse.text();
             const is429 = groqResponse.status === 429;
             console.warn(`Groq API error attempt ${attempt + 1} (status ${groqResponse.status}): ${errText}`);
-            if (!is429 || attempt === 1) break; // Chỉ retry nếu là 429 và còn lần thử
+            if (!is429 || attempt === 2) break; // Chỉ retry nếu là 429 và còn lần thử
           }
         } catch (err) {
           console.warn(`Groq API network error attempt ${attempt + 1}:`, err);
-          if (attempt === 1) break;
+          if (attempt === 2) break;
         }
       }
       console.warn('Groq failed after retries. Falling back to Gemini...');
