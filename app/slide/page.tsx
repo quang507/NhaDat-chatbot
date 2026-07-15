@@ -642,9 +642,13 @@ export default function SlideBotPage() {
                 <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
                 <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
               </span>
-              <span className="shrink-0 text-neutral-500">Người ta đang nói về</span>
-              <span className="shrink-0 px-3 py-1 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold whitespace-nowrap">{topicLabel}</span>
-              {heardText && <span className="truncate text-neutral-400 italic hidden md:inline">“{heardText}”</span>}
+              <span className="shrink-0 text-neutral-500">Nội dung nói:</span>
+              <span className="font-bold text-[#0E5A34] truncate">“{heardText || topicLabel}”</span>
+              {heardText && (
+                <span className="shrink-0 px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-500 text-[10px] uppercase font-bold whitespace-nowrap ml-auto">
+                  {topicLabel}
+                </span>
+              )}
             </>
           ) : (
             <>
