@@ -11,7 +11,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
@@ -167,88 +167,96 @@ export async function POST(req: NextRequest) {
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 
     if (GROQ_API_KEY) {
-      try {
-        // 1) Sử dụng Groq (Llama-3.3-70b-versatile) nếu có key
-        const messages = [
-          { role: 'system', content: systemText },
-          ...contents.map(c => ({
-            role: c.role === 'model' ? 'assistant' : 'user',
-            content: c.parts[0].text,
-          })),
-        ];
+      const messages = [
+        { role: 'system', content: systemText },
+        ...contents.map(c => ({
+          role: c.role === 'model' ? 'assistant' : 'user',
+          content: c.parts[0].text,
+        })),
+      ];
 
-        const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${GROQ_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
-            messages,
-            temperature: 0.7,
-            max_tokens: 4096,
-            stream: true,
-          }),
-        });
+      // Thử Groq tối đa 2 lần (lần 2 chờ 1.5s để rate limit hồi)
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          if (attempt > 0) await new Promise(r => setTimeout(r, 1500));
 
-        if (groqResponse.ok && groqResponse.body) {
-          const reader = groqResponse.body.getReader();
-          const decoder = new TextDecoder();
-          const encoder = new TextEncoder();
-          let full = '';
-          let buffer = '';
-
-          const stream = new ReadableStream({
-            async pull(controller) {
-              const { done, value } = await reader.read();
-              if (done) {
-                controller.close();
-                const time = new Date().toISOString();
-                await writeLog('chats', { time, question: message, answer: full });
-                const phone = extractPhone(message);
-                if (phone) await writeLog('leads', { time, phone, message });
-                return;
-              }
-              buffer += decoder.decode(value, { stream: true });
-              const lines = buffer.split('\n');
-              buffer = lines.pop() || '';
-              for (const line of lines) {
-                const t = line.trim();
-                if (!t.startsWith('data:')) continue;
-                const payload = t.slice(5).trim();
-                if (!payload || payload === '[DONE]') continue;
-                try {
-                  const json = JSON.parse(payload);
-                  const piece = json.choices?.[0]?.delta?.content || '';
-                  if (piece) {
-                    full += piece;
-                    controller.enqueue(encoder.encode(piece));
-                  }
-                } catch {
-                  // Mảnh JSON chưa trọn vẹn
-                }
-              }
-            },
-            cancel() {
-              reader.cancel();
-            },
-          });
-
-          return new Response(stream, {
+          const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
             headers: {
-              'Content-Type': 'text/plain; charset=utf-8',
-              'Cache-Control': 'no-cache',
-              'X-Accel-Buffering': 'no',
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${GROQ_API_KEY}`,
             },
+            body: JSON.stringify({
+              model: 'llama-3.3-70b-versatile',
+              messages,
+              temperature: 0.7,
+              max_tokens: 4096,
+              stream: true,
+            }),
           });
-        } else {
-          const errText = await groqResponse.text();
-          console.warn(`Groq API error (status ${groqResponse.status}): ${errText}. Falling back to Gemini...`);
+
+          if (groqResponse.ok && groqResponse.body) {
+            const reader = groqResponse.body.getReader();
+            const decoder = new TextDecoder();
+            const encoder = new TextEncoder();
+            let full = '';
+            let buffer = '';
+
+            const stream = new ReadableStream({
+              async pull(controller) {
+                const { done, value } = await reader.read();
+                if (done) {
+                  controller.close();
+                  const time = new Date().toISOString();
+                  await writeLog('chats', { time, question: message, answer: full });
+                  const phone = extractPhone(message);
+                  if (phone) await writeLog('leads', { time, phone, message });
+                  return;
+                }
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+                for (const line of lines) {
+                  const t = line.trim();
+                  if (!t.startsWith('data:')) continue;
+                  const payload = t.slice(5).trim();
+                  if (!payload || payload === '[DONE]') continue;
+                  try {
+                    const json = JSON.parse(payload);
+                    const piece = json.choices?.[0]?.delta?.content || '';
+                    if (piece) {
+                      full += piece;
+                      controller.enqueue(encoder.encode(piece));
+                    }
+                  } catch {
+                    // Mảnh JSON chưa trọn vẹn
+                  }
+                }
+              },
+              cancel() {
+                reader.cancel();
+              },
+            });
+
+            return new Response(stream, {
+              headers: {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Cache-Control': 'no-cache',
+                'X-Accel-Buffering': 'no',
+              },
+            });
+          } else {
+            const errText = await groqResponse.text();
+            const is429 = groqResponse.status === 429;
+            console.warn(`Groq API error attempt ${attempt + 1} (status ${groqResponse.status}): ${errText}`);
+            if (!is429 || attempt === 1) break; // Chỉ retry nếu là 429 và còn lần thử
+          }
+        } catch (err) {
+          console.warn(`Groq API network error attempt ${attempt + 1}:`, err);
+          if (attempt === 1) break;
         }
-      } catch (err) {
-        console.warn('Failed to call Groq API (network error). Falling back to Gemini...', err);
       }
+      console.warn('Groq failed after retries. Falling back to Gemini...');
     }
 
     // 2) Fallback: dùng Gemini nếu không cấu hình Groq hoặc Groq lỗi
