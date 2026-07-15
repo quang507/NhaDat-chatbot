@@ -198,6 +198,8 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
   // Mẫu nhà — đặt cụm dài/cụ thể TRƯỚC cụm ngắn để không bị nuốt nhầm
   [vnWord('bếp\\s*(?:full|phun|phu|fun)\\s*(?:size|sai|sài|xai|sài?z)'), 'bếp fullsize'],
   [vnWord('cô\\s*gái\\s*của\\s*cô\\s*t[\\s-]*m[ôo]'), 'cosmo gen 2'],
+  [vnWord('quân\\s*mua\\s*cho\\s*anh\\s*hai|quân\\s*mua\\s*anh\\s*hai'), 'cosmo gen 2'],
+  [vnWord('quân\\s*mua'), 'cosmo'],
   [vnWord('c[ốôo]t?[\\s-]*m[ôoơ]|c[ộô]t\\s*mô|cosmos|cot\\s*mo|cô\\s*t[\\s-]*m[ôo]'), 'cosmo'],
   [vnWord('ph(?:iu|iêu|i u)\\s*(?:giần|dân|gân|giàn)|fiu\\s*s[ầừ]n|ph[uùú]\\s*s[ầàẩ]n|phu\\s*san|fu\\s*sần'), 'fusion'],
   [vnWord('ô\\s*p(?:út|ut|ức|ớt|ợt|ót|ốt|ợc)|o\\s*p[úớ]t|âu\\s*p[ớú]t|ốp\\s*p[úớ]t|ô\\s*b[úớ]t|op[úớ]t'), 'opus'],
