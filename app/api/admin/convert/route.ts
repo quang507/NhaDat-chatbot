@@ -39,7 +39,7 @@ async function extractText(name: string, buffer: Buffer): Promise<string> {
     if (!apiKey) throw new Error('Thiếu GEMINI_API_KEY');
     const mimeMap: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif' };
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -48,7 +48,7 @@ async function extractText(name: string, buffer: Buffer): Promise<string> {
             { text: 'Trích xuất toàn bộ nội dung văn bản, số liệu, bảng biểu trong ảnh thành markdown. Giữ nguyên cấu trúc bảng, số liệu giá, tên sản phẩm. Chỉ trả nội dung, không giải thích.' },
             { inline_data: { mime_type: mimeMap[ext] || 'image/png', data: buffer.toString('base64') } },
           ]}],
-          generationConfig: { temperature: 0.1, maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
+          generationConfig: { temperature: 0.1, maxOutputTokens: 4096 },
         }),
       }
     );

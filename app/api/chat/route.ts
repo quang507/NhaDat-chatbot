@@ -169,7 +169,8 @@ export async function POST(req: NextRequest) {
           temperature: 0.7,
           maxOutputTokens: 4096,
         };
-        if (!MODEL.startsWith('gemini-1.5')) {
+        // thinkingConfig chỉ hợp lệ với model 2.5+ (model 2.0/1.5 sẽ trả lỗi 400 nếu gửi kèm)
+        if (MODEL.startsWith('gemini-2.5') || MODEL.startsWith('gemini-3')) {
           generationConfig.thinkingConfig = { thinkingBudget: 0 };
         }
 
@@ -343,7 +344,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       friendly: '⚠️ Hệ thống đang bận, anh/chị vui lòng thử lại sau ít phút giúp em nhé 🙏'
     }, { status: 429 });
-    });
   } catch (error) {
     return NextResponse.json({ error: String(error), friendly: 'Có lỗi xảy ra, vui lòng thử lại.' }, { status: 500 });
   }
