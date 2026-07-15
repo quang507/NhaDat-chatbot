@@ -249,8 +249,15 @@ export async function POST(req: NextRequest) {
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 
     if (GROQ_API_KEY) {
+      // Groq TPM limit rất thấp (12000 token/phút free tier). systemText hiện build cho Gemini
+      // (12 chunks RAG, có thể ~9000+ token) -> gửi nguyên cho Groq sẽ luôn 429 dù retry bao nhiêu
+      // lần (không phải lỗi timing mà là VƯỢT NGƯỠNG mỗi request). Phải cắt bớt riêng cho Groq.
+      const GROQ_SYSTEM_CHAR_LIMIT = 12000;
+      const groqSystemText = systemText.length > GROQ_SYSTEM_CHAR_LIMIT
+        ? systemText.slice(0, GROQ_SYSTEM_CHAR_LIMIT) + '\n\n[... dữ liệu đã rút ngắn để tránh vượt giới hạn Groq TPM ...]'
+        : systemText;
       const messages = [
-        { role: 'system', content: systemText },
+        { role: 'system', content: groqSystemText },
         ...contents.map(c => ({
           role: c.role === 'model' ? 'assistant' : 'user',
           content: c.parts[0].text,
