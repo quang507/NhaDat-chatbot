@@ -102,10 +102,9 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
-      // Nếu dùng Groq (hạn mức TPM rất thấp ~6000), ta chỉ lấy 6 chunks để tránh lỗi 429 quá tải.
-      // Nếu dùng Gemini (hạn mức cao hơn), ta lấy đủ 12 chunks.
-      const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
-      const chunkCount = GROQ_API_KEY ? 6 : 12;
+      // Gemini là LLM chính (context window lớn) → lấy 12 chunks.
+      // Groq chỉ là backup nên dùng chung 12 chunks (nếu fallback sang Groq thì TPM vẫn đủ vì chunk đã nhỏ).
+      const chunkCount = 12;
       const chunks = await retrieve(ragQuery, index, chunkCount);
       const data = chunks.join('\n\n');
       return {
@@ -119,9 +118,8 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
     console.warn("RAG retrieval failed (possibly Cohere API limit/overload), falling back to data.md slice:", e);
   }
 
-  // Fallback: khôi phục về dung lượng an toàn (Groq giới hạn TPM thấp hơn Gemini)
-  const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
-  const limit = GROQ_API_KEY ? 15000 : 40000;
+  // Fallback: Gemini là LLM chính, context window lớn → cho 40k ký tự
+  const limit = 40000;
   const data = await readRepoFile('data.md');
   const truncated = data.length > limit ? data.slice(0, limit) + '\n\n[... dữ liệu đã được rút ngắn để tránh quá tải API ...]' : data;
   return {
@@ -164,6 +162,89 @@ export async function POST(req: NextRequest) {
       return new Response(stream, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache' } });
     }
 
+    // 1) Gemini trước (free tier: 500 lượt/ngày, 10 lượt/phút)
+    if (GEMINI_API_KEY) {
+      try {
+        const generationConfig: any = {
+          temperature: 0.7,
+          maxOutputTokens: 4096,
+        };
+        if (!MODEL.startsWith('gemini-1.5')) {
+          generationConfig.thinkingConfig = { thinkingBudget: 0 };
+        }
+
+        const reqBody = {
+          contents,
+          system_instruction: { parts: [{ text: systemText }] },
+          generationConfig,
+        };
+
+        const geminiResponse = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(reqBody),
+        });
+
+        if (geminiResponse.ok && geminiResponse.body) {
+          const reader = geminiResponse.body.getReader();
+          const decoder = new TextDecoder();
+          const encoder = new TextEncoder();
+          let full = '';
+          let buffer = '';
+
+          const stream = new ReadableStream({
+            async pull(controller) {
+              const { done, value } = await reader.read();
+              if (done) {
+                controller.close();
+                const time = new Date().toISOString();
+                await writeLog('chats', { time, question: message, answer: full });
+                const phone = extractPhone(message);
+                if (phone) await writeLog('leads', { time, phone, message });
+                return;
+              }
+              buffer += decoder.decode(value, { stream: true });
+              const lines = buffer.split('\n');
+              buffer = lines.pop() || '';
+              for (const line of lines) {
+                const t = line.trim();
+                if (!t.startsWith('data:')) continue;
+                const payload = t.slice(5).trim();
+                if (!payload || payload === '[DONE]') continue;
+                try {
+                  const json = JSON.parse(payload);
+                  const piece = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                  if (piece) {
+                    full += piece;
+                    controller.enqueue(encoder.encode(piece));
+                  }
+                } catch {
+                  // Mảnh JSON chưa trọn vẹn
+                }
+              }
+            },
+            cancel() {
+              reader.cancel();
+            },
+          });
+
+          return new Response(stream, {
+            headers: {
+              'Content-Type': 'text/plain; charset=utf-8',
+              'Cache-Control': 'no-cache',
+              'X-Accel-Buffering': 'no',
+            },
+          });
+        } else {
+          const errText = await geminiResponse.text();
+          console.warn(`Gemini API error (status ${geminiResponse.status}): ${errText}. Falling back to Groq...`);
+        }
+      } catch (err) {
+        console.warn('Gemini API network error. Falling back to Groq...', err);
+      }
+    }
+
+    // 2) Fallback: Groq (miễn phí, dùng khi Gemini hết quota)
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 
     if (GROQ_API_KEY) {
@@ -175,7 +256,6 @@ export async function POST(req: NextRequest) {
         })),
       ];
 
-      // Thử Groq tối đa 3 lần (chờ lâu dần: 2s, 5s) vì Groq TPM limit cần ~5s để hồi
       const GROQ_RETRY_DELAYS = [2000, 5000];
       for (let attempt = 0; attempt < 3; attempt++) {
         try {
@@ -250,96 +330,19 @@ export async function POST(req: NextRequest) {
             const errText = await groqResponse.text();
             const is429 = groqResponse.status === 429;
             console.warn(`Groq API error attempt ${attempt + 1} (status ${groqResponse.status}): ${errText}`);
-            if (!is429 || attempt === 2) break; // Chỉ retry nếu là 429 và còn lần thử
+            if (!is429 || attempt === 2) break;
           }
         } catch (err) {
           console.warn(`Groq API network error attempt ${attempt + 1}:`, err);
           if (attempt === 2) break;
         }
       }
-      console.warn('Groq failed after retries. Falling back to Gemini...');
     }
 
-    // 2) Fallback: dùng Gemini nếu không cấu hình Groq hoặc Groq lỗi
-    const generationConfig: any = {
-      temperature: 0.7,
-      maxOutputTokens: 4096,
-    };
-    if (!MODEL.startsWith('gemini-1.5')) {
-      generationConfig.thinkingConfig = { thinkingBudget: 0 };
-    }
-
-    const reqBody = {
-      contents,
-      system_instruction: { parts: [{ text: systemText }] },
-      generationConfig,
-    };
-
-    const geminiResponse = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reqBody),
-    });
-
-    if (!geminiResponse.ok || !geminiResponse.body) {
-      const errText = await geminiResponse.text();
-      const status = geminiResponse.status;
-      // Log đầy đủ cho dev (server-side), KHÔNG gửi JSON dài về cho khách
-      console.error(`Gemini API error (status ${status}): ${errText}`);
-      const friendly = status === 429
-        ? '⚠️ Lỗi 429: Hệ thống đang bận hoặc gửi yêu cầu quá nhanh. Anh/chị vui lòng thử lại sau ít phút giúp em nhé 🙏'
-        : 'Có lỗi xảy ra, vui lòng thử lại.';
-      return NextResponse.json({ friendly }, { status });
-    }
-
-    const reader = geminiResponse.body.getReader();
-    const decoder = new TextDecoder();
-    const encoder = new TextEncoder();
-    let full = '';
-    let buffer = '';
-
-    const stream = new ReadableStream({
-      async pull(controller) {
-        const { done, value } = await reader.read();
-        if (done) {
-          controller.close();
-          const time = new Date().toISOString();
-          await writeLog('chats', { time, question: message, answer: full });
-          const phone = extractPhone(message);
-          if (phone) await writeLog('leads', { time, phone, message });
-          return;
-        }
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-          const t = line.trim();
-          if (!t.startsWith('data:')) continue;
-          const payload = t.slice(5).trim();
-          if (!payload || payload === '[DONE]') continue;
-          try {
-            const json = JSON.parse(payload);
-            const piece = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-            if (piece) {
-              full += piece;
-              controller.enqueue(encoder.encode(piece));
-            }
-          } catch {
-            // Mảnh JSON chưa trọn vẹn
-          }
-        }
-      },
-      cancel() {
-        reader.cancel();
-      },
-    });
-
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-cache',
-        'X-Accel-Buffering': 'no',
-      },
+    // Cả Gemini và Groq đều lỗi
+    return NextResponse.json({
+      friendly: '⚠️ Hệ thống đang bận, anh/chị vui lòng thử lại sau ít phút giúp em nhé 🙏'
+    }, { status: 429 });
     });
   } catch (error) {
     return NextResponse.json({ error: String(error), friendly: 'Có lỗi xảy ra, vui lòng thử lại.' }, { status: 500 });
