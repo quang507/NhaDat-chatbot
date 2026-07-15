@@ -12,7 +12,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 // Chọn thư mục ảnh theo họ mẫu nhà của 1 căn (1 nguồn: lib/units). Chỉ có 3 bộ ảnh.
