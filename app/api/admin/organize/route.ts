@@ -28,7 +28,7 @@ function splitBig(content: string, max: number): string[] {
 }
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 const CATEGORIES = [
   'Villa Ny\'ah',
@@ -126,7 +126,6 @@ ${input}`;
           generationConfig: {
             temperature: 0.1,
             maxOutputTokens: 65536,
-            thinkingConfig: { thinkingBudget: 0 },
             responseMimeType: 'application/json',
           },
         }),
