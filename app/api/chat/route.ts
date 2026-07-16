@@ -159,16 +159,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Forbidden: Invalid security token.' }, { status: 403 });
     }
 
-    // 1b) Rate Limiting: 8 req/phút/IP
-    const clientIp =
-      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-      req.headers.get('x-real-ip') ||
-      'unknown';
-    if (!checkRateLimit(clientIp)) {
-      return NextResponse.json(
-        { error: 'Too Many Requests', friendly: '⚠️ Bạn gửi quá nhiều tin nhắn, vui lòng đợi 1 phút rồi thử lại nhé 🙏' },
-        { status: 429 }
-      );
+    // 1b) Rate Limiting: 8 req/phút/IP (chỉ áp dụng trên production)
+    if (isProd) {
+      const clientIp =
+        req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        req.headers.get('x-real-ip') ||
+        'unknown';
+      if (!checkRateLimit(clientIp)) {
+        return NextResponse.json(
+          { error: 'Too Many Requests', friendly: '⚠️ Bạn gửi quá nhiều tin nhắn, vui lòng đợi 1 phút rồi thử lại nhé 🙏' },
+          { status: 429 }
+        );
+      }
     }
 
     // Nếu chạy trên production, kiểm tra xem request có xuất phát từ tên miền được phép không
