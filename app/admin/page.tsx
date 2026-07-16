@@ -344,7 +344,11 @@ export default function AdminPage() {
     setTeachAsking(true); setTeachBotAnswer(''); setTeachStatus('');
     try {
       const res = await fetch('/api/chat', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-chat-handshake': 'npd-mktg-handshake'
+        },
         body: JSON.stringify({ message: teachQuestion.trim() }),
       });
       // /api/chat trả về stream text/plain

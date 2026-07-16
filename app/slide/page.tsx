@@ -293,7 +293,10 @@ export default function SlideBotPage() {
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-chat-handshake': 'npd-mktg-handshake'
+        },
         body: JSON.stringify({ message: speechText, history }),
       });
       if (!res.ok || !res.body) return;
