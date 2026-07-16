@@ -4,6 +4,7 @@
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync, statSync } from 'fs';
 import path from 'path';
+import os from 'os';
 
 const OWNER = process.env.GITHUB_OWNER || 'quang507';
 const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
@@ -232,7 +233,7 @@ let memIndex: Index | null = null;
 let memIndexAt = 0;
 let memIndexLoading: Promise<Index | null> | null = null;
 
-const TMP_CACHE_PATH = '/tmp/rag_index.json';
+const TMP_CACHE_PATH = path.join(os.tmpdir(), 'rag_index.json');
 
 export async function loadIndex(): Promise<Index | null> {
   const now = Date.now();
