@@ -14,19 +14,35 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
-const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU (bắt buộc tuân thủ):
-- Đối với các câu hỏi về dự án, rổ hàng, giá cả, pháp lý, chính sách, hoặc bất kỳ thông tin bất động sản nào, bạn CHỈ được trả lời dựa trên phần "DỮ LIỆU LIÊN QUAN" hoặc "DỮ LIỆU" bên dưới. Tuyệt đối không bịa đặt hoặc suy diễn thông tin.
-- Đối với các câu hỏi xã giao thông thường, chào hỏi, giới thiệu bản thân hoặc hỏi về ngày giờ/thời gian hiện tại, bạn được phép trả lời tự nhiên theo hiểu biết thông thường và sử dụng thông tin thời gian hiện tại được cung cấp.
-- TUYỆT ĐỐI KHÔNG tự động chào hỏi lặp đi lặp lại ở mỗi câu thoại (ví dụ: "Dạ chào anh/chị, em là...", "Chào anh/chị..."). Nếu đây là lượt thoại tiếp theo trong cuộc trò chuyện (đã có lịch sử hội thoại), hãy đi thẳng vào câu trả lời, tuyệt đối không chào hỏi lại.
-- TUYỆT ĐỐI KHÔNG sử dụng các cụm từ như "theo nguồn", "theo nguồn X", "dữ liệu cung cấp", "hệ thống", v.v. Hãy trả lời tự nhiên, trực tiếp như một tư vấn viên bất động sản am hiểu sâu sắc.
-- Nếu khách hỏi về một căn/lô cụ thể hoặc thông tin dự án mà dữ liệu KHÔNG có hoặc không đủ để trả lời trực tiếp ("ko viết được"), hãy phản hồi lịch sự rằng bạn chưa có thông tin chi tiết về căn/lô này, tuyệt đối KHÔNG đoán mò hay tự chế thông tin, sau đó hãy lịch sự mời khách hàng để lại số điện thoại hoặc liên hệ trực tiếp để bộ phận kinh doanh hỗ trợ chính xác.
-- LƯU Ý QUAN TRỌNG: Các từ "Căn", "Lô", "Ô", "Unit" và ký hiệu "#" (ví dụ "#03") là TƯƠNG ĐƯƠNG nhau. Nếu khách hỏi "căn số 3", bạn phải lấy thông tin của "Lô số #03" hoặc "Lô 03" để trả lời.
-- ĐẶC BIỆT ƯU TIÊN VĂN PHONG Q&A CHUẨN HUMAN (03_Human-QA): Nếu câu hỏi của khách hàng trùng hoặc tương tự với các câu hỏi trong bộ Q&A Chuẩn Human (trong thư mục '03_Human-QA'), bạn BẮT BUỘC PHẢI sao chép nguyên văn 99%-100% câu trả lời 'Response' đó, giữ nguyên từng dấu xuống dòng, ngắt nghỉ, cách dùng emoji, độ dài ngắn, tuyệt đối không tự ý viết lại, sửa đổi từ ngữ hay rút gọn.
+// SOURCE_RULE: chỉ giữ các quy tắc KỸ THUẬT ĐẶC THÙ không có trong persona.md
+// (bỏ: quy tắc giọng điệu, không bịa, không chào lặp — đã có trong persona)
+const SOURCE_RULE = `
+
+QUY TẮC KỸ THUẬT BỔ SUNG:
+- "Căn", "Lô", "Ô", "Unit", "#" là TƯƠNG ĐƯƠNG. Khách hỏi "căn 3" → lấy thông tin "#03"/"Lô 03".
+- Q&A CHUẨN HUMAN (03_Human-QA): Nếu câu hỏi khớp/tương tự → BẮT BUỘC sao chép NGUYÊN VĂN 99-100% câu trả lời đó, KHÔNG tự viết lại.
 - Khi nhiều nguồn mâu thuẫn, ưu tiên thông tin mới hơn.
-- VỀ ĐƯỜNG ĐI / THỜI GIAN DI CHUYỂN: Nếu CÓ phần "DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ", hãy dùng ĐÚNG số quãng đường và thời gian trong đó. Nếu KHÔNG có phần đó, TUYỆT ĐỐI KHÔNG được bịa số phút/km cụ thể — chỉ mô tả hướng đi chung chung (vd: đi theo Võ Văn Kiệt, An Dương Vương...) và mời khách mở Google Maps để xem thời gian chính xác theo thời điểm thực tế.
-- VỀ LINK/URL/MÃ KEY: TUYỆT ĐỐI KHÔNG đưa bất kỳ đường link, URL, mã key hay chuỗi kỹ thuật nào trong dữ liệu vào câu trả lời (đặc biệt link album Google Photos/Drive dạng "photos.google.com/share/..." kèm "key=..."). Khi dữ liệu có link album ảnh/tài liệu, thay bằng câu: "Anh/chị liên hệ tư vấn viên để nhận chi tiết ạ." NGOẠI LỆ DUY NHẤT: link Google Maps trong phần "DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ" được phép đưa vào.`;
+- ĐƯỜNG ĐI: Nếu có "DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ" → dùng ĐÚNG số km/phút đó. Nếu không có → KHÔNG bịa con số, chỉ mô tả hướng đi chung và mời mở Google Maps.
+- LINK/URL: KHÔNG đưa link Google Photos/Drive vào câu trả lời. Thay bằng: "Anh/chị liên hệ tư vấn viên để nhận chi tiết ạ." Ngoại lệ: link Maps trong DỮ LIỆU TUYẾN ĐƯỜNG được phép.`;
 
 let personaCache: { text: string; at: number } | null = null;
+
+// ---------- Rate Limiter (in-memory, per IP, 8 req/phút) ----------
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 8;  // max requests
+const RATE_WINDOW = 60 * 1000; // 1 phút (ms)
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    return true; // OK
+  }
+  entry.count++;
+  if (entry.count > RATE_LIMIT) return false; // vượt giới hạn
+  return true;
+}
 
 async function readRepoFile(name: string): Promise<string> {
   try {
@@ -143,6 +159,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Forbidden: Invalid security token.' }, { status: 403 });
     }
 
+    // 1b) Rate Limiting: 8 req/phút/IP
+    const clientIp =
+      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      req.headers.get('x-real-ip') ||
+      'unknown';
+    if (!checkRateLimit(clientIp)) {
+      return NextResponse.json(
+        { error: 'Too Many Requests', friendly: '⚠️ Bạn gửi quá nhiều tin nhắn, vui lòng đợi 1 phút rồi thử lại nhé 🙏' },
+        { status: 429 }
+      );
+    }
+
     // Nếu chạy trên production, kiểm tra xem request có xuất phát từ tên miền được phép không
     if (isProd && allowedOrigin && origin) {
       try {
@@ -168,8 +196,12 @@ export async function POST(req: NextRequest) {
         .filter((m): m is { role: string; content: string } =>
           m && typeof m.role === 'string' && typeof m.content === 'string' && m.content.trim() !== ''
         )
-        .slice(-10)
-        .map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] })),
+        .slice(-6) // Giới hạn 6 tin nhắn gần nhất (3 lượt hỏi-đáp) để tiết kiệm token
+        .map(m => ({
+          role: m.role === 'user' ? 'user' : 'model',
+          // Truncate content dài trong history để tránh tốn token vô ích
+          parts: [{ text: m.content.length > 500 ? m.content.slice(0, 500) + '…' : m.content }],
+        })),
       { role: 'user', parts: [{ text: message }] },
     ];
 
