@@ -21,6 +21,25 @@ function imageModelForUnit(n: number): 'opus' | 'fusion_gen_5' | 'cosmo_gen_2' {
   return imageFamily(n);
 }
 
+// Phân loại xem câu nói của khách là "bắt từ khóa" (ngắn, chỉ nhắc từ khóa) hay "nguyên câu hỏi" (đầy đủ).
+function isFullQuestion(message: string): boolean {
+  const clean = message.toLowerCase().trim();
+  const wordCount = clean.split(/\s+/).filter(Boolean).length;
+  // Các từ ngữ hỏi han phổ biến trong tiếng Việt
+  const questionWords = [
+    'the nao', 'thế nào', 'ra sao', 'sao', 'o dau', 'ở đâu', 'nam dau', 'nằm đâu', 
+    'khi nao', 'khi nào', 'bao lau', 'bao lâu', 'bao xa',
+    'khong', 'không', 'chua', 'chưa', 'may', 'mấy', 'bao nhieu', 'bao nhiêu', 
+    'nao', 'nào', 'gi', 'gì', 'ai', 'hoi', 'hỏi', 'cho hoi', 'cho hỏi', 'tu van', 'tư vấn',
+    'giup', 'giúp', 'chi', 'chỉ', 'huong dan', 'hướng dẫn', 'so sanh', 'so sánh'
+  ];
+  const hasQuestionMark = clean.includes('?');
+  const hasQuestionWord = questionWords.some(w => clean.includes(w));
+  
+  // Có ? hoặc có từ hỏi và dài hơn 2 từ, hoặc có độ dài từ 6 từ trở lên -> coi là câu hỏi đầy đủ
+  return hasQuestionMark || (hasQuestionWord && wordCount >= 3) || wordCount >= 6;
+}
+
 // Công năng từng tầng THẬT (theo datasheet + data.md). Dùng cho slide tĩnh khi khách
 // hỏi "tầng X" — tránh để LLM bịa số liệu. Cosmo/Fusion là nhà ở đa thế hệ (tầng 2 = ông bà),
 // Opus là nhà phố thương mại (tầng dưới kinh doanh/văn phòng).
@@ -683,7 +702,8 @@ export async function POST(req: NextRequest) {
       const imgs: string[] = staticSlide.image_urls || [];
       const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|ban-do|datasheet/.test(u));
       if (!staticSlide.layout_type) staticSlide.layout_type = isDiagram ? 'split_image_right' : 'full_background';
-      console.log(`[Slide] Ambient FAST static: "${message.slice(0, 50)}" -> "${staticSlide.title}"`);
+      staticSlide.isKeywordTrigger = !isFullQuestion(message);
+      console.log(`[Slide] Ambient FAST static: "${message.slice(0, 50)}" -> "${staticSlide.title}" (isKeywordTrigger=${staticSlide.isKeywordTrigger})`);
       return NextResponse.json(staticSlide);
     }
 
@@ -813,6 +833,7 @@ export async function POST(req: NextRequest) {
       // Ảnh chụp thực tế (phòng, phối cảnh) → full_background cho hoành tráng.
       const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|datasheet/.test(u));
       base.layout_type = isDiagram ? 'split_image_right' : 'full_background';
+      base.isKeywordTrigger = !isFullQuestion(message);
       return NextResponse.json(base);
     }
 
@@ -1189,6 +1210,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    parsed.isKeywordTrigger = !isFullQuestion(message);
     return NextResponse.json(parsed);
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
