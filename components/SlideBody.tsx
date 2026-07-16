@@ -29,7 +29,6 @@ export interface SlideBodyData {
   image_urls?: string[];
   highlight_number?: string;
   maps_url?: string;
-  isKeywordTrigger?: boolean;
 }
 
 export type Orient = 'landscape' | 'portrait';
@@ -147,90 +146,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     </Line>
   );
 
-  // ══════════════ LAYOUT 0: KEYWORD TRIGGER (BẮT TỪ KHÓA) ══════════════
-  if (hasImg && data.isKeywordTrigger) {
-    const bg = imgs[0];
-    const bgOrient = o(bg); // 'landscape' or 'portrait'
-    
-    // Ghép text tính năng cơ bản: ưu tiên speech_text ngắn gọn, hoặc ghép các points
-    const textContent = data.speech_text || (data.points || []).slice(0, 2).join('. ') || '';
-    
-    if (bgOrient === 'portrait') {
-      // 9:16 (portrait) -> Ảnh fill tràn màn hình, chữ trắng nằm trên ảnh đè góc dưới-trái
-      return (
-        <div style={{ containerType: 'inline-size' }} className="w-full h-full">
-          <div key={replayKey} className="relative w-full h-full overflow-hidden bg-neutral-950">
-            {/* Ảnh portrait fill lớn hết cỡ */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <img
-                src={bg}
-                alt=""
-                className="w-full h-full object-cover animate-ken-burns"
-                onError={onImageError ? () => onImageError(bg) : undefined}
-                onClick={onImageClick ? () => onImageClick(bg) : undefined}
-              />
-            </div>
-            {/* Gradient phủ tối để nổi bật chữ */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
-            
-            {/* Khối chữ góc dưới-trái, tầm 2 dòng ~ 16 chữ */}
-            <div className="absolute left-[6cqw] right-[6cqw] bottom-[6cqw] max-w-[80cqw] text-left z-10">
-              <Line delay={60}>
-                <span className="inline-flex px-[2.2cqw] py-[0.7cqw] rounded-full bg-white/20 text-white backdrop-blur-sm font-bold tracking-[0.18em] uppercase text-[clamp(9px,1.4cqw,16px)]">
-                  Tính năng
-                </span>
-              </Line>
-              <h2 className="mt-[1.6cqw] uppercase font-black leading-tight tracking-tight text-[#A8D94A] text-[clamp(20px,4.5cqw,80px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-                <Line delay={190}>{data.title}</Line>
-              </h2>
-              <div className="mt-[1.8cqw]">
-                <Line delay={450} className="text-white/95 font-medium leading-relaxed text-[clamp(11px,1.9cqw,24px)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
-                  {textContent}
-                </Line>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    } else {
-      // Landscape/khác -> Ảnh ở trên fill lớn hết cỡ, đẩy chữ xuống dưới.
-      return (
-        <div style={{ containerType: 'inline-size' }} className="w-full h-full bg-[#FAF9F5]">
-          <div key={replayKey} className="w-full h-full flex flex-col p-[3.5cqw] box-border justify-between">
-            {/* Ảnh ở trên fill lớn hết cỡ */}
-            <div className="flex-1 w-full min-h-0 rounded-[2.4cqw] overflow-hidden bg-white border border-black/[0.05] shadow-[0_12px_32px_-12px_rgba(14,90,52,0.15)] relative">
-              <img
-                src={bg}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover"
-                onError={onImageError ? () => onImageError(bg) : undefined}
-                onClick={onImageClick ? () => onImageClick(bg) : undefined}
-              />
-            </div>
-            
-            {/* Đẩy chữ xuống dưới */}
-            <div className="mt-[3cqw] px-[1cqw] text-left shrink-0">
-              <Line delay={60}>
-                <span className="inline-flex px-[2cqw] py-[0.5cqw] rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold tracking-[0.18em] uppercase text-[clamp(8px,1.2cqw,14px)]">
-                  Tính năng
-                </span>
-              </Line>
-              <h2 className="mt-[1cqw] uppercase font-black leading-tight tracking-tight text-[#161616] text-[clamp(18px,3.8cqw,68px)]">
-                <Line delay={190}>{data.title}</Line>
-              </h2>
-              <div className="mt-[1.2cqw]">
-                <Line delay={450} className="text-neutral-500 font-medium leading-relaxed text-[clamp(10px,1.7cqw,22px)]">
-                  {textContent}
-                </Line>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
   // ══════════════ LAYOUT 1: FULL BACKGROUND (ảnh tràn màn + chữ đè) ══════════════
   if (hasImg && (data.layout_type === 'full_background' || !data.layout_type)) {
     const [bg, ...thumbs] = imgs;
@@ -308,33 +223,21 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             <h1 className="mt-[1.8cqw] uppercase font-black leading-[1.08] tracking-tight text-[#161616] text-[clamp(20px,4.6cqw,92px)]">
               <Line delay={190}>{data.title}</Line>
             </h1>
-            {/* Nếu là câu hỏi đầy đủ, chỉ hiện 1 câu trả lời dài trực tiếp, không hiện list bullet points */}
-            {!data.isKeywordTrigger ? (
-              <div className="mt-[2.2cqw] border-l-[3px] border-[#2E9E5B]/60 pl-[2.2cqw]">
-                <Line delay={450} className="text-neutral-600 font-normal leading-[1.7] text-[clamp(11px,1.8cqw,26px)]">
-                  {data.speech_text || (data.points && data.points.join('. ')) || ''}
+            <div className="mt-[2.2cqw] space-y-[0.8cqw]">
+              {points.slice(0, 3).map((p, i) => (
+                <Line key={i} delay={620 + i * 150} className="text-neutral-500 font-medium leading-snug text-[clamp(11px,2cqw,28px)]">
+                  <span className="inline-block w-[0.8cqw] h-[0.8cqw] min-w-[6px] min-h-[6px] rounded-full bg-[#2E9E5B] mr-[1.1cqw] align-middle" />{p}
                 </Line>
+              ))}
+            </div>
+            {speechLines.length > 0 && (
+              <div className="mt-[2.4cqw] border-l-[3px] border-[#2E9E5B]/60 pl-[2.2cqw] hidden landscape:block">
+                {speechLines.slice(0, 3).map((ln, i) => (
+                  <Line key={i} delay={1050 + i * 160} className="text-neutral-600 font-normal leading-[1.7] text-[clamp(11px,1.7cqw,24px)]">
+                    {ln}
+                  </Line>
+                ))}
               </div>
-            ) : (
-              /* Ngược lại, nếu không phải keyword trigger và có points thì hiện points dạng list (fallback cũ) */
-              <>
-                <div className="mt-[2.2cqw] space-y-[0.8cqw]">
-                  {points.slice(0, 3).map((p, i) => (
-                    <Line key={i} delay={620 + i * 150} className="text-neutral-500 font-medium leading-snug text-[clamp(11px,2cqw,28px)]">
-                      <span className="inline-block w-[0.8cqw] h-[0.8cqw] min-w-[6px] min-h-[6px] rounded-full bg-[#2E9E5B] mr-[1.1cqw] align-middle" />{p}
-                    </Line>
-                  ))}
-                </div>
-                {speechLines.length > 0 && (
-                  <div className="mt-[2.4cqw] border-l-[3px] border-[#2E9E5B]/60 pl-[2.2cqw] hidden landscape:block">
-                    {speechLines.slice(0, 3).map((ln, i) => (
-                      <Line key={i} delay={1050 + i * 160} className="text-neutral-600 font-normal leading-[1.7] text-[clamp(11px,1.7cqw,24px)]">
-                        {ln}
-                      </Line>
-                    ))}
-                  </div>
-                )}
-              </>
             )}
           </div>
         </div>
