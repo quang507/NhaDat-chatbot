@@ -153,9 +153,9 @@ export async function POST(req: NextRequest) {
     if (routeAnswer) {
       const enc = new TextEncoder();
       const time = new Date().toISOString();
-      await writeLog('chats', { time, question: message, answer: routeAnswer });
+      writeLog('chats', { time, question: message, answer: routeAnswer }).catch(console.error);
       const phone = extractPhone(message);
-      if (phone) await writeLog('leads', { time, phone, message });
+      if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
       const stream = new ReadableStream({
         start(controller) { controller.enqueue(enc.encode(routeAnswer)); controller.close(); },
       });
@@ -199,9 +199,9 @@ export async function POST(req: NextRequest) {
               if (done) {
                 controller.close();
                 const time = new Date().toISOString();
-                await writeLog('chats', { time, question: message, answer: full });
+                writeLog('chats', { time, question: message, answer: full }).catch(console.error);
                 const phone = extractPhone(message);
-                if (phone) await writeLog('leads', { time, phone, message });
+                if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
                 return;
               }
               buffer += decoder.decode(value, { stream: true });
@@ -297,9 +297,9 @@ export async function POST(req: NextRequest) {
                 if (done) {
                   controller.close();
                   const time = new Date().toISOString();
-                  await writeLog('chats', { time, question: message, answer: full });
+                  writeLog('chats', { time, question: message, answer: full }).catch(console.error);
                   const phone = extractPhone(message);
-                  if (phone) await writeLog('leads', { time, phone, message });
+                  if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
                   return;
                 }
                 buffer += decoder.decode(value, { stream: true });
