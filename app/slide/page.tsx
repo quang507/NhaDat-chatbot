@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { splitCleanSentences, splitSentences } from '@/lib/speech';
+import { splitCleanSentences, splitSentences, normalizeVietnameseSpeech } from '@/lib/speech';
 import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
 import { matchStaticSlide } from '@/lib/static_slides';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
@@ -141,8 +141,10 @@ export default function SlideBotPage() {
   } = useVoiceAgent({
     voiceOn: voiceOn,
     onSpeechResult: (text) => {
-      if (handleVoiceCommands(text)) return;
-      handleAmbientSpeech(text);
+      const normalized = normalizeVietnameseSpeech(text);
+      dbg(`🎙️ Nhận: "${text}" -> Chuẩn hóa: "${normalized}"`);
+      if (handleVoiceCommands(normalized)) return;
+      handleAmbientSpeech(normalized);
     },
     onDebug: (m) => dbg(m),
   });

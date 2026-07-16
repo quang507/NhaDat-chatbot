@@ -192,6 +192,11 @@ const vnWord = (core: string) =>
   new RegExp(`(^|[^a-zà-ỹ0-9])(?:${core})(?![a-zà-ỹ0-9])`, 'gi');
 
 const VN_SPEECH_FIXES: [RegExp, string][] = [
+  // Khắc phục lỗi nghe nhầm từ chỉ căn/lô (STT hay nghe nhầm "căn" -> "cân", "cần", "con", v.v.)
+  [vnWord('c(?:ân|cần|cống|con|cám|cầu|cảnh|cạn)\\s*(?:số\\s*)?(\\d+)'), 'căn số $1'],
+  [vnWord('l(?:ô|lộ|lồ|lông)\\s*(?:số\\s*)?(\\d+)'), 'lô số $1'],
+  [vnWord('c(?:ân|cần|cống|con|cám|cầu|cảnh|cạn)\\s*(?:số\\s*)?((?:một|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười))'), 'căn số $1'],
+  [vnWord('l(?:ô|lộ|lồ|lông)\\s*(?:số\\s*)?((?:một|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười))'), 'lô số $1'],
   // Tên dự án Ny'ah Phú Định
   [vnWord('ph[ốôuú]\\s*(?:đêm|định|đỉnh|đính|dinh|đin)'), 'phú định'],
   [vnWord("ny[\\s']*ah|ni\\s*a|nia|niah"), "ny'ah"],

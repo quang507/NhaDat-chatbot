@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { splitSentences } from '@/lib/speech';
+import { splitSentences, normalizeVietnameseSpeech } from '@/lib/speech';
 import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 
@@ -72,8 +72,9 @@ export default function VoicePage() {
   } = useVoiceAgent({
     voiceOn: true,
     onSpeechResult: (text) => {
-      addLog('SPEECH', `Nhận diện kết quả: "${text}"`);
-      handleUserSpeech(text);
+      const normalized = normalizeVietnameseSpeech(text);
+      addLog('SPEECH', `Nhận diện kết quả (Raw): "${text}" -> (Chuẩn hóa): "${normalized}"`);
+      handleUserSpeech(normalized);
     },
     onStateChange: (newState) => {
       addLog('INFO', `Chuyển trạng thái: -> ${newState}`);
