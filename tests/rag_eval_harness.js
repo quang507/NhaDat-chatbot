@@ -30,7 +30,7 @@ const TEST_CASES = [
     category: "Vị trí & Đường đi",
     query: "Dự án Ny'ah Phú Định nằm ở đường nào, Quận mấy?",
     // Nới lỏng: "Phường 16" là bonus nếu có, không bắt buộc
-    expected: ["Trương Đình Hội", "Quận 8"],
+    expected: ["Trương Đình Hội", ["Quận 8", "Q8", "Q.8"]],
     unexpected: ["Phú Nhuận", "Quận 9"],
     description: "Kiểm tra thông tin vị trí thực tế của dự án"
   },
