@@ -584,34 +584,21 @@ async function main() {
 
     const index = { chunks: dedupedChunks, builtAt: new Date().toISOString() };
 
-    // 5. Lưu index.json tạm thời
-    const tempIndexPath = path.join(__dirname, 'index_temp.json');
-    fs.writeFileSync(tempIndexPath, JSON.stringify(index), 'utf-8');
-    console.log("5. Đã lưu index tạm thời.");
-
-    // 6. Chuyển nhánh git đẩy index.json lên GitHub
-    console.log("6. Đang chuyển sang nhánh chatbot-logs...");
-    execSync('git checkout -f chatbot-logs');
-    try { execSync('git pull origin chatbot-logs'); } catch {}
-
+    // 5. Lưu index.json trực tiếp vào thư mục gốc của nhánh main
     const destIndexPath = path.join(__dirname, 'index.json');
-    fs.copyFileSync(tempIndexPath, destIndexPath);
-    fs.unlinkSync(tempIndexPath); // Xóa file tạm
-    console.log("7. Đã copy index.json vào nhánh chatbot-logs.");
+    fs.writeFileSync(destIndexPath, JSON.stringify(index), 'utf-8');
+    console.log("5. Đã lưu index.json trực tiếp tại thư mục gốc.");
 
-    console.log("8. Đang push index.json lên GitHub...");
+    // 6. Push index.json lên nhánh main
+    console.log("6. Đang commit & push index.json lên nhánh main...");
     execSync('git add index.json');
     try {
       execSync('git commit -m "Update index.json via local OneDrive incremental reindex script (partial/full)"');
-      execSync('git push origin chatbot-logs');
-      console.log("Đã cập nhật chỉ mục (index.json) thành công!");
+      execSync('git push origin main');
+      console.log("Đã cập nhật chỉ mục (index.json) trực tiếp lên main thành công!");
     } catch (e) {
       console.log("Không có thay đổi chỉ mục nào cần commit.");
     }
-
-    // 9. Trở lại main (data/ và public/images/ đã được push từ bước 2c ở trên rồi, không push lại)
-    console.log("9. Đang trở về nhánh main...");
-    execSync('git checkout -f main');
 
     if (hitLimit) {
       console.log("\n⚠️ LƯU Ý: Quá trình đồng bộ chưa hoàn thành 100% do giới hạn hạn mức (rate limit) của API. Hãy chạy lại file BAT sau vài phút để tiếp tục đồng bộ phần còn lại.");
@@ -620,9 +607,6 @@ async function main() {
     }
   } catch (e) {
     console.error("Lỗi thực thi:", e);
-    try {
-      execSync('git checkout -f main');
-    } catch {}
     process.exit(1);
   }
 }

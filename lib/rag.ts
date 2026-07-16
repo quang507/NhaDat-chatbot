@@ -3,6 +3,7 @@
 // ta chỉ gửi vài đoạn liên quan nhất tới câu hỏi -> nhanh, rẻ, ít lỗi.
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync, statSync } from 'fs';
+import path from 'path';
 
 const OWNER = process.env.GITHUB_OWNER || 'quang507';
 const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
@@ -235,6 +236,22 @@ const TMP_CACHE_PATH = '/tmp/rag_index.json';
 
 export async function loadIndex(): Promise<Index | null> {
   const now = Date.now();
+
+  // 0) Thử đọc trực tiếp từ file index.json local (rất nhanh, ~1-2ms, không tốn network/coldstart)
+  try {
+    const localPath = path.join(process.cwd(), 'index.json');
+    if (existsSync(localPath)) {
+      const content = await readFile(localPath, 'utf-8');
+      const index = JSON.parse(content) as Index;
+      if (index && index.chunks && index.chunks.length > 0) {
+        memIndex = index;
+        memIndexAt = now;
+        return memIndex;
+      }
+    }
+  } catch (e) {
+    console.warn('[RAG] Đọc index.json local thất bại:', e);
+  }
 
   // 1) Nếu cache trong RAM chưa quá 5 phút -> trả về ngay (0ms)
   if (memIndex && now - memIndexAt < 5 * 60 * 1000) {

@@ -94,7 +94,10 @@ export default function ChatPanel({ embedded = false }: ChatPanelProps) {
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-chat-handshake': 'npd-mktg-handshake'
+        },
         body: JSON.stringify({ message: msg, history, profile: extractProfile([...history, { role: 'user', content: msg }]) }),
       });
 

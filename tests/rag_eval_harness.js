@@ -152,7 +152,10 @@ async function queryChatbot(baseUrl, message) {
   const url = `${baseUrl}/api/chat`;
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'x-chat-handshake': 'npd-mktg-handshake'
+    },
     body: JSON.stringify({ message, history: [] })
   });
   if (!res.ok) {

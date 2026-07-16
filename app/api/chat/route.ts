@@ -131,6 +131,32 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
 
 export async function POST(req: NextRequest) {
   try {
+    // 1) Bảo mật CORS & Handshake Token để chống spam API từ cURL/scripts bên ngoài
+    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+    const handshake = req.headers.get('x-chat-handshake') || '';
+    const isProd = process.env.NODE_ENV === 'production';
+    const allowedOrigin = process.env.ALLOWED_ORIGIN || '';
+
+    // Cần có token bắt buộc để giao tiếp
+    const expectedToken = process.env.CHAT_HANDSHAKE_TOKEN || 'npd-mktg-handshake';
+    if (handshake !== expectedToken) {
+      return NextResponse.json({ error: 'Forbidden: Invalid security token.' }, { status: 403 });
+    }
+
+    // Nếu chạy trên production, kiểm tra xem request có xuất phát từ tên miền được phép không
+    if (isProd && allowedOrigin && origin) {
+      try {
+        const allowedDomains = allowedOrigin.split(',').map(d => d.trim().toLowerCase());
+        const requestDomain = new URL(origin).hostname.toLowerCase();
+        const isAllowed = allowedDomains.some(d => requestDomain.includes(d) || d.includes(requestDomain));
+        if (!isAllowed) {
+          return NextResponse.json({ error: 'Forbidden: Requester not allowed.' }, { status: 403 });
+        }
+      } catch (err) {
+        return NextResponse.json({ error: 'Forbidden: Invalid request origin format.' }, { status: 403 });
+      }
+    }
+
     const { message, history, profile } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
     if (!GEMINI_API_KEY) {

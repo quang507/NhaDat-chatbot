@@ -45,8 +45,42 @@ async function ensureBranch(): Promise<boolean> {
   return branchChecking;
 }
 
+async function sendTelegramMessage(text: string): Promise<boolean> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return false;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: 'HTML',
+      }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.error('[TELEGRAM] Gửi tin nhắn lỗi:', err);
+    return false;
+  }
+}
+
 // Ghi 1 bản ghi (mỗi bản = 1 file, tránh xung đột ghi đồng thời)
 export async function writeLog(dir: 'chats' | 'leads', obj: Record<string, unknown>): Promise<void> {
+  // Gửi thông báo Telegram tức thời khi phát hiện số điện thoại (Lead)
+  if (dir === 'leads' && typeof obj.phone === 'string') {
+    const time = obj.time || new Date().toISOString();
+    const phone = obj.phone;
+    const msg = obj.message || '';
+    const telegramText = `<b>🔥 CÓ LEAD MỚI TỪ CHATBOT!</b>\n\n` +
+      `📞 <b>Số điện thoại:</b> <code>${phone}</code>\n` +
+      `💬 <b>Tin nhắn khách gửi:</b>\n<i>"${msg}"</i>\n\n` +
+      `📅 <b>Thời gian:</b> ${time}`;
+    sendTelegramMessage(telegramText).catch(console.error);
+  }
+
   try {
     if (!process.env.GITHUB_TOKEN) return;
     if (!(await ensureBranch())) return;
