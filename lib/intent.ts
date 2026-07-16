@@ -26,6 +26,11 @@ const FILLER_WORDS = [
   'ừ', 'ok', 'đúng rồi', 'cái đó đẹp', 'rồi sao nữa', 'anh thấy ổn', 'vâng', 'à ừ',
   'thế à', 'ừ nhỉ', 'được rồi', 'thì cũng tốt', 'ok em', 'dạ', 'dạ anh', 'dạ chị',
   'ừ đúng', 'hiểu rồi', 'nghe rồi', 'biết rồi', 'rõ rồi', 'oke', 'okay',
+  // Thêm phản hồi tự nhiên trong cuộc gặp
+  'ừa', 'ừa nghe', 'thôi được', 'vậy được', 'như vậy', 'được nha', 'oke nha',
+  'dạ được', 'dạ vâng', 'dạ ạ', 'nghe nha', 'nhớ rồi', 'à biết rồi',
+  'thôi thì', 'rồi tiếp', 'tiếp đi', 'nói tiếp', 'em nói tiếp',
+  'không có gì', 'thôi không', 'không cần', 'bỏ qua đi', 'thôi kệ',
 ];
 
 // ── Sale chủ động yêu cầu mở slide (ưu tiên cao nhất, bắn ngay) ──────────────
@@ -56,6 +61,10 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
     'chiết khấu', 'trả góp', 'ân hạn', 'pttt', 'booking', 'báo giá',
     'bao nhiêu tỷ', 'giá bao nhiêu', 'giá từ', 'tiền cọc', 'phí quản lý',
     'vay', 'ngân hàng', 'lãi suất', 'đầu tư', 'lợi nhuận', 'cho thuê',
+    // Thêm cách hỏi giá tự nhiên
+    'giá cả', 'giá thế nào', 'giá như thế nào', 'bao nhiêu', 'giá khoảng',
+    'tầm giá', 'ngân sách', 'mấy tiền', 'tốn bao nhiêu', 'chi phí',
+    'còn hàng', 'rổ hàng', 'còn không', 'còn căn nào', 'căn nào còn',
   ],
 
   // 📍 Vị trí / địa lý
@@ -64,6 +73,9 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
     'nguyễn văn linh', 'quận 8', 'bình chánh', 'metro', 'quận 1',
     'mặt tiền', 'cách trung tâm', 'bao xa', 'ở đâu', 'nằm ở', 'chỗ nào',
     'đường đi', 'di chuyển', 'bao lâu', 'quốc lộ', 'trung tâm',
+    // Thêm cách hỏi tự nhiên
+    'ở khu nào', 'ở chỗ nào', 'nằm chỗ nào', 'cách bao xa', 'đi mấy phút',
+    'phú định', 'trương đình', 'hội nhập', 'vào trung tâm',
   ],
 
   // 🏠 Căn hộ / không gian / công năng
@@ -73,6 +85,10 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
     'ban công', 'master', 'hướng nhà', 'giếng trời', 'thông tầng', 'airtop', 'air top',
     'wc', 'vệ sinh', 'lavabo', 'ô tô', 'đỗ xe', 'đậu xe', 'khí tươi',
     'số phòng', 'tầng mấy', 'bao nhiêu tầng', 'diện tích sàn',
+    // Thêm cách hỏi tự nhiên
+    'bao nhiêu phòng', 'mấy phòng', 'phòng nào', 'tầng nào', 'mấy lầu',
+    'để xe ô tô', 'xe hơi', 'đậu ô tô', 'có gara', 'có thang máy',
+    'phòng ăn', 'phòng sinh hoạt', 'nhà bếp', 'bếp như thế nào', 'bếp ra sao',
   ],
 
   // 📋 Pháp lý / giấy tờ
@@ -222,8 +238,8 @@ export function classifyAmbientIntent(text: string): AmbientIntent {
     return { shouldGenerate: false, reason: 'competitor', confidence: 1.0 };
   }
 
-  // 3. Quá ngắn (< 3 từ) → bỏ qua (explicit đã xử lý ở trên)
-  if (wordCount < 3) {
+  // Khoảng thời gian / số lượng đặc thù dự án
+  if (wordCount < 2) {
     return { shouldGenerate: false, reason: 'too_short', confidence: 1.0 };
   }
 
@@ -257,7 +273,7 @@ export function classifyAmbientIntent(text: string): AmbientIntent {
 // Giữ 1 chủ đề tối thiểu ngần này trước khi đổi sang chủ đề khác. Cùng chủ đề thì
 // giữ nguyên slide/ảnh đang hiện (không timeout, không đổi) cho tới khi khách đổi
 // chủ đề thật — khớp yêu cầu "mỗi chủ đề hiện ổn định, đừng nhảy liên tục".
-export const SLIDE_MIN_DISPLAY_MS = 4500;
+export const SLIDE_MIN_DISPLAY_MS = 10000;
 
 export interface SlideDisplayState {
   topic: IntentTopic | null;

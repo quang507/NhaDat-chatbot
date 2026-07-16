@@ -40,9 +40,9 @@ export function useVoiceAgent({
   const vadRafRef = useRef<number | null>(null);
   const speakStartRef = useRef<number>(0);
   
-  const VAD_THRESHOLD = 0.06;
-  const VAD_FRAMES = 6;
-  const SPEAK_GRACE_MS = 900;
+  const VAD_THRESHOLD = 0.12;
+  const VAD_FRAMES = 8;
+  const SPEAK_GRACE_MS = 1500;
 
   const onSpeechResultRef = useRef(onSpeechResult);
   const onStateChangeRef = useRef(onStateChange);
@@ -308,7 +308,7 @@ export function useVoiceAgent({
     // NGHE LIEN TUC: continuous=false khien mic TAT sau moi cau -> phai restart ->
     // khoang "diec" 120ms+latency Chrome moi lan -> noi dung luc do la MAT TIENG
     // ("lau lau noi khong nghe"). continuous=true giu mic mo suot, gan nhu het diec.
-    rec.continuous = true;
+    rec.continuous = false;
     rec.interimResults = true;
     rec.lang = 'vi-VN';
 
@@ -323,8 +323,7 @@ export function useVoiceAgent({
 
     rec.onresult = (event: any) => {
       if (!isListeningLoopActive.current) return;
-      // continuous=true: duyet tu resultIndex, CHI lay ket qua da CHOT (isFinal).
-      // Bo qua interim (dang doan dở) de khong trigger slide lung tung nua chung.
+      // continuous=false: chỉ có 1 kết quả final duy nhất tại mỗi phiên
       let finalText = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) finalText += event.results[i][0].transcript + ' ';
@@ -332,7 +331,7 @@ export function useVoiceAgent({
       finalText = finalText.trim();
       if (!finalText) return;   // moi co interim, cau chua chot -> cho tiep
 
-      // Nghe được câu thật -> reset bộ đếm lỗi network (mạng chỉ chập chờn, không phải bị chặn)
+      // Nghe được câu thật -> reset bộ đếm lỗi network
       networkErrCountRef.current = 0;
       const resultText = normalizeVietnameseSpeech(finalText) || finalText;
       setTranscript(`🎧 Nhận diện: "${resultText}"`);
@@ -346,8 +345,6 @@ export function useVoiceAgent({
       if (event.error === 'no-speech' || event.error === 'aborted') {
         // Bình thường: im lặng lâu / bị abort chủ động — không cần báo.
       } else if (event.error === 'network') {
-        // Brave/Firefox chặn dịch vụ STT -> fail 'network' LIÊN TỤC dù mic vẫn mở.
-        // 3 lần liên tiếp = gần như chắc chắn trình duyệt không hỗ trợ -> báo rõ cho user.
         networkErrCountRef.current++;
         dbg(`🔴 STT lỗi network (lần ${networkErrCountRef.current})`);
         if (networkErrCountRef.current >= 3 && !sttBlockedWarnedRef.current) {
@@ -374,13 +371,10 @@ export function useVoiceAgent({
 
     rec.onend = () => {
       isRecognitionRunningRef.current = false;
-      // Mic phải SỐNG LIÊN TỤC khi session đang mở — kể cả lúc 'processing' (đang gọi
-      // API tạo slide 1-3s) để người ta nói chèn không bị rớt. Chỉ tắt khi 'speaking'
-      // (đang phát TTS — tránh STT nghe nhầm giọng máy; barge-in đã có VAD lo).
-      // Dùng restartRecognitionOnly (không phá hàng đợi TTS đang build lúc processing).
-      if (isListeningLoopActive.current && chatStateRef.current !== 'speaking') {
+      // Chỉ tự động mở lại mic nếu vẫn đang trong trạng thái 'listening'
+      if (isListeningLoopActive.current && chatStateRef.current === 'listening') {
         setTimeout(() => {
-          if (isListeningLoopActive.current && chatStateRef.current !== 'speaking') {
+          if (isListeningLoopActive.current && chatStateRef.current === 'listening') {
             restartRecognitionOnly();
           }
         }, 120);
@@ -389,12 +383,10 @@ export function useVoiceAgent({
 
     recognitionRef.current = rec;
 
-    // WATCHDOG: Chrome thỉnh thoảng ngắt recognition im lặng (không onend, hoặc start()
-    // ném lỗi đúng lúc). Cứ 1.2s kiểm tra: session mở + không phát TTS + mic chết -> hồi
-    // sinh (trước để 3s -> điếc tới 3s; giờ tối đa ~1.2s).
+    // WATCHDOG: Chỉ hồi sinh mic khi trạng thái là 'listening'
     const watchdog = setInterval(() => {
       if (!isListeningLoopActive.current) return;
-      if (chatStateRef.current === 'speaking') return;
+      if (chatStateRef.current !== 'listening') return;
       if (!isRecognitionRunningRef.current) restartRecognitionOnly();
     }, 1200);
 
