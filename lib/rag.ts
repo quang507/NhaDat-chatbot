@@ -270,18 +270,27 @@ export async function loadIndex(): Promise<Index | null> {
   return fetchAndCacheIndex();
 }
 
-// Hàm tải và lưu cache đồng bộ
 async function fetchAndCacheIndex(): Promise<Index | null> {
   if (memIndexLoading) return memIndexLoading;
   memIndexLoading = (async () => {
     try {
-      console.log('[RAG] Bắt đầu tải chỉ mục từ GitHub...');
-      const sha = await getSha(INDEX_PATH);
-      if (!sha) return null;
-      const r = await fetch(`${API}/git/blobs/${sha}`, { headers: ghHeaders(), cache: 'no-store' });
-      if (!r.ok) return null;
-      const blob = await r.json();
-      const json = Buffer.from(blob.content || '', blob.encoding || 'base64').toString('utf-8');
+      console.log('[RAG] Bắt đầu tải chỉ mục từ GitHub Raw CDN...');
+      const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${INDEX_BRANCH}/${INDEX_PATH}`;
+      const r = await fetch(rawUrl, { cache: 'no-store' });
+      
+      let json = '';
+      if (r.ok) {
+        json = await r.text();
+      } else {
+        console.warn(`[RAG] Tải từ GitHub Raw CDN lỗi (${r.status}), rơi vào phương thức API cũ...`);
+        const sha = await getSha(INDEX_PATH);
+        if (!sha) return null;
+        const apiRes = await fetch(`${API}/git/blobs/${sha}`, { headers: ghHeaders(), cache: 'no-store' });
+        if (!apiRes.ok) return null;
+        const blob = await apiRes.json();
+        json = Buffer.from(blob.content || '', blob.encoding || 'base64').toString('utf-8');
+      }
+
       const index = JSON.parse(json) as Index;
       
       // Cache vào RAM
