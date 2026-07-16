@@ -29,7 +29,7 @@ let personaCache: { text: string; at: number } | null = null;
 
 // ---------- Rate Limiter (in-memory, per IP, 8 req/phút) ----------
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 8;  // max requests
+const RATE_LIMIT = 20; // max 20 request/phút/IP (đủ cho power user, chặn được spam bot)
 const RATE_WINDOW = 60 * 1000; // 1 phút (ms)
 
 function checkRateLimit(ip: string): boolean {

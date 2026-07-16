@@ -113,7 +113,7 @@ if (targetUrl) {
 // Hàm chạy chuỗi kiểm thử
 async function runAllTests(baseUrl, onComplete) {
   const results = [];
-  const DELAY_BETWEEN_TESTS_MS = 5000; // 5s để tránh Gemini rate limit (10 req/phút free tier)
+  const DELAY_BETWEEN_TESTS_MS = 15000; // 15s để tránh Gemini rate limit (10 req/phút free tier)
   
   for (let i = 0; i < TEST_CASES.length; i++) {
     const testCase = TEST_CASES[i];
