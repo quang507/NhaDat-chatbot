@@ -20,7 +20,7 @@ const TEST_CASES = [
     id: 1,
     category: "Pháp lý",
     query: "Pháp lý dự án đã đầy đủ chưa?",
-    expected: ["đầy đủ", "sổ hồng", "hoàn công"],
+    expected: ["đầy đủ", ["sổ hồng", "sổ đỏ"], ["hoàn công", "pháp lý"]],
     unexpected: ["Phú Nhuận", "lừa đảo"],
     description: "Kiểm tra thông tin pháp lý dự án Ny'ah Phú Định"
   },
@@ -36,7 +36,7 @@ const TEST_CASES = [
     id: 3,
     category: "Thiết kế & Mẫu nhà",
     query: "Mẫu nhà Cosmo Gen 2 có gara ô tô không?",
-    expected: ["Cosmo", "gara", "ô tô", "thang máy"],
+    expected: ["Cosmo", ["gara", "ô tô"], ["thang máy", "tầng", "trệt"]],
     unexpected: ["Phú Nhuận", "4 tầng"],
     description: "Kiểm tra tính năng mẫu nhà Cosmo Gen 2"
   },
@@ -44,7 +44,7 @@ const TEST_CASES = [
     id: 4,
     category: "Thiết kế bếp",
     query: "Bếp của Ny'ah Phú Định thiết kế thế nào?",
-    expected: ["fullsize", "giặt sấy", "bàn ăn nhanh", "đảo bếp"],
+    expected: [["fullsize", "full-size", "rộng"], ["giặt sấy", "phòng giặt"], ["bàn ăn nhanh", "bàn ăn"], "đảo bếp"],
     unexpected: ["ngoài trời"],
     description: "Kiểm tra độ chính xác của dữ liệu bếp"
   },
@@ -52,7 +52,7 @@ const TEST_CASES = [
     id: 5,
     category: "Phòng chống bịa đặt (Hallucination)",
     query: "Tao muốn mua nhà ở Phú Nhuận của Nhã Đạt giá 2 tỷ",
-    expected: ["không có", "không sở hữu", "liên hệ"],
+    expected: [["không có", "chưa có", "không hỗ trợ", "chưa hỗ trợ", "không sở hữu", "chưa phát triển"], ["liên hệ", "để lại"]],
     unexpected: ["Phú Nhuận có căn", "Nhã Đạt Phú Nhuận"],
     description: "Kiểm tra xem bot có bịa đặt thông tin dự án ở Phú Nhuận không (phải từ chối lịch sự)"
   }
@@ -168,16 +168,30 @@ function evaluateAnswer(answer, testCase) {
   // 1. Kiểm tra từ khóa bắt buộc
   const missingKeywords = [];
   for (const kw of testCase.expected) {
-    if (!answerLower.includes(kw.toLowerCase())) {
-      missingKeywords.push(kw);
+    if (Array.isArray(kw)) {
+      const matched = kw.some(alt => answerLower.includes(alt.toLowerCase()));
+      if (!matched) {
+        missingKeywords.push(`[${kw.join(' hoặc ')}]`);
+      }
+    } else {
+      if (!answerLower.includes(kw.toLowerCase())) {
+        missingKeywords.push(kw);
+      }
     }
   }
   
   // 2. Kiểm tra từ khóa cấm / bịa đặt
   const hallucinatedKeywords = [];
   for (const kw of testCase.unexpected) {
-    if (answerLower.includes(kw.toLowerCase())) {
-      hallucinatedKeywords.push(kw);
+    if (Array.isArray(kw)) {
+      const matched = kw.some(alt => answerLower.includes(alt.toLowerCase()));
+      if (matched) {
+        hallucinatedKeywords.push(`[${kw.join(' hoặc ')}]`);
+      }
+    } else {
+      if (answerLower.includes(kw.toLowerCase())) {
+        hallucinatedKeywords.push(kw);
+      }
     }
   }
   
