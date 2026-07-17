@@ -291,7 +291,7 @@ export async function POST(req: NextRequest) {
 
           return new Response(stream, {
             headers: {
-              'Content-Type': 'text/plain; charset=utf-8',
+              'Content-Type': 'text/event-stream; charset=utf-8',
               'Cache-Control': 'no-cache',
               'X-Accel-Buffering': 'no',
             },
@@ -389,7 +389,7 @@ export async function POST(req: NextRequest) {
 
             return new Response(stream, {
               headers: {
-                'Content-Type': 'text/plain; charset=utf-8',
+                'Content-Type': 'text/event-stream; charset=utf-8',
                 'Cache-Control': 'no-cache',
                 'X-Accel-Buffering': 'no',
               },
