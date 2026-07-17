@@ -4,6 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { splitSentences, normalizeVietnameseSpeech } from '@/lib/speech';
 import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
+import {
+  createConversationState,
+  updateConversationState,
+  didStageChange,
+  isSessionExpired,
+  buildProfileNote,
+} from '@/lib/conversation';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 
 interface Message {
@@ -29,6 +36,12 @@ export default function VoicePage() {
   const [logFilter, setLogFilter] = useState<'ALL' | 'SPEECH' | 'API' | 'ERROR'>('ALL');
   
   const chatHistoryRef = useRef<Message[]>([]);
+
+  // Conversation Manager — giữ TRẠNG THÁI cả cuộc trò chuyện (giai đoạn phễu bán
+  // hàng + bộ nhớ khách: tên, ngân sách, mối quan tâm, lo ngại). Cập nhật mỗi lượt
+  // khách nói; dùng để (1) cá nhân hóa câu trả lời qua `profile`, (2) nhận biết
+  // khách đổi giai đoạn để làm mới slide đúng lúc.
+  const convStateRef = useRef(createConversationState());
 
   // Chống nhảy slide liên tục — quyết định đổi/giữ ảnh dùng chung shouldRefreshSlide()
   // (lib/intent.ts) với trang /slide, để 2 nơi không lệch logic.
@@ -99,13 +112,29 @@ export default function VoicePage() {
     try {
       const history = chatHistoryRef.current;
 
-      // Fire and forget /api/slide để lấy ảnh nếu khớp chủ đề — nhưng chỉ khi
-      // shouldRefreshSlide() nói nên đổi (chủ đề thực sự đổi + đã hiện đủ lâu),
-      // tránh nhảy ảnh liên tục mỗi câu nói.
+      // 1) LỚP PHÂN TÍCH HỘI THOẠI — cập nhật giai đoạn + bộ nhớ khách TRƯỚC khi
+      // quyết định slide/câu trả lời. Đây là "AI hiểu ý" trong kiến trúc 5 lớp.
+      // updateConversationState tự HẾT PHIÊN nếu khách rời đi quá lâu (~25') → quên
+      // ngữ cảnh cũ, coi như khách mới.
       const intent = classifyAmbientIntent(speechText);
+      const nowTs = Date.now();
+      const sessionExpired = isSessionExpired(convStateRef.current, nowTs);
+      convStateRef.current = updateConversationState(convStateRef.current, speechText, intent, nowTs);
+      const conv = convStateRef.current;
+      if (sessionExpired) {
+        addLog('INFO', 'Phiên cũ đã hết hạn (khách rời đi >25 phút) — bắt đầu ngữ cảnh mới.');
+        chatHistoryRef.current = [];        // xoá luôn lịch sử chat để không kéo ngữ cảnh khách cũ
+        lastSlideRef.current = { topic: null, at: 0 };
+      }
+      const profileNote = buildProfileNote(conv.memory);
+      if (profileNote) addLog('INFO', `Bộ nhớ khách [${conv.stage}]:\n${profileNote}`);
+
+      // 2) Fire and forget /api/slide để lấy ảnh nếu khớp chủ đề — chỉ khi
+      // shouldRefreshSlide() nói nên đổi (chủ đề thực sự đổi + đã hiện đủ lâu),
+      // HOẶC khách vừa chuyển GIAI ĐOẠN hội thoại (đổi chủ đề rõ rệt) → làm mới ngay.
       if (intent.shouldGenerate) {
         const now = Date.now();
-        if (shouldRefreshSlide(intent, lastSlideRef.current, now)) {
+        if (shouldRefreshSlide(intent, lastSlideRef.current, now) || didStageChange(conv)) {
           const reqId = ++slideReqIdRef.current;
           lastSlideRef.current = { topic: intent.topic || null, at: now };
 
@@ -138,7 +167,7 @@ export default function VoicePage() {
           'Content-Type': 'application/json',
           'x-chat-handshake': 'npd-mktg-handshake'
         },
-        body: JSON.stringify({ message: speechText, history }),
+        body: JSON.stringify({ message: speechText, history, profile: profileNote }),
       });
       
       addLog('API', `Phản hồi từ server /api/chat: status=${res.status}`);
