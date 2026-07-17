@@ -5,12 +5,23 @@ import { cleanTextForTTS, ttsUrl, normalizeVietnameseSpeech } from '@/lib/speech
 
 export type ChatState = 'idle' | 'listening' | 'processing' | 'speaking' | 'error';
 
+export type SttEngine = 'browser' | 'gemini';
+
 export interface UseVoiceAgentProps {
   onSpeechResult?: (text: string) => void;
   onStateChange?: (state: ChatState) => void;
   /** Nhận log chẩn đoán STT (bật/lỗi/kết quả) — trang /slide?debug=1 hiện lên HUD. */
   onDebug?: (msg: string) => void;
   voiceOn?: boolean;
+  /**
+   * Bộ nhận diện giọng nói:
+   *  - 'browser' (mặc định): Web Speech API — streaming, tức thì, nhưng Brave/Firefox
+   *    chặn và nghe sai tên riêng.
+   *  - 'gemini': thu âm từng câu (MediaRecorder + VAD ngắt câu) rồi gửi /api/transcribe
+   *    (Deepgram→Gemini→Whisper). Chạy MỌI trình duyệt, nghe tên riêng chính xác hơn,
+   *    đổi lại mỗi câu trễ ~1-2s. Hợp với chế độ NGHE-ONLY (không đọc) như trang /slide.
+   */
+  sttEngine?: SttEngine;
 }
 
 export function useVoiceAgent({
@@ -18,6 +29,7 @@ export function useVoiceAgent({
   onStateChange,
   onDebug,
   voiceOn = true,
+  sttEngine = 'browser',
 }: UseVoiceAgentProps = {}) {
   const [state, setStateInternal] = useState<ChatState>('idle');
   const [transcript, setTranscript] = useState('');
@@ -43,6 +55,22 @@ export function useVoiceAgent({
   const VAD_THRESHOLD = 0.12;
   const VAD_FRAMES = 8;
   const SPEAK_GRACE_MS = 1500;
+
+  // ── STT ENGINE = GEMINI (thu âm từng câu rồi gửi /api/transcribe) ───────────
+  const sttEngineRef = useRef<SttEngine>(sttEngine);
+  useEffect(() => { sttEngineRef.current = sttEngine; }, [sttEngine]);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recChunksRef = useRef<BlobPart[]>([]);
+  const hadSpeechRef = useRef(false);          // câu này đã có tiếng nói thật chưa
+  const lastVoiceAtRef = useRef(0);            // mốc gần nhất RMS vượt ngưỡng nói
+  const utterStartRef = useRef(0);             // lúc bắt đầu thu câu hiện tại
+  const transcribingRef = useRef(false);       // đang gửi câu trước lên server -> khoan thu câu mới
+  const handleUtteranceRef = useRef<() => void>(() => {});
+  // Ngưỡng endpointing (ngắt câu). Thấp hơn ngưỡng barge-in vì cần nhạy với lời khách.
+  const GEMINI_VOICE_RMS = 0.045;
+  const GEMINI_SILENCE_HANG_MS = 900;   // im lặng bao lâu thì coi là hết câu
+  const GEMINI_MIN_UTTER_MS = 500;      // câu ngắn hơn (ho/hắng giọng) -> bỏ
+  const GEMINI_MAX_UTTER_MS = 15000;    // chốt cưỡng bức, tránh thu vô tận
 
   const onSpeechResultRef = useRef(onSpeechResult);
   const onStateChangeRef = useRef(onStateChange);
@@ -81,6 +109,30 @@ export function useVoiceAgent({
     try { recognitionRef.current.start(); } catch (e) { /* đang start dở — watchdog sẽ thử lại */ }
   }, []);
 
+  // Bắt đầu thu 1 CÂU mới (chế độ Gemini). VAD tick sẽ tự chốt câu khi khách ngừng nói.
+  const startGeminiRecorder = useCallback(() => {
+    if (sttEngineRef.current !== 'gemini') return;
+    if (!mediaStreamRef.current) return;          // stream chưa sẵn — setupVAD sẽ gọi lại
+    if (transcribingRef.current) return;          // đang gửi câu trước
+    const cur = mediaRecorderRef.current;
+    if (cur && cur.state === 'recording') return; // đã đang thu
+    try {
+      const prefer = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+      const mime = typeof MediaRecorder !== 'undefined'
+        ? prefer.find(m => { try { return MediaRecorder.isTypeSupported(m); } catch { return false; } })
+        : undefined;
+      const mr = mime ? new MediaRecorder(mediaStreamRef.current, { mimeType: mime }) : new MediaRecorder(mediaStreamRef.current);
+      recChunksRef.current = [];
+      hadSpeechRef.current = false;
+      utterStartRef.current = Date.now();
+      lastVoiceAtRef.current = Date.now();
+      mr.ondataavailable = (e) => { if (e.data && e.data.size) recChunksRef.current.push(e.data); };
+      mr.onstop = () => { handleUtteranceRef.current(); };
+      mediaRecorderRef.current = mr;
+      mr.start(250); // cắt chunk mỗi 250ms để có dữ liệu đều
+    } catch (e) { dbg('🔴 Không tạo được MediaRecorder: ' + e); }
+  }, [dbg]);
+
   const startListening = useCallback(() => {
     if (activeAudioRef.current) {
       try { activeAudioRef.current.pause(); } catch(e) {}
@@ -94,6 +146,12 @@ export function useVoiceAgent({
       setState('listening');
     }
 
+    // Chế độ Gemini: nghe = thu âm câu mới (không dùng Web Speech recognition).
+    if (sttEngineRef.current === 'gemini') {
+      startGeminiRecorder();
+      return;
+    }
+
     if (recognitionRef.current) {
       if (isRecognitionRunningRef.current) return;
       try {
@@ -102,7 +160,7 @@ export function useVoiceAgent({
         console.error('[useVoiceAgent] start error:', e);
       }
     }
-  }, [setState]);
+  }, [setState, startGeminiRecorder]);
 
   const bargeIn = useCallback(() => {
     if (chatStateRef.current !== 'speaking') return;
@@ -118,7 +176,10 @@ export function useVoiceAgent({
 
   const setupVAD = useCallback(async () => {
     if (mediaStreamRef.current) return;
-    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) return;
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      if (sttEngineRef.current === 'gemini') { setErrorMsg('Trình duyệt không hỗ trợ thu âm (getUserMedia).'); setState('error'); }
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
@@ -147,18 +208,51 @@ export function useVoiceAgent({
         } else {
           loudFrames = 0;
         }
+
+        // ENDPOINTING chế độ Gemini: đang thu + đang nghe -> canh im lặng để chốt câu.
+        if (sttEngineRef.current === 'gemini' && chatStateRef.current === 'listening') {
+          const mr = mediaRecorderRef.current;
+          if (mr && mr.state === 'recording') {
+            const now = Date.now();
+            if (rms > GEMINI_VOICE_RMS) { hadSpeechRef.current = true; lastVoiceAtRef.current = now; }
+            const silenceFor = now - lastVoiceAtRef.current;
+            const utterFor = now - utterStartRef.current;
+            if ((hadSpeechRef.current && silenceFor > GEMINI_SILENCE_HANG_MS) || utterFor > GEMINI_MAX_UTTER_MS) {
+              try { mr.stop(); } catch (e) {} // -> onstop -> handleUtteranceRef -> /api/transcribe
+            }
+          }
+        }
       };
       tick();
+
+      // Stream đã sẵn: nếu đang ở chế độ Gemini và đang nghe -> bắt đầu thu ngay.
+      if (sttEngineRef.current === 'gemini' && isListeningLoopActive.current) {
+        startGeminiRecorder();
+      }
     } catch (e) {
       console.warn('[useVoiceAgent] Không bật được VAD:', e);
+      // Chế độ Gemini: VAD/getUserMedia LÀ đường thu âm duy nhất -> lỗi = mic chết,
+      // phải báo rõ (thường do chặn quyền micro) thay vì im lặng.
+      if (sttEngineRef.current === 'gemini') {
+        setErrorMsg('Không truy cập được micro. Hãy cấp quyền micro cho trang rồi thử lại.');
+        setState('error');
+      }
     }
-  }, [bargeIn]);
+  }, [bargeIn, startGeminiRecorder, setState]);
 
   const stopAllVoiceActivities = useCallback(() => {
     isListeningLoopActive.current = false;
     if (recognitionRef.current) {
       try { recognitionRef.current.abort(); } catch(e) {}
     }
+    // Dừng thu âm Gemini + reset trạng thái câu đang thu.
+    if (mediaRecorderRef.current) {
+      try { mediaRecorderRef.current.onstop = null; mediaRecorderRef.current.stop(); } catch (e) {}
+      mediaRecorderRef.current = null;
+    }
+    recChunksRef.current = [];
+    hadSpeechRef.current = false;
+    transcribingRef.current = false;
     if (activeAudioRef.current) {
       try { activeAudioRef.current.pause(); } catch(e) {}
       activeAudioRef.current = null;
@@ -266,6 +360,49 @@ export function useVoiceAgent({
     playNextAudio();
   }, [voiceOn, playNextAudio, startListening, setState, setResponse]);
 
+  // Xử lý 1 câu vừa thu xong (chế độ Gemini): dựng blob -> /api/transcribe -> chữ.
+  const handleGeminiUtterance = useCallback(async () => {
+    const chunks = recChunksRef.current;
+    recChunksRef.current = [];
+    const dur = Date.now() - utterStartRef.current;
+    const hadSpeech = hadSpeechRef.current;
+    const mr = mediaRecorderRef.current;
+
+    // Không có tiếng nói thật / quá ngắn -> bỏ, thu tiếp.
+    if (!hadSpeech || dur < GEMINI_MIN_UTTER_MS || chunks.length === 0) {
+      if (isListeningLoopActive.current && chatStateRef.current !== 'speaking') startGeminiRecorder();
+      return;
+    }
+
+    transcribingRef.current = true;
+    setState('processing');
+    try {
+      const blob = new Blob(chunks, { type: mr?.mimeType || 'audio/webm' });
+      const fd = new FormData();
+      fd.append('file', blob, 'utter.webm');
+      const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
+      const data = await res.json().catch(() => ({} as any));
+      const text = (data?.text || '').trim();
+      if (text) {
+        dbg(`🎧 Gemini nghe: "${text}"`);
+        const norm = normalizeVietnameseSpeech(text) || text;
+        if (onSpeechResultRef.current) onSpeechResultRef.current(norm);
+        // Không tự thu lại ở đây: onSpeechResult -> trang xử lý (hiện slide) rồi gọi
+        // startListening() để mở lại vòng nghe. Tránh double-record.
+      } else {
+        dbg('⚪ Gemini nghe rỗng — nghe tiếp');
+        if (isListeningLoopActive.current) { setState('listening'); startGeminiRecorder(); }
+      }
+    } catch (e) {
+      dbg('🔴 Lỗi /api/transcribe: ' + e);
+      if (isListeningLoopActive.current) { setState('listening'); startGeminiRecorder(); }
+    } finally {
+      transcribingRef.current = false;
+    }
+  }, [setState, dbg, startGeminiRecorder]);
+
+  useEffect(() => { handleUtteranceRef.current = handleGeminiUtterance; }, [handleGeminiUtterance]);
+
 
 
   useEffect(() => {
@@ -286,6 +423,9 @@ export function useVoiceAgent({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    // Chế độ Gemini KHÔNG dùng Web Speech — thu âm qua MediaRecorder (setupVAD) rồi
+    // gửi /api/transcribe. Bỏ qua toàn bộ phần khởi tạo recognition ở đây.
+    if (sttEngine === 'gemini') return;
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setErrorMsg('Trình duyệt không hỗ trợ Web Speech API.');
