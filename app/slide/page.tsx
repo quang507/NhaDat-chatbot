@@ -79,6 +79,30 @@ export default function SlideBotPage() {
           highlight_number: '18 phút',
           image_urls: [],
         },
+        // ?demo=4 -> ẢNH ĐỨNG (mặt tiền) · ?demo=5 -> ẢNH NGANG (tổng quan) · ?demo=6 -> KHÔNG ẢNH (nhiều dòng)
+        '4': {
+          title: 'Bất động sản dòng tiền, Hai mặt tiền',
+          points: ['Vừa ở vừa kinh doanh trên mặt tiền lớn'],
+          speech_text: 'Mẫu nhà Opus mặt tiền thương mại, khai thác dòng tiền ngay.',
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_mat-tien.jpg'],
+        },
+        '5': {
+          title: 'Tổng quan khu compound Ny\'ah Phú Định',
+          points: ['50 căn nhà phố mật độ thấp, tiện ích nội khu đầy đủ'],
+          speech_text: 'Toàn cảnh dự án nhìn từ trên cao.',
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'],
+        },
+        '6': {
+          title: 'So sánh phương án tài chính',
+          points: [
+            'Vay ngân hàng đối tác tới 70% giá trị căn nhà',
+            'Lịch thanh toán linh hoạt theo tiến độ xây dựng',
+            'Chiết khấu hấp dẫn khi thanh toán nhanh',
+            'Tư vấn viên lo trọn gói hồ sơ vay',
+          ],
+          speech_text: 'Đây là các phương án tài chính phù hợp với ngân sách của anh chị.',
+          image_urls: [],
+        },
       };
       setSlideKey(k => k + 1);
       setSlide(samples[demo] || samples['1']);
@@ -458,7 +482,9 @@ export default function SlideBotPage() {
 
   return (
     <div
-      className="h-screen max-h-screen overflow-hidden flex flex-col relative text-[#161616] bg-[#F5F3EC]"
+      className={`h-screen max-h-screen overflow-hidden flex flex-col relative transition-colors duration-500 ${
+        slide ? 'bg-[#0b0c12] text-white' : 'text-[#161616] bg-[#F5F3EC]'
+      }`}
       style={{ fontFamily: "'Be Vietnam Pro', 'Inter', 'Google Sans', system-ui, sans-serif" }}
     >
       <style dangerouslySetInnerHTML={{ __html: `
@@ -528,7 +554,7 @@ export default function SlideBotPage() {
         </div>
       )}
 
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+      <div aria-hidden className={`pointer-events-none absolute inset-0 z-0 overflow-hidden ${slide ? 'hidden' : ''}`}>
         <div className="dots absolute top-[8%] right-[5%] w-44 h-28 opacity-70" />
         <div className="absolute -top-[10vh] -left-[10vh] w-[26vw] h-[26vw] rounded-full bg-[#E3F0E3]" />
         <div className="absolute top-[17%] -right-16 w-[18vw] h-[18vw] rounded-full border-[3px] border-[#2E9E5B]/20" />
@@ -537,7 +563,7 @@ export default function SlideBotPage() {
         <div className="dots absolute bottom-[6%] left-[3.5%] w-20 h-28 opacity-60" />
       </div>
 
-      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-opacity duration-300 ${slide ? 'opacity-0 pointer-events-none' : ''}`}>
+      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 ${slide ? 'hidden' : ''}`}>
         <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl overflow-hidden bg-white shadow-md border border-black/5 flex items-center justify-center shrink-0">
             <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
