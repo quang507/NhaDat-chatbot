@@ -8,6 +8,7 @@ import {
   createConversationState,
   updateConversationState,
   didStageChange,
+  isSessionExpired,
   buildProfileNote,
 } from '@/lib/conversation';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
@@ -113,9 +114,18 @@ export default function VoicePage() {
 
       // 1) LỚP PHÂN TÍCH HỘI THOẠI — cập nhật giai đoạn + bộ nhớ khách TRƯỚC khi
       // quyết định slide/câu trả lời. Đây là "AI hiểu ý" trong kiến trúc 5 lớp.
+      // updateConversationState tự HẾT PHIÊN nếu khách rời đi quá lâu (~25') → quên
+      // ngữ cảnh cũ, coi như khách mới.
       const intent = classifyAmbientIntent(speechText);
-      convStateRef.current = updateConversationState(convStateRef.current, speechText, intent);
+      const nowTs = Date.now();
+      const sessionExpired = isSessionExpired(convStateRef.current, nowTs);
+      convStateRef.current = updateConversationState(convStateRef.current, speechText, intent, nowTs);
       const conv = convStateRef.current;
+      if (sessionExpired) {
+        addLog('INFO', 'Phiên cũ đã hết hạn (khách rời đi >25 phút) — bắt đầu ngữ cảnh mới.');
+        chatHistoryRef.current = [];        // xoá luôn lịch sử chat để không kéo ngữ cảnh khách cũ
+        lastSlideRef.current = { topic: null, at: 0 };
+      }
       const profileNote = buildProfileNote(conv.memory);
       if (profileNote) addLog('INFO', `Bộ nhớ khách [${conv.stage}]:\n${profileNote}`);
 

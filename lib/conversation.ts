@@ -60,15 +60,27 @@ export interface ConversationState {
   previousStage: SalesStage | null;
   memory: CustomerMemory;
   turns: number;              // số lượt khách đã nói (để biết đã qua giai đoạn chào hỏi chưa)
+  lastActivityAt: number;     // mốc thời gian (ms) lượt nói gần nhất — dùng để hết hạn phiên
 }
 
-export function createConversationState(): ConversationState {
+// Khách rời đi quá lâu (~25 phút, giữa khoảng 20-30') thì coi như HẾT PHIÊN: quên
+// hết ngữ cảnh (giai đoạn + bộ nhớ) và bắt đầu lại như khách mới. Tránh việc khách
+// sau ngồi vào lại được chào bằng ngân sách/tên của khách trước.
+export const SESSION_IDLE_TIMEOUT_MS = 25 * 60 * 1000;
+
+export function createConversationState(now: number = Date.now()): ConversationState {
   return {
     stage: 'greeting',
     previousStage: null,
     memory: { interests: [], concerns: [] },
     turns: 0,
+    lastActivityAt: now,
   };
+}
+
+// Phiên đã hết hạn chưa? (khách im lặng / rời đi quá SESSION_IDLE_TIMEOUT_MS)
+export function isSessionExpired(state: ConversationState, now: number = Date.now()): boolean {
+  return now - state.lastActivityAt > SESSION_IDLE_TIMEOUT_MS;
 }
 
 // ── Trích xuất NGÂN SÁCH ──────────────────────────────────────────────────────
@@ -185,7 +197,14 @@ export function updateConversationState(
   state: ConversationState,
   text: string,
   intent: AmbientIntent,
+  now: number = Date.now(),
 ): ConversationState {
+  // HẾT PHIÊN: khách quay lại sau khi rời đi quá lâu → quên ngữ cảnh cũ, bắt đầu
+  // lại từ phiên trống rồi mới áp câu vừa nói vào (khách này là "khách mới").
+  if (isSessionExpired(state, now)) {
+    state = createConversationState(now);
+  }
+
   const memory: CustomerMemory = {
     name: extractName(text) ?? state.memory.name,
     budgetTy: extractBudget(text) ?? state.memory.budgetTy,
@@ -211,6 +230,7 @@ export function updateConversationState(
     previousStage: state.stage,
     memory,
     turns: state.turns + 1,
+    lastActivityAt: now,
   };
 }
 
