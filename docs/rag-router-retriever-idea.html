@@ -1,0 +1,311 @@
+<title>Router Retriever — Idea & Baseline</title>
+<style>
+  :root {
+    --paper: #f6f7f5;
+    --panel: #ffffff;
+    --ink: #16211b;
+    --muted: #5c6b63;
+    --line: rgba(22, 33, 27, 0.12);
+    --line-strong: rgba(22, 33, 27, 0.22);
+    --accent: #2e9e5b;
+    --accent-soft: rgba(46, 158, 91, 0.12);
+    --warn: #a86a12;
+    --warn-soft: rgba(168, 106, 18, 0.12);
+    --shadow: 0 1px 2px rgba(22, 33, 27, 0.05), 0 8px 24px rgba(22, 33, 27, 0.06);
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0e1512;
+      --panel: #141d18;
+      --ink: #e8edea;
+      --muted: #8b9d8f;
+      --line: rgba(232, 237, 234, 0.12);
+      --line-strong: rgba(232, 237, 234, 0.22);
+      --accent: #3fbf74;
+      --accent-soft: rgba(63, 191, 116, 0.14);
+      --warn: #e0a94a;
+      --warn-soft: rgba(224, 169, 74, 0.14);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #f6f7f5; --panel: #ffffff; --ink: #16211b; --muted: #5c6b63;
+    --line: rgba(22, 33, 27, 0.12); --line-strong: rgba(22, 33, 27, 0.22);
+    --accent: #2e9e5b; --accent-soft: rgba(46, 158, 91, 0.12);
+    --warn: #a86a12; --warn-soft: rgba(168, 106, 18, 0.12);
+    --shadow: 0 1px 2px rgba(22, 33, 27, 0.05), 0 8px 24px rgba(22, 33, 27, 0.06);
+  }
+  :root[data-theme="dark"] {
+    --paper: #0e1512; --panel: #141d18; --ink: #e8edea; --muted: #8b9d8f;
+    --line: rgba(232, 237, 234, 0.12); --line-strong: rgba(232, 237, 234, 0.22);
+    --accent: #3fbf74; --accent-soft: rgba(63, 191, 116, 0.14);
+    --warn: #e0a94a; --warn-soft: rgba(224, 169, 74, 0.14);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--sans); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; padding: clamp(24px, 5vw, 64px) clamp(18px, 4vw, 40px) 80px; }
+
+  /* ── Header ─────────────────────────────────────────── */
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--accent); }
+  h1 {
+    font-size: clamp(30px, 5.4vw, 50px); line-height: 1.08; margin: 0 0 16px;
+    letter-spacing: -0.02em; font-weight: 800; text-wrap: balance;
+  }
+  h1 .thin { font-weight: 300; color: var(--muted); }
+  .lede { font-size: clamp(16px, 2.1vw, 19px); color: var(--muted); max-width: 62ch; margin: 0; }
+  .meta {
+    margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 22px; font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+  }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ── Sections ───────────────────────────────────────── */
+  section { margin-top: clamp(38px, 6vw, 64px); }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 22px; }
+  .sec-num { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 600; }
+  h2 { font-size: clamp(19px, 2.6vw, 24px); margin: 0; letter-spacing: -0.01em; font-weight: 700; }
+  .sec-sub { color: var(--muted); font-size: 14.5px; margin: 4px 0 0; }
+
+  /* ── Flow diagram ───────────────────────────────────── */
+  .board {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    padding: clamp(20px, 3.5vw, 34px); box-shadow: var(--shadow); overflow-x: auto;
+  }
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; min-width: min-content; }
+  .row { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .node {
+    font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--ink);
+    background: var(--paper); border: 1px solid var(--line-strong); border-radius: 10px;
+    padding: 11px 15px; text-align: center; white-space: nowrap; box-shadow: var(--shadow);
+  }
+  .node.accent { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+  .node.warn { border-color: var(--warn); color: var(--warn); background: var(--warn-soft); }
+  .node.io { border-style: dashed; background: transparent; color: var(--muted); }
+  .node small { display: block; font-size: 10.5px; color: var(--muted); font-weight: 400; margin-top: 3px; letter-spacing: 0.02em; }
+  .arrow { color: var(--accent); font-size: 18px; line-height: 1; }
+  .down { height: 30px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 18px; }
+  .tag {
+    font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); padding: 2px 0;
+  }
+  .branch { display: flex; gap: clamp(14px, 3vw, 34px); align-items: stretch; flex-wrap: wrap; justify-content: center; }
+  .lane { flex: 1 1 260px; min-width: 230px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .lane-cap {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--ink);
+    border: 1px dashed var(--line-strong); border-radius: 999px; padding: 4px 12px;
+  }
+  .lane .node { width: 100%; white-space: normal; }
+
+  /* ── Metrics ────────────────────────────────────────── */
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 620px) { .metrics { grid-template-columns: repeat(2, 1fr); } }
+  .metric {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 18px 16px; box-shadow: var(--shadow);
+  }
+  .metric .val { font-family: var(--mono); font-size: clamp(26px, 5vw, 34px); font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .metric .val.ok { color: var(--accent); }
+  .metric .k { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 6px; }
+  .runline {
+    margin-top: 14px; font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+  }
+  .runline b { color: var(--ink); font-weight: 600; }
+
+  /* ── Callout (finding) ──────────────────────────────── */
+  .finding {
+    display: flex; gap: 16px; background: var(--warn-soft); border: 1px solid var(--warn);
+    border-radius: 14px; padding: 18px 20px;
+  }
+  .finding .dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--warn); margin-top: 9px; }
+  .finding h3 { margin: 0 0 6px; font-size: 15.5px; }
+  .finding p { margin: 0; color: var(--ink); font-size: 14.5px; }
+  .finding code { font-family: var(--mono); font-size: 0.92em; background: var(--panel); padding: 1px 6px; border-radius: 5px; border: 1px solid var(--line); }
+
+  /* ── Mapping table ──────────────────────────────────── */
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; background: var(--panel); }
+  th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  td code { font-family: var(--mono); font-size: 12.5px; color: var(--accent); }
+  .pill { font-family: var(--mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .pill.done { color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); }
+  .pill.next { color: var(--muted); background: transparent; border: 1px dashed var(--line-strong); }
+
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--mono); font-size: 12.5px; }
+  footer b { color: var(--ink); }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Idea · Experiment</p>
+    <h1>Router Retriever <span class="thin">cho RAG của bot bán nhà</span></h1>
+    <p class="lede">Nghe cả câu chuyện của khách → truy hồi đúng đoạn dữ liệu → trả lời &amp; bật slide. Bản thiết kế nâng tầng truy hồi từ hybrid đơn giản lên <b>Router Retriever</b> (BM25 + Vector + RRF + Reranker), kèm số liệu baseline đo được.</p>
+    <div class="meta">
+      <span><b>Dự án</b> · Ny'ah Phú Định (Nhã Đạt)</span>
+      <span><b>Ngày</b> · 17/07/2026</span>
+      <span><b>Trạng thái</b> · Baseline đã đo · router chưa dựng</span>
+    </div>
+  </header>
+
+  <!-- 1. HIGH LEVEL -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <div>
+        <h2>High Level — luồng RAG hiện tại</h2>
+        <p class="sec-sub">Câu hỏi của khách đi qua truy hồi → rerank → nhồi vào prompt → LLM trả lời chỉ dựa trên ngữ cảnh.</p>
+      </div>
+    </div>
+    <div class="board">
+      <div class="flow">
+        <div class="row">
+          <span class="node io">Documents</span>
+          <span class="arrow">→</span>
+          <span class="node">Vector Database</span>
+        </div>
+        <div class="down">↓</div>
+        <div class="row">
+          <span class="node io">User Question</span>
+          <span class="arrow">→</span>
+          <span class="node accent">Retriever Pipeline</span>
+          <span class="arrow">→</span>
+          <span class="node">Retrieve Chunk</span>
+          <span class="arrow">→</span>
+          <span class="node">Rerank + Refine</span>
+        </div>
+        <div class="down">↓</div>
+        <div class="row">
+          <span class="node" style="white-space:normal;max-width:340px;text-align:left;line-height:1.5">Prompt: “Given <b>{context}</b>, answer <b>{question}</b> — chỉ dựa trên ngữ cảnh, không có thì nói không biết.”</span>
+          <span class="arrow">→</span>
+          <span class="node accent">LLM</span>
+          <span class="arrow">→</span>
+          <span class="node io">Answer</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ROUTER RETRIEVER -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <div>
+        <h2>Router Retriever — bản nâng cấp truy hồi</h2>
+        <p class="sec-sub">Một bộ định tuyến đọc câu hỏi rồi chọn chiến lược: câu mơ hồ thì sinh thêm truy vấn + trộn hạng (RRF); câu rõ thì hybrid + reranker.</p>
+      </div>
+    </div>
+    <div class="board">
+      <div class="flow">
+        <div class="row">
+          <span class="node">Vector Retriever</span>
+          <span class="node">BM25 Retriever</span>
+          <span class="arrow">→</span>
+          <span class="node">Hybrid Retriever</span>
+          <span class="arrow">→</span>
+          <span class="node accent">Router Retriever</span>
+        </div>
+        <div class="row" style="margin-top:8px"><span class="tag">↑ query · chọn tuyến</span></div>
+        <div class="down">↓</div>
+        <div class="branch">
+          <div class="lane">
+            <span class="lane-cap">câu mơ hồ (ambiguous)</span>
+            <span class="node">Query Generation<br>+ Hybrid Retriever<br>+ Reciprocal Rank Fusion</span>
+          </div>
+          <div class="lane">
+            <span class="lane-cap">câu rõ (clear)</span>
+            <span class="node">Hybrid Retriever<br>+ Reranker Model</span>
+          </div>
+        </div>
+        <div class="down">↓</div>
+        <div class="row"><span class="node accent">Top-k Context</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. BASELINE -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <div>
+        <h2>Baseline đo được — BM25 (offline)</h2>
+        <p class="sec-sub">Chân đế của router. Chạy hoàn toàn không cần API key / index vector, nên là mốc so sánh khi thêm vector · RRF · reranker.</p>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="val ok">83.3%</div><div class="k">Hit@1</div></div>
+      <div class="metric"><div class="val">91.7%</div><div class="k">Hit@3</div></div>
+      <div class="metric"><div class="val">91.7%</div><div class="k">Hit@5</div></div>
+      <div class="metric"><div class="val">0.889</div><div class="k">MRR</div></div>
+    </div>
+    <div class="runline">
+      <span><b>840</b> chunks</span>
+      <span><b>12</b> câu ground-truth</span>
+      <span><b>~250ms</b> toàn bộ</span>
+      <span>chạy: <b>npm run test:retrieval</b></span>
+    </div>
+  </section>
+
+  <!-- 4. FINDING -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <div>
+        <h2>Điều số liệu hé lộ</h2>
+        <p class="sec-sub">Vì sao cần tầng vector + reranker chứ không chỉ BM25.</p>
+      </div>
+    </div>
+    <div class="finding">
+      <span class="dot"></span>
+      <div>
+        <h3>Câu “Chủ đầu tư Nhã Đạt là ai?” chỉ xếp hạng #6</h3>
+        <p>BM25 bỏ dấu nên <code>nhã đạt</code> → <code>nha dat</code>, trùng với <code>nhà đất</code> (real estate) xuất hiện khắp corpus → kéo nhầm đoạn chung chung lên đầu. Đây đúng là loại lỗi mà <b>semantic vector + reranker</b> của Router Retriever xử lý được — bằng chứng cụ thể để ưu tiên dựng hai tầng đó trước.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. MAP TO CODE -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <div>
+        <h2>Ánh xạ sang code</h2>
+        <p class="sec-sub">Cái gì đã có, cái gì là bước tiếp theo.</p>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Thành phần</th><th>Ở đâu trong code</th><th>Trạng thái</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Vector retriever</td><td><code>lib/rag.ts · retrieve()</code> (cosine + boost)</td><td><span class="pill done">đã có</span></td></tr>
+          <tr><td>Keyword / BM25</td><td><code>tests/retrieval_eval_harness.js</code> + offline mode trong retrieve()</td><td><span class="pill done">baseline</span></td></tr>
+          <tr><td>Hybrid retriever</td><td>Gộp điểm vector + keyword trong <code>retrieve()</code></td><td><span class="pill done">một phần</span></td></tr>
+          <tr><td>Router (chọn tuyến)</td><td>Phân loại câu mơ hồ / rõ trước khi truy hồi</td><td><span class="pill next">bước tiếp</span></td></tr>
+          <tr><td>Query gen + RRF</td><td>Sinh truy vấn phụ, trộn hạng đối ứng</td><td><span class="pill next">bước tiếp</span></td></tr>
+          <tr><td>Reranker model</td><td>Cross-encoder xếp lại top-k trước khi vào prompt</td><td><span class="pill next">bước tiếp</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Harness: <b>npm run test:retrieval</b> (BM25, offline) · <b>npm run test:harness</b> (chất lượng câu trả lời, cần server + key).
+    Baseline này là mốc — thêm mỗi tầng router thì đo lại cùng bộ 12 câu để thấy Hit@k / MRR nhích lên.
+  </footer>
+</div>
