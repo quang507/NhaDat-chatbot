@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { splitCleanSentences, splitSentences } from '@/lib/speech';
+import { splitCleanSentences } from '@/lib/speech';
 import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
 import { matchStaticSlide } from '@/lib/static_slides';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
@@ -36,7 +36,6 @@ export default function SlideBotPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
-  const [voiceOn, setVoiceOn] = useState(false);
   const [slideKey, setSlideKey] = useState(0);
   // Chu de bat duoc tu giong noi khach — '' = chua bat, dang lang nghe.
   const [topicLabel, setTopicLabel] = useState('');
@@ -151,11 +150,9 @@ export default function SlideBotPage() {
     setState,
     startListening,
     stopAllVoiceActivities,
-    speakSentence,
     toggleMic,
     isListeningLoopActive,
   } = useVoiceAgent({
-    voiceOn: voiceOn,
     onSpeechResult: (text) => {
       if (handleVoiceCommands(text)) return;
       handleAmbientSpeech(text);
@@ -257,49 +254,12 @@ export default function SlideBotPage() {
     fetchSlideData(query, true);
   };
 
-  const streamChatForVoice = async (speechText: string, history: any[] = []) => {
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: speechText, history }),
-      });
-      if (!res.ok || !res.body) return;
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let sentenceBuffer = '';
-      
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        sentenceBuffer += chunk;
-        const { sentences, remaining } = splitSentences(sentenceBuffer);
-        sentenceBuffer = remaining;
-        sentences.forEach(sentence => speakSentence(sentence, false));
-      }
-      if (sentenceBuffer.trim()) {
-        speakSentence(sentenceBuffer.trim(), true);
-      } else {
-        speakSentence('', true);
-      }
-    } catch (err) {
-      console.error('Lỗi stream chat:', err);
-    }
-  };
-
   const fetchSlideData = async (text: string, ambient = false) => {
     const t0 = Date.now();
     try {
       isGeneratingRef.current = true;
       if (!ambient) setState('processing');
       dbg(`📡 Gọi /api/slide (ambient=${ambient})…`);
-
-      // Mở luồng giọng nói TỨC THÌ nếu voiceOn = true
-      if (voiceOn) {
-        streamChatForVoice(text);
-      }
 
       const res = await fetch('/api/slide', {
         method: 'POST',
@@ -339,14 +299,9 @@ export default function SlideBotPage() {
       setSlideKey(k => k + 1);
       setSlide(data);
 
-      if (voiceOn) {
-        // Đã được đọc bởi streamChatForVoice, không đọc lại data.speech_text nữa
-        // Chỉ lưu lại text để hiển thị hoặc xử lý sau nếu cần
-      } else {
-        setState('listening');
-        setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
-        startListening();
-      }
+      setState('listening');
+      setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
+      startListening();
     } catch (e: any) {
       const msg = e?.message || String(e);
       dbg(`🔴 LỖI sau ${((Date.now() - t0) / 1000).toFixed(1)}s: ${msg}`);
@@ -524,7 +479,6 @@ export default function SlideBotPage() {
             <span className="font-bold text-[#A8D94A]">🔧 DEBUG</span>
             <span>
               state: <b className="text-amber-300">{state}</b>
-              {' · '}voice: <b className="text-amber-300">{voiceOn ? 'ON' : 'OFF'}</b>
               {' · '}slide: <b className="text-amber-300">{slide ? 'CÓ' : 'CHƯA'}</b>
             </span>
           </div>
@@ -557,7 +511,6 @@ export default function SlideBotPage() {
           <div className={`px-4 py-2 rounded-full font-bold uppercase tracking-wide flex items-center gap-2 border text-[clamp(10px,1vw,15px)] ${
             state === 'listening' ? 'bg-[#E3F0E3] text-[#0E5A34] border-[#2E9E5B]/30'
             : state === 'processing' ? 'bg-amber-50 text-amber-700 border-amber-200'
-            : state === 'speaking' ? 'bg-[#2E9E5B] text-white border-[#2E9E5B]'
             : 'bg-white text-neutral-400 border-black/10'
           }`}>
             {state === 'listening' && (
@@ -570,7 +523,6 @@ export default function SlideBotPage() {
             {state === 'idle' && 'Đang chờ'}
             {state === 'listening' && 'Đang nghe'}
             {state === 'processing' && 'Đang suy nghĩ…'}
-            {state === 'speaking' && 'Đang trả lời'}
           </div>
           <Link
             href="/voice"
@@ -631,18 +583,6 @@ export default function SlideBotPage() {
             </>
           )}
         </div>
-
-        <button
-          onClick={() => setVoiceOn(!voiceOn)}
-          title="Bật/tắt giọng đọc khi slide hiện"
-          className={`px-4 py-2.5 rounded-full font-semibold border transition-all flex items-center gap-1.5 text-[clamp(11px,1.1vw,16px)] ${
-            voiceOn
-              ? 'bg-[#E3F0E3] border-[#2E9E5B]/50 text-[#0E5A34]'
-              : 'bg-white border-black/10 text-neutral-400 hover:text-neutral-600'
-          }`}
-        >
-          {voiceOn ? '🔊 Đọc: Bật' : '🔇 Đọc: Tắt'}
-        </button>
 
         <div className="relative">
           {state !== 'idle' && (
