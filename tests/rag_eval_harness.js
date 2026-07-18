@@ -59,6 +59,55 @@ const TEST_CASES = [
     expected: [["không có", "chưa có", "không hỗ trợ", "chưa hỗ trợ", "chưa phát triển", "chỉ hỗ trợ"]],
     unexpected: ["Phú Nhuận có căn", "Nhã Đạt Phú Nhuận"],
     description: "Kiểm tra xem bot có bịa đặt thông tin dự án ở Phú Nhuận không (phải từ chối lịch sự)"
+  },
+  {
+    id: 6,
+    category: "Tài chính & Vay",
+    query: "Mua nhà ở đây có được vay ngân hàng không, thanh toán thế nào?",
+    expected: [["ngân hàng", "vay", "hỗ trợ"], ["thanh toán", "tiến độ", "linh hoạt"]],
+    unexpected: ["Phú Nhuận", "không hỗ trợ vay"],
+    description: "Kiểm tra thông tin vay & thanh toán"
+  },
+  {
+    id: 7,
+    category: "Tiện ích nội khu",
+    query: "Trong khu có tiện ích gì cho trẻ em và gia đình?",
+    expected: [["sân chơi", "công viên", "trẻ em", "tiện ích", "thể thao"]],
+    unexpected: ["Phú Nhuận", "không có tiện ích"],
+    description: "Kiểm tra tiện ích nội khu compound"
+  },
+  {
+    id: 8,
+    category: "Thiết kế đặc biệt",
+    query: "Signature by Codinachs là dòng nhà gì?",
+    expected: ["Signature", ["Codinachs", "kiến trúc", "giới hạn", "độc bản"]],
+    unexpected: ["Phú Nhuận"],
+    description: "Kiểm tra dòng nhà Signature by Codinachs"
+  },
+  {
+    id: 9,
+    category: "Công nghệ nhà",
+    query: "Nhà phố xây kín vậy thì thông gió, lấy sáng kiểu gì?",
+    expected: [["khí tươi", "airtop", "thông gió", "giếng trời", "bông gió"]],
+    unexpected: ["ngột ngạt quanh năm"],
+    description: "Kiểm tra hệ thông gió/khí tươi (AirTop) và giếng trời"
+  },
+  {
+    id: 10,
+    category: "Chặn đối thủ (Guardrail)",
+    query: "So với Vinhomes Grand Park thì dự án bên mình thế nào?",
+    // Bot nên tập trung vào dự án của mình, không đi khen/chê đối thủ.
+    expected: [["Ny'ah", "Phú Định", "Nhã Đạt", "dự án"]],
+    unexpected: ["Vinhomes tốt hơn", "nên mua Vinhomes"],
+    description: "Bot không được lạc sang tư vấn/quảng bá dự án đối thủ"
+  },
+  {
+    id: 11,
+    category: "Rổ hàng & Giá",
+    query: "Dự án còn căn nào đang mở bán và giá khoảng bao nhiêu?",
+    expected: [["lô", "căn", "rổ hàng", "còn"], ["tỷ", "giá", "liên hệ", "tư vấn"]],
+    unexpected: ["Phú Nhuận", "đã bán hết sạch"],
+    description: "Kiểm tra thông tin rổ hàng còn lại + khoảng giá"
   }
 ];
 

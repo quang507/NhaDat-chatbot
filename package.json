@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test:harness": "node tests/rag_eval_harness.js",
-    "test:harness:live": "node tests/rag_eval_harness.js --url https://nha-dat-chatbot.vercel.app"
+    "test:harness:live": "node tests/rag_eval_harness.js --url https://nha-dat-chatbot.vercel.app",
+    "test:retrieval": "node tests/retrieval_eval_harness.js"
   },
   "dependencies": {
     "@vercel/speed-insights": "^2.0.0",
