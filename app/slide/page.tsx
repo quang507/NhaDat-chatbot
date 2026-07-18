@@ -250,7 +250,7 @@ export default function SlideBotPage() {
     }
 
     // BAT DUOC CHU DE -> hien "Nguoi ta dang noi ve [chu de]" + cau hoi that.
-    lastSlideRef.current = { topic: intent.topic || null, at: now };
+    lastSlideRef.current = { topic: intent.topic || null, detail: intent.detail, at: now };
     setTopicLabel(TOPIC_LABELS[intent.topic || 'general'] || TOPIC_LABELS.general);
     setHeardText(query);
     setTranscript(query);

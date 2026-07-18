@@ -17,8 +17,9 @@ export type AmbientIntent = {
   reason: 'too_short' | 'filler' | 'competitor' | 'has_project_topic' | 'explicit_slide_request' | 'weak_signal';
   confidence: number;
   topic?: IntentTopic;
-  score?: number;   // tổng điểm tín hiệu (dùng để chẩn đoán/log)
-  hits?: string[];  // các từ khóa đã khớp
+  detail?: string;  // phân biệt chi tiết trong cùng topic (vd: 'cosmo_gen_2' vs 'fusion_gen_5')
+  score?: number;
+  hits?: string[];
 };
 
 // ── Câu chêm / phản hồi xã giao không cần slide ──────────────────────────────
@@ -222,6 +223,13 @@ function scoreTopics(clean: string): { total: number; strong: number; topic?: In
 }
 
 // ── Classifier chính ─────────────────────────────────────────────────────────
+function detectModel(clean: string): string | undefined {
+  if (/fusion|phiêu dân|phiêu-dân|fiu|gen 5|gen5/.test(clean)) return 'fusion_gen_5';
+  if (/cosmo|cót mô|cốt mô|cot mo|côt mô|gen 2|gen2/.test(clean)) return 'cosmo_gen_2';
+  if (/\bopus\b|ô-pút|ô pút|o pút|opút/.test(clean)) return 'opus';
+  return undefined;
+}
+
 export function classifyAmbientIntent(text: string): AmbientIntent {
   const clean = text.normalize('NFC').toLowerCase().trim();  // NFD (STT) -> NFC để khớp từ khóa
   const wordCount = clean.split(/\s+/).filter(Boolean).length;
@@ -266,7 +274,8 @@ export function classifyAmbientIntent(text: string): AmbientIntent {
 
   // Đủ tín hiệu → tạo slide. Confidence tỉ lệ theo điểm (cao hơn nếu topic cụ thể).
   const confidence = Math.min(0.6 + total * 0.12 + (topic !== 'general' ? 0.1 : 0), 0.98);
-  return { shouldGenerate: true, reason: 'has_project_topic', confidence, topic, score: total, hits };
+  const detail = detectModel(clean);
+  return { shouldGenerate: true, reason: 'has_project_topic', confidence, topic, detail, score: total, hits };
 }
 
 // ── Chống nhảy slide/ảnh liên tục — DÙNG CHUNG cho app/voice và app/slide ────
@@ -277,6 +286,7 @@ export const SLIDE_MIN_DISPLAY_MS = 10000;
 
 export interface SlideDisplayState {
   topic: IntentTopic | null;
+  detail?: string;
   at: number; // Date.now() lúc slide/ảnh hiện tại được set
 }
 
@@ -285,6 +295,9 @@ export function shouldRefreshSlide(intent: AmbientIntent, prev: SlideDisplayStat
   if (!intent.shouldGenerate) return false;
   if (intent.reason === 'explicit_slide_request') return true; // sale chủ động -> luôn làm mới
   const sameTopic = !!intent.topic && intent.topic === prev.topic;
+  // Cùng topic nhưng KHÁC model cụ thể (cosmo → fusion) → luôn làm mới slide
+  const sameDetail = intent.detail === prev.detail;
+  if (sameTopic && !sameDetail) return true;
   if (sameTopic) return false;
   return now - prev.at >= SLIDE_MIN_DISPLAY_MS;
 }
