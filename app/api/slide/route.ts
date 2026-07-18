@@ -424,9 +424,28 @@ export async function POST(req: NextRequest) {
     } else if (hasExplicitModel && model) {
       // Khách nhắc TÊN MẪU NHÀ mà không hỏi phòng/chủ đề cụ thể -> slide giới thiệu mẫu + ảnh gốc.
       const i = MODEL_INTRO[model];
-      const imgs = getRootImagesForModel(model);
+      const FALLBACK_IMGS: Record<string, string[]> = {
+        cosmo_gen_2: [
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png',
+        ],
+        fusion_gen_5: [
+          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png',
+          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png',
+        ],
+        opus: [
+          '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/opus/opus_mat-tien.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg',
+        ],
+      };
+      let imgs = getRootImagesForModel(model);
       const prio = (u: string) => (u.includes('tong-quan') ? 0 : u.includes('mat-tien') ? 1 : 2);
       imgs.sort((a, b) => prio(a) - prio(b));
+      // Fallback nếu readdirSync trả rỗng trên Vercel serverless
+      if (imgs.length === 0) imgs = FALLBACK_IMGS[model] || [];
       staticSlide = {
         layout_type: 'split_image_right',
         title: i.title,
@@ -878,7 +897,7 @@ export async function POST(req: NextRequest) {
         if (model === 'opus') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'tang_2') {
@@ -894,14 +913,14 @@ export async function POST(req: NextRequest) {
         if (model === 'fusion_gen_5') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'mat_bang') {
         parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg',
-          '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-4-5-6.jpg',
-          '/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg'
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-4-5-6.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg'
         ];
         parsed.layout_type = 'split_image_right';
       } else if (category === 'phap_ly') {

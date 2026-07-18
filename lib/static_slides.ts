@@ -34,7 +34,7 @@ export interface CatalogEntry {
 const IMG = '/images/01_NyAh-PhuDinh';
 
 // Ảnh gốc toàn dự án (phối cảnh tổng)
-const ROOT = [`${IMG}/ny'ah phu dinh (1).jpg`, `${IMG}/ny'ah phu dinh (2).jpg`, `${IMG}/ny'ah phu dinh (3).jpg`];
+const ROOT = [`${IMG}/ny'ah-phu-dinh-tong-quan-1.jpg`, `${IMG}/ny'ah-phu-dinh-tong-quan-2.jpg`, `${IMG}/ny'ah-phu-dinh-tong-quan-3.jpg`];
 
 export const STATIC_SLIDES: CatalogEntry[] = [
 
@@ -243,7 +243,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
       title: 'Vị trí các lô Cosmo',
       points: ['Cosmo Gen 2 nằm tại các trục nội khu vuông vắn', 'Lô điển hình 5m mặt tiền, vuông vắn dễ bố trí', 'Xem sơ đồ để chọn hướng hợp mệnh'],
       speech_text: 'Đây là sơ đồ vị trí các lô Cosmo trong dự án — lô vuông vắn với mặt tiền năm mét.',
-      image_urls: [`${IMG}/vi_tri/ban_do/cosmo-gen-2_vi-tri.jpg`],
+      image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
     },
   },
   {
@@ -254,7 +254,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
       title: 'Vị trí các lô Fusion',
       points: ['Fusion Gen 5 trải dọc hai trục chính của dự án', 'Có dãy 2 mặt tiền phía Tây - Tây Nam (lô 27-35)', 'Xem sơ đồ để chọn lô hợp hướng'],
       speech_text: 'Sơ đồ vị trí các lô Fusion — trong đó dãy lô 27 đến 35 là bản hai mặt tiền.',
-      image_urls: [`${IMG}/vi_tri/ban_do/fusion-gen-5_vi-tri.jpg`],
+      image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
     },
   },
 
@@ -392,7 +392,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
       title: 'Cấu trúc tầng Cosmo Gen 2',
       points: ['Trệt: garage + khách thông tầng', 'Tầng 2 ông bà — tầng 3 bếp — tầng 4 master', 'Tầng 5 phòng con — tầng 6 sân thượng'],
       speech_text: 'Cấu trúc Cosmo Gen 2: trệt để xe và tiếp khách, các tầng trên chia trọn cho ba thế hệ.',
-      image_urls: [`${IMG}/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg`, `${IMG}/mat_bang/cosmo-gen-2_cau-truc-4-5-6.jpg`],
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg`, `${IMG}/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-4-5-6.jpg`],
     },
   },
   {
@@ -403,7 +403,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
       title: 'Cấu trúc tầng Fusion Gen 5',
       points: ['4 phòng ngủ cho 3 thế hệ', 'Thiết kế lệch tầng thông thoáng', 'Thang máy + thang biến hóa tiết kiệm diện tích'],
       speech_text: 'Fusion Gen 5 có bốn phòng ngủ cho ba thế hệ với thiết kế lệch tầng độc đáo.',
-      image_urls: [`${IMG}/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg`, `${IMG}/mat_bang/fusion-gen-5_cau-truc-4-5-6.jpg`],
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg`, `${IMG}/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-4-5-6.jpg`],
     },
   },
   {
@@ -470,7 +470,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
       title: 'Fusion 2 Mặt Tiền',
       points: ['Dãy lô 27-35 sở hữu 2 mặt tiền', 'Hướng Tây - Tây Nam, đón gió chéo', 'Đất 43,3—49,2 m², sàn tới 246 m²'],
       speech_text: 'Dãy lô hai mươi bảy đến ba mươi lăm là bản Fusion hai mặt tiền — thoáng cả trước lẫn sau.',
-      image_urls: [`${IMG}/noi_that/fusion_gen_5/fusion-gen-5_mat-tien.jpg`, `${IMG}/vi_tri/ban_do/fusion-gen-5_vi-tri.jpg`],
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/fusion-gen-5_mat-tien.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
       forceStatic: true,
     },
   },
