@@ -69,15 +69,25 @@ async function sendTelegramMessage(text: string): Promise<boolean> {
 
 // Ghi 1 bản ghi (mỗi bản = 1 file, tránh xung đột ghi đồng thời)
 export async function writeLog(dir: 'chats' | 'leads', obj: Record<string, unknown>): Promise<void> {
-  // Gửi thông báo Telegram tức thời khi phát hiện số điện thoại (Lead)
+  const time = obj.time || new Date().toISOString();
+
   if (dir === 'leads' && typeof obj.phone === 'string') {
-    const time = obj.time || new Date().toISOString();
+    // Lead có SĐT → gửi thông báo nổi bật
     const phone = obj.phone;
     const msg = obj.message || '';
     const telegramText = `<b>🔥 CÓ LEAD MỚI TỪ CHATBOT!</b>\n\n` +
       `📞 <b>Số điện thoại:</b> <code>${phone}</code>\n` +
       `💬 <b>Tin nhắn khách gửi:</b>\n<i>"${msg}"</i>\n\n` +
       `📅 <b>Thời gian:</b> ${time}`;
+    sendTelegramMessage(telegramText).catch(console.error);
+  } else if (dir === 'chats') {
+    // Mọi tin nhắn chat thường → gửi log ngắn gọn
+    const q = String(obj.question || '').slice(0, 200);
+    const a = String(obj.answer || '').slice(0, 300);
+    const telegramText = `💬 <b>Chat mới</b>\n` +
+      `👤 <i>${q}</i>\n` +
+      `🤖 ${a}\n` +
+      `🕐 ${time}`;
     sendTelegramMessage(telegramText).catch(console.error);
   }
 
