@@ -140,7 +140,8 @@ export const STATIC_SLIDES: CatalogEntry[] = [
     },
   },
   {
-    keywords: ['gói air', 'nhà thô', 'hoàn thiện', 'bàn giao thô', 'full nội thất'],
+    keywords: ['gói air', 'nhà thô', 'hoàn thiện', 'bàn giao thô', 'full nội thất',
+      'airtop', 'air top', 'ê tốp', 'a tốp', 'e tốp', 'gói hoàn thiện', 'gói nội thất'],
     slide: {
       title: 'Gói bàn giao: Thô & Air',
       points: ['Bàn giao nhà thô hoặc gói hoàn thiện Air', 'Gói Air chênh khoảng 3% giá trị căn nhà', 'Hoàn thiện đồng bộ hệ khí tươi AirTop'],
@@ -525,7 +526,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
 
   // ── 12. MẪU NHÀ — SIGNATURE BY CODINACHS ───────────────────────────────
   {
-    keywords: ['signature', 'codinachs', 'kiến trúc sư nước ngoài', 'kts nước ngoài'],
+    keywords: ['signature', 'codinachs', 'kiến trúc sư nước ngoài', 'kts nước ngoài', 'sig na chơ', 'xích na chơ'],
     slide: {
       title: 'Signature by Codinachs',
       points: ['Hợp tác kiến trúc sư Codinachs — bản thiết kế dấu ấn', 'Chỉ 2 căn duy nhất: lô 43 & 44', 'Mặt tiền góc vát vòng cung độc bản'],
@@ -619,7 +620,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
     },
   },
   {
-    keywords: ['thang máy', 'elevator', 'thang kính'],
+    keywords: ['thang máy', 'elevator', 'thang kính', 'thang máy kính', 'có thang máy', 'thang máy tận nơi'],
     slide: {
       title: 'Thang máy trong nhà',
       points: ['Thang máy tiêu chuẩn ở Cosmo, Fusion, Opus', 'Lên thẳng sân thượng — tiện cho ông bà', 'Thang kính lấy sáng, không tối tù'],
@@ -746,6 +747,24 @@ export const STATIC_SLIDES: CatalogEntry[] = [
       points: ['Mặt bếp đá thạch anh, tủ gỗ cao cấp', 'Thiết bị vệ sinh thương hiệu tuyển chọn', 'Chi tiết hoàn thiện chuẩn theo gói bàn giao'],
       speech_text: 'Vật liệu hoàn thiện đều tuyển chọn cao cấp — từ mặt bếp đá thạch anh đến thiết bị vệ sinh chính hãng.',
       image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`, `${IMG}/noi_that/cosmo_gen_2/wc/cosmo-gen-2_wc.png`],
+    },
+  },
+  {
+    keywords: ['lệch tầng', 'split level', 'xplit level', 'lệt tầng', 'thiết kế lệch'],
+    slide: {
+      title: 'Thiết kế lệch tầng Fusion Gen 5',
+      points: ['Lệch tầng tạo chiều cao thị giác độc đáo', 'Phòng khách mở thông — ngập sáng tự nhiên', 'Bếp đảo kết nối trực tiếp phòng sinh hoạt'],
+      speech_text: 'Fusion Gen 5 nổi bật với thiết kế lệch tầng — phòng khách và bếp thông nhau tạo không gian cực kỳ thoáng đãng và hiện đại.',
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png`, `${IMG}/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png`],
+    },
+  },
+  {
+    keywords: ['cashmere', 'cát sờ mia', 'nội thất cashmere', 'cashmere collection', 'gói cashmere'],
+    slide: {
+      title: 'Nội thất Cashmere — Cosmo Gen 2',
+      points: ['Gói nội thất cao cấp tùy chọn cho Cosmo', 'Vật liệu Cashmere — gỗ tự nhiên, đá thạch anh', 'Bàn giao hoàn thiện cao — dọn vào ở ngay'],
+      speech_text: 'Gói nội thất Cashmere là lựa chọn cao cấp cho mẫu Cosmo Gen 2, sử dụng gỗ tự nhiên và đá thạch anh — vào ở ngay không cần sửa gì thêm.',
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`, `${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`, `${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png`],
     },
   },
   {

@@ -81,15 +81,25 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
 
   // 🏠 Căn hộ / không gian / công năng
   unit: [
-    'căn số', 'diện tích', 'gara', 'thang máy', 'thang xoắn', 'thang biến hóa',
-    'sân thượng', 'phòng ngủ', 'phòng khách', 'phòng tắm', 'phòng bếp', 'phòng học',
-    'ban công', 'master', 'hướng nhà', 'giếng trời', 'thông tầng', 'airtop', 'air top',
-    'wc', 'vệ sinh', 'lavabo', 'ô tô', 'đỗ xe', 'đậu xe', 'khí tươi',
+    'căn số', 'diện tích', 'gara', 'thang máy', 'thang kính', 'thang máy kính',
+    'thang xoắn', 'thang biến hóa',
+    'sân thượng', 'rooftop', 'phòng ngủ', 'phòng khách', 'phòng tắm', 'phòng bếp', 'phòng học',
+    'ban công', 'master', 'hướng nhà', 'giếng trời', 'thông tầng',
+    // Tính năng air / thô / hoàn thiện
+    'airtop', 'air top', 'ê tốp', 'a tốp', 'e tốp', 'gói air', 'nhà thô', 'hoàn thiện',
+    // Tiện nghi nội thất phổ biến
+    'wc', 'vệ sinh', 'lavabo', 'bếp đảo', 'đảo bếp', 'quầy bar',
+    'cashmere', 'signature', 'nội thất cao cấp',
+    // Xe / đỗ xe
+    'ô tô', 'đỗ xe', 'đậu xe', 'xe hơi', 'để xe ô tô', 'đậu ô tô', 'có gara', 'có thang máy',
+    'bán tải', 'suv', '7 chỗ', 'xe lớn',
+    // Số phòng / tầng
     'số phòng', 'tầng mấy', 'bao nhiêu tầng', 'diện tích sàn',
-    // Thêm cách hỏi tự nhiên
     'bao nhiêu phòng', 'mấy phòng', 'phòng nào', 'tầng nào', 'mấy lầu',
-    'để xe ô tô', 'xe hơi', 'đậu ô tô', 'có gara', 'có thang máy',
     'phòng ăn', 'phòng sinh hoạt', 'nhà bếp', 'bếp như thế nào', 'bếp ra sao',
+    // Tính năng đặc trưng mẫu nhà
+    'lệch tầng', 'thông tầng', 'khí tươi', 'sân trong', 'hầm rượu',
+    'văn phòng tại nhà', 'kinh doanh tầng trệt', 'thương mại',
   ],
 
   // 📋 Pháp lý / giấy tờ
@@ -120,14 +130,14 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
     // Tên dự án & chủ đầu tư
     'phú định', "ny'ah", 'nyah', 'niah', 'nhã đạt', 'nha dat', 'nhà đạt',
     'chủ đầu tư', 'founder', 'công ty',
-    // Mẫu nhà (+ biến thể phát âm sai từ STT)
-    'cosmo', 'cót mô', 'cốt mô', 'cot mo', 'côt mô',
-    'fusion', 'phiêu dân', 'phiêu-dân', 'fiu',
-    'opus', 'ô-pút', 'ô pút', 'o pút', 'opút',
+    // Mẫu nhà — tên chính thức + phiên âm STT phổ biến
+    'cosmo', 'cót mô', 'cốt mô', 'cot mo', 'côt mô', 'cát mô',
+    'fusion', 'phiêu dân', 'phiêu-dân', 'phiu dân', 'fiu', 'phiu', 'fuse',
+    'opus', 'ô-pút', 'ô pút', 'o pút', 'opút', 'ô put',
     'cashmere', 'signature',
-    'gen 2', 'gen 5', 'gen hai', 'gen năm',
+    'gen 2', 'gen 5', 'gen hai', 'gen năm', 'gen5', 'gen2',
     // Danh từ chung về dự án
-    'nhà phố', 'nhà mẫu',
+    'nhà phố', 'nhà mẫu', 'compound', 'nhà phố compound',
   ],
 };
 
@@ -164,10 +174,12 @@ const STRONG_THRESHOLD = 2;
 const GENERAL_ANCHORS = new Set<string>([
   'phú định', "ny'ah", 'nyah', 'niah', 'nhã đạt', 'nha dat', 'nhà đạt',
   'chủ đầu tư', 'founder',
-  'cosmo', 'cót mô', 'cốt mô', 'cot mo', 'côt mô',
-  'fusion', 'phiêu dân', 'phiêu-dân', 'fiu',
-  'opus', 'ô-pút', 'ô pút', 'o pút', 'opút',
+  'cosmo', 'cót mô', 'cốt mô', 'cot mo', 'côt mô', 'cát mô',
+  'fusion', 'phiêu dân', 'phiêu-dân', 'phiu dân', 'fiu', 'phiu', 'fuse',
+  'opus', 'ô-pút', 'ô pút', 'o pút', 'opút', 'ô put',
   'cashmere', 'signature',
+  // Tính năng đặc trưng mạnh (anchor riêng)
+  'thang kính', 'thang máy kính', 'lệch tầng', 'airtop', 'air top', 'gói air',
 ]);
 
 // Từ khóa CHUNG CHUNG (weight 1) — dễ xuất hiện trong tám chuyện, cần tín hiệu thứ 2 đi kèm.
@@ -224,9 +236,12 @@ function scoreTopics(clean: string): { total: number; strong: number; topic?: In
 
 // ── Classifier chính ─────────────────────────────────────────────────────────
 function detectModel(clean: string): string | undefined {
-  if (/fusion|phiêu dân|phiêu-dân|fiu|gen 5|gen5/.test(clean)) return 'fusion_gen_5';
-  if (/cosmo|cót mô|cốt mô|cot mo|côt mô|gen 2|gen2/.test(clean)) return 'cosmo_gen_2';
-  if (/\bopus\b|ô-pút|ô pút|o pút|opút/.test(clean)) return 'opus';
+  // Fusion Gen 5 — tên + phiên âm STT (phiêu dân, fiu, phiu, fuse, phút dân...)
+  if (/fusion|phiêu dân|phiêu-dân|phiu dân|phiu-dân|fiu|phiu|fuse|gen 5|gen5|phút dân/.test(clean)) return 'fusion_gen_5';
+  // Cosmo Gen 2 — tên + phiên âm STT (cốt mô, cát mô, cósmo, cashmere → cosmo line)
+  if (/cosmo|cót mô|cốt mô|cot mo|côt mô|cát mô|cat mo|cát-mô|gen 2|gen2|gen hai/.test(clean)) return 'cosmo_gen_2';
+  // Opus — tên + phiên âm STT (ô pút, o pút, ô-pút, opút, o-pút, ô put...)
+  if (/\bopus\b|ô-pút|ô pút|o pút|opút|o-pút|ô put|ô-put|o put/.test(clean)) return 'opus';
   return undefined;
 }
 
