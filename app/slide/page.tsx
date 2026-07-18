@@ -258,7 +258,7 @@ export default function SlideBotPage() {
     const t0 = Date.now();
     try {
       isGeneratingRef.current = true;
-      if (!ambient) setState('processing');
+      setState('processing');
       dbg(`📡 Gọi /api/slide (ambient=${ambient})…`);
 
       const res = await fetch('/api/slide', {
