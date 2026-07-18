@@ -109,7 +109,7 @@ export default function SlideBotPage() {
   const bufferRef = useRef('');
   // Quyết định đổi/giữ slide dùng chung shouldRefreshSlide() (lib/intent.ts) với /voice,
   // để 2 nơi không lệch logic.
-  const lastSlideRef = useRef<{ topic: IntentTopic | null; at: number }>({ topic: null, at: 0 });
+  const lastSlideRef = useRef<{ topic: IntentTopic | null; detail?: string; at: number }>({ topic: null, at: 0 });
   const isGeneratingRef = useRef(false);
 
   const slideRef = useRef<SlideData | null>(null);
