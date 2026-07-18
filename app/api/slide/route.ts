@@ -878,7 +878,7 @@ export async function POST(req: NextRequest) {
         if (model === 'opus') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'tang_2') {
@@ -894,14 +894,14 @@ export async function POST(req: NextRequest) {
         if (model === 'fusion_gen_5') {
           parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png'];
         } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg'];
         }
         parsed.layout_type = 'split_image_right';
       } else if (category === 'mat_bang') {
         parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg',
-          '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-4-5-6.jpg',
-          '/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg'
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-4-5-6.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg'
         ];
         parsed.layout_type = 'split_image_right';
       } else if (category === 'phap_ly') {
