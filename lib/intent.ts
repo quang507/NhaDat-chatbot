@@ -291,13 +291,6 @@ export interface SlideDisplayState {
 }
 
 // Trả về true nếu nên gọi API lấy slide/ảnh mới; false nếu nên giữ nguyên cái đang hiện.
-export function shouldRefreshSlide(intent: AmbientIntent, prev: SlideDisplayState, now: number): boolean {
-  if (!intent.shouldGenerate) return false;
-  if (intent.reason === 'explicit_slide_request') return true; // sale chủ động -> luôn làm mới
-  const sameTopic = !!intent.topic && intent.topic === prev.topic;
-  // Cùng topic nhưng KHÁC model cụ thể (cosmo → fusion) → luôn làm mới slide
-  const sameDetail = intent.detail === prev.detail;
-  if (sameTopic && !sameDetail) return true;
-  if (sameTopic) return false;
-  return now - prev.at >= SLIDE_MIN_DISPLAY_MS;
+export function shouldRefreshSlide(intent: AmbientIntent, _prev: SlideDisplayState, _now: number): boolean {
+  return !!intent.shouldGenerate;
 }
