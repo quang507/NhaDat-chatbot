@@ -6,7 +6,10 @@ import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
 import { detectUnit, unitContext, imageFamily, getGeneralUnsoldContext } from '@/lib/units';
 import { hasProjectKeyword, isCompetitor, COMPETITORS } from '@/lib/intent';
-import { matchStaticSlide } from '@/lib/static_slides';
+import {
+  matchStaticSlide,
+  ROOM_SLIDES, TOPIC_SLIDES, MODEL_INTRO, MODEL_INTRO_NYAH, MODEL_INTRO_KEYWORDS,
+} from '@/lib/static_slides';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -153,6 +156,39 @@ function getRootImagesForProject(): string[] {
   const rootFiles = listImages(IMAGES_ROOT, '/images/01_NyAh-PhuDinh', { filesOnly: true });
   // Trả về ngẫu nhiên 3 tấm nếu có nhiều
   return rootFiles.length > 3 ? rootFiles.sort(() => 0.5 - Math.random()).slice(0, 3) : rootFiles;
+}
+
+// ── DỰNG SLIDE TĨNH TỪ CATALOG (lib/static_slides.ts) ────────────────────────
+// Dữ liệu slide (title/points/speech/ảnh) nằm trong catalog; ở đây chỉ ráp lại +
+// lấy ảnh chung theo thư mục cho biến thể 'nyah' (không rõ mẫu nhà).
+type SlideModel = 'cosmo_gen_2' | 'fusion_gen_5' | 'opus';
+
+function roomSlide(key: 'bep' | 'gara' | 'phong_khach' | 'phong_ngu', model: SlideModel | null): any {
+  const v = ROOM_SLIDES[key].variants[model ?? 'nyah'];
+  return {
+    layout_type: 'split_image_right',
+    title: v.title,
+    points: v.points,
+    speech_text: v.speech_text,
+    image_urls: v.image_urls ? [...v.image_urls] : getGeneralImagesForSpace(v.imageSpace!),
+  };
+}
+
+function topicSlide(key: keyof typeof TOPIC_SLIDES): any {
+  const t = TOPIC_SLIDES[key];
+  const s: any = { layout_type: 'split_image_right', title: t.title, points: t.points, speech_text: t.speech_text, image_urls: [...t.image_urls] };
+  if (t.maps_url) s.maps_url = t.maps_url;
+  return s;
+}
+
+// Slide "mẫu nhà" (nhánh has('mẫu nhà')): text theo mẫu + ảnh giới thiệu cố định.
+function modelIntroSlide(model: SlideModel | null): any {
+  if (model) {
+    const i = MODEL_INTRO[model];
+    return { layout_type: 'split_image_right', title: i.title, points: i.points, speech_text: i.speech_text, image_urls: [...i.introImages] };
+  }
+  const n = MODEL_INTRO_NYAH;
+  return { layout_type: 'split_image_right', title: n.title, points: n.points, speech_text: n.speech_text, image_urls: [...(n.image_urls || [])] };
 }
 
 const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT):
@@ -320,265 +356,30 @@ export async function POST(req: NextRequest) {
     // — chạy TRƯỚC chuỗi nhánh generic để tổ hợp cụ thể thắng nhánh chung.
     let staticSlide: any = matchStaticSlide(cleanMsg, 'combo');
 
-    if (!staticSlide && has('vị trí', 'bản đồ', 'maps', 'địa chỉ', 'đường đi', 'ở đâu', 'chỗ nào', 'nằm ở', 'võ văn kiệt', 'quận 8', 'nguyễn văn linh', 'trương đình hội')) {
-      staticSlide = {
-        layout_type: 'split_image_right',
-        title: "Vị trí dự án",
-        points: [
-          "Mặt tiền Trương Đình Hội, Quận 8",
-          "Kết nối trực tiếp Đại lộ Võ Văn Kiệt",
-          "Chỉ mất 18 phút di chuyển đến Quận 1"
-        ],
-        speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút qua đại lộ Võ Văn Kiệt.",
-        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'],
-        maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A'
-      };
-    } else if (has('tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi', 'hồ bơi', 'bể bơi', 'sân thể thao', 'cầu lông', 'bóng rổ', 'khu vui chơi')) {
-      staticSlide = {
-        layout_type: 'split_image_right',
-        title: "Hệ thống Tiện ích",
-        points: [
-          "Công viên cây xanh nội khu mát mẻ",
-          "Khu vui chơi trẻ em an toàn",
-          "Sân thể thao đa năng và Landmark Coffee"
-        ],
-        speech_text: "Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.",
-        image_urls: ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png']
-      };
-    } else if (has('bếp', 'nhà ăn', 'nấu ăn', 'phòng ăn', 'bàn ăn')) {
-      if (model === 'cosmo_gen_2') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng bếp Cosmo",
-          points: ["Hệ tủ bếp hiện đại, tối ưu", "Mặt bếp đá thạch anh cao cấp", "Không gian bàn ăn ấm cúng"],
-          speech_text: "Khu vực bếp và bàn ăn của căn nhà Cosmo được thiết kế ấm cúng, trang bị hệ tủ bếp hiện đại.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png']
-        };
-      } else if (model === 'fusion_gen_5') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng bếp Fusion",
-          points: ["Bố trí bếp đảo hiện đại", "Thiết kế mở kết nối phòng khách", "Trang bị thiết bị bếp cao cấp"],
-          speech_text: "Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png']
-        };
-      } else if (model === 'opus') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng bếp Opus",
-          points: ["Khu vực bếp nấu biệt lập", "Bố trí bàn ăn sang trọng", "Kết nối ban công thoáng mát"],
-          speech_text: "Không gian bếp của mẫu nhà Opus sang trọng, thoáng đãng nhờ kết nối trực tiếp với ban công ngoài trời.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg']
-        };
-      } else {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng bếp Ny'ah",
-          points: ["Thiết kế bếp hiện đại, tối ưu không gian", "Kết nối không gian ăn uống gia đình", "Trang bị tủ bếp và thiết bị cao cấp"],
-          speech_text: "Các mẫu nhà Ny'ah Phú Định đều được trang bị khu vực bếp hiện đại, tối ưu không gian nấu ăn và sinh hoạt gia đình.",
-          image_urls: getGeneralImagesForSpace('bep')
-        };
-      }
-    } else if (has('gara', 'xe hơi', 'đỗ xe', 'ô tô', 'đậu xe', 'xe ô tô')) {
-      if (model === 'cosmo_gen_2') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Gara Ô tô Cosmo",
-          points: ["Sức chứa lớn cho ô tô và xe máy", "Tích hợp lối đi thang máy kính", "Hệ thống thông gió hiện đại"],
-          speech_text: "Mẫu nhà Cosmo thiết kế gara rộng rãi với sức chứa ô tô lớn, kết nối trực tiếp đến thang máy kính lên các tầng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png']
-        };
-      } else if (model === 'fusion_gen_5') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Gara Ô tô Fusion",
-          points: ["Thiết kế gara đỗ xe bán tải rộng", "Lối vào nhà thông thoáng", "Bố trí hộp kỹ thuật âm tường"],
-          speech_text: "Gara mẫu nhà Fusion được tối ưu không gian, đỗ vừa xe bán tải lớn và có thiết kế thông thoáng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png']
-        };
-      } else if (model === 'opus') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Gara Ô tô Opus",
-          points: ["Gara đỗ xe hơi thoải mái", "Cửa cuốn tự động an toàn", "Bố trí tủ giày và tủ dụng cụ"],
-          speech_text: "Mẫu nhà thương mại Opus sở hữu gara ô tô riêng biệt tại tầng trệt, kết nối thuận tiện lên khu vực kinh doanh.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg']
-        };
-      } else {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Gara Ô tô Ny'ah",
-          points: ["100% căn hộ có gara ô tô riêng", "Thiết kế thông thoáng, cửa cuốn tự động", "Kết nối thang máy lên các tầng"],
-          speech_text: "Toàn bộ căn nhà tại Ny'ah Phú Định đều được thiết kế gara ô tô riêng biệt ngay tầng trệt, thuận tiện cho sinh hoạt hàng ngày.",
-          image_urls: getGeneralImagesForSpace('gara')
-        };
-      }
-    } else if (has('phòng khách', 'sofa', 'tiếp khách', 'sinh hoạt chung')) {
-      if (model === 'cosmo_gen_2') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng khách Cosmo",
-          points: ["Thiết kế kính tràn rộng mở", "Trần cao thông thoáng", "Nội thất sofa hiện đại"],
-          speech_text: "Phòng khách Cosmo Gen 2 ngập tràn ánh sáng tự nhiên nhờ hệ kính lớn và trần cao thoáng đãng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png']
-        };
-      } else if (model === 'fusion_gen_5') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng khách Fusion",
-          points: ["Không gian sinh hoạt rộng lớn", "Thiết kế lệch tầng độc đáo", "Tối ưu góc nhìn ra sân vườn"],
-          speech_text: "Phòng khách mẫu nhà Fusion mang phong cách hiện đại với thiết kế lệch tầng tạo không gian rộng mở.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png']
-        };
-      } else if (model === 'opus') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng khách Opus",
-          points: ["Sảnh đón tiếp khách sang trọng", "Tông màu gỗ ấm áp, lịch lãm", "Bố trí ánh sáng gián tiếp tinh tế"],
-          speech_text: "Không gian phòng khách Opus lịch lãm với gỗ tự nhiên, thiết kế lý tưởng để tiếp các đối tác kinh doanh.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg']
-        };
-      } else {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng khách Ny'ah",
-          points: ["Thiết kế không gian mở, ngập sáng tự nhiên", "Nội thất hiện đại theo từng phong cách", "Linh hoạt bố trí phù hợp gia đình"],
-          speech_text: "Phòng khách các mẫu nhà Ny'ah được thiết kế rộng rãi, thoáng đãng, tận dụng tối đa ánh sáng tự nhiên.",
-          image_urls: getGeneralImagesForSpace('phong_khach')
-        };
-      }
-    } else if (has('phòng ngủ', 'giường', 'ngủ con', 'ngủ master', 'phòng ngủ chính')) {
-      if (model === 'cosmo_gen_2') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng ngủ Master Cosmo",
-          points: ["Phòng ngủ master rộng lớn", "Bố trí giường king-size thoải mái", "Hệ tủ quần áo kính sang trọng"],
-          speech_text: "Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png']
-        };
-      } else if (model === 'fusion_gen_5') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng ngủ Master Fusion",
-          points: ["Thiết kế ấm cúng, sang trọng", "Tích hợp phòng thay đồ riêng", "Cửa sổ hướng công viên nội khu"],
-          speech_text: "Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png']
-        };
-      } else if (model === 'opus') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng ngủ Master Opus",
-          points: ["Không gian nghỉ ngơi đẳng cấp", "Ban công đón gió tự nhiên", "Thiết kế chuẩn khách sạn 5 sao"],
-          speech_text: "Phòng ngủ master của mẫu nhà Opus mang phong cách resort đẳng cấp với ban công rộng đón gió tự nhiên.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg']
-        };
-      } else {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Phòng ngủ Ny'ah",
-          points: ["Phòng ngủ master rộng với WC riêng", "Đầy đủ phòng ngủ cho cả gia đình", "Thiết kế tối ưu ánh sáng và thông gió"],
-          speech_text: "Các mẫu nhà Ny'ah Phú Định đều thiết kế phòng ngủ master riêng biệt cùng các phòng ngủ con tiện nghi, phù hợp cho gia đình nhiều thế hệ.",
-          image_urls: getGeneralImagesForSpace('phong_ngu')
-        };
-      }
-    } else if (has('pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu')) {
-      staticSlide = {
-        layout_type: 'split_image_right',
-        title: "Pháp lý dự án",
-        points: [
-          "Sổ hồng riêng từng căn sở hữu lâu dài",
-          "Quyết định phê duyệt quy hoạch 1/500",
-          "Giấy phép xây dựng đầy đủ, minh bạch"
-        ],
-        speech_text: "Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.",
-        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg']
-      };
-    } else if (has('thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách')) {
-      staticSlide = {
-        layout_type: 'split_image_right',
-        title: "Tiến độ Thanh toán",
-        points: [
-          "Lịch thanh toán linh hoạt theo tiến độ",
-          "Hỗ trợ vay ngân hàng lãi suất ưu đãi",
-          "Chiết khấu hấp dẫn khi thanh toán nhanh"
-        ],
-        speech_text: "Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.",
-        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg']
-      };
-    } else if (has('giá bán', 'giá', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ')) {
-      staticSlide = {
-        layout_type: 'split_image_right',
-        title: "Giá bán hấp dẫn",
-        points: [
-          "Giá bán cạnh tranh hàng đầu khu vực",
-          "Giá trị gia tăng bền vững lâu dài",
-          "Chỉ từ 5 đến 7 tỷ đồng mỗi căn"
-        ],
-        speech_text: "Giá bán các căn nhà phố thương mại tại dự án cực kỳ hấp dẫn, chỉ từ năm đến bảy tỷ đồng tùy theo diện tích và mẫu nhà.",
-        image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg']
-      };
-    } else if (has('mẫu nhà', 'thiết kế nhà', 'kiến trúc nhà')) {
-      if (model === 'cosmo_gen_2') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Mẫu nhà Cosmo Gen 2",
-          points: ["Diện tích sử dụng tối ưu hóa", "Thang máy kính từ gara tầng trệt", "Thiết kế trần cao thoáng đãng"],
-          speech_text: "Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png']
-        };
-      } else if (model === 'fusion_gen_5') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Mẫu nhà Fusion Gen 5",
-          points: ["Thiết kế lệch tầng phá cách", "Không gian bếp đảo rộng mở", "Tối ưu ánh sáng và gió tự nhiên"],
-          speech_text: "Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png']
-        };
-      } else if (model === 'opus') {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "Mẫu nhà Opus",
-          points: ["Phù hợp vừa ở vừa kinh doanh", "Thiết kế 6 tầng bề thế", "Mặt tiền thương mại đắt giá"],
-          speech_text: "Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.",
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg']
-        };
-      } else {
-        staticSlide = {
-          layout_type: 'split_image_right',
-          title: "3 Mẫu nhà Ny'ah",
-          points: ["Cosmo Gen 2 — thang máy kính, gara rộng", "Fusion Gen 5 — thiết kế lệch tầng phá cách", "Opus — 6 tầng vừa ở vừa kinh doanh"],
-          speech_text: "Ny'ah Phú Định cung cấp ba mẫu nhà đặc sắc: Cosmo Gen 2, Fusion Gen 5 và Opus, mỗi mẫu có phong cách riêng phù hợp với từng nhu cầu gia đình.",
-          image_urls: [
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png',
-            '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png',
-            '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
-          ]
-        };
-      }
-    } else if (has('phối cảnh', 'cảnh quan', 'toàn cảnh', 'tổng thể', 'ngoại thất')) {
-      staticSlide = {
-        layout_type: 'split_image_right',
-        title: "Kiến trúc Phối cảnh",
-        points: [
-          "Quy hoạch đồng bộ, hiện đại",
-          "Không gian xanh bao phủ rộng",
-          "Mặt ngoài kiến trúc tinh tế"
-        ],
-        speech_text: "Dự án được quy hoạch đồng bộ với hạ tầng ngầm, đường nội khu rộng rãi và thiết kế mặt ngoài sang trọng.",
-        image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg']
-      };
-    } else if (has('chủ đầu tư', 'nhã đạt', 'nhà phát triển', 'nhà đạt')) {
-      staticSlide = {
-        layout_type: 'split_image_right',
-        title: "Nhà phát triển Nhã Đạt",
-        points: [
-          "Thương hiệu uy tín, chất lượng",
-          "Tập trung vào giá trị sống thực tế",
-          "Cam kết bàn giao hoàn thiện cao"
-        ],
-        speech_text: "Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.",
-        image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg']
-      };
+    if (!staticSlide && has(...TOPIC_SLIDES.vi_tri.keywords)) {
+      staticSlide = topicSlide('vi_tri');
+    } else if (has(...TOPIC_SLIDES.tien_ich.keywords)) {
+      staticSlide = topicSlide('tien_ich');
+    } else if (has(...ROOM_SLIDES.bep.keywords)) {
+      staticSlide = roomSlide('bep', model);
+    } else if (has(...ROOM_SLIDES.gara.keywords)) {
+      staticSlide = roomSlide('gara', model);
+    } else if (has(...ROOM_SLIDES.phong_khach.keywords)) {
+      staticSlide = roomSlide('phong_khach', model);
+    } else if (has(...ROOM_SLIDES.phong_ngu.keywords)) {
+      staticSlide = roomSlide('phong_ngu', model);
+    } else if (has(...TOPIC_SLIDES.phap_ly.keywords)) {
+      staticSlide = topicSlide('phap_ly');
+    } else if (has(...TOPIC_SLIDES.thanh_toan.keywords)) {
+      staticSlide = topicSlide('thanh_toan');
+    } else if (has(...TOPIC_SLIDES.gia.keywords)) {
+      staticSlide = topicSlide('gia');
+    } else if (has(...MODEL_INTRO_KEYWORDS)) {
+      staticSlide = modelIntroSlide(model);
+    } else if (has(...TOPIC_SLIDES.phoi_canh.keywords)) {
+      staticSlide = topicSlide('phoi_canh');
+    } else if (has(...TOPIC_SLIDES.chu_dau_tu.keywords)) {
+      staticSlide = topicSlide('chu_dau_tu');
     } else if (has('tầng', 'lầu', 'tính năng tầng', 'công năng tầng')) {
       // Câu hỏi về "tầng" rất dễ bị LLM bịa số liệu → ép text tĩnh + ảnh tính năng tầng theo model.
       // Chọn số tầng (1-6) nếu có, mặc định ảnh tổng quan tính năng tầng 1.
@@ -621,35 +422,16 @@ export async function POST(req: NextRequest) {
         };
       }
     } else if (hasExplicitModel && model) {
-      // Khách nhắc TÊN MẪU NHÀ mà không hỏi phòng/chủ đề cụ thể nào ("hình ảnh cosmo gen 2",
-      // "cho xem opus"...) -> LUÔN có slide giới thiệu mẫu + ảnh gốc của mẫu đó. Không có nhánh
-      // này thì câu kiểu vậy rơi vào cổng RAG minScore 0.71, câu ngắn dễ dưới ngưỡng -> skip oan.
-      const intro = {
-        cosmo_gen_2: {
-          title: 'Mẫu nhà Cosmo Gen 2',
-          points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'],
-          speech: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.',
-        },
-        fusion_gen_5: {
-          title: 'Mẫu nhà Fusion Gen 5',
-          points: ['Thiết kế lệch tầng phá cách', 'Không gian bếp đảo rộng mở', 'Tối ưu ánh sáng và gió tự nhiên'],
-          speech: 'Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.',
-        },
-        opus: {
-          title: 'Mẫu nhà Opus',
-          points: ['Phù hợp vừa ở vừa kinh doanh', 'Thiết kế 6 tầng bề thế', 'Mặt tiền thương mại đắt giá'],
-          speech: 'Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.',
-        },
-      }[model];
+      // Khách nhắc TÊN MẪU NHÀ mà không hỏi phòng/chủ đề cụ thể -> slide giới thiệu mẫu + ảnh gốc.
+      const i = MODEL_INTRO[model];
       const imgs = getRootImagesForModel(model);
-      // Ưu tiên ảnh tổng quan/mặt tiền lên đầu cho slide giới thiệu
       const prio = (u: string) => (u.includes('tong-quan') ? 0 : u.includes('mat-tien') ? 1 : 2);
       imgs.sort((a, b) => prio(a) - prio(b));
       staticSlide = {
         layout_type: 'split_image_right',
-        title: intro.title,
-        points: intro.points,
-        speech_text: intro.speech,
+        title: i.title,
+        points: i.points,
+        speech_text: i.speech_text,
         image_urls: imgs.slice(0, 3),
       };
     }
