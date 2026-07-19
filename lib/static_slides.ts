@@ -59,7 +59,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
     },
   },
   {
-    keywords: ['bàn giao', 'nhận nhà', 'khi nào xong', 'bao giờ xong', 'khi nào nhận', 'timeline', 'lộ trình'],
+    keywords: ['bàn giao', 'nhận nhà', 'khi nào xong', 'bao giờ xong', 'khi nào nhận', 'timeline', 'lộ trình', 'mở bán', 'khi nào mở bán', 'bao giờ mở bán'],
     slide: {
       title: 'Lộ trình dự án',
       points: ['Thi công đúng cam kết, cập nhật công khai hàng tháng', 'Lịch bàn giao chi tiết theo từng giai đoạn', 'Liên hệ tư vấn viên để nhận mốc bàn giao chính xác'],
@@ -99,7 +99,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
 
   // ── 3. PHÁP LÝ ─────────────────────────────────────────────────────────
   {
-    keywords: ['pháp lý', 'sổ hồng', 'sổ đỏ', 'giấy phép', 'giấy chứng nhận', 'gcn', 'gpxd', 'tranh chấp', 'quy hoạch'],
+    keywords: ['pháp lý', 'sổ hồng', 'sổ đỏ', 'giấy phép', 'giấy chứng nhận', 'gcn', 'gpxd', 'tranh chấp', 'quy hoạch', 'sổ riêng', 'sang tên', 'chuyển nhượng', 'sang nhượng', 'bán lại'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Pháp lý minh bạch',
@@ -131,7 +131,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
     },
   },
   {
-    keywords: ['thanh toán', 'trả góp', 'vay ngân hàng', 'lãi suất', 'trả trước', 'vay được không', 'hỗ trợ vay'],
+    keywords: ['thanh toán', 'trả góp', 'vay ngân hàng', 'lãi suất', 'trả trước', 'vay được không', 'hỗ trợ vay', 'vay bao nhiêu', 'vay tối đa', 'trả chậm', 'trả trong bao lâu'],
     slide: {
       title: 'Thanh toán & Vay ngân hàng',
       points: ['Ngân hàng đối tác hỗ trợ vay mua nhà', 'Lịch thanh toán linh hoạt theo tiến độ xây dựng', 'Tư vấn viên hỗ trợ hồ sơ vay trọn gói'],
@@ -315,7 +315,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
     },
   },
   {
-    keywords: ['an ninh', 'bảo vệ', 'camera', 'an toàn không', 'compound', 'khép kín'],
+    keywords: ['an ninh', 'bảo vệ', 'camera', 'an toàn không', 'compound', 'khép kín', 'pccc', 'phòng cháy', 'cháy nổ', 'thoát hiểm'],
     slide: {
       title: 'Compound an ninh khép kín',
       points: ['Khu compound khép kín, kiểm soát ra vào', 'An ninh tuần tra, camera giám sát', 'Trẻ em chơi trong khu — bố mẹ an tâm'],
@@ -421,7 +421,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
 
   // ── 8. HƯỚNG & PHONG THỦY ──────────────────────────────────────────────
   {
-    keywords: ['hướng nhà', 'phong thủy', 'hướng nào', 'hợp tuổi', 'đông tứ', 'tây tứ', 'hợp mệnh'],
+    keywords: ['hướng nhà', 'phong thủy', 'hướng nào', 'hợp tuổi', 'đông tứ', 'tây tứ', 'hợp mệnh', 'hướng nắng', 'nắng chiều', 'hướng gió'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Hướng nhà & Phong thủy',
@@ -638,7 +638,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
     },
   },
   {
-    keywords: ['airtop', 'khí tươi', 'thông gió', 'không khí trong nhà', 'ngộp không'],
+    keywords: ['airtop', 'khí tươi', 'thông gió', 'không khí trong nhà', 'ngộp không', 'máy lạnh', 'điều hòa', 'không khí sạch'],
     slide: {
       title: 'Hệ khí tươi AirTop',
       points: ['AirTop cấp khí tươi liên tục cho cả nhà', 'Nhà phố kín vẫn thoáng như có gió trời', 'Trang bị chuẩn ở các dòng chính'],
@@ -647,7 +647,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
     },
   },
   {
-    keywords: ['smart home', 'nhà thông minh', 'công nghệ nhà'],
+    keywords: ['smart home', 'smarthome', 'nhà thông minh', 'công nghệ nhà', 'điều khiển từ xa'],
     slide: {
       title: 'Công nghệ trong nhà',
       points: ['Hạ tầng chờ sẵn cho smart home', 'Hệ kỹ thuật âm tường gọn gàng', 'Nâng cấp theo nhu cầu từng gia đình'],
@@ -795,7 +795,7 @@ export const STATIC_SLIDES: CatalogEntry[] = [
     },
   },
   {
-    keywords: ['khách đỗ xe', 'khách để xe', 'chỗ đậu xe khách', 'bãi xe'],
+    keywords: ['khách đỗ xe', 'khách để xe', 'chỗ đậu xe khách', 'bãi xe', 'gửi xe', 'hầm xe'],
     slide: {
       title: 'Đỗ xe cho khách',
       points: ['Đường nội khu rộng — khách đỗ thuận tiện', 'Mỗi nhà đều có garage riêng trong nhà', 'Không cảnh tranh chỗ đậu như chung cư'],
