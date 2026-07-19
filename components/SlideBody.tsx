@@ -209,27 +209,30 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     );
   }
 
-  // ══════════════ LAYOUT 3: TEXT-ONLY — nền tối đồng bộ ══════════════════════
+  // ══════════════ LAYOUT 3: TEXT-ONLY — giữ nền SÁNG như cũ ══════════════════
   return (
-    <div style={{ containerType: 'inline-size' }} className="w-full h-full">
-      <div key={replayKey} className="relative w-full h-full overflow-hidden bg-[#0C0F0D] flex flex-col justify-center items-center text-center px-[8cqw] gap-[3cqw]">
-        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(46,158,91,0.14),transparent_65%)]" />
-        <div className="relative z-10 shrink-0 text-center">
-          <TopLabel />
-          <h1 className="mt-[2cqw] uppercase font-black leading-[1.08] tracking-tight text-white text-[clamp(22px,6cqw,96px)]">
+    <div style={{ containerType: 'inline-size' }} className="w-full h-full flex flex-col">
+      <div key={replayKey} className="flex-1 min-h-0 flex flex-col justify-center items-center text-center px-[8cqw] gap-[3cqw]">
+        <div className="shrink-0 text-center">
+          <Line delay={60}>
+            <span className="inline-flex px-[2.2cqw] py-[0.7cqw] rounded-full font-bold tracking-[0.18em] uppercase text-[clamp(9px,1.5cqw,17px)] bg-[#E3F0E3] text-[#0E5A34]">
+              Ny&apos;ah Phú Định
+            </span>
+          </Line>
+          <h1 className="mt-[2cqw] uppercase font-black leading-[1.08] tracking-tight text-[#161616] text-[clamp(22px,6cqw,96px)]">
             <Line delay={190}>{data.title}</Line>
           </h1>
         </div>
         {data.highlight_number && (
-          <Line delay={340} className="relative z-10 font-black leading-none text-transparent text-[clamp(34px,11cqw,150px)]">
-            <span style={{ WebkitTextStroke: '0.55cqw #A8D94A' }}>{data.highlight_number}</span>
+          <Line delay={340} className="font-black leading-none text-transparent text-[clamp(34px,11cqw,150px)]">
+            <span style={{ WebkitTextStroke: '0.55cqw #2E9E5B' }}>{data.highlight_number}</span>
           </Line>
         )}
         {points.length > 0 && (
-          <div className="relative z-10 mt-[clamp(24px,5cqw,100px)] space-y-[1.2cqw]">
+          <div className="space-y-[1.2cqw]">
             {points.slice(0, 4).map((p, i) => (
               <Line key={i} delay={520 + i * 150}
-                className="text-white/80 font-medium leading-snug text-[clamp(12px,3cqw,30px)]">
+                className="text-neutral-600 font-medium leading-snug text-[clamp(12px,3cqw,30px)]">
                 {p}
               </Line>
             ))}
