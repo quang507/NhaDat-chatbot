@@ -170,7 +170,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
           </div>
 
           {/* 2. Ảnh chiếm toàn bộ không gian còn lại — object-contain, không crop */}
-          <div className="relative z-10 flex-1 min-h-0 px-[3cqw] pt-[2cqw] pb-[clamp(90px,16cqw,220px)]">
+          <div className="relative z-10 flex-1 min-h-0 pt-[2cqw] pb-[clamp(90px,16cqw,220px)]">
             {imgs.length === 1 ? (
               <figure
                 className={`img-card relative w-full h-full ${onImageClick ? 'cursor-zoom-in' : ''}`}
