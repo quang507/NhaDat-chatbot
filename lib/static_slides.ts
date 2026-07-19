@@ -29,9 +29,6 @@ export interface CatalogEntry {
   slide: CatalogSlide;
 }
 
-import * as fs from 'fs';
-import * as path from 'path';
-
 const IMG = '/images/01_NyAh-PhuDinh';
 
 // Ảnh gốc toàn dự án (phối cảnh tổng)
@@ -39,7 +36,12 @@ const ROOT = [`${IMG}/ny'ah-phu-dinh-tong-quan-1.jpg`, `${IMG}/ny'ah-phu-dinh-to
 
 // Load slides from JSON file if available, otherwise fallback to hardcoded data
 function loadSlidesFromJSON(): CatalogEntry[] | null {
+  // Only attempt to load JSON on server side (Node.js environment)
+  if (typeof process === 'undefined' || !process.cwd) return null;
+
   try {
+    const fs = require('fs');
+    const path = require('path');
     const jsonPath = path.join(process.cwd(), 'public/data/slides.json');
     if (!fs.existsSync(jsonPath)) return null;
 
