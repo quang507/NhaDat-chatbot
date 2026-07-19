@@ -85,7 +85,7 @@ export default function SlideBotPage() {
           title: 'Mặt bằng Cosmo Gen 2',
           points: ['Cấu trúc 5 tầng + sân thượng', 'Thang máy kính thông suốt từ gara', 'Linh hoạt bố trí theo nhu cầu gia đình'],
           speech_text: 'Mặt bằng Cosmo Gen 2 bố trí hợp lý từng tầng, tối ưu công năng sinh hoạt.',
-          image_urls: ['/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg'],
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg'],
         },
         // demo=5: 1 ảnh dọc nội thất (portrait 4:5)
         '5': {
@@ -324,8 +324,8 @@ export default function SlideBotPage() {
       '/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg',
       '/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg',
       '/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png',
-      '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg',
-      '/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg',
       '/images/01_NyAh-PhuDinh/mat_bang/opus_cau-truc-1-2-3.jpg',
       '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
       '/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg',
