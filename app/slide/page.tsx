@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { normalizeVietnameseSpeech } from '@/lib/speech';
+import { splitCleanSentences } from '@/lib/speech';
 import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
 import { matchStaticSlide } from '@/lib/static_slides';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
@@ -79,29 +79,21 @@ export default function SlideBotPage() {
           highlight_number: '18 phút',
           image_urls: [],
         },
-        // ?demo=4 -> ẢNH ĐỨNG (mặt tiền) · ?demo=5 -> ẢNH NGANG (tổng quan) · ?demo=6 -> KHÔNG ẢNH (nhiều dòng)
+        // demo=4: ảnh DỌC — mặt bằng cấu trúc (portrait 3:4)
         '4': {
-          title: 'Bất động sản dòng tiền, Hai mặt tiền',
-          points: ['Vừa ở vừa kinh doanh trên mặt tiền lớn'],
-          speech_text: 'Mẫu nhà Opus mặt tiền thương mại, khai thác dòng tiền ngay.',
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_mat-tien.jpg'],
+          layout_type: 'split_image_right',
+          title: 'Mặt bằng Cosmo Gen 2',
+          points: ['Cấu trúc 5 tầng + sân thượng', 'Thang máy kính thông suốt từ gara', 'Linh hoạt bố trí theo nhu cầu gia đình'],
+          speech_text: 'Mặt bằng Cosmo Gen 2 bố trí hợp lý từng tầng, tối ưu công năng sinh hoạt.',
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg'],
         },
+        // demo=5: 1 ảnh dọc nội thất (portrait 4:5)
         '5': {
-          title: 'Tổng quan khu compound Ny\'ah Phú Định',
-          points: ['50 căn nhà phố mật độ thấp, tiện ích nội khu đầy đủ'],
-          speech_text: 'Toàn cảnh dự án nhìn từ trên cao.',
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'],
-        },
-        '6': {
-          title: 'So sánh phương án tài chính',
-          points: [
-            'Vay ngân hàng đối tác tới 70% giá trị căn nhà',
-            'Lịch thanh toán linh hoạt theo tiến độ xây dựng',
-            'Chiết khấu hấp dẫn khi thanh toán nhanh',
-            'Tư vấn viên lo trọn gói hồ sơ vay',
-          ],
-          speech_text: 'Đây là các phương án tài chính phù hợp với ngân sách của anh chị.',
-          image_urls: [],
+          layout_type: 'split_image_right',
+          title: 'Phòng khách Cosmo Gen 2',
+          points: ['Trần cao 3.5m, không gian mở thoáng', 'Cửa kính lùa đón ánh sáng tự nhiên', 'Nội thất Cashmere cao cấp tùy chọn'],
+          speech_text: 'Phòng khách được thiết kế với trần cao và hệ cửa kính lùa, tạo cảm giác thông thoáng và sang trọng.',
+          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png'],
         },
       };
       setSlideKey(k => k + 1);
@@ -117,7 +109,7 @@ export default function SlideBotPage() {
   const bufferRef = useRef('');
   // Quyết định đổi/giữ slide dùng chung shouldRefreshSlide() (lib/intent.ts) với /voice,
   // để 2 nơi không lệch logic.
-  const lastSlideRef = useRef<{ topic: IntentTopic | null; at: number }>({ topic: null, at: 0 });
+  const lastSlideRef = useRef<{ topic: IntentTopic | null; detail?: string; at: number }>({ topic: null, at: 0 });
   const isGeneratingRef = useRef(false);
 
   const slideRef = useRef<SlideData | null>(null);
@@ -161,64 +153,12 @@ export default function SlideBotPage() {
     toggleMic,
     isListeningLoopActive,
   } = useVoiceAgent({
-    // NGHE-ONLY qua Gemini: thu âm từng câu -> /api/transcribe (nghe tên riêng chính
-    // xác, chạy mọi trình duyệt). Không đọc — slide chính là câu trả lời (chữ trên màn).
-    voiceOn: false,
-    sttEngine: 'gemini',
     onSpeechResult: (text) => {
-      const normalized = normalizeVietnameseSpeech(text);
-      dbg(`🎙️ Nhận: "${text}" -> Chuẩn hóa: "${normalized}"`);
-      if (handleVoiceCommands(normalized)) return;
-      handleAmbientSpeech(normalized);
+      if (handleVoiceCommands(text)) return;
+      handleAmbientSpeech(text);
     },
     onDebug: (m) => dbg(m),
   });
-
-  // Preload toàn bộ ảnh tĩnh ngay khi load trang để tăng tốc đổi slide lên 0ms (no network delay)
-  useEffect(() => {
-    const staticImages = [
-      '/images/01_NyAh-PhuDinh/tien_ich/18_phut_den_Quan_1_Chi_tiet.jpg',
-      '/images/01_NyAh-PhuDinh/tien_ich/nyah-phu-dinh_cong-vien.png',
-      '/images/01_NyAh-PhuDinh/tien_ich/vi_tri.jpg',
-      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-garage.png',
-      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-phong-khach.png',
-      '/images/01_NyAh-PhuDinh/phoi_canh/nyah-phu-dinh_phoi-canh-wc.png',
-      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-ding_mat-bang-tang-1.jpg',
-      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-2.jpg',
-      '/images/01_NyAh-PhuDinh/mat_bang/nyah-phu-dinh_mat-bang-tang-3.jpg',
-      // Cosmo Gen 2
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-3.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2-phong-ngu-ong-ba-1.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_wc.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_mat-cat.jpg',
-      // Fusion Gen 5
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png',
-      // Opus
-      '/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-2.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/van phong/opus_tang-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/van phong/opus_tang-2.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/wc/opus_wc.jpg',
-    ];
-    staticImages.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
 
   // Dung han -> xoa chu de dang hien.
   useEffect(() => { if (state === 'idle') { setTopicLabel(''); setHeardText(''); } }, [state]);
@@ -307,7 +247,7 @@ export default function SlideBotPage() {
     }
 
     // BAT DUOC CHU DE -> hien "Nguoi ta dang noi ve [chu de]" + cau hoi that.
-    lastSlideRef.current = { topic: intent.topic || null, at: now };
+    lastSlideRef.current = { topic: intent.topic || null, detail: intent.detail, at: now };
     setTopicLabel(TOPIC_LABELS[intent.topic || 'general'] || TOPIC_LABELS.general);
     setHeardText(query);
     setTranscript(query);
@@ -318,7 +258,7 @@ export default function SlideBotPage() {
     const t0 = Date.now();
     try {
       isGeneratingRef.current = true;
-      if (!ambient) setState('processing');
+      setState('processing');
       dbg(`📡 Gọi /api/slide (ambient=${ambient})…`);
 
       const res = await fetch('/api/slide', {
@@ -359,7 +299,6 @@ export default function SlideBotPage() {
       setSlideKey(k => k + 1);
       setSlide(data);
 
-      // Nghe-only: hiện slide xong -> mở lại vòng nghe ngay (không đọc).
       setState('listening');
       setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
       startListening();
@@ -385,8 +324,8 @@ export default function SlideBotPage() {
       '/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg',
       '/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg',
       '/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png',
-      '/images/01_NyAh-PhuDinh/mat_bang/cosmo-gen-2_cau-truc-1-2-3.jpg',
-      '/images/01_NyAh-PhuDinh/mat_bang/fusion-gen-5_cau-truc-1-2-3.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg',
       '/images/01_NyAh-PhuDinh/mat_bang/opus_cau-truc-1-2-3.jpg',
       '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
       '/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg',
@@ -482,9 +421,7 @@ export default function SlideBotPage() {
 
   return (
     <div
-      className={`h-screen max-h-screen overflow-hidden flex flex-col relative transition-colors duration-500 ${
-        slide ? 'bg-[#0b0c12] text-white' : 'text-[#161616] bg-[#F5F3EC]'
-      }`}
+      className="h-screen max-h-screen overflow-hidden flex flex-col relative text-[#161616] bg-[#F5F3EC]"
       style={{ fontFamily: "'Be Vietnam Pro', 'Inter', 'Google Sans', system-ui, sans-serif" }}
     >
       <style dangerouslySetInnerHTML={{ __html: `
@@ -542,7 +479,6 @@ export default function SlideBotPage() {
             <span className="font-bold text-[#A8D94A]">🔧 DEBUG</span>
             <span>
               state: <b className="text-amber-300">{state}</b>
-              {' · '}stt: <b className="text-amber-300">gemini</b>
               {' · '}slide: <b className="text-amber-300">{slide ? 'CÓ' : 'CHƯA'}</b>
             </span>
           </div>
@@ -554,16 +490,13 @@ export default function SlideBotPage() {
         </div>
       )}
 
-      <div aria-hidden className={`pointer-events-none absolute inset-0 z-0 overflow-hidden ${slide ? 'hidden' : ''}`}>
-        <div className="dots absolute top-[8%] right-[5%] w-44 h-28 opacity-70" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <div className="absolute -top-[10vh] -left-[10vh] w-[26vw] h-[26vw] rounded-full bg-[#E3F0E3]" />
         <div className="absolute top-[17%] -right-16 w-[18vw] h-[18vw] rounded-full border-[3px] border-[#2E9E5B]/20" />
-        {/* Vòng tròn dưới-trái + chấm bi nhỏ đè LÊN TRÊN, sát mép dưới (render sau = nằm trên) */}
         <div className="absolute bottom-[13%] -left-10 w-[12vw] h-[12vw] rounded-full border-2 border-[#2E9E5B]/15" />
-        <div className="dots absolute bottom-[6%] left-[3.5%] w-20 h-28 opacity-60" />
       </div>
 
-      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 ${slide ? 'hidden' : ''}`}>
+      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-all duration-300 ${slide ? 'h-0 overflow-hidden opacity-0 pointer-events-none !p-0' : ''}`}>
         <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl overflow-hidden bg-white shadow-md border border-black/5 flex items-center justify-center shrink-0">
             <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
@@ -578,7 +511,6 @@ export default function SlideBotPage() {
           <div className={`px-4 py-2 rounded-full font-bold uppercase tracking-wide flex items-center gap-2 border text-[clamp(10px,1vw,15px)] ${
             state === 'listening' ? 'bg-[#E3F0E3] text-[#0E5A34] border-[#2E9E5B]/30'
             : state === 'processing' ? 'bg-amber-50 text-amber-700 border-amber-200'
-            : state === 'speaking' ? 'bg-[#2E9E5B] text-white border-[#2E9E5B]'
             : 'bg-white text-neutral-400 border-black/10'
           }`}>
             {state === 'listening' && (
@@ -591,7 +523,6 @@ export default function SlideBotPage() {
             {state === 'idle' && 'Đang chờ'}
             {state === 'listening' && 'Đang nghe'}
             {state === 'processing' && 'Đang suy nghĩ…'}
-            {state === 'speaking' && 'Đang trả lời'}
           </div>
           <Link
             href="/voice"
@@ -630,13 +561,9 @@ export default function SlideBotPage() {
                 <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
                 <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
               </span>
-              <span className="shrink-0 text-neutral-500">Nội dung nói:</span>
-              <span className="font-bold text-[#0E5A34] truncate">“{heardText || topicLabel}”</span>
-              {heardText && (
-                <span className="shrink-0 px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-500 text-[10px] uppercase font-bold whitespace-nowrap ml-auto">
-                  {topicLabel}
-                </span>
-              )}
+              <span className="shrink-0 text-neutral-500">Người ta đang nói về</span>
+              <span className="shrink-0 px-3 py-1 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold whitespace-nowrap">{topicLabel}</span>
+              {heardText && <span className="truncate text-neutral-400 italic hidden md:inline">“{heardText}”</span>}
             </>
           ) : (
             <>

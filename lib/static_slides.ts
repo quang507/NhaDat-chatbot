@@ -77,7 +77,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
-    keywords: ['bàn giao', 'nhận nhà', 'khi nào xong', 'bao giờ xong', 'khi nào nhận', 'timeline', 'lộ trình'],
+    keywords: ['bàn giao', 'nhận nhà', 'khi nào xong', 'bao giờ xong', 'khi nào nhận', 'timeline', 'lộ trình', 'mở bán', 'khi nào mở bán', 'bao giờ mở bán'],
     slide: {
       title: 'Lộ trình dự án',
       points: ['Thi công đúng cam kết, cập nhật công khai hàng tháng', 'Lịch bàn giao chi tiết theo từng giai đoạn', 'Liên hệ tư vấn viên để nhận mốc bàn giao chính xác'],
@@ -117,7 +117,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
 
   // ── 3. PHÁP LÝ ─────────────────────────────────────────────────────────
   {
-    keywords: ['pháp lý', 'sổ hồng', 'sổ đỏ', 'giấy phép', 'giấy chứng nhận', 'gcn', 'gpxd', 'tranh chấp', 'quy hoạch'],
+    keywords: ['pháp lý', 'sổ hồng', 'sổ đỏ', 'giấy phép', 'giấy chứng nhận', 'gcn', 'gpxd', 'tranh chấp', 'quy hoạch', 'sổ riêng', 'sang tên', 'chuyển nhượng', 'sang nhượng', 'bán lại'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Pháp lý minh bạch',
@@ -149,7 +149,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
-    keywords: ['thanh toán', 'trả góp', 'vay ngân hàng', 'lãi suất', 'trả trước', 'vay được không', 'hỗ trợ vay'],
+    keywords: ['thanh toán', 'trả góp', 'vay ngân hàng', 'lãi suất', 'trả trước', 'vay được không', 'hỗ trợ vay', 'vay bao nhiêu', 'vay tối đa', 'trả chậm', 'trả trong bao lâu'],
     slide: {
       title: 'Thanh toán & Vay ngân hàng',
       points: ['Ngân hàng đối tác hỗ trợ vay mua nhà', 'Lịch thanh toán linh hoạt theo tiến độ xây dựng', 'Tư vấn viên hỗ trợ hồ sơ vay trọn gói'],
@@ -158,7 +158,8 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
-    keywords: ['gói air', 'nhà thô', 'hoàn thiện', 'bàn giao thô', 'full nội thất'],
+    keywords: ['gói air', 'nhà thô', 'hoàn thiện', 'bàn giao thô', 'full nội thất',
+      'airtop', 'air top', 'ê tốp', 'a tốp', 'e tốp', 'gói hoàn thiện', 'gói nội thất'],
     slide: {
       title: 'Gói bàn giao: Thô & Air',
       points: ['Bàn giao nhà thô hoặc gói hoàn thiện Air', 'Gói Air chênh khoảng 3% giá trị căn nhà', 'Hoàn thiện đồng bộ hệ khí tươi AirTop'],
@@ -332,7 +333,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
-    keywords: ['an ninh', 'bảo vệ', 'camera', 'an toàn không', 'compound', 'khép kín'],
+    keywords: ['an ninh', 'bảo vệ', 'camera', 'an toàn không', 'compound', 'khép kín', 'pccc', 'phòng cháy', 'cháy nổ', 'thoát hiểm'],
     slide: {
       title: 'Compound an ninh khép kín',
       points: ['Khu compound khép kín, kiểm soát ra vào', 'An ninh tuần tra, camera giám sát', 'Trẻ em chơi trong khu — bố mẹ an tâm'],
@@ -438,7 +439,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
 
   // ── 8. HƯỚNG & PHONG THỦY ──────────────────────────────────────────────
   {
-    keywords: ['hướng nhà', 'phong thủy', 'hướng nào', 'hợp tuổi', 'đông tứ', 'tây tứ', 'hợp mệnh'],
+    keywords: ['hướng nhà', 'phong thủy', 'hướng nào', 'hợp tuổi', 'đông tứ', 'tây tứ', 'hợp mệnh', 'hướng nắng', 'nắng chiều', 'hướng gió'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Hướng nhà & Phong thủy',
@@ -543,7 +544,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
 
   // ── 12. MẪU NHÀ — SIGNATURE BY CODINACHS ───────────────────────────────
   {
-    keywords: ['signature', 'codinachs', 'kiến trúc sư nước ngoài', 'kts nước ngoài'],
+    keywords: ['signature', 'codinachs', 'kiến trúc sư nước ngoài', 'kts nước ngoài', 'sig na chơ', 'xích na chơ'],
     slide: {
       title: 'Signature by Codinachs',
       points: ['Hợp tác kiến trúc sư Codinachs — bản thiết kế dấu ấn', 'Chỉ 2 căn duy nhất: lô 43 & 44', 'Mặt tiền góc vát vòng cung độc bản'],
@@ -637,7 +638,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
-    keywords: ['thang máy', 'elevator', 'thang kính'],
+    keywords: ['thang máy', 'elevator', 'thang kính', 'thang máy kính', 'có thang máy', 'thang máy tận nơi'],
     slide: {
       title: 'Thang máy trong nhà',
       points: ['Thang máy tiêu chuẩn ở Cosmo, Fusion, Opus', 'Lên thẳng sân thượng — tiện cho ông bà', 'Thang kính lấy sáng, không tối tù'],
@@ -655,7 +656,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
-    keywords: ['airtop', 'khí tươi', 'thông gió', 'không khí trong nhà', 'ngộp không'],
+    keywords: ['airtop', 'khí tươi', 'thông gió', 'không khí trong nhà', 'ngộp không', 'máy lạnh', 'điều hòa', 'không khí sạch'],
     slide: {
       title: 'Hệ khí tươi AirTop',
       points: ['AirTop cấp khí tươi liên tục cho cả nhà', 'Nhà phố kín vẫn thoáng như có gió trời', 'Trang bị chuẩn ở các dòng chính'],
@@ -664,7 +665,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
-    keywords: ['smart home', 'nhà thông minh', 'công nghệ nhà'],
+    keywords: ['smart home', 'smarthome', 'nhà thông minh', 'công nghệ nhà', 'điều khiển từ xa'],
     slide: {
       title: 'Công nghệ trong nhà',
       points: ['Hạ tầng chờ sẵn cho smart home', 'Hệ kỹ thuật âm tường gọn gàng', 'Nâng cấp theo nhu cầu từng gia đình'],
@@ -767,6 +768,24 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
+    keywords: ['lệch tầng', 'split level', 'xplit level', 'lệt tầng', 'thiết kế lệch'],
+    slide: {
+      title: 'Thiết kế lệch tầng Fusion Gen 5',
+      points: ['Lệch tầng tạo chiều cao thị giác độc đáo', 'Phòng khách mở thông — ngập sáng tự nhiên', 'Bếp đảo kết nối trực tiếp phòng sinh hoạt'],
+      speech_text: 'Fusion Gen 5 nổi bật với thiết kế lệch tầng — phòng khách và bếp thông nhau tạo không gian cực kỳ thoáng đãng và hiện đại.',
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png`, `${IMG}/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png`],
+    },
+  },
+  {
+    keywords: ['cashmere', 'cát sờ mia', 'nội thất cashmere', 'cashmere collection', 'gói cashmere'],
+    slide: {
+      title: 'Nội thất Cashmere — Cosmo Gen 2',
+      points: ['Gói nội thất cao cấp tùy chọn cho Cosmo', 'Vật liệu Cashmere — gỗ tự nhiên, đá thạch anh', 'Bàn giao hoàn thiện cao — dọn vào ở ngay'],
+      speech_text: 'Gói nội thất Cashmere là lựa chọn cao cấp cho mẫu Cosmo Gen 2, sử dụng gỗ tự nhiên và đá thạch anh — vào ở ngay không cần sửa gì thêm.',
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`, `${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`, `${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png`],
+    },
+  },
+  {
     keywords: ['bếp đảo', 'đảo bếp', 'quầy bar'],
     slide: {
       title: 'Bếp đảo & Quầy bar',
@@ -794,7 +813,7 @@ export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
     },
   },
   {
-    keywords: ['khách đỗ xe', 'khách để xe', 'chỗ đậu xe khách', 'bãi xe'],
+    keywords: ['khách đỗ xe', 'khách để xe', 'chỗ đậu xe khách', 'bãi xe', 'gửi xe', 'hầm xe'],
     slide: {
       title: 'Đỗ xe cho khách',
       points: ['Đường nội khu rộng — khách đỗ thuận tiện', 'Mỗi nhà đều có garage riêng trong nhà', 'Không cảnh tranh chỗ đậu như chung cư'],

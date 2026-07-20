@@ -339,11 +339,11 @@ export async function POST(req: NextRequest) {
     }
 
     let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null = null;
-    if (has('fusion', 'gen 5', 'gen5', 'phiêu dân', 'phiêu-dân')) {
+    if (has('fusion', 'gen 5', 'gen5', 'phiêu dân', 'phiêu-dân', 'phiu dân', 'phiu-dân', 'fiu', 'phiu', 'fuse', 'phút dân')) {
       model = 'fusion_gen_5';
-    } else if (has('opus', 'ô-pút', 'ô pút', 'o pút')) {
+    } else if (has('opus', 'ô-pút', 'ô pút', 'o pút', 'opút', 'o-pút', 'ô put', 'ô-put', 'o put')) {
       model = 'opus';
-    } else if (has('cosmo', 'cót mô', 'cót-mô', 'cốt mô')) {
+    } else if (has('cosmo', 'cót mô', 'cót-mô', 'cốt mô', 'cát mô', 'cat mo', 'cát-mô', 'gen 2', 'gen2', 'gen hai')) {
       model = 'cosmo_gen_2';
     } else {
       const unitNo = detectUnit(message);
