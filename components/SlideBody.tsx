@@ -17,7 +17,7 @@
 import React, { useEffect, useState } from 'react';
 
 // Thời gian hiển thị mỗi ảnh trước khi chuyển sang ảnh kế (ms)
-const IMAGE_ROTATE_MS = 4000;
+const IMAGE_ROTATE_MS = 2500;
 
 export interface SlideBodyData {
   layout_type?: string;
@@ -141,7 +141,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             {imgs.map((src, i) => (
               <img
                 key={src} src={src} alt=""
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-out ${
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[800ms] ease-out ${
                   i === imgIdx ? 'opacity-100 animate-ken-burns' : 'opacity-0 pointer-events-none'
                 }`}
                 onError={onImageError ? () => onImageError(src) : undefined}
@@ -203,7 +203,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
               {imgs.map((src, i) => (
                 <img
                   key={src} src={src} alt=""
-                  className={`absolute inset-0 w-full h-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.55)] transition-all duration-1000 ease-out ${
+                  className={`absolute inset-0 w-full h-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.55)] transition-all duration-[800ms] ease-out ${
                     i === imgIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.03] pointer-events-none'
                   }`}
                   onError={onImageError ? () => onImageError(src) : undefined}
