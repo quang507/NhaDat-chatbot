@@ -10,9 +10,14 @@
 //  • Text nằm ĐÈ LÊN vùng ảnh, ghim đáy trên gradient đen, cách title một
 //    khoảng lớn (~100px trên màn trình chiếu) — title trên / points dưới.
 //  • full_background: ảnh tràn màn, toàn bộ chữ đè trực tiếp lên ảnh.
+//  • NHIỀU ẢNH: mỗi thời điểm chỉ hiện MỘT ảnh nằm ngang — tự động chuyển
+//    lần lượt bằng crossfade, KHÔNG BAO GIỜ xếp ảnh cạnh nhau.
 // ============================================================================
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+// Thời gian hiển thị mỗi ảnh trước khi chuyển sang ảnh kế (ms)
+const IMAGE_ROTATE_MS = 4000;
 
 export interface SlideBodyData {
   layout_type?: string;
@@ -51,6 +56,20 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   const isMapImg = (src: string) => src.includes('vi_tri') || src.includes('18_phut');
   const qrUrl = data.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
 
+  // NGUYÊN TẮC: mỗi thời điểm chỉ hiện MỘT ảnh. Nhiều ảnh -> tự chuyển lần
+  // lượt (crossfade), KHÔNG xếp cạnh nhau.
+  const [imgIdx, setImgIdx] = useState(0);
+  const imgsKey = imgs.join('|');
+  useEffect(() => {
+    setImgIdx(0);
+    if (imgs.length <= 1) return;
+    const t = setInterval(() => setImgIdx(i => (i + 1) % imgs.length), IMAGE_ROTATE_MS);
+    return () => clearInterval(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imgsKey, replayKey]);
+
+  const cur = imgs[Math.min(imgIdx, Math.max(imgs.length - 1, 0))];
+
   const QrChip = () => (
     <a
       href={qrUrl} target="_blank" rel="noopener noreferrer"
@@ -67,6 +86,20 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
       </span>
     </a>
   );
+
+  // Chấm chỉ báo vị trí ảnh khi slide có nhiều ảnh.
+  const Dots = () => imgs.length > 1 ? (
+    <div className="absolute bottom-[2cqw] right-[3cqw] z-20 flex gap-[1cqw] bg-black/50 backdrop-blur px-[2cqw] py-[1cqw] rounded-full">
+      {imgs.map((_, i) => (
+        <span
+          key={i}
+          className={`h-[1.4cqw] min-h-[6px] rounded-full transition-all duration-300 ${
+            i === imgIdx ? 'w-[3.5cqw] min-w-[16px] bg-[#A8D94A]' : 'w-[1.4cqw] min-w-[6px] bg-white/40'
+          }`}
+        />
+      ))}
+    </div>
+  ) : null;
 
   // Nhãn nhỏ tracked kiểu Figma: "mẫu nhà opus" — lowercase nhẹ nhàng, mờ.
   const TopLabel = ({ delay = 80 }: { delay?: number }) => (
@@ -90,27 +123,31 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     </div>
   );
 
-  // Nền mờ phía sau: chính ảnh đầu tiên blur + tối phủ toàn khung.
+  // Nền mờ phía sau: chính ảnh đang hiện blur + tối phủ toàn khung.
   const BlurBackdrop = ({ src }: { src: string }) => (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
-      <img src={src} alt="" className="w-full h-full object-cover scale-110 blur-2xl brightness-[0.32] saturate-[0.85]" />
+      <img src={src} alt="" className="w-full h-full object-cover scale-110 blur-2xl brightness-[0.32] saturate-[0.85] transition-opacity duration-1000" />
       <div className="absolute inset-0 bg-black/35" />
     </div>
   );
 
   // ══════════════ LAYOUT 1: FULL BACKGROUND — chữ đè trực tiếp lên ảnh ═══════
+  // Nhiều ảnh: nền tràn màn tự chuyển lần lượt (crossfade) — không thumbnail.
   if (hasImg && (data.layout_type === 'full_background' || !data.layout_type)) {
-    const [bg, ...thumbs] = imgs;
     return (
       <div style={{ containerType: 'inline-size' }} className="w-full h-full">
         <div key={replayKey} className="relative w-full h-full overflow-hidden bg-[#0C0F0D]">
           <div className="img-card absolute inset-0" style={{ animationDelay: '0ms', borderRadius: 0 }}>
-            <img
-              src={bg} alt=""
-              className="w-full h-full object-cover animate-ken-burns"
-              onError={onImageError ? () => onImageError(bg) : undefined}
-              onClick={onImageClick ? () => onImageClick(bg) : undefined}
-            />
+            {imgs.map((src, i) => (
+              <img
+                key={src} src={src} alt=""
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-out ${
+                  i === imgIdx ? 'opacity-100 animate-ken-burns' : 'opacity-0 pointer-events-none'
+                }`}
+                onError={onImageError ? () => onImageError(src) : undefined}
+                onClick={onImageClick && i === imgIdx ? () => onImageClick(src) : undefined}
+              />
+            ))}
           </div>
           {/* Gradient đen đáy + đỉnh cho label */}
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/35" />
@@ -131,35 +168,21 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             </div>
           </div>
 
-          {thumbs.length > 0 && (
-            <div className="absolute right-[3cqw] bottom-[4.5cqw] hidden md:flex flex-col gap-[1.4cqw]">
-              {thumbs.map((u, i) => (
-                <figure
-                  key={u}
-                  className={`img-card w-[15cqw] max-w-[240px] min-w-[110px] aspect-[4/3] rounded-[1.2cqw] overflow-hidden border border-white/25 shadow-2xl ${onImageClick ? 'cursor-zoom-in' : ''}`}
-                  style={{ animationDelay: `${900 + i * 220}ms` }}
-                  onClick={onImageClick ? () => onImageClick(u) : undefined}
-                >
-                  <img src={u} alt="" className="w-full h-full object-cover"
-                    onError={onImageError ? () => onImageError(u) : undefined} />
-                </figure>
-              ))}
-            </div>
-          )}
-          {isMapImg(bg) && <QrChip />}
+          <Dots />
+          {isMapImg(cur) && <QrChip />}
         </div>
       </div>
     );
   }
 
   // ══════════════ LAYOUT 2: ẢNH CHỦ ĐẠO trên nền blur tối ════════════════════
-  // Dùng chung cho màn dọc lẫn ngang: label nhỏ trên → ảnh chiếm giữa (contain,
-  // không crop) → text đè vùng đáy trên gradient đen.
+  // Dùng chung cho màn dọc lẫn ngang: label nhỏ trên → MỘT ảnh chiếm giữa
+  // (contain, không crop; nhiều ảnh tự chuyển lần lượt) → text đè vùng đáy.
   if (hasImg) {
     return (
       <div style={{ containerType: 'inline-size' }} className="w-full h-full">
         <div key={replayKey} className="relative w-full h-full overflow-hidden bg-[#0C0F0D] flex flex-col">
-          <BlurBackdrop src={imgs[0]} />
+          <BlurBackdrop src={cur} />
 
           {/* 1. Label + title nhỏ gọn trên cùng, giữa */}
           <div className="relative z-10 shrink-0 text-center pt-[2.6cqw] px-[5cqw]">
@@ -169,34 +192,25 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             </h1>
           </div>
 
-          {/* 2. Ảnh chiếm toàn bộ không gian còn lại — object-contain, không crop */}
+          {/* 2. MỘT ảnh chiếm toàn bộ không gian còn lại — object-contain,
+              không crop. Nhiều ảnh: crossfade lần lượt, không xếp cạnh nhau. */}
           <div className="relative z-10 flex-1 min-h-0 pt-[2cqw] pb-[clamp(90px,16cqw,220px)]">
-            {imgs.length === 1 ? (
-              <figure
-                className={`img-card relative w-full h-full ${onImageClick ? 'cursor-zoom-in' : ''}`}
-                style={{ animationDelay: '380ms' }}
-                onClick={onImageClick ? () => onImageClick(imgs[0]) : undefined}
-              >
-                <img src={imgs[0]} alt="" className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
-                  onError={onImageError ? () => onImageError(imgs[0]) : undefined} />
-                {isMapImg(imgs[0]) && <QrChip />}
-              </figure>
-            ) : (
-              <div className={`w-full h-full grid gap-[1.6cqw] ${imgs.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-                {imgs.map((u, i) => (
-                  <figure
-                    key={u}
-                    className={`img-card relative rounded-[1.2cqw] overflow-hidden ${onImageClick ? 'cursor-zoom-in' : ''}`}
-                    style={{ animationDelay: `${380 + i * 200}ms` }}
-                    onClick={onImageClick ? () => onImageClick(u) : undefined}
-                  >
-                    <img src={u} alt="" className="absolute inset-0 w-full h-full object-cover"
-                      onError={onImageError ? () => onImageError(u) : undefined} />
-                    {isMapImg(u) && <QrChip />}
-                  </figure>
-                ))}
-              </div>
-            )}
+            <figure
+              className={`img-card relative w-full h-full ${onImageClick ? 'cursor-zoom-in' : ''}`}
+              style={{ animationDelay: '380ms' }}
+              onClick={onImageClick ? () => onImageClick(cur) : undefined}
+            >
+              {imgs.map((src, i) => (
+                <img
+                  key={src} src={src} alt=""
+                  className={`absolute inset-0 w-full h-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.55)] transition-all duration-1000 ease-out ${
+                    i === imgIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.03] pointer-events-none'
+                  }`}
+                  onError={onImageError ? () => onImageError(src) : undefined}
+                />
+              ))}
+              {isMapImg(cur) && <QrChip />}
+            </figure>
           </div>
 
           {/* 3. Text đè vùng đáy trên gradient đen — cách ảnh/title khoảng lớn */}
@@ -204,6 +218,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
           <div className="absolute inset-x-[5cqw] bottom-[3cqw] z-20">
             <BottomPoints />
           </div>
+          <Dots />
         </div>
       </div>
     );

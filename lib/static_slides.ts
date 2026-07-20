@@ -1,18 +1,16 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // CATALOG SLIDE TĨNH — Ny'ah Phú Định
 // ═══════════════════════════════════════════════════════════════════════════
-// Mỗi entry = 1 slide có sẵn (title/points/speech/ảnh) khớp theo TỪ KHÓA.
-// Không gọi AI — trả ngay lập tức, hoạt động kể cả khi Groq/Gemini chết.
+// Dữ liệu slide được export từ slides.json (public/data/slides.json).
+// Để cập nhật slides không cần rebuild: edit slides.json, restart app.
 //
-// CÁCH THÊM SLIDE MỚI (sửa tay):
-//   1. Copy 1 entry bất kỳ, đổi keywords + title + points + speech_text + image_urls
-//   2. `keywords`: khớp BẤT KỲ từ nào (so khớp cả bản không dấu)
-//   3. `allOf`: PHẢI có đủ TẤT CẢ các từ (dùng cho tổ hợp "bếp + signature")
-//      — entry có allOf được ưu tiên chạy TRƯỚC các nhánh generic trong route
-//   4. Ảnh: đường dẫn bắt đầu /images/... (file phải tồn tại trong public/)
-//
-// SỐ LIỆU trong points lấy từ lib/units.ts (Data_productlist.xlsx 24/6/2026)
-// — KHÔNG tự bịa thêm số.
+// CÁCH THÊM SLIDE MỚI:
+//   1. Edit public/data/slides.json
+//   2. Thêm entry mới với { keywords, slide } hoặc { keywords, allOf, slide }
+//   3. keywords: khớp BẤT KỲ từ nào (so khớp cả bản không dấu)
+//   4. allOf: PHẢI có đủ TẤT CẢ các từ (ưu tiên chạy trước nhánh generic)
+//   5. Ảnh: đường dẫn /images/... (phải tồn tại trong public/)
+//   6. Restart app, không cần rebuild
 // ═══════════════════════════════════════════════════════════════════════════
 
 export interface CatalogSlide {
@@ -36,7 +34,27 @@ const IMG = '/images/01_NyAh-PhuDinh';
 // Ảnh gốc toàn dự án (phối cảnh tổng)
 const ROOT = [`${IMG}/ny'ah-phu-dinh-tong-quan-1.jpg`, `${IMG}/ny'ah-phu-dinh-tong-quan-2.jpg`, `${IMG}/ny'ah-phu-dinh-tong-quan-3.jpg`];
 
-export const STATIC_SLIDES: CatalogEntry[] = [
+// Load slides from JSON file if available, otherwise fallback to hardcoded data
+function loadSlidesFromJSON(): CatalogEntry[] | null {
+  // Only attempt to load JSON on server side (Node.js environment)
+  if (typeof process === 'undefined' || !process.cwd) return null;
+
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const jsonPath = path.join(process.cwd(), 'public/data/slides.json');
+    if (!fs.existsSync(jsonPath)) return null;
+
+    const data = fs.readFileSync(jsonPath, 'utf-8');
+    const parsed = JSON.parse(data);
+    return parsed.static_slides || null;
+  } catch (e) {
+    console.warn('Failed to load slides.json:', e);
+    return null;
+  }
+}
+
+export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
 
   // ── 1. TIẾN ĐỘ & BÀN GIAO ──────────────────────────────────────────────
   {

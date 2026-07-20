@@ -1,0 +1,115 @@
+{
+  "IMG": "/images/01_NyAh-PhuDinh",
+  "ROOT": [
+    "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-1.jpg",
+    "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-2.jpg",
+    "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-3.jpg"
+  ],
+  "static_slides": [
+    {
+      "keywords": ["tiến độ", "xây tới đâu", "xây đến đâu", "công trường", "thi công", "đang xây", "thực tế dự án", "hình thực tế", "xây dựng thế nào"],
+      "slide": {
+        "title": "Tiến độ xây dựng T6/2026",
+        "points": ["Công trường thi công liên tục, cập nhật hàng tháng", "Hình ảnh thực tế mới nhất tháng 6/2026", "Khách có thể ghé xem trực tiếp tại dự án"],
+        "speech_text": "Đây là hình ảnh công trường thực tế mới nhất tháng 6 năm 2026, dự án đang thi công đúng tiến độ.",
+        "image_urls": ["/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-1.jpg", "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-2.jpg", "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-3.jpg"]
+      }
+    },
+    {
+      "keywords": ["tháng 5", "tháng năm"],
+      "allOf": ["tiến độ"],
+      "slide": {
+        "title": "Công trường tháng 5/2026",
+        "points": ["Hình ảnh thi công thực tế tháng 5/2026", "Cập nhật đều đặn từng hạng mục", "Minh bạch tiến độ với khách hàng"],
+        "speech_text": "Hình ảnh công trường tháng 5 năm 2026 — từng hạng mục được cập nhật minh bạch.",
+        "image_urls": ["/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_05-2026-2.jpg", "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_05-2026-3.jpg", "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_05-2026-4.jpg"]
+      }
+    },
+    {
+      "keywords": ["bàn giao", "nhận nhà", "khi nào xong", "bao giờ xong", "khi nào nhận", "timeline", "lộ trình", "mở bán", "khi nào mở bán", "bao giờ mở bán"],
+      "slide": {
+        "title": "Lộ trình dự án",
+        "points": ["Thi công đúng cam kết, cập nhật công khai hàng tháng", "Lịch bàn giao chi tiết theo từng giai đoạn", "Liên hệ tư vấn viên để nhận mốc bàn giao chính xác"],
+        "speech_text": "Dự án thi công theo đúng cam kết — anh chị liên hệ tư vấn viên để nhận lịch bàn giao chi tiết cho từng căn.",
+        "image_urls": ["/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat_timeline.jpg"]
+      }
+    },
+    {
+      "keywords": ["chủ đầu tư", "nhã đạt là ai", "công ty nhã đạt", "ai xây", "uy tín không", "đáng tin"],
+      "slide": {
+        "title": "Chủ đầu tư Nhã Đạt",
+        "points": ["Chủ đầu tư kiêm đơn vị phát triển trực tiếp dự án", "Triết lý: sản phẩm thật, giá trị thật", "Đồng hành cùng khách từ lúc mua đến khi an cư"],
+        "speech_text": "Nhã Đạt là chủ đầu tư trực tiếp phát triển dự án, với triết lý sản phẩm thật và đồng hành lâu dài cùng khách hàng.",
+        "image_urls": ["/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat-tieu-chi-1.jpg", "/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat-tieu-chi-3.jpg"]
+      }
+    },
+    {
+      "keywords": ["dự án đã làm", "đã xây dự án", "kinh nghiệm", "dự án trước", "từng làm"],
+      "slide": {
+        "title": "Các dự án Nhã Đạt đã thực hiện",
+        "points": ["Chuỗi dự án nhà phố đã hoàn thành và bàn giao", "Chất lượng được kiểm chứng qua từng công trình", "Cư dân thực tế đang an cư tại các dự án"],
+        "speech_text": "Nhã Đạt đã hoàn thành và bàn giao nhiều dự án nhà phố — chất lượng được kiểm chứng bằng cư dân thực tế.",
+        "image_urls": ["/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat_du-an-1.jpg", "/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat_du-an-2.jpg", "/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat_du-an-3.jpg"]
+      }
+    }
+  ],
+  "room_slides": {
+    "bep": {
+      "keywords": ["bếp", "nhà ăn", "nấu ăn", "phòng ăn", "bàn ăn"],
+      "variants": {
+        "cosmo_gen_2": {
+          "title": "Phòng bếp Cosmo",
+          "points": ["Hệ tủ bếp hiện đại, tối ưu", "Mặt bếp đá thạch anh cao cấp", "Không gian bàn ăn ấm cúng"],
+          "speech_text": "Khu vực bếp và bàn ăn của căn nhà Cosmo được thiết kế ấm cúng, trang bị hệ tủ bếp hiện đại.",
+          "image_urls": ["/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png"]
+        },
+        "fusion_gen_5": {
+          "title": "Phòng bếp Fusion",
+          "points": ["Bố trí bếp đảo hiện đại", "Thiết kế mở kết nối phòng khách", "Trang bị thiết bị bếp cao cấp"],
+          "speech_text": "Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình.",
+          "image_urls": ["/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png"]
+        },
+        "opus": {
+          "title": "Phòng bếp Opus",
+          "points": ["Khu vực bếp nấu biệt lập", "Bố trí bàn ăn sang trọng", "Kết nối ban công thoáng mát"],
+          "speech_text": "Không gian bếp của mẫu nhà Opus sang trọng, thoáng đãng nhờ kết nối trực tiếp với ban công ngoài trời.",
+          "image_urls": ["/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg"]
+        },
+        "nyah": {
+          "title": "Phòng bếp Ny'ah",
+          "points": ["Thiết kế bếp hiện đại, tối ưu không gian", "Kết nối không gian ăn uống gia đình", "Trang bị tủ bếp và thiết bị cao cấp"],
+          "speech_text": "Các mẫu nhà Ny'ah Phú Định đều được trang bị khu vực bếp hiện đại, tối ưu không gian nấu ăn và sinh hoạt gia đình.",
+          "imageSpace": "bep"
+        }
+      }
+    }
+  },
+  "topic_slides": {},
+  "model_intro_keywords": ["mẫu nhà", "thiết kế nhà", "kiến trúc nhà"],
+  "model_intro": {
+    "cosmo_gen_2": {
+      "title": "Mẫu nhà Cosmo Gen 2",
+      "points": ["Diện tích sử dụng tối ưu hóa", "Thang máy kính từ gara tầng trệt", "Thiết kế trần cao thoáng đãng"],
+      "speech_text": "Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.",
+      "introImages": ["/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png"]
+    },
+    "fusion_gen_5": {
+      "title": "Mẫu nhà Fusion Gen 5",
+      "points": ["Thiết kế lệch tầng phá cách", "Không gian bếp đảo rộng mở", "Tối ưu ánh sáng và gió tự nhiên"],
+      "speech_text": "Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.",
+      "introImages": ["/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png"]
+    },
+    "opus": {
+      "title": "Mẫu nhà Opus",
+      "points": ["Phù hợp vừa ở vừa kinh doanh", "Thiết kế 6 tầng bề thế", "Mặt tiền thương mại đắt giá"],
+      "speech_text": "Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.",
+      "introImages": ["/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg"]
+    }
+  },
+  "model_intro_nyah": {
+    "title": "3 Mẫu nhà Ny'ah",
+    "points": ["Cosmo Gen 2 — thang máy kính, gara rộng", "Fusion Gen 5 — thiết kế lệch tầng phá cách", "Opus — 6 tầng vừa ở vừa kinh doanh"],
+    "speech_text": "Ny'ah Phú Định cung cấp ba mẫu nhà đặc sắc: Cosmo Gen 2, Fusion Gen 5 và Opus, mỗi mẫu có phong cách riêng phù hợp với từng nhu cầu gia đình.",
+    "image_urls": ["/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png", "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png", "/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg"]
+  }
+}
