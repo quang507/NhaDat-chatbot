@@ -14,7 +14,10 @@
 //  container query (cqw) — hợp màn đứng vì cqw bám chiều ngang (cạnh ngắn).
 // ============================================================================
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+// Thời gian hiển thị mỗi ảnh trước khi chuyển sang ảnh kế (ms)
+const IMAGE_ROTATE_MS = 4000;
 
 export interface SlideBodyData {
   layout_type?: string;
@@ -67,7 +70,20 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   const imgs = (data.image_urls || []).filter(Boolean);
   const points = (data.points || []).filter(Boolean);
   const speechLines = splitSentences(data.speech_text || '');
-  const bg = imgs[0];
+
+  // NGUYÊN TẮC: mỗi thời điểm chỉ hiện MỘT ảnh nằm ngang, full chiều ngang.
+  // Nhiều ảnh -> tự động chuyển lần lượt (crossfade), KHÔNG xếp cạnh nhau.
+  const [imgIdx, setImgIdx] = useState(0);
+  const imgsKey = imgs.join('|');
+  useEffect(() => {
+    setImgIdx(0);
+    if (imgs.length <= 1) return;
+    const t = setInterval(() => setImgIdx(i => (i + 1) % imgs.length), IMAGE_ROTATE_MS);
+    return () => clearInterval(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imgsKey, replayKey]);
+
+  const bg = imgs[Math.min(imgIdx, Math.max(imgs.length - 1, 0))];
   const hasImg = !!bg;
   const qrUrl = data.maps_url || 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
 
@@ -123,16 +139,36 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
         <div key={replayKey} className="relative w-full h-full flex flex-col overflow-hidden bg-[#0b0c12]">
           <SourceTag />
 
-          {/* ẢNH — FIT (contain), full chiều ngang, canh giữa. Không crop. */}
+          {/* ẢNH — MỘT ảnh mỗi lần, FIT (contain), full chiều ngang, canh giữa.
+              Nhiều ảnh: tự chuyển lần lượt bằng crossfade — KHÔNG xếp cạnh nhau. */}
           <div className="img-card flex-1 min-h-0 relative" style={{ animationDelay: '0ms', borderRadius: 0 }}>
-            <img
-              src={bg}
-              alt=""
-              className={`absolute inset-0 w-full h-full object-contain ${onImageClick ? 'cursor-zoom-in' : ''}`}
-              onError={onImageError ? () => onImageError(bg) : undefined}
-              onClick={onImageClick ? () => onImageClick(bg) : undefined}
-            />
+            {imgs.map((src, i) => (
+              <img
+                key={src}
+                src={src}
+                alt=""
+                className={`absolute inset-0 w-full h-full object-contain transition-all duration-1000 ease-out ${
+                  i === imgIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.03] pointer-events-none'
+                } ${onImageClick ? 'cursor-zoom-in' : ''}`}
+                onError={onImageError ? () => onImageError(src) : undefined}
+                onClick={onImageClick && i === imgIdx ? () => onImageClick(src) : undefined}
+              />
+            ))}
             {isMapImg(bg) ? <QrChip /> : null}
+
+            {/* Chấm chỉ báo khi có nhiều ảnh */}
+            {imgs.length > 1 && (
+              <div className="absolute bottom-[2cqw] left-1/2 -translate-x-1/2 z-20 flex gap-[1cqw] bg-black/50 backdrop-blur px-[2cqw] py-[1cqw] rounded-full">
+                {imgs.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-[1.4cqw] min-h-[6px] rounded-full transition-all duration-300 ${
+                      i === imgIdx ? 'w-[3.5cqw] min-w-[16px] bg-[#2E9E5B]' : 'w-[1.4cqw] min-w-[6px] bg-white/40'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* CHỮ NHỎ Ở DƯỚI */}
