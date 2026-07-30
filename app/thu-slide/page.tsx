@@ -1,13 +1,13 @@
 'use client';
 
 // ============================================================================
-// /thu-slide — TRANG THỬ SLIDE BẰNG CÁCH GÕ CHỮ
+// /thu-slide - TRANG THỬ SLIDE BẰNG CÁCH GÕ CHỮ
 //
 // Mục đích: gõ đúng câu khách hay hỏi -> xem ngay slide thật mà máy sẽ chiếu,
 // không cần nói vào micro, không cần chờ ambient mode.
 //
 // Dùng CHUNG <SlideBody> với /slide và /voice nên bố cục, ảnh, animation
-// giống hệt màn trình chiếu thật — thấy ở đây thế nào thì khách thấy thế đó.
+// giống hệt màn trình chiếu thật - thấy ở đây thế nào thì khách thấy thế đó.
 //
 // Cột phải là bảng chẩn đoán: nhánh nào xử lý (tĩnh/động), mất bao lâu,
 // ảnh nào 404. Dùng để soi khi slide ra sai.
@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { SlideBody } from '@/components/SlideBody';
 
-const LIME = '#A8D94A'; // xanh brand dùng cho nhấn — khớp SlideBody
+const LIME = '#A8D94A'; // xanh brand dùng cho nhấn - khớp SlideBody
 
 interface SlideData {
   layout_type?: string;
@@ -32,7 +32,7 @@ interface SlideData {
   _source?: 'static_fast' | 'static_llm_text' | 'dynamic_llm';
 }
 
-// Nhãn nhánh xử lý — lấy từ _source do API trả về, KHÔNG suy đoán theo thời gian
+// Nhãn nhánh xử lý - lấy từ _source do API trả về, KHÔNG suy đoán theo thời gian
 // (lần gọi đầu ở dev chậm vì Next phải biên dịch route, dễ báo sai).
 const NHAN_NGUON: Record<string, { ten: string; giai_thich: string }> = {
   static_fast: { ten: 'Slide tĩnh', giai_thich: 'lấy nguyên từ catalog, không qua LLM' },
@@ -40,7 +40,7 @@ const NHAN_NGUON: Record<string, { ten: string; giai_thich: string }> = {
   dynamic_llm: { ten: 'Slide động', giai_thich: 'LLM sinh cả chữ lẫn chọn ảnh từ RAG' },
 };
 
-// Câu mẫu bấm nhanh — gom theo nhóm khách hay hỏi nhất.
+// Câu mẫu bấm nhanh - gom theo nhóm khách hay hỏi nhất.
 const SAMPLES: { nhom: string; cau: string[] }[] = [
   { nhom: 'Tiền & rổ hàng', cau: ['giá bao nhiêu', 'còn căn nào trống', 'thanh toán trả góp', 'gói air hoàn thiện'] },
   { nhom: 'Pháp lý & tiến độ', cau: ['pháp lý sổ hồng', 'tiến độ xây tới đâu', 'khi nào bàn giao'] },
@@ -134,7 +134,7 @@ export default function ThuSlidePage() {
   }
 
   // Màn đứng: ghim theo chiều CAO (h-[72vh] + w-auto) để khung luôn nằm trong
-  // tầm nhìn — nếu ghim theo chiều ngang thì tỉ lệ 9:16 đẩy khung cao quá màn
+  // tầm nhìn - nếu ghim theo chiều ngang thì tỉ lệ 9:16 đẩy khung cao quá màn
   // hình và phần chữ dưới slide bị cắt mất.
   const khung = doc === 'dung'
     ? 'h-[76vh] aspect-[9/16] w-auto'
@@ -179,7 +179,7 @@ export default function ThuSlidePage() {
             ref={inputRef}
             value={text}
             onChange={e => setText(e.target.value)}
-            placeholder="Gõ câu khách hỏi, ví dụ: còn căn nào trống — rồi bấm Enter"
+            placeholder="Gõ câu khách hỏi, ví dụ: còn căn nào trống - rồi bấm Enter"
             className="flex-1 bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-[15px] placeholder:text-white/30 focus:outline-none focus:border-[#A8D94A]/70 focus:bg-white/[0.07] transition"
           />
           <button
@@ -195,7 +195,7 @@ export default function ThuSlidePage() {
 
       {/* ── Slide + chẩn đoán ───────────────────────────────────────────── */}
       <div className="px-5 py-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] items-start">
-        {/* Khung slide — giống hệt màn chiếu thật */}
+        {/* Khung slide - giống hệt màn chiếu thật */}
         <div className="flex justify-center">
           <div className={`${khung} w-full max-w-[520px] lg:max-w-none rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-[#0C0F0D] relative`}>
             {slide ? (
@@ -211,7 +211,7 @@ export default function ThuSlidePage() {
                   <div>
                     <p className="text-white/80 font-semibold">Câu này không ra slide</p>
                     <p className="text-white/45 text-sm mt-2 leading-relaxed">
-                      Máy trả về <code className="text-[#A8D94A]">skip</code> — không khớp slide tĩnh nào
+                      Máy trả về <code className="text-[#A8D94A]">skip</code> - không khớp slide tĩnh nào
                       và cũng không sinh được slide động.
                     </p>
                   </div>
@@ -230,10 +230,10 @@ export default function ThuSlidePage() {
 
         {/* Bảng chẩn đoán */}
         <aside className="space-y-4">
-          {/* Câu mẫu bấm nhanh — đặt ở cột phải để khung slide bên trái được cao
+          {/* Câu mẫu bấm nhanh - đặt ở cột phải để khung slide bên trái được cao
               tối đa và không bị đẩy tràn khỏi màn hình. */}
           <section className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <h2 className="text-[10px] uppercase tracking-[0.16em] text-white/40 mb-3">Câu mẫu — bấm để thử</h2>
+            <h2 className="text-[10px] uppercase tracking-[0.16em] text-white/40 mb-3">Câu mẫu - bấm để thử</h2>
             <div className="space-y-3">
               {SAMPLES.map(g => (
                 <div key={g.nhom}>
@@ -266,14 +266,14 @@ export default function ThuSlidePage() {
                         {NHAN_NGUON[slide._source]?.giai_thich}
                       </span>
                     </>
-                  ) : '—'}
+                  ) : '-'}
                 </Dong>
                 <Dong nhan="Thời gian">
                   <span className={trace.ms < 500 ? 'text-[#A8D94A]' : trace.ms < 3000 ? 'text-amber-300' : 'text-red-300'}>
                     {trace.ms} ms
                   </span>
                 </Dong>
-                <Dong nhan="HTTP">{trace.status || '—'}</Dong>
+                <Dong nhan="HTTP">{trace.status || '-'}</Dong>
                 <Dong nhan="Bố cục">{slide?.layout_type || '(mặc định)'}</Dong>
                 <Dong nhan="Số ý">{slide?.points?.length ?? 0}</Dong>
                 <Dong nhan="Số ảnh">

@@ -10,12 +10,12 @@ export type SttEngine = 'browser' | 'gemini';
 export interface UseVoiceAgentProps {
   onSpeechResult?: (text: string) => void;
   onStateChange?: (state: ChatState) => void;
-  /** Nhận log chẩn đoán STT (bật/lỗi/kết quả) — trang /slide?debug=1 hiện lên HUD. */
+  /** Nhận log chẩn đoán STT (bật/lỗi/kết quả) - trang /slide?debug=1 hiện lên HUD. */
   onDebug?: (msg: string) => void;
   voiceOn?: boolean;
   /**
    * Bộ nhận diện giọng nói:
-   *  - 'browser' (mặc định): Web Speech API — streaming, tức thì, nhưng Brave/Firefox
+   *  - 'browser' (mặc định): Web Speech API - streaming, tức thì, nhưng Brave/Firefox
    *    chặn và nghe sai tên riêng.
    *  - 'gemini': thu âm từng câu (MediaRecorder + VAD ngắt câu) rồi gửi /api/transcribe
    *    (Deepgram→Gemini→Whisper). Chạy MỌI trình duyệt, nghe tên riêng chính xác hơn,
@@ -106,13 +106,13 @@ export function useVoiceAgent({
   // (startListening() thì phá hàng đợi TTS nên không được gọi bừa lúc đó).
   const restartRecognitionOnly = useCallback(() => {
     if (!recognitionRef.current || isRecognitionRunningRef.current) return;
-    try { recognitionRef.current.start(); } catch (e) { /* đang start dở — watchdog sẽ thử lại */ }
+    try { recognitionRef.current.start(); } catch (e) { /* đang start dở - watchdog sẽ thử lại */ }
   }, []);
 
   // Bắt đầu thu 1 CÂU mới (chế độ Gemini). VAD tick sẽ tự chốt câu khi khách ngừng nói.
   const startGeminiRecorder = useCallback(() => {
     if (sttEngineRef.current !== 'gemini') return;
-    if (!mediaStreamRef.current) return;          // stream chưa sẵn — setupVAD sẽ gọi lại
+    if (!mediaStreamRef.current) return;          // stream chưa sẵn - setupVAD sẽ gọi lại
     if (transcribingRef.current) return;          // đang gửi câu trước
     const cur = mediaRecorderRef.current;
     if (cur && cur.state === 'recording') return; // đã đang thu
@@ -390,7 +390,7 @@ export function useVoiceAgent({
         // Không tự thu lại ở đây: onSpeechResult -> trang xử lý (hiện slide) rồi gọi
         // startListening() để mở lại vòng nghe. Tránh double-record.
       } else {
-        dbg('⚪ Gemini nghe rỗng — nghe tiếp');
+        dbg('⚪ Gemini nghe rỗng - nghe tiếp');
         if (isListeningLoopActive.current) { setState('listening'); startGeminiRecorder(); }
       }
     } catch (e) {
@@ -423,7 +423,7 @@ export function useVoiceAgent({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    // Chế độ Gemini KHÔNG dùng Web Speech — thu âm qua MediaRecorder (setupVAD) rồi
+    // Chế độ Gemini KHÔNG dùng Web Speech - thu âm qua MediaRecorder (setupVAD) rồi
     // gửi /api/transcribe. Bỏ qua toàn bộ phần khởi tạo recognition ở đây.
     if (sttEngine === 'gemini') return;
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -438,7 +438,7 @@ export function useVoiceAgent({
     try {
       (navigator as any).brave?.isBrave?.().then((yes: boolean) => {
         if (yes) {
-          dbg('⚠️ Phát hiện Brave — trình duyệt này chặn nhận diện giọng nói');
+          dbg('⚠️ Phát hiện Brave - trình duyệt này chặn nhận diện giọng nói');
           setErrorMsg('Brave chặn nhận diện giọng nói. Hãy mở trang này bằng Chrome hoặc Edge.');
         }
       });
@@ -483,14 +483,14 @@ export function useVoiceAgent({
 
     rec.onerror = (event: any) => {
       if (event.error === 'no-speech' || event.error === 'aborted') {
-        // Bình thường: im lặng lâu / bị abort chủ động — không cần báo.
+        // Bình thường: im lặng lâu / bị abort chủ động - không cần báo.
       } else if (event.error === 'network') {
         networkErrCountRef.current++;
         dbg(`🔴 STT lỗi network (lần ${networkErrCountRef.current})`);
         if (networkErrCountRef.current >= 3 && !sttBlockedWarnedRef.current) {
           sttBlockedWarnedRef.current = true;
           setErrorMsg('Trình duyệt này đang chặn nhận diện giọng nói (Brave/Firefox không hỗ trợ). Hãy mở bằng Chrome hoặc Edge.');
-          dbg('⛔ STT bị trình duyệt chặn — cần Chrome/Edge');
+          dbg('⛔ STT bị trình duyệt chặn - cần Chrome/Edge');
         }
       } else if (event.error === 'not-allowed') {
         dbg('⛔ Quyền micro bị chặn');

@@ -1,4 +1,4 @@
-// Tra cứu THÔNG TIN TỪNG LÔ (1-50) — nguồn: Data_productlist.xlsx (chính thức, cập nhật 24/6/2026).
+// Tra cứu THÔNG TIN TỪNG LÔ (1-50) - nguồn: Data_productlist.xlsx (chính thức, cập nhật 24/6/2026).
 // "DT" = Diện Tích. Cột B (model) = TÊN ĐẦY ĐỦ để hiển thị. Vẫn hiểu alias ngắn: cosmo/fusion/opus...
 // Dùng cho cả chat bot lẫn slide bot: hỏi căn X -> trả đúng mẫu/diện tích/mặt tiền/hướng/địa chỉ.
 
@@ -75,12 +75,12 @@ const UNSOLD = new Set<number>([1, 2, 3, 23, 24, 42, 50]); // rổ hàng T6.2026
 
 // Đặc điểm theo HỌ mẫu nhà (dùng chung cho các biến thể: Cosmo/Cosmo v2/Cosmo Gen 2...).
 const FAMILY_FEATURES: Record<ModelFamily, string> = {
-  office: 'Nhà phố thương mại "2 trong 1" — tầng dưới làm văn phòng/kinh doanh (mặt tiền trưng bày), tầng trên để ở. Có thang máy, hệ khí tươi AirTop.',
-  opus: 'Dòng nhà phố cao cấp Opus — diện tích sử dụng lớn, thang máy lên sân thượng, hệ AirTop, bố trí sang trọng cho gia đình nhiều thế hệ.',
-  cashmere: 'Dòng Cashmere — thiết kế cao cấp, lô lớn góc/vát đặc biệt, không gian rộng rãi.',
-  signature: 'Dòng Signature by Codinachs — hợp tác KTS Codinachs, mặt tiền góc vát vòng cung, thiết kế dấu ấn riêng.',
+  office: 'Nhà phố thương mại "2 trong 1" - tầng dưới làm văn phòng/kinh doanh (mặt tiền trưng bày), tầng trên để ở. Có thang máy, hệ khí tươi AirTop.',
+  opus: 'Dòng nhà phố cao cấp Opus - diện tích sử dụng lớn, thang máy lên sân thượng, hệ AirTop, bố trí sang trọng cho gia đình nhiều thế hệ.',
+  cashmere: 'Dòng Cashmere - thiết kế cao cấp, lô lớn góc/vát đặc biệt, không gian rộng rãi.',
+  signature: 'Dòng Signature by Codinachs - hợp tác KTS Codinachs, mặt tiền góc vát vòng cung, thiết kế dấu ấn riêng.',
   fusion_gen_5: 'Mẫu nhà yêu thích nhất, cải tiến qua nhiều thế hệ (Gen 4/Gen 5, có bản 2 mặt tiền). 4 phòng ngủ cho 3 thế hệ, thang máy, garage, bếp full-size, thang biến hóa + thang xoắn, hệ AirTop.',
-  cosmo_gen_2: 'Nhà phố cao cấp Cosmo (Gen 2) — mặt tiền 5m, 6 tầng (trệt + lửng + 3 lầu + sân thượng), phòng Master rộng, bếp full-size, garage, thang máy, thang biến hóa + thang xoắn, hệ khí tươi AirTop.',
+  cosmo_gen_2: 'Nhà phố cao cấp Cosmo (Gen 2) - mặt tiền 5m, 6 tầng (trệt + lửng + 3 lầu + sân thượng), phòng Master rộng, bếp full-size, garage, thang máy, thang biến hóa + thang xoắn, hệ khí tươi AirTop.',
 };
 
 // Họ -> thư mục ẢNH (chỉ có 3 bộ ảnh: opus/fusion/cosmo). Office->opus, Cashmere/Signature->cosmo (tạm).

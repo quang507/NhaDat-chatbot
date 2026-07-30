@@ -37,13 +37,13 @@ export default function VoicePage() {
   
   const chatHistoryRef = useRef<Message[]>([]);
 
-  // Conversation Manager — giữ TRẠNG THÁI cả cuộc trò chuyện (giai đoạn phễu bán
+  // Conversation Manager - giữ TRẠNG THÁI cả cuộc trò chuyện (giai đoạn phễu bán
   // hàng + bộ nhớ khách: tên, ngân sách, mối quan tâm, lo ngại). Cập nhật mỗi lượt
   // khách nói; dùng để (1) cá nhân hóa câu trả lời qua `profile`, (2) nhận biết
   // khách đổi giai đoạn để làm mới slide đúng lúc.
   const convStateRef = useRef(createConversationState());
 
-  // Chống nhảy slide liên tục — quyết định đổi/giữ ảnh dùng chung shouldRefreshSlide()
+  // Chống nhảy slide liên tục - quyết định đổi/giữ ảnh dùng chung shouldRefreshSlide()
   // (lib/intent.ts) với trang /slide, để 2 nơi không lệch logic.
   const lastSlideRef = useRef<{ topic: IntentTopic | null; at: number }>({ topic: null, at: 0 });
   const slideReqIdRef = useRef(0);
@@ -112,7 +112,7 @@ export default function VoicePage() {
     try {
       const history = chatHistoryRef.current;
 
-      // 1) LỚP PHÂN TÍCH HỘI THOẠI — cập nhật giai đoạn + bộ nhớ khách TRƯỚC khi
+      // 1) LỚP PHÂN TÍCH HỘI THOẠI - cập nhật giai đoạn + bộ nhớ khách TRƯỚC khi
       // quyết định slide/câu trả lời. Đây là "AI hiểu ý" trong kiến trúc 5 lớp.
       // updateConversationState tự HẾT PHIÊN nếu khách rời đi quá lâu (~25') → quên
       // ngữ cảnh cũ, coi như khách mới.
@@ -122,14 +122,14 @@ export default function VoicePage() {
       convStateRef.current = updateConversationState(convStateRef.current, speechText, intent, nowTs);
       const conv = convStateRef.current;
       if (sessionExpired) {
-        addLog('INFO', 'Phiên cũ đã hết hạn (khách rời đi >25 phút) — bắt đầu ngữ cảnh mới.');
+        addLog('INFO', 'Phiên cũ đã hết hạn (khách rời đi >25 phút) - bắt đầu ngữ cảnh mới.');
         chatHistoryRef.current = [];        // xoá luôn lịch sử chat để không kéo ngữ cảnh khách cũ
         lastSlideRef.current = { topic: null, at: 0 };
       }
       const profileNote = buildProfileNote(conv.memory);
       if (profileNote) addLog('INFO', `Bộ nhớ khách [${conv.stage}]:\n${profileNote}`);
 
-      // 2) Fire and forget /api/slide để lấy ảnh nếu khớp chủ đề — chỉ khi
+      // 2) Fire and forget /api/slide để lấy ảnh nếu khớp chủ đề - chỉ khi
       // shouldRefreshSlide() nói nên đổi (chủ đề thực sự đổi + đã hiện đủ lâu),
       // HOẶC khách vừa chuyển GIAI ĐOẠN hội thoại (đổi chủ đề rõ rệt) → làm mới ngay.
       if (intent.shouldGenerate) {
@@ -325,7 +325,7 @@ export default function VoicePage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.08)_0%,transparent_70%)] pointer-events-none z-0" />
       )}
 
-      {/* Header — brand + link sang Slide + trạng thái */}
+      {/* Header - brand + link sang Slide + trạng thái */}
       <div className="w-full max-w-md flex justify-between items-center z-10 pt-2 gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <img src="/logo.svg" alt="Nhã Đạt AI" className="w-7 h-7 rounded-md flex-shrink-0" />
@@ -542,7 +542,7 @@ export default function VoicePage() {
         </div>
       )}
 
-      {/* Footer controls — kiểu ChatGPT Voice: [Logs] [Stop/Start] [Exit] */}
+      {/* Footer controls - kiểu ChatGPT Voice: [Logs] [Stop/Start] [Exit] */}
       <div className="w-full max-w-md z-10 flex flex-col items-center gap-3 pb-6">
         <div className="flex items-center justify-between w-full px-10">
           <button

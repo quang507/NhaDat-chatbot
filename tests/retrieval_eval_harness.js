@@ -1,5 +1,5 @@
 /**
- * NhaDat Chatbot — RETRIEVAL Evaluation Harness (BM25 baseline)
+ * NhaDat Chatbot - RETRIEVAL Evaluation Harness (BM25 baseline)
  * ─────────────────────────────────────────────────────────────────────────────
  * Đo CHẤT LƯỢNG TRUY HỒI (retrieval), tách biệt với chất lượng câu trả lời:
  * với mỗi câu hỏi, truy hồi top-k đoạn rồi kiểm tra đoạn ĐÚNG (chứa "anchor")
@@ -72,7 +72,7 @@ function loadChunks() {
     process.exit(2);
   }
   const raw = fs.readFileSync(file, 'utf-8').replace(/\r\n/g, '\n');
-  // Tách theo dòng marker "## 🔖 ..." — giữ marker làm nhãn nguồn của section.
+  // Tách theo dòng marker "## 🔖 ..." - giữ marker làm nhãn nguồn của section.
   const parts = raw.split(/\n(?=##\s*🔖)/);
   const chunks = [];
   for (const part of parts) {
@@ -163,7 +163,7 @@ function main() {
   const bm25 = buildBM25(chunks);
 
   console.log('═'.repeat(74));
-  console.log('  RETRIEVAL EVAL — BM25 baseline (Router Retriever experiment)');
+  console.log('  RETRIEVAL EVAL - BM25 baseline (Router Retriever experiment)');
   console.log('═'.repeat(74));
   console.log(`  Corpus     : ${path.basename(file)}`);
   console.log(`  Chunks     : ${bm25.N}   (avg ${bm25.avgdl.toFixed(0)} tokens/chunk)`);
@@ -185,7 +185,7 @@ function main() {
     if (rank >= 1) mrrSum += 1 / rank;
 
     const mark = rank >= 1 && rank <= K ? '✅' : '❌';
-    const rankStr = rank >= 1 ? `#${rank}` : '—';
+    const rankStr = rank >= 1 ? `#${rank}` : '-';
     console.log(
       `  ${String(tc.id).padStart(2)}  ${tc.cat.padEnd(13)}  ${mark}   ${rankStr.padStart(4)}  ${tc.query.slice(0, 40)}`
     );
@@ -201,7 +201,7 @@ function main() {
   // Ngưỡng đạt: Hit@5 >= 80% (baseline BM25). Rớt -> exit code 1 để CI bắt được.
   const passRate = hit5 / n;
   if (passRate < 0.8) {
-    console.log(`\n❌ FAIL: Hit@5 ${pct(hit5)} < 80% — retrieval baseline chưa đạt.`);
+    console.log(`\n❌ FAIL: Hit@5 ${pct(hit5)} < 80% - retrieval baseline chưa đạt.`);
     process.exit(1);
   }
   console.log(`\n✅ PASS: Hit@5 ${pct(hit5)} ≥ 80%.`);

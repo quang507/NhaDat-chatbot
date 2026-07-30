@@ -3844,7 +3844,7 @@ chu_de: Nội dung dự án
 nguon: 02 - Giá & Thanh toán.md
 ---
 
-# Ny'ah Phú Định — Giá & Thanh toán (Rổ hàng)
+# Ny'ah Phú Định - Giá & Thanh toán (Rổ hàng)
 
 ## Rổ hàng T5.2026 (13.05.26)
 - 50 lô (01–50), hai mặt: **156 An Dương Vương** & **Trương Đình Hội**, cổng vào phía Trương Đình Hội.
@@ -3937,7 +3937,7 @@ cọc trong 3 ngày kể từ ngày 19/08/2024.
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Giá & Thanh toán/2026-06-22-18-30_ro-hang-nyah-phu-inh-cap-nhat-thang.md
 
-# RỔ HÀNG NY'AH PHÚ ĐỊNH — CẬP NHẬT THÁNG 5/2026
+# RỔ HÀNG NY'AH PHÚ ĐỊNH - CẬP NHẬT THÁNG 5/2026
 
 **Vị trí dự án:** 156 An Dương Vương – Trương Đình Hội (dự án Ny'ah Phú Định). Có công viên nội khu, cổng vào từ phía đường Trương Đình Hội.
 
@@ -3949,7 +3949,7 @@ cọc trong 3 ngày kể từ ngày 19/08/2024.
 
 **Quỹ căn:** đánh số từ 01 đến 50.
 
-**CÁC CĂN CÒN TRỐNG (CHƯA BÁN) — thời điểm tháng 5/2026:** căn **01, 02, 03, 23, 24, 42, 50**.
+**CÁC CĂN CÒN TRỐNG (CHƯA BÁN) - thời điểm tháng 5/2026:** căn **01, 02, 03, 23, 24, 42, 50**.
 
 Các căn còn lại đã bán hoặc đã giữ chỗ. Lưu ý: rổ hàng thay đổi theo thời gian, vui lòng liên hệ tư vấn để xác nhận căn còn trống mới nhất trước khi quyết định.
 
@@ -3964,7 +3964,7 @@ Các căn còn lại đã bán hoặc đã giữ chỗ. Lưu ý: rổ hàng thay
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Giá & Thanh toán/2026-06-22-19-00_phuong-thuc-thanh-toan-nyah-phu-inh.md
 
-# PHƯƠNG THỨC THANH TOÁN NY'AH PHÚ ĐỊNH — PTTT v7d (15/03/2026)
+# PHƯƠNG THỨC THANH TOÁN NY'AH PHÚ ĐỊNH - PTTT v7d (15/03/2026)
 
 ## Phương thức 1: Chỉ 3% mỗi tháng cho đến lúc bàn giao
 
@@ -4264,7 +4264,7 @@ chu_de: Nội dung dự án
 nguon: 04 - Pháp lý.md
 ---
 
-# Ny'ah Phú Định — Pháp lý
+# Ny'ah Phú Định - Pháp lý
 
 ## Giải mã pháp lý
 > Khu nhà phê duyệt **1/500**, có **sổ hồng riêng từng căn trước khi xây dựng**.
@@ -5459,9 +5459,9 @@ chu_de: Nội dung dự án
 nguon: 05 - Ny'ah Phú Định (Tổng quan).md
 ---
 
-# Ny'ah Phú Định — Tổng quan / Mẫu nhà / Tiện ích
+# Ny'ah Phú Định - Tổng quan / Mẫu nhà / Tiện ích
 
-## 17 đặc quyền tiện ích — "Nguồn kháng thể tự nhiên tại Ny'ah"
+## 17 đặc quyền tiện ích - "Nguồn kháng thể tự nhiên tại Ny'ah"
 1. Biển hiệu Ny'ah Phú Định · 2. Landmark Coffee · 3. Cổng chính tự động · 4. Khu "Sạc pin" · 5. Sảnh lối vào sân · 6. Đường chính sinh hoạt nội khu · 7. Cây xanh nội khu · 8. Ghế công viên · 9. Bồn hoa công viên · 10. Khu vui chơi trẻ em · 11. Khu thể thao ngoài trời · 12. Sân bóng rổ mini · 13. Tranh graffiti · 14. Sân cầu lông · 15. Signature by Codinachs · 16. Công viên số 2 · 17. Trạm khử khuẩn hàng shipper
 
 ## 6 lý do phải chọn nhà phố biệt lập Ny'ah Phú Định
@@ -9228,11 +9228,11 @@ Câu chuyện bắt đầu từ những năm 2011, khi tôi đi Mỹ khá nhiề
 
 2. THỰC TRẠNG CO2 TRONG PHÒNG NGỦ
 
-Có một thí nghiệm nhỏ để thấy rõ vấn đề này: đem một cái máy đo CO2 về, tối 9 giờ đóng cửa phòng ngủ lại. Không khí bình thường ở mức 400–450 ppm — đó là nồng độ tự nhiên. Chỉ cần 2 tiếng đồng hồ, chỉ ngủ thôi không chạy bộ hay gì trong phòng cả, nồng độ CO2 đã vượt lên tới ngưỡng không cho phép là 1.000 ppm. Tức là từ 9 giờ tối tới 11 giờ thì thở sạch được, còn từ 11 giờ tới 6 giờ sáng là thở trong ngưỡng không cho phép. Nếu đóng cửa liên tục đến 6 giờ sáng, CO2 có thể lên 1.600–1.700 ppm — quá cao.
+Có một thí nghiệm nhỏ để thấy rõ vấn đề này: đem một cái máy đo CO2 về, tối 9 giờ đóng cửa phòng ngủ lại. Không khí bình thường ở mức 400–450 ppm - đó là nồng độ tự nhiên. Chỉ cần 2 tiếng đồng hồ, chỉ ngủ thôi không chạy bộ hay gì trong phòng cả, nồng độ CO2 đã vượt lên tới ngưỡng không cho phép là 1.000 ppm. Tức là từ 9 giờ tối tới 11 giờ thì thở sạch được, còn từ 11 giờ tới 6 giờ sáng là thở trong ngưỡng không cho phép. Nếu đóng cửa liên tục đến 6 giờ sáng, CO2 có thể lên 1.600–1.700 ppm - quá cao.
 
 3. TẠI SAO KHÔNG THỂ TRÔNG VÀO THÔNG THOÁNG TỰ NHIÊN
 
-Bây giờ trong ngôi nhà của người Việt, người ta chắc chắn sẽ gắn máy lạnh. Không có máy lạnh không nổi. Con cái về nhà chơi game, xem TikTok, trốn trong phòng với điều hòa — trông chờ vào thông thoáng tự nhiên là không khả thi. Nhà chật hẹp thì không làm được, còn khi mở cửa ra thì mất lạnh, lại đem bụi vào. Đó là vòng luẩn quẩn.
+Bây giờ trong ngôi nhà của người Việt, người ta chắc chắn sẽ gắn máy lạnh. Không có máy lạnh không nổi. Con cái về nhà chơi game, xem TikTok, trốn trong phòng với điều hòa - trông chờ vào thông thoáng tự nhiên là không khả thi. Nhà chật hẹp thì không làm được, còn khi mở cửa ra thì mất lạnh, lại đem bụi vào. Đó là vòng luẩn quẩn.
 
 4. GIẢI PHÁP: HỆ THỐNG AIRT CỦA NHÃ ĐẠT
 
@@ -9240,15 +9240,15 @@ Bây giờ trong ngôi nhà của người Việt, người ta chắc chắn s�
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Thiết kế & Công năng/2026-06-22-17-56_transcript-inh-nghia-lai-nha-pho-p2.md
 
-Nhã Đạt gọi hệ thống này là Airt — lấy không khí từ trên sân thượng, đưa xuống nhà. Ở nước ngoài, hệ thống này thường đặt ở tầng hầm rồi thổi lên. Nhưng ở Việt Nam, mình lấy từ phía trên sân thượng vì không khí trên đó mát hơn, sạch hơn, ít bụi hơn. Khi vượt lên trên 15m, độ sạch của không khí so với dưới mặt đường đã hơn 2,5 lần. Phía dưới, ánh sáng mặt trời bức xạ xuống mặt đường đốt nóng không khí bên dưới — trên cao thì không bị như vậy.
+Nhã Đạt gọi hệ thống này là Airt - lấy không khí từ trên sân thượng, đưa xuống nhà. Ở nước ngoài, hệ thống này thường đặt ở tầng hầm rồi thổi lên. Nhưng ở Việt Nam, mình lấy từ phía trên sân thượng vì không khí trên đó mát hơn, sạch hơn, ít bụi hơn. Khi vượt lên trên 15m, độ sạch của không khí so với dưới mặt đường đã hơn 2,5 lần. Phía dưới, ánh sáng mặt trời bức xạ xuống mặt đường đốt nóng không khí bên dưới - trên cao thì không bị như vậy.
 
-Khi thổi không khí mát từ trên xuống, kết hợp với việc đẩy khí nóng ra ngoài — vì thân nhiệt người là 37 độ, tivi có thể lên 60 độ, đèn cũng vậy — thì máy lạnh sẽ đỡ phải làm việc hơn, thay vì cứ khóa kín nhà rồi tự làm lạnh cái khí mình đã đút nóng lên.
+Khi thổi không khí mát từ trên xuống, kết hợp với việc đẩy khí nóng ra ngoài - vì thân nhiệt người là 37 độ, tivi có thể lên 60 độ, đèn cũng vậy - thì máy lạnh sẽ đỡ phải làm việc hơn, thay vì cứ khóa kín nhà rồi tự làm lạnh cái khí mình đã đút nóng lên.
 
-Hệ thống hoạt động theo chu kỳ: cứ 3 tiếng đồng hồ thổi 500 khối khí vào nhà, tức khoảng 150–170 khối mỗi giờ, hay 2–3 khối mỗi phút — vừa đủ để bù đắp oxy đúng chuẩn, không ồ ạt, không tốn nhiều điện.
+Hệ thống hoạt động theo chu kỳ: cứ 3 tiếng đồng hồ thổi 500 khối khí vào nhà, tức khoảng 150–170 khối mỗi giờ, hay 2–3 khối mỗi phút - vừa đủ để bù đắp oxy đúng chuẩn, không ồ ạt, không tốn nhiều điện.
 
 5. CHI PHÍ ĐẦU TƯ VÀ VẬN HÀNH
 
-Việt Nam được thiên nhiên ưu đãi hơn nước ngoài rất nhiều. Ở các nước lạnh, chênh lệch nhiệt độ trong và ngoài nhà có thể lên tới 50 độ — trao đổi khí tốn năng lượng rất lớn. Còn ở Việt Nam, ngoài trời nhiều khi chỉ 31–32 độ, trong nhà chỉ cần 27 độ là thoải mái, nên hệ thống này không tốn tiền như ở các nước.
+Việt Nam được thiên nhiên ưu đãi hơn nước ngoài rất nhiều. Ở các nước lạnh, chênh lệch nhiệt độ trong và ngoài nhà có thể lên tới 50 độ - trao đổi khí tốn năng lượng rất lớn. Còn ở Việt Nam, ngoài trời nhiều khi chỉ 31–32 độ, trong nhà chỉ cần 27 độ là thoải mái, nên hệ thống này không tốn tiền như ở các nước.
 
 Sau nhiều năm nghiên cứu và thử nghiệm, Nhã Đạt đã hoàn chỉnh một hệ thống tương đối rẻ tiền: khoảng 20–30 triệu đồng để lắp đặt, và chi phí điện hàng tháng chỉ khoảng 300.000 đồng. Hệ thống này thậm chí còn tiết kiệm điện hơn cả khi dùng máy lạnh đơn thuần.
 
@@ -9258,13 +9258,13 @@ Sau nhiều năm nghiên cứu và thử nghiệm, Nhã Đạt đã hoàn chỉn
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Thiết kế & Công năng/2026-06-22-17-56_transcript-inh-nghia-lai-nha-pho-p2.md
 
-Cái ống khí rất to — trong khi ống điện chỉ vài mm vuông, ống nước chỉ bằng cổ tay, thì ống khí phải to hơn nhiều. Trong nhà phố nhiều tầng nhưng ít không gian, chạy ống khí khắp nhà đã là thử thách, lại càng thử thách hơn. Vì vậy bắt buộc phải thiết kế nó ngay từ đầu, một cách rất kỹ lưỡng — không thể làm nhà xong hết rồi mới mời người vào chạy những cái ống to như thế quanh nhà được.
+Cái ống khí rất to - trong khi ống điện chỉ vài mm vuông, ống nước chỉ bằng cổ tay, thì ống khí phải to hơn nhiều. Trong nhà phố nhiều tầng nhưng ít không gian, chạy ống khí khắp nhà đã là thử thách, lại càng thử thách hơn. Vì vậy bắt buộc phải thiết kế nó ngay từ đầu, một cách rất kỹ lưỡng - không thể làm nhà xong hết rồi mới mời người vào chạy những cái ống to như thế quanh nhà được.
 
 7. TƯ DUY ĐẦU TƯ VÀO NHỮNG THỨ KHÔNG THẤY ĐƯỢC
 
-Người Việt mình tương đối ít đầu tư cho nhà hơn người khác. Nhưng khi đầu tư, người ta thường đầu tư vào những thứ hàng xóm thấy, khách thấy — còn ít đầu tư hơn vào những thứ không thấy được, những thứ tốt lâu dài, như khí tươi chẳng hạn.
+Người Việt mình tương đối ít đầu tư cho nhà hơn người khác. Nhưng khi đầu tư, người ta thường đầu tư vào những thứ hàng xóm thấy, khách thấy - còn ít đầu tư hơn vào những thứ không thấy được, những thứ tốt lâu dài, như khí tươi chẳng hạn.
 
-Nếu có một thứ không thấy mà nên làm, đó chính là: cấp khí tươi, lọc khí tươi, thổi vào nhà. Hạnh phúc có thể thiết kế được — và không khí trong lành là một trong những chất liệu quan trọng nhất của hạnh phúc đó.
+Nếu có một thứ không thấy mà nên làm, đó chính là: cấp khí tươi, lọc khí tươi, thổi vào nhà. Hạnh phúc có thể thiết kế được - và không khí trong lành là một trong những chất liệu quan trọng nhất của hạnh phúc đó.
 
 ---
 
@@ -9337,7 +9337,7 @@ Cùng với các tuyến lớn như đại lộ Bình Tiên, đường Song Hàn
 
 Từ Ny'ah, bạn chỉ cần 18 phút đến Quận 1, 10 phút đến Chợ Lớn, 20 phút về Phú Mỹ Hưng và 30 phút về Long An.
 
-Ny'ah Phú Định nằm giữa mạng lưới tiện ích cấp thành phố: gần trung tâm thương mại sôi động, y tế tuyến đầu — tất cả trong tầm 20 phút di chuyển.
+Ny'ah Phú Định nằm giữa mạng lưới tiện ích cấp thành phố: gần trung tâm thương mại sôi động, y tế tuyến đầu - tất cả trong tầm 20 phút di chuyển.
 
 Không chỉ là giao thông, Quận 8, Bình Tân, Bình Chánh đang bước vào giai đoạn tái định giá mới khi các trung tâm trung chuyển, logistics và thương mại cùng lúc đổ bộ. Ngay giữa tâm tăng trưởng, Ny'ah Phú Định sở hữu pháp lý hoàn chỉnh, sổ hồng từng căn, trở thành tài sản thực, giá trị và sinh lời bền vững.
 
@@ -9345,7 +9345,7 @@ Không chỉ là giao thông, Quận 8, Bình Tân, Bình Chánh đang bước v
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Thiết kế & Công năng/2026-06-22-17-56_transcript-video-nyah-phu-inh-va-vo.md
 
-Lúc hạ tầng đang thi công là lúc giá trị đang còn ngủ quên. Đây chính là thời điểm vàng để sở hữu nhà phố tại nội thành, với điểm xuất phát lợi thế về vị trí, lẫn hành trình gia tăng tài sản dài hạn. Ny'ah Phú Định — sống đẹp hơn chung cư, sinh lời hơn thổ cư.
+Lúc hạ tầng đang thi công là lúc giá trị đang còn ngủ quên. Đây chính là thời điểm vàng để sở hữu nhà phố tại nội thành, với điểm xuất phát lợi thế về vị trí, lẫn hành trình gia tăng tài sản dài hạn. Ny'ah Phú Định - sống đẹp hơn chung cư, sinh lời hơn thổ cư.
 
 Ghé xem nhà mẫu tại Ny'ah Phú Định ngay hôm nay.
 
@@ -9791,11 +9791,11 @@ Cùng với các tuyến lớn như đại lộ Bình Tiên, đường Song Hàn
 
 Từ Ny'ah, bạn chỉ cần 18 phút đến Quận 1, 10 phút đến Chợ Lớn, 20 phút về Phú Mỹ Hưng và 30 phút về Long An.
 
-Ny'ah Phú Định nằm giữa mạng lưới tiện ích cấp thành phố: gần trung tâm thương mại sôi động, y tế tuyến đầu — tất cả trong tầm 20 phút di chuyển.
+Ny'ah Phú Định nằm giữa mạng lưới tiện ích cấp thành phố: gần trung tâm thương mại sôi động, y tế tuyến đầu - tất cả trong tầm 20 phút di chuyển.
 
 Không chỉ là giao thông, Quận 8, Bình Tân, Bình Chánh đang bước vào giai đoạn tái định giá mới khi các trung tâm trung chuyển, logistics và thương mại cùng lúc đổ bộ. Ngay giữa tâm tăng trưởng, Ny'ah Phú Định sở hữu pháp lý hoàn chỉnh, sổ hồng từng căn, trở thành tài sản thực, giá trị và sinh lời bền vững.
 
-Lúc hạ tầng đang thi công là lúc giá trị đang còn ngủ quên. Đây chính là thời điểm vàng để sở hữu nhà phố tại nội thành, với điểm xuất phát lợi thế về vị trí, lẫn hành trình gia tăng tài sản dài hạn. Ny'ah Phú Định — sống đẹp hơn chung cư, sinh lời hơn thổ cư.
+Lúc hạ tầng đang thi công là lúc giá trị đang còn ngủ quên. Đây chính là thời điểm vàng để sở hữu nhà phố tại nội thành, với điểm xuất phát lợi thế về vị trí, lẫn hành trình gia tăng tài sản dài hạn. Ny'ah Phú Định - sống đẹp hơn chung cư, sinh lời hơn thổ cư.
 
 #### 🔹 Đoạn 5
 
@@ -10888,7 +10888,7 @@ Nhã Đạt | https://www.youtube.com/watch?v=KFZQ8Mu7a2g
 
 1. GIỚI THIỆU
 
-Xin chào các bạn, tôi là Ngô Trần Công Luận. Tôi lập công ty Nhã Đạt từ năm 2000. Nhã Đạt thật ra đọc là chữ "nhà đất" mà đọc trại ra thành chữ Nhã Đạt. Từ lúc đó tôi làm trang web nhadat.com, rồi làm nhà đất đô thị mới, kênh phân phối các dự án. Gần đây nhất là từ năm 2007 thì tôi làm phát triển, và chúng ta đang ở đây — ở khu nhà do công ty Nhã Đạt thiết kế và thi công.
+Xin chào các bạn, tôi là Ngô Trần Công Luận. Tôi lập công ty Nhã Đạt từ năm 2000. Nhã Đạt thật ra đọc là chữ "nhà đất" mà đọc trại ra thành chữ Nhã Đạt. Từ lúc đó tôi làm trang web nhadat.com, rồi làm nhà đất đô thị mới, kênh phân phối các dự án. Gần đây nhất là từ năm 2007 thì tôi làm phát triển, và chúng ta đang ở đây - ở khu nhà do công ty Nhã Đạt thiết kế và thi công.
 
 2. HỆ THỐNG KHÔNG KHÍ VÀ THÔNG THOÁNG
 
@@ -10896,15 +10896,15 @@ Xin chào các bạn, tôi là Ngô Trần Công Luận. Tôi lập công ty Nh�
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part3.md
 
-Ước mơ rằng không gian thông thoáng tự nhiên ở Sài Gòn rất khó đạt được, mà thực sự ở nước ngoài cũng không dễ. Tôi chỉ thấy một điều ở bên Mỹ: họ đối xử không khí rất kỹ lưỡng. Họ bơm không khí vào nhà, lọc không khí, trao đổi nhiệt, thu hồi năng lượng. Công thức rất đơn giản: cứ mỗi 3 tiếng đồng hồ, toàn bộ khối tích trong nhà sẽ được đổi 100% — 100% không khí mới mang vào và 100% không khí cũ thải ra.
+Ước mơ rằng không gian thông thoáng tự nhiên ở Sài Gòn rất khó đạt được, mà thực sự ở nước ngoài cũng không dễ. Tôi chỉ thấy một điều ở bên Mỹ: họ đối xử không khí rất kỹ lưỡng. Họ bơm không khí vào nhà, lọc không khí, trao đổi nhiệt, thu hồi năng lượng. Công thức rất đơn giản: cứ mỗi 3 tiếng đồng hồ, toàn bộ khối tích trong nhà sẽ được đổi 100% - 100% không khí mới mang vào và 100% không khí cũ thải ra.
 
-Nhưng vấn đề là ống khí rất to. Ống thoát thải, ống cấp nước, ống cấp điện — mỗi thứ chỉ nhỏ bấy nhiêu. Còn ống khí thì to như thế này. Trong một căn nhà phố chỉ có bốn mươi mấy mét vuông đã phải đậu xe hơi, đã phải làm thang máy, mà còn phải có ống khí chạy khắp nơi từng phòng trong nhà. Đó là bài toán mà Nhã Đạt giải quyết trong nhiều năm.
+Nhưng vấn đề là ống khí rất to. Ống thoát thải, ống cấp nước, ống cấp điện - mỗi thứ chỉ nhỏ bấy nhiêu. Còn ống khí thì to như thế này. Trong một căn nhà phố chỉ có bốn mươi mấy mét vuông đã phải đậu xe hơi, đã phải làm thang máy, mà còn phải có ống khí chạy khắp nơi từng phòng trong nhà. Đó là bài toán mà Nhã Đạt giải quyết trong nhiều năm.
 
 3. THANG BỘ VÀ THANG MÁY
 
-Trong một căn nhà chỉ có bốn mươi mấy mét vuông đã phải đậu xe hơi, đã phải làm thang máy, thì mình phải ưu tiên cho không gian đó để người già có thể đi mà không có bậc thang cấp, không phải leo lên bước xuống, không phải té, không phải sợ — để cho đứa con nít có thể tận hưởng được. Đó là bốn chất liệu hạnh phúc.
+Trong một căn nhà chỉ có bốn mươi mấy mét vuông đã phải đậu xe hơi, đã phải làm thang máy, thì mình phải ưu tiên cho không gian đó để người già có thể đi mà không có bậc thang cấp, không phải leo lên bước xuống, không phải té, không phải sợ - để cho đứa con nít có thể tận hưởng được. Đó là bốn chất liệu hạnh phúc.
 
-Nhã Đạt không có sân vườn trước nhà trong khu này. Nhưng câu hỏi đặt ra là: người ta có thể đối xử với sân thượng giống như sân vườn một cách tiện lợi hay không? Nếu sân vườn là một thứ mà mình phải leo sáu tầng lầu mới lên được thì thật ra cũng chẳng có ai lên nhiều. Thành ra khi thiết kế thang máy, chúng tôi đặt ra yêu cầu: thang máy lên tận sân thượng, và hy vọng người ta sẽ đối xử sân thượng đó giống như đang ở tầng trệt — cộng thêm gió rất mát và view rất thông thoáng.
+Nhã Đạt không có sân vườn trước nhà trong khu này. Nhưng câu hỏi đặt ra là: người ta có thể đối xử với sân thượng giống như sân vườn một cách tiện lợi hay không? Nếu sân vườn là một thứ mà mình phải leo sáu tầng lầu mới lên được thì thật ra cũng chẳng có ai lên nhiều. Thành ra khi thiết kế thang máy, chúng tôi đặt ra yêu cầu: thang máy lên tận sân thượng, và hy vọng người ta sẽ đối xử sân thượng đó giống như đang ở tầng trệt - cộng thêm gió rất mát và view rất thông thoáng.
 
 4. ÁNH SÁNG TỰ NHIÊN VÀ GIẾNG TRỜI
 
@@ -10914,45 +10914,45 @@ Nhã Đạt không có sân vườn trước nhà trong khu này. Nhưng câu h�
 
 Ba tầng phía dưới lấy ánh sáng từ đằng trước ra đằng sau không cản trở. Tầng gara có cửa kính, mở cửa gara lên là ánh sáng trực tiếp. Tầng lửng dĩ nhiên ánh sáng trực tiếp từ đằng trước ra sau. Thang ép về một bên, không bị cổ chai ở chỗ nào cả. Lên tầng ba cũng ánh sáng từ đằng trước ra sau. Lên tầng bốn là ánh sáng trực tiếp từ trên xuống. Lên tầng năm cũng ánh sáng trực tiếp từ phía trên xuống từ cái giếng trời.
 
-Nhờ cái thang biến hóa cuối cùng, ánh sáng rội xuống được cả tầng master và hoàn tất căn nhà. Phòng ngủ con nằm ở phía sau, nhưng vẫn rất sáng vì nó có cửa sổ riêng, ánh sáng trực tiếp riêng — và chỉ cách ánh sáng trực tiếp từ trên ống nhà đúng ba thước.
+Nhờ cái thang biến hóa cuối cùng, ánh sáng rội xuống được cả tầng master và hoàn tất căn nhà. Phòng ngủ con nằm ở phía sau, nhưng vẫn rất sáng vì nó có cửa sổ riêng, ánh sáng trực tiếp riêng - và chỉ cách ánh sáng trực tiếp từ trên ống nhà đúng ba thước.
 
 5. THIẾT KẾ ĐA THẾ HỆ
 
-Tầng năm là một tầng rất vui. Sau khi thiết kế xong tất cả các tầng dưới, coi tới tầng năm thì coi như mọi thứ rã rời hết rồi — những vấn đề đã giải quyết ở tầng một, tầng hai bị dồn ghép lên tầng năm, không gian phải gánh nhiều thôi.
+Tầng năm là một tầng rất vui. Sau khi thiết kế xong tất cả các tầng dưới, coi tới tầng năm thì coi như mọi thứ rã rời hết rồi - những vấn đề đã giải quyết ở tầng một, tầng hai bị dồn ghép lên tầng năm, không gian phải gánh nhiều thôi.
 
-Ngày xưa lúc tôi làm chung cư, tôi hay nói "chung cư ba thế hệ." Nhưng ba thế hệ không phải là nhét ba thế hệ vô — mà trong đó mình phải nhìn ra được thế hệ họ xài được cái gì. Chia ra có 17–18 công năng thì phải để 8–9 công năng cho con nít, chỉ có 2–3 công năng cho trung niên, rồi 3–4 công năng cho người già. Đó là một trong những chất liệu hạnh phúc mà Nhã Đạt hướng đến: phải thương con nít, phải thương con trẻ.
+Ngày xưa lúc tôi làm chung cư, tôi hay nói "chung cư ba thế hệ." Nhưng ba thế hệ không phải là nhét ba thế hệ vô - mà trong đó mình phải nhìn ra được thế hệ họ xài được cái gì. Chia ra có 17–18 công năng thì phải để 8–9 công năng cho con nít, chỉ có 2–3 công năng cho trung niên, rồi 3–4 công năng cho người già. Đó là một trong những chất liệu hạnh phúc mà Nhã Đạt hướng đến: phải thương con nít, phải thương con trẻ.
 
 6. HỆ THỐNG ĐÈN VÀ NHÀ THÔNG MINH
 
-Vào trong căn nhà này, tất cả các phòng chỉ có đúng hai công tắc thôi. Có rất nhiều đèn, rất nhiều loại đèn: đèn tranh, đèn sảnh, đèn chùm, đèn coi tivi, đèn tiếp khách, đèn thư giãn — đủ kiểu hết. Nhưng chỉ hai công tắc. Tất cả để làm cho không gian đơn giản lại, minimalist, về mặt thiết kế nó sạch sẽ hơn.
+Vào trong căn nhà này, tất cả các phòng chỉ có đúng hai công tắc thôi. Có rất nhiều đèn, rất nhiều loại đèn: đèn tranh, đèn sảnh, đèn chùm, đèn coi tivi, đèn tiếp khách, đèn thư giãn - đủ kiểu hết. Nhưng chỉ hai công tắc. Tất cả để làm cho không gian đơn giản lại, minimalist, về mặt thiết kế nó sạch sẽ hơn.
 
 #### 🔹 Đoạn 9
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part3.md
 
-Hệ thống nhà thông minh ở đây rất đơn giản. Khi mình về, đậu xe và đi qua các không gian đi lên lầu, ở đâu mình đi thì đủ ánh sáng — hệ thống đoán trước một chút xíu mình sẽ đi tới đâu, rồi bật theo con đường mình đủ để đi lên. Sau khi mình đi qua đó một hai phút thì nó tự động tắt. Mình không cần tắt bất kỳ cái gì cả. Ánh sáng cũng có thể điều chỉnh: người già mắt mờ thì tăng sáng lên, người trẻ muốn ánh sáng dịu đẹp thì vẫn làm được.
+Hệ thống nhà thông minh ở đây rất đơn giản. Khi mình về, đậu xe và đi qua các không gian đi lên lầu, ở đâu mình đi thì đủ ánh sáng - hệ thống đoán trước một chút xíu mình sẽ đi tới đâu, rồi bật theo con đường mình đủ để đi lên. Sau khi mình đi qua đó một hai phút thì nó tự động tắt. Mình không cần tắt bất kỳ cái gì cả. Ánh sáng cũng có thể điều chỉnh: người già mắt mờ thì tăng sáng lên, người trẻ muốn ánh sáng dịu đẹp thì vẫn làm được.
 
 7. NHÀ VỆ SINH
 
-Nguyên tắc thiết kế nhà vệ sinh của Nhã Đạt là không cần cửa sổ trực tiếp ra bên ngoài — dành cái không gian ánh sáng đó cho tất cả những phòng còn lại.
+Nguyên tắc thiết kế nhà vệ sinh của Nhã Đạt là không cần cửa sổ trực tiếp ra bên ngoài - dành cái không gian ánh sáng đó cho tất cả những phòng còn lại.
 
 Điều đầu tiên: nhà vệ sinh luôn luôn là áp lực khí âm. Khi mở cửa nhà vệ sinh là hút ngay lập tức và tiếp tục hút sau khi ra khỏi nhà vệ sinh. Không bao giờ có khí từ trong nhà vệ sinh ra bên ngoài.
 
 Điều thứ hai: không bao giờ để phần tắm ướt luôn cả chỗ đứng rửa mặt và chỗ ngồi bàn cầu. Phần tắm phải là phần riêng. Bước vào nhà tắm phải khô ráo.
 
-Điều thứ ba: vào nhà vệ sinh không cần bật đèn. Bước vô là quạt chạy ngay — quạt phải chạy để tạo áp lực âm. Áp lực âm có nghĩa là chỉ hút vào thôi. Cả nhà là áp lực dương, tất cả toilet là áp lực âm. Rất đơn giản.
+Điều thứ ba: vào nhà vệ sinh không cần bật đèn. Bước vô là quạt chạy ngay - quạt phải chạy để tạo áp lực âm. Áp lực âm có nghĩa là chỉ hút vào thôi. Cả nhà là áp lực dương, tất cả toilet là áp lực âm. Rất đơn giản.
 
 8. BẾP VÀ BÀN ĂN
 
 Bàn ăn của Nhã Đạt thiết kế: vẫn gần bếp nhưng không nằm trong bếp. Đặc biệt trong một nhà chật hẹp như thế này, nó vẫn là một góc tĩnh lặng chứ không phải giữa đường.
 
-Có hai loại bàn ăn: bàn ăn nhanh và bàn ăn chậm. Bàn ăn nhanh thì phải nằm giữa đường — đứa con sáng ra ăn sáng, mang cặp, ăn nhanh rồi đi. Mẹ chỉ cần quăng qua cái bồn rửa là xong. Còn bàn ăn tối thì phải là một góc riêng của nó — không phải ăn sáng xong dọn, ăn trưa xong dọn, ăn tối xong dọn. Và khi nhà không phải nhà mẫu, cái bàn ăn tại bếp cũng có thể là bàn làm việc của ba mẹ, bàn học của con.
+Có hai loại bàn ăn: bàn ăn nhanh và bàn ăn chậm. Bàn ăn nhanh thì phải nằm giữa đường - đứa con sáng ra ăn sáng, mang cặp, ăn nhanh rồi đi. Mẹ chỉ cần quăng qua cái bồn rửa là xong. Còn bàn ăn tối thì phải là một góc riêng của nó - không phải ăn sáng xong dọn, ăn trưa xong dọn, ăn tối xong dọn. Và khi nhà không phải nhà mẫu, cái bàn ăn tại bếp cũng có thể là bàn làm việc của ba mẹ, bàn học của con.
 
 #### 🔹 Đoạn 10
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part3.md
 
-Bếp phải được trang bị đầy đủ: lò nướng, bếp từ, máy rửa chén — mọi thứ xịn nhất đều có chỗ lắp. Và yêu cầu quan trọng: bếp phải cách phòng ngủ master đúng một tầng thôi, không được cách hai tầng. Vì bố mẹ là người xài bếp nhiều nhất, và nếu con còn nhỏ ở chung phòng với bố mẹ thì bếp đi xuống chỉ một tầng rất là tiện.
+Bếp phải được trang bị đầy đủ: lò nướng, bếp từ, máy rửa chén - mọi thứ xịn nhất đều có chỗ lắp. Và yêu cầu quan trọng: bếp phải cách phòng ngủ master đúng một tầng thôi, không được cách hai tầng. Vì bố mẹ là người xài bếp nhiều nhất, và nếu con còn nhỏ ở chung phòng với bố mẹ thì bếp đi xuống chỉ một tầng rất là tiện.
 
 ---
 
@@ -10995,39 +10995,39 @@ Câu chuyện bắt đầu từ những năm 2011, khi tôi đi Mỹ khá nhiề
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part3.md
 
-Có một thí nghiệm nhỏ để thấy rõ vấn đề này: đem một cái máy đo CO2 về, tối 9 giờ đóng cửa phòng ngủ lại. Không khí bình thường ở mức 400–450 ppm — đó là nồng độ tự nhiên. Chỉ cần 2 tiếng đồng hồ, chỉ ngủ thôi không chạy bộ hay gì trong phòng cả, nồng độ CO2 đã vượt lên tới ngưỡng không cho phép là 1.000 ppm. Tức là từ 9 giờ tối tới 11 giờ thì thở sạch được, còn từ 11 giờ tới 6 giờ sáng là thở trong ngưỡng không cho phép. Nếu đóng cửa liên tục đến 6 giờ sáng, CO2 có thể lên 1.600–1.700 ppm — quá cao.
+Có một thí nghiệm nhỏ để thấy rõ vấn đề này: đem một cái máy đo CO2 về, tối 9 giờ đóng cửa phòng ngủ lại. Không khí bình thường ở mức 400–450 ppm - đó là nồng độ tự nhiên. Chỉ cần 2 tiếng đồng hồ, chỉ ngủ thôi không chạy bộ hay gì trong phòng cả, nồng độ CO2 đã vượt lên tới ngưỡng không cho phép là 1.000 ppm. Tức là từ 9 giờ tối tới 11 giờ thì thở sạch được, còn từ 11 giờ tới 6 giờ sáng là thở trong ngưỡng không cho phép. Nếu đóng cửa liên tục đến 6 giờ sáng, CO2 có thể lên 1.600–1.700 ppm - quá cao.
 
 3. TẠI SAO KHÔNG THỂ TRÔNG VÀO THÔNG THOÁNG TỰ NHIÊN
 
-Bây giờ trong ngôi nhà của người Việt, người ta chắc chắn sẽ gắn máy lạnh. Không có máy lạnh không nổi. Con cái về nhà chơi game, xem TikTok, trốn trong phòng với điều hòa — trông chờ vào thông thoáng tự nhiên là không khả thi. Nhà chật hẹp thì không làm được, còn khi mở cửa ra thì mất lạnh, lại đem bụi vào. Đó là vòng luẩn quẩn.
+Bây giờ trong ngôi nhà của người Việt, người ta chắc chắn sẽ gắn máy lạnh. Không có máy lạnh không nổi. Con cái về nhà chơi game, xem TikTok, trốn trong phòng với điều hòa - trông chờ vào thông thoáng tự nhiên là không khả thi. Nhà chật hẹp thì không làm được, còn khi mở cửa ra thì mất lạnh, lại đem bụi vào. Đó là vòng luẩn quẩn.
 
 4. GIẢI PHÁP: HỆ THỐNG AIRT CỦA NHÃ ĐẠT
 
-Nhã Đạt gọi hệ thống này là Airt — lấy không khí từ trên sân thượng, đưa xuống nhà. Ở nước ngoài, hệ thống này thường đặt ở tầng hầm rồi thổi lên. Nhưng ở Việt Nam, mình lấy từ phía trên sân thượng vì không khí trên đó mát hơn, sạch hơn, ít bụi hơn. Khi vượt lên trên 15m, độ sạch của không khí so với dưới mặt đường đã hơn 2,5 lần. Phía dưới, ánh sáng mặt trời bức xạ xuống mặt đường đốt nóng không khí bên dưới — trên cao thì không bị như vậy.
+Nhã Đạt gọi hệ thống này là Airt - lấy không khí từ trên sân thượng, đưa xuống nhà. Ở nước ngoài, hệ thống này thường đặt ở tầng hầm rồi thổi lên. Nhưng ở Việt Nam, mình lấy từ phía trên sân thượng vì không khí trên đó mát hơn, sạch hơn, ít bụi hơn. Khi vượt lên trên 15m, độ sạch của không khí so với dưới mặt đường đã hơn 2,5 lần. Phía dưới, ánh sáng mặt trời bức xạ xuống mặt đường đốt nóng không khí bên dưới - trên cao thì không bị như vậy.
 
-Khi thổi không khí mát từ trên xuống, kết hợp với việc đẩy khí nóng ra ngoài — vì thân nhiệt người là 37 độ, tivi có thể lên 60 độ, đèn cũng vậy — thì máy lạnh sẽ đỡ phải làm việc hơn, thay vì cứ khóa kín nhà rồi tự làm lạnh cái khí mình đã đút nóng lên.
+Khi thổi không khí mát từ trên xuống, kết hợp với việc đẩy khí nóng ra ngoài - vì thân nhiệt người là 37 độ, tivi có thể lên 60 độ, đèn cũng vậy - thì máy lạnh sẽ đỡ phải làm việc hơn, thay vì cứ khóa kín nhà rồi tự làm lạnh cái khí mình đã đút nóng lên.
 
 #### 🔹 Đoạn 13
 
 ## 🔖 Thư mục: Ny'ah Phú Định/Thiết kế & Công năng/NPD_dinh_nghia_nha_pho_part3.md
 
-Hệ thống hoạt động theo chu kỳ: cứ 3 tiếng đồng hồ thổi 500 khối khí vào nhà, tức khoảng 150–170 khối mỗi giờ, hay 2–3 khối mỗi phút — vừa đủ để bù đắp oxy đúng chuẩn, không ồ ạt, không tốn nhiều điện.
+Hệ thống hoạt động theo chu kỳ: cứ 3 tiếng đồng hồ thổi 500 khối khí vào nhà, tức khoảng 150–170 khối mỗi giờ, hay 2–3 khối mỗi phút - vừa đủ để bù đắp oxy đúng chuẩn, không ồ ạt, không tốn nhiều điện.
 
 5. CHI PHÍ ĐẦU TƯ VÀ VẬN HÀNH
 
-Việt Nam được thiên nhiên ưu đãi hơn nước ngoài rất nhiều. Ở các nước lạnh, chênh lệch nhiệt độ trong và ngoài nhà có thể lên tới 50 độ — trao đổi khí tốn năng lượng rất lớn. Còn ở Việt Nam, ngoài trời nhiều khi chỉ 31–32 độ, trong nhà chỉ cần 27 độ là thoải mái, nên hệ thống này không tốn tiền như ở các nước.
+Việt Nam được thiên nhiên ưu đãi hơn nước ngoài rất nhiều. Ở các nước lạnh, chênh lệch nhiệt độ trong và ngoài nhà có thể lên tới 50 độ - trao đổi khí tốn năng lượng rất lớn. Còn ở Việt Nam, ngoài trời nhiều khi chỉ 31–32 độ, trong nhà chỉ cần 27 độ là thoải mái, nên hệ thống này không tốn tiền như ở các nước.
 
 Sau nhiều năm nghiên cứu và thử nghiệm, Nhã Đạt đã hoàn chỉnh một hệ thống tương đối rẻ tiền: khoảng 20–30 triệu đồng để lắp đặt, và chi phí điện hàng tháng chỉ khoảng 300.000 đồng. Hệ thống này thậm chí còn tiết kiệm điện hơn cả khi dùng máy lạnh đơn thuần.
 
 6. THỬ THÁCH KHI THI CÔNG
 
-Cái ống khí rất to — trong khi ống điện chỉ vài mm vuông, ống nước chỉ bằng cổ tay, thì ống khí phải to hơn nhiều. Trong nhà phố nhiều tầng nhưng ít không gian, chạy ống khí khắp nhà đã là thử thách, lại càng thử thách hơn. Vì vậy bắt buộc phải thiết kế nó ngay từ đầu, một cách rất kỹ lưỡng — không thể làm nhà xong hết rồi mới mời người vào chạy những cái ống to như thế quanh nhà được.
+Cái ống khí rất to - trong khi ống điện chỉ vài mm vuông, ống nước chỉ bằng cổ tay, thì ống khí phải to hơn nhiều. Trong nhà phố nhiều tầng nhưng ít không gian, chạy ống khí khắp nhà đã là thử thách, lại càng thử thách hơn. Vì vậy bắt buộc phải thiết kế nó ngay từ đầu, một cách rất kỹ lưỡng - không thể làm nhà xong hết rồi mới mời người vào chạy những cái ống to như thế quanh nhà được.
 
 7. TƯ DUY ĐẦU TƯ VÀO NHỮNG THỨ KHÔNG THẤY ĐƯỢC
 
-Người Việt mình tương đối ít đầu tư cho nhà hơn người khác. Nhưng khi đầu tư, người ta thường đầu tư vào những thứ hàng xóm thấy, khách thấy — còn ít đầu tư hơn vào những thứ không thấy được, những thứ tốt lâu dài, như khí tươi chẳng hạn.
+Người Việt mình tương đối ít đầu tư cho nhà hơn người khác. Nhưng khi đầu tư, người ta thường đầu tư vào những thứ hàng xóm thấy, khách thấy - còn ít đầu tư hơn vào những thứ không thấy được, những thứ tốt lâu dài, như khí tươi chẳng hạn.
 
-Nếu có một thứ không thấy mà nên làm, đó chính là: cấp khí tươi, lọc khí tươi, thổi vào nhà. Hạnh phúc có thể thiết kế được — và không khí trong lành là một trong những chất liệu quan trọng nhất của hạnh phúc đó.
+Nếu có một thứ không thấy mà nên làm, đó chính là: cấp khí tươi, lọc khí tươi, thổi vào nhà. Hạnh phúc có thể thiết kế được - và không khí trong lành là một trong những chất liệu quan trọng nhất của hạnh phúc đó.
 
 ---
 
@@ -11684,7 +11684,7 @@ chu_de: Nội dung dự án
 nguon: 03 - Tiến độ.md
 ---
 
-# Ny'ah Phú Định — Tiến độ
+# Ny'ah Phú Định - Tiến độ
 Chủ yếu là video:
 - Bàn giao nhà NPD #27
 - Lễ động thổ NPD #15 (Cleverlearn)
@@ -14605,7 +14605,7 @@ Khu nhà được phê duyệt 1/500, có sổ hồng riêng từng căn trướ
 
 ## 01 - Vị trí.md
 
-# Ny'ah Phú Định — Vị trí & Hạ tầng
+# Ny'ah Phú Định - Vị trí & Hạ tầng
 
 ## Về Quận 1 chỉ 18 phút
 Giá Quận 8, hưởng thụ Quận 1.
@@ -14631,7 +14631,7 @@ Giá Quận 8, hưởng thụ Quận 1.
 
 ## 02 - Giá & Thanh toán.md
 
-# Ny'ah Phú Định — Giá & Thanh toán (Rổ hàng)
+# Ny'ah Phú Định - Giá & Thanh toán (Rổ hàng)
 
 ## Rổ hàng T5.2026 (cập nhật 13.05.26)
 
@@ -14641,9 +14641,9 @@ Sơ đồ phân lô gồm **50 lô (01–50)**, hai mặt đường:
 - Cổng vào ở phía Trương Đình Hội; nhiều mảng **Công viên** nội khu.
 
 ### Phân loại theo mẫu nhà (màu trên sơ đồ)
-- **Fusion Gen 5** — dãy lô hai bên (khoảng 04–15 và 27–37)
-- **Cosmo Gen 2** — lô 03
-- **Opus** — lô 23, 24, 01, 02 (và các lô trung tâm)
+- **Fusion Gen 5** - dãy lô hai bên (khoảng 04–15 và 27–37)
+- **Cosmo Gen 2** - lô 03
+- **Opus** - lô 23, 24, 01, 02 (và các lô trung tâm)
 - **Signature by Codinachs**
 
 ### Lô đã LOCK ("Lock ngay giá tốt")
@@ -14653,7 +14653,7 @@ Sơ đồ phân lô gồm **50 lô (01–50)**, hai mặt đường:
 
 ## 03 - Tiến độ.md
 
-# Ny'ah Phú Định — Tiến độ
+# Ny'ah Phú Định - Tiến độ
 
 #### 🔹 Đoạn 14
 
@@ -14661,18 +14661,18 @@ Sơ đồ phân lô gồm **50 lô (01–50)**, hai mặt đường:
 
 Phần tiến độ chủ yếu là **video** (không có chữ để trích xuất). Danh sách tư liệu liên quan trong thư mục:
 
-- **Bàn giao nhà NPD #27** — `5 - tư liệu tiếp thị\1 - video_\01 giao nhà #27\Bàn Giao Nhà NPD #27.mp4`
-- **Lễ động thổ NPD #15 (Cleverlearn)** — `...\02 động thổ Cleverlearn\Lễ động thổ NPD#15.mp4`
-- **Khai trương nhà mẫu Fusion Gen 5 (HTV1)** — `...\1 - video_\HTV1 - Khai trương nhà mẫu Fusion Gen 5.mp4`
+- **Bàn giao nhà NPD #27** - `5 - tư liệu tiếp thị\1 - video_\01 giao nhà #27\Bàn Giao Nhà NPD #27.mp4`
+- **Lễ động thổ NPD #15 (Cleverlearn)** - `...\02 động thổ Cleverlearn\Lễ động thổ NPD#15.mp4`
+- **Khai trương nhà mẫu Fusion Gen 5 (HTV1)** - `...\1 - video_\HTV1 - Khai trương nhà mẫu Fusion Gen 5.mp4`
 - **Vòng tay siết chặt của hạ tầng.mp4** (hạ tầng/tiến độ khu vực)
 
-> _Đây là video — nếu cần markdown nội dung, phải bóc lời thoại (transcribe) riêng. Báo nếu muốn tao transcribe các video này._
+> _Đây là video - nếu cần markdown nội dung, phải bóc lời thoại (transcribe) riêng. Báo nếu muốn tao transcribe các video này._
 
 ---
 
 ## 04 - Pháp lý.md
 
-# Ny'ah Phú Định — Pháp lý
+# Ny'ah Phú Định - Pháp lý
 
 ## Giải mã pháp lý
 
@@ -14685,15 +14685,15 @@ Bộ hồ sơ pháp lý đầy đủ từng căn:
 3. **Giấy chứng nhận nhà + đất** (sổ hồng riêng từng căn)
 4. **Hợp đồng mua bán công chứng sang tên**
 
-→ Pháp lý hoàn chỉnh, sang tên công chứng, sổ riêng từng căn — an toàn cho người mua.
+→ Pháp lý hoàn chỉnh, sang tên công chứng, sổ riêng từng căn - an toàn cho người mua.
 
 ---
 
 ## 05 - Ny'ah Phú Định (Tổng quan).md
 
-# Ny'ah Phú Định — Tổng quan / Mẫu nhà / Tiện ích
+# Ny'ah Phú Định - Tổng quan / Mẫu nhà / Tiện ích
 
-## 17 đặc quyền tiện ích — "Nguồn kháng thể tự nhiên tại Ny'ah"
+## 17 đặc quyền tiện ích - "Nguồn kháng thể tự nhiên tại Ny'ah"
 
 1. Biển hiệu Ny'ah Phú Định
 2. Khu Landmark Coffee
@@ -14718,7 +14718,7 @@ Bộ hồ sơ pháp lý đầy đủ từng căn:
 ## 🔖 Thư mục: Ny'ah Phú Định/Tài liệu Marketing/_NYAH_markdown.md
 
 ## Các mẫu nhà (datasheet)
-Trong thư mục `2 - trình chiếu\2b - datasheet` có các bộ datasheet (ảnh JPG) — nội dung chi tiết từng mẫu nhà (Opus, Cosmo Gen 1, Cosmo Gen 2, Fusion Gen 5, Office 1,2) đã OCR, xem phần sau trong tài liệu này. Bản đồ phân lô (5 ảnh) xem phần đầu tài liệu.
+Trong thư mục `2 - trình chiếu\2b - datasheet` có các bộ datasheet (ảnh JPG) - nội dung chi tiết từng mẫu nhà (Opus, Cosmo Gen 1, Cosmo Gen 2, Fusion Gen 5, Office 1,2) đã OCR, xem phần sau trong tài liệu này. Bản đồ phân lô (5 ảnh) xem phần đầu tài liệu.
 
 ---
 
@@ -15611,7 +15611,7 @@ chu_de: Nội dung dự án
 nguon: 01 - Vị trí.md
 ---
 
-# Ny'ah Phú Định — Vị trí & Hạ tầng
+# Ny'ah Phú Định - Vị trí & Hạ tầng
 
 ## Về Quận 1 chỉ 18 phút
 - **Giá Quận 8, hưởng thụ Quận 1**
@@ -15620,7 +15620,7 @@ nguon: 01 - Vị trí.md
 
 ## Điểm xuất phát đầy lợi thế
 - **Vị trí chiến lược, cách Võ Văn Kiệt & Vành Đai Trong 2 chỉ 1 km.**
-- Cận kề các đầu mối giao thông trọng điểm thành phố — **không lo kẹt xe, không ngại đi xa.**
+- Cận kề các đầu mối giao thông trọng điểm thành phố - **không lo kẹt xe, không ngại đi xa.**
 
 ## Bạn có biết về địa danh Phú Định?
 - **Hạ tầng hiện đại, giao thương phát triển**
@@ -15845,10 +15845,10 @@ y - Tây Nam ( Tây Tứ Mệnh) ,,,,,"198A/12 Trương Đình Hội, P16, Q8",,
 
 # Thông Tin Chi Tiết Từng Lô Đất & Mẫu Nhà - Ny'ah Phú Định
 
-Tài liệu TỔNG HỢP DUY NHẤT (đã gộp từ "Bảng giá độc quyền", "Danh sách lô đất", "Rổ hàng cập nhật tháng") — mẫu nhà, diện tích đất thực, kích thước chuẩn mẫu nhà, diện tích sử dụng, kết cấu, giá bán, tình trạng — của từng căn/lô đất trong rổ hàng dự án Ny'ah Phú Định, để chatbot tra cứu nhanh và trả lời chính xác.
+Tài liệu TỔNG HỢP DUY NHẤT (đã gộp từ "Bảng giá độc quyền", "Danh sách lô đất", "Rổ hàng cập nhật tháng") - mẫu nhà, diện tích đất thực, kích thước chuẩn mẫu nhà, diện tích sử dụng, kết cấu, giá bán, tình trạng - của từng căn/lô đất trong rổ hàng dự án Ny'ah Phú Định, để chatbot tra cứu nhanh và trả lời chính xác.
 
-⚠️ LƯU Ý: "Kích Thước Chuẩn Mẫu Nhà" là kích thước THIẾT KẾ MẪU (theo model nhà) — KHÁC với "Diện Tích Đất Thực" (đo thực tế từng lô, có thể lệch do lô góc/lô méo). Luôn ưu tiên dùng "Diện Tích Đất Thực" khi khách hỏi diện tích đất của một lô cụ thể.
-⚠️ Tình trạng cập nhật tới tháng 5/2026 — rổ hàng thay đổi theo thời gian, luôn nhắc khách xác nhận lại với tư vấn viên trước khi chốt.
+⚠️ LƯU Ý: "Kích Thước Chuẩn Mẫu Nhà" là kích thước THIẾT KẾ MẪU (theo model nhà) - KHÁC với "Diện Tích Đất Thực" (đo thực tế từng lô, có thể lệch do lô góc/lô méo). Luôn ưu tiên dùng "Diện Tích Đất Thực" khi khách hỏi diện tích đất của một lô cụ thể.
+⚠️ Tình trạng cập nhật tới tháng 5/2026 - rổ hàng thay đổi theo thời gian, luôn nhắc khách xác nhận lại với tư vấn viên trước khi chốt.
 
 #### 🔹 Đoạn 2
 

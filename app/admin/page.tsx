@@ -666,7 +666,7 @@ export default function AdminPage() {
       const data = await res.json();
       if (!res.ok) { setSaveFileStatus(`❌ Lỗi lưu: ${data.error}`); setSavingFile(false); return; }
 
-      setSaveFileStatus(`✅ Đã lưu file${data.dataMdPatched ? ' + vá data.md' : ' (data.md không khớp để vá — sẽ vẫn được build lại)'}. 🔄 Đang embed lại toàn bộ...`);
+      setSaveFileStatus(`✅ Đã lưu file${data.dataMdPatched ? ' + vá data.md' : ' (data.md không khớp để vá - sẽ vẫn được build lại)'}. 🔄 Đang embed lại toàn bộ...`);
       // Embed lại toàn bộ để thay đổi có hiệu lực với bot
       const r2 = await fetch('/api/admin/reindex', {
         method: 'POST',
@@ -1325,7 +1325,7 @@ export default function AdminPage() {
                   <button
                     onClick={rebuildFullIndex}
                     disabled={true}
-                    title="Đã khóa — chỉ mục giờ do Chay_Dong_Bo.bat quản lý (xem ghi chú phía trên)"
+                    title="Đã khóa - chỉ mục giờ do Chay_Dong_Bo.bat quản lý (xem ghi chú phía trên)"
                     className="ml-1 bg-slate-800 text-slate-500 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all disabled:opacity-60 flex items-center gap-1 cursor-not-allowed"
                   >
                     🔒 Rebuild toàn bộ Index (đã khóa)
@@ -1336,7 +1336,7 @@ export default function AdminPage() {
                     <button
                       onClick={embedAndIndex}
                       disabled={true}
-                      title="Đã khóa — chỉ mục giờ do Chay_Dong_Bo.bat quản lý (xem ghi chú phía trên)"
+                      title="Đã khóa - chỉ mục giờ do Chay_Dong_Bo.bat quản lý (xem ghi chú phía trên)"
                       className="bg-slate-800 text-slate-500 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all disabled:opacity-60 flex items-center gap-1 cursor-not-allowed"
                     >
                       🔒 Embed &amp; Nạp vào Bot (đã khóa)

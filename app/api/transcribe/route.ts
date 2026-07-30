@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // 1) DEEPGRAM NOVA-3 — Ưu tiên cao nhất, có Keyterm Prompting
+    // 1) DEEPGRAM NOVA-3 - Ưu tiên cao nhất, có Keyterm Prompting
     if (DEEPGRAM_API_KEY) {
       try {
         // Ép từ khóa mạnh để nhận diện chính xác tên riêng

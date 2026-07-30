@@ -14,7 +14,7 @@ const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 // PHẢI khớp model dùng để build index (sync_and_reindex.js + crawl-save-index).
-// Index hiện tại build bằng gemini-embedding-001 (3072 chiều) — đổi model khác sẽ làm
+// Index hiện tại build bằng gemini-embedding-001 (3072 chiều) - đổi model khác sẽ làm
 // vector lệch không gian -> retrieval sai dù cùng số chiều.
 const EMBED_MODEL = 'gemini-embedding-001';
 const EMBED_BASE = 'https://generativelanguage.googleapis.com/v1beta';
@@ -52,20 +52,20 @@ const OVERLAP = 200;
 // đoạn có ích và làm loãng prompt gửi cho LLM.
 //
 // NGUYÊN TẮC: THÀ GIỮ RÁC HƠN XOÁ OAN. Ba chốt an toàn dưới đây phải chạy
-// TRƯỚC phép đo độ dài — mất một dòng số liệu (diện tích, giá) tai hại hơn
+// TRƯỚC phép đo độ dài - mất một dòng số liệu (diện tích, giá) tai hại hơn
 // nhiều so với việc giữ lại vài chunk vô nghĩa.
 export function isJunkChunk(text: string): boolean {
   const raw = (text || '').replace(/##\s*🔖[^\n]*\n/, ''); // gỡ dòng nhãn nguồn
 
-  // Chốt 1 — số kèm đơn vị (26.5 m², 8,98 tỷ, 20 năm): luôn giữ.
+  // Chốt 1 - số kèm đơn vị (26.5 m², 8,98 tỷ, 20 năm): luôn giữ.
   if (/\d[\d.,]*\s*(m²|m2|tỷ|tỉ|triệu|%|năm|phút|tầng|phòng)/i.test(raw)) return false;
-  // Chốt 2 — ô bảng có chứa số (bảng diện tích, bảng giá từng lô): luôn giữ.
+  // Chốt 2 - ô bảng có chứa số (bảng diện tích, bảng giá từng lô): luôn giữ.
   if (/\|[^|\n]*\d/.test(raw)) return false;
 
   const prose = raw
     .replace(/!?\[[^\]]*\]\([^)]*\)/g, ' ') // ảnh + link markdown
     .replace(/https?:\/\/\S+/g, ' ');       // URL trần
-  // Chốt 3 — có câu văn xuôi từ 6 từ liền: luôn giữ.
+  // Chốt 3 - có câu văn xuôi từ 6 từ liền: luôn giữ.
   // Dùng lớp ký tự À-ỹ (U+00C0..U+1EF9, phủ hết dấu tiếng Việt) thay cho \p{L}
   // vì tsconfig của project target dưới ES6, không cho dùng cờ regex `u`.
   if (/(?:[a-zA-ZÀ-ỹ]+\s+){5,}[a-zA-ZÀ-ỹ]+/.test(prose)) return false;
@@ -190,7 +190,7 @@ export async function embedQuery(text: string, forceDim?: number): Promise<numbe
 // ---------- Xây chỉ mục ----------
 export async function buildIndex(dataText: string): Promise<Index> {
   const raw = chunkText(dataText);
-  // Bỏ chunk rác TRƯỚC khi embed — vừa khỏi tốn tiền embedding, vừa không đưa
+  // Bỏ chunk rác TRƯỚC khi embed - vừa khỏi tốn tiền embedding, vừa không đưa
   // rác vào index. Xem isJunkChunk() để biết tiêu chí và các chốt an toàn.
   const texts = raw.filter(t => !isJunkChunk(t));
   if (raw.length !== texts.length) {
@@ -214,11 +214,11 @@ export async function buildIndex(dataText: string): Promise<Index> {
   const NEAR_DUP = 0.985;
   const sourcePriority = (file?: string): number => {
     const f = (file || '').toLowerCase();
-    if (f.includes('03_human-qa')) return 5;       // Q&A chuẩn Human — tin nhất
+    if (f.includes('03_human-qa')) return 5;       // Q&A chuẩn Human - tin nhất
     if (f.includes('drive-extracted')) return 4;   // dữ liệu gốc từ Drive
     if (f.includes('nyah-phudinh') || f.includes('nyah-phuinh') || f.includes('01 nyah')) return 3;
-    if (f.includes('qa-generated')) return 2;       // QA sinh tự động — dễ sai
-    if (f.includes('web-crawl')) return 1;          // crawl web — thấp nhất
+    if (f.includes('qa-generated')) return 2;       // QA sinh tự động - dễ sai
+    if (f.includes('web-crawl')) return 1;          // crawl web - thấp nhất
     return 3;
   };
   const isTable = (t: string) => t.trim().startsWith('|') || t.includes('\n|');
@@ -437,7 +437,7 @@ export interface ScoredChunk {
   file?: string;
 }
 
-// Truy hồi top-K đoạn liên quan nhất — hybrid: vector similarity + keyword boost
+// Truy hồi top-K đoạn liên quan nhất - hybrid: vector similarity + keyword boost
 // Trả kèm score để caller có thể áp ngưỡng confidence (tránh slide sai khi query mơ hồ)
 export async function retrieve(query: string, index: Index, k = 20, minScore = 0): Promise<string[]> {
   const indexDim = index.chunks[0]?.vec?.length || 0;
@@ -536,7 +536,7 @@ export async function retrieve(query: string, index: Index, k = 20, minScore = 0
     filtered = scored.filter(item => item.score > 2.0); // phải có ít nhất 1 hit từ khóa
   }
 
-  // Nếu có minScore (ở chế độ vector), kiểm tra top item trước — nếu tất cả rất thấp thì trả rỗng
+  // Nếu có minScore (ở chế độ vector), kiểm tra top item trước - nếu tất cả rất thấp thì trả rỗng
   const topScore = filtered[0]?.score ?? 0;
   if (!isVectorFailed && minScore > 0 && topScore < minScore) {
     console.log(`[RAG] Top score ${topScore.toFixed(3)} < minScore ${minScore} → bỏ qua (query quá mơ hồ)`);

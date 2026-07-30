@@ -20,7 +20,7 @@ type SlideData = {
   skip?: boolean;
 };
 
-// Nhan chu de than thien — hien "Nguoi ta dang noi ve [nhan]" khi bat duoc topic.
+// Nhan chu de than thien - hien "Nguoi ta dang noi ve [nhan]" khi bat duoc topic.
 const TOPIC_LABELS: Record<string, string> = {
   price: 'Giá & Thanh toán',
   location: 'Vị trí & Đường đi',
@@ -37,7 +37,7 @@ export default function SlideBotPage() {
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
   const [slideKey, setSlideKey] = useState(0);
-  // Chu de bat duoc tu giong noi khach — '' = chua bat, dang lang nghe.
+  // Chu de bat duoc tu giong noi khach - '' = chua bat, dang lang nghe.
   const [topicLabel, setTopicLabel] = useState('');
   const [heardText, setHeardText] = useState('');
 
@@ -79,7 +79,7 @@ export default function SlideBotPage() {
           highlight_number: '18 phút',
           image_urls: [],
         },
-        // demo=4: ảnh DỌC — mặt bằng cấu trúc (portrait 3:4)
+        // demo=4: ảnh DỌC - mặt bằng cấu trúc (portrait 3:4)
         '4': {
           layout_type: 'split_image_right',
           title: 'Mặt bằng Cosmo Gen 2',
@@ -131,7 +131,7 @@ export default function SlideBotPage() {
       dbg(`📐 Render: op=${cs.opacity}, anim=${cs.animationName.split(',')[0]}/${cs.animationPlayState.split(',')[0]}, y=${Math.round(rect.top)}, h=${Math.round(rect.height)}`);
       if (parseFloat(cs.opacity) < 0.5) {
         mainRef.current?.classList.add('anim-failsafe');
-        dbg('🩹 Animation bị chặn — ép hiện nội dung ngay');
+        dbg('🩹 Animation bị chặn - ép hiện nội dung ngay');
       }
     }, 1500);
     return () => clearTimeout(t);
@@ -224,19 +224,19 @@ export default function SlideBotPage() {
     let intent = classifyAmbientIntent(query);
     if (!intent.shouldGenerate) {
       // Intent chấm điểm yếu NHƯNG câu khớp catalog slide tĩnh (lib/static_slides.ts
-      // — cùng nguồn với server) -> vẫn cho qua. Sửa vụ "tiến độ đến đâu rồi" bị
+      // - cùng nguồn với server) -> vẫn cho qua. Sửa vụ "tiến độ đến đâu rồi" bị
       // weak_signal chặn oan dù server có sẵn slide tiến độ.
       const catalogHit = matchStaticSlide(query, 'combo') || matchStaticSlide(query, 'general');
       if (catalogHit) {
-        dbg(`📚 Catalog khớp "${catalogHit.title}" — cho qua dù intent ${intent.reason}`);
+        dbg(`📚 Catalog khớp "${catalogHit.title}" - cho qua dù intent ${intent.reason}`);
         intent = { ...intent, shouldGenerate: true, topic: intent.topic || 'general', reason: 'has_project_topic' };
       } else {
-        dbg(`🚫 Intent BỎ QUA — lý do: ${intent.reason}, topic: ${intent.topic || '—'}`);
+        dbg(`🚫 Intent BỎ QUA - lý do: ${intent.reason}, topic: ${intent.topic || '-'}`);
         backToListening();
         return;
       }
     } else {
-      dbg(`✅ Intent OK — topic: ${intent.topic}, lý do: ${intent.reason}`);
+      dbg(`✅ Intent OK - topic: ${intent.topic}, lý do: ${intent.reason}`);
     }
 
     const now = Date.now();
@@ -279,7 +279,7 @@ export default function SlideBotPage() {
       const secs = ((Date.now() - t0) / 1000).toFixed(1);
 
       if (data.skip || !data.speech_text || !data.title || data.title === 'Lỗi hiển thị' || data.title.includes('Lỗi hiển thị')) {
-        dbg(`⚪ Server SKIP sau ${secs}s — ${(data as any).reason || `title="${data.title || ''}"`}`);
+        dbg(`⚪ Server SKIP sau ${secs}s - ${(data as any).reason || `title="${data.title || ''}"`}`);
         if (ambient) {
           setTranscript('🎧 Đang nghe ngầm… (chưa có chủ đề rõ ràng)');
           setState('listening');
@@ -292,7 +292,7 @@ export default function SlideBotPage() {
       }
 
       const nImgs = (data.image_urls?.length ?? (data.image_url ? 1 : 0));
-      dbg(`🖼 Slide OK sau ${secs}s — "${data.title}", ${nImgs} ảnh, layout: ${data.layout_type || 'mặc định'}`);
+      dbg(`🖼 Slide OK sau ${secs}s - "${data.title}", ${nImgs} ảnh, layout: ${data.layout_type || 'mặc định'}`);
 
       if (!data.layout_type) data.layout_type = 'split_image_right';
       setBrokenImages({});
@@ -306,7 +306,7 @@ export default function SlideBotPage() {
       const msg = e?.message || String(e);
       dbg(`🔴 LỖI sau ${((Date.now() - t0) / 1000).toFixed(1)}s: ${msg}`);
       // Hien loi that len thanh transcript (thay vi im lang gia vo nghe tiep)
-      setTranscript(`⚠️ Lỗi tạo slide: ${msg.slice(0, 90)} — vẫn đang nghe…`);
+      setTranscript(`⚠️ Lỗi tạo slide: ${msg.slice(0, 90)} - vẫn đang nghe…`);
       if (ambient || isListeningLoopActive.current) {
         setState('listening');
         startListening();
@@ -392,14 +392,14 @@ export default function SlideBotPage() {
             </span>
           </Line>
           {/* Khong dung tracking-tight o day: tracking tinh theo em, o co chu toi 190px
-              no co moi cap chu lai ~5px — qua nhieu voi chu hoa dam co dau tieng Viet,
+              no co moi cap chu lai ~5px - qua nhieu voi chu hoa dam co dau tieng Viet,
               lam dau (mu, moc, nang) bi de len chu ben canh. */}
           <h1 className="uppercase font-black leading-[1.5] tracking-[0.05em]">
             <Line delay={240} className="text-[#2E9E5B] text-[clamp(44px,9vw,150px)]">Ny&apos;ah</Line>
             <Line delay={400} className="text-[#161616] text-[clamp(52px,11vw,190px)]">Phú Định</Line>
           </h1>
           <Line delay={580} className="text-neutral-500 text-[clamp(15px,2vw,28px)] max-w-[78%] mx-auto leading-relaxed">
-            Chạm nút micro — slide sẽ tự hiện theo câu chuyện của bạn.
+            Chạm nút micro - slide sẽ tự hiện theo câu chuyện của bạn.
           </Line>
         </div>
       );
@@ -427,7 +427,7 @@ export default function SlideBotPage() {
       <style dangerouslySetInnerHTML={{ __html: `
         .dots { background-image: radial-gradient(rgba(22,22,22,.28) 1.6px, transparent 1.6px); background-size: 16px 16px; }
         /* Mặt nạ nới thêm trên/dưới để KHÔNG cắt dấu tiếng Việt (dấu nặng dưới Ị/Ụ,
-           dấu mũ trên Ấ/Ề) khi leading < 1 — margin âm bù lại nên khoảng cách giữ nguyên. */
+           dấu mũ trên Ấ/Ề) khi leading < 1 - margin âm bù lại nên khoảng cách giữ nguyên. */
         .line-mask { overflow: hidden; padding: 0.25em 0 0.2em; margin: -0.25em 0 -0.2em; }
         .line-in {
           animation: lineUp .7s cubic-bezier(.22,1,.36,1) both, glowFade 1.15s ease-out both;
@@ -472,7 +472,7 @@ export default function SlideBotPage() {
         }
       ` }} />
 
-      {/* DEBUG HUD — chi hien khi mo /slide?debug=1 */}
+      {/* DEBUG HUD - chi hien khi mo /slide?debug=1 */}
       {debugOn && (
         <div className="fixed top-2 left-2 z-[70] w-[420px] max-w-[92vw] rounded-xl bg-black/85 text-white p-3 font-mono text-[11px] leading-relaxed shadow-2xl">
           <div className="flex items-center justify-between mb-1.5">
@@ -484,7 +484,7 @@ export default function SlideBotPage() {
           </div>
           {errorMsg && <div className="text-red-400 font-bold mb-1">⛔ {errorMsg}</div>}
           <div className="max-h-[38vh] overflow-y-auto space-y-0.5">
-            {debugLog.length === 0 && <div className="text-white/50">Chưa có sự kiện — bấm mic và nói thử…</div>}
+            {debugLog.length === 0 && <div className="text-white/50">Chưa có sự kiện - bấm mic và nói thử…</div>}
             {debugLog.map((l, i) => <div key={i} className={i === 0 ? 'text-white' : 'text-white/60'}>{l}</div>)}
           </div>
         </div>
@@ -502,7 +502,7 @@ export default function SlideBotPage() {
             <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
           </span>
           <div>
-            {/* leading-none cat dau nang duoi ĐỊNH — dung leading-[1.2] de chua du dau */}
+            {/* leading-none cat dau nang duoi ĐỊNH - dung leading-[1.2] de chua du dau */}
             <p className="font-black tracking-tight leading-[1.2] text-[clamp(15px,1.6vw,26px)]">NY&apos;AH PHÚ ĐỊNH</p>
             <p className="text-neutral-500 font-semibold tracking-[0.22em] uppercase mt-1 text-[clamp(9px,0.9vw,13px)]">A development by Nhã Đạt</p>
           </div>

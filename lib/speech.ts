@@ -1,7 +1,7 @@
-// lib/speech.ts — Tiện ích giọng nói DÙNG CHUNG cho cả trang /voice và /slide.
+// lib/speech.ts - Tiện ích giọng nói DÙNG CHUNG cho cả trang /voice và /slide.
 // Mục tiêu: 1 nguồn sự thật cho việc làm sạch chữ + tách câu, để TTS đọc
 // đồng nhất ở mọi trang (trước đây mỗi trang tự viết một kiểu nên bị lệch).
-// Đây là util thuần (pure functions) chạy ở client — không gọi API, không state.
+// Đây là util thuần (pure functions) chạy ở client - không gọi API, không state.
 
 // ───────────────────────────────────────────────────────────────────────────
 // 1) Làm sạch & chuẩn hóa chữ trước khi đưa vào TTS (đọc tự nhiên kiểu ChatGPT Voice)
@@ -87,7 +87,7 @@ export function cleanTextForTTS(text: string): string {
   // Bỏ bullet đầu dòng
   clean = clean.replace(/^\s*[-*+]\s+/gm, ' ');
 
-  // Bỏ số thứ tự đầu câu ("1. ", "2)") — yêu cầu có space/hết chuỗi sau dấu chấm
+  // Bỏ số thứ tự đầu câu ("1. ", "2)") - yêu cầu có space/hết chuỗi sau dấu chấm
   // -> KHÔNG đụng tới "1.5 tỷ"
   clean = clean.replace(/^\s*\d{1,2}[.)](\s+|$)/, ' ');
 
@@ -168,7 +168,7 @@ export function splitSentences(buffer: string): { sentences: string[]; remaining
 }
 
 // ───────────────────────────────────────────────────────────────────────────
-// 3) Tách câu cho luồng MỘT LẦN (dùng cho /slide — nhận trọn speech_text).
+// 3) Tách câu cho luồng MỘT LẦN (dùng cho /slide - nhận trọn speech_text).
 //    Trả về mảng câu đã làm sạch, sẵn sàng đưa vào TTS.
 // ───────────────────────────────────────────────────────────────────────────
 export function splitCleanSentences(text: string): string[] {
@@ -200,7 +200,7 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
   // Tên dự án Ny'ah Phú Định
   [vnWord('ph[ốôuú]\\s*(?:đêm|định|đỉnh|đính|dinh|đin)'), 'phú định'],
   [vnWord("ny[\\s']*ah|ni\\s*a|nia|niah"), "ny'ah"],
-  // Mẫu nhà — đặt cụm dài/cụ thể TRƯỚC cụm ngắn để không bị nuốt nhầm
+  // Mẫu nhà - đặt cụm dài/cụ thể TRƯỚC cụm ngắn để không bị nuốt nhầm
   [vnWord('bếp\\s*(?:full|phun|phu|fun)\\s*(?:size|sai|sài|xai|sài?z)'), 'bếp fullsize'],
   [vnWord('cô\\s*gái\\s*của\\s*cô\\s*t[\\s-]*m[ôo]'), 'cosmo gen 2'],
   [vnWord('quân\\s*mua\\s*cho\\s*anh\\s*hai|quân\\s*mua\\s*anh\\s*hai'), 'cosmo gen 2'],
@@ -218,7 +218,7 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
   [vnWord('nguyễn\\s*văn\\s*lin[hg]'), 'nguyễn văn linh'],
   [vnWord('quận\\s*tám'), 'quận 8'],
   [vnWord('e\\s*ơ\\s*t[óo]p|ép\\s*tóp|air\\s*tóp'), 'airtop'],
-  // Phòng ốc — để bắt từ khóa ra ảnh đúng
+  // Phòng ốc - để bắt từ khóa ra ảnh đúng
   [vnWord('ga[\\s-]*ra|ga\\s*ra'), 'gara'],
   [vnWord('thang\\s*má[yi]|thang\\s*mai'), 'thang máy'],
   [vnWord('thang\\s*xoắ?n[g]?'), 'thang xoắn'],
@@ -264,12 +264,12 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
 ];
 
 // ───────────────────────────────────────────────────────────────────────────
-// 6) FUZZY MATCH tên riêng — "quy tắc chung" thay vì liệt kê tay từng biến thể.
+// 6) FUZZY MATCH tên riêng - "quy tắc chung" thay vì liệt kê tay từng biến thể.
 //    STT hay nghe méo tên nước ngoài (cosmo, fusion, opus...). Thay vì chỉ bắt
 //    các biến thể đã viết sẵn ở VN_SPEECH_FIXES, ta so KHOẢNG CÁCH CHỈNH SỬA
-//    (Levenshtein) của mỗi từ / cụm 2 từ với danh sách tên chuẩn — GẦN GIỐNG
+//    (Levenshtein) của mỗi từ / cụm 2 từ với danh sách tên chuẩn - GẦN GIỐNG
 //    đủ mức thì tự nắn về đúng tên. Bắt được cả biến thể MỚI chưa gặp.
-//    (Ca méo QUÁ XA vd "danh hài" thì fuzzy không với tới — vẫn cần thêm tay.)
+//    (Ca méo QUÁ XA vd "danh hài" thì fuzzy không với tới - vẫn cần thêm tay.)
 // ───────────────────────────────────────────────────────────────────────────
 const FUZZY_NAMES = ['cosmo', 'fusion', 'opus', 'signature', 'cashmere', 'office', 'airtop'];
 
@@ -305,7 +305,7 @@ function fuzzyName(token: string): string | null {
   return bestScore >= 0.72 ? best : null;
 }
 
-// Chi snap TUNG TU DON gan giong ten chuan (khong ghep 2 tu — ghep de nham
+// Chi snap TUNG TU DON gan giong ten chuan (khong ghep 2 tu - ghep de nham
 // "co mo"/"co so" -> cosmo). Cac ca meo tach 2 tu ("cot mo", "o put", "op phit")
 // da co bang regex VN_SPEECH_FIXES lo truoc, nen fuzzy chi can vet tu don.
 function applyFuzzyNames(text: string): string {

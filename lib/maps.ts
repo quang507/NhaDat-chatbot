@@ -18,7 +18,7 @@ export interface RouteSummary {
 }
 
 // Phát hiện câu hỏi có ý hỏi đường / khoảng cách / thời gian di chuyển
-// Trả về { isRoute, origin } — origin có thể rỗng nếu khách chưa nói rõ điểm xuất phát.
+// Trả về { isRoute, origin } - origin có thể rỗng nếu khách chưa nói rõ điểm xuất phát.
 export function detectRouteIntent(message: string): { isRoute: boolean; origin: string } {
   // normalize('NFC'): STT/1 số client gửi tiếng Việt dạng NFD (tổ hợp) -> "đi từ" khác
   // byte với chuỗi so khớp NFC -> includes() trượt -> KHÔNG nhận ra ý hỏi đường. Ép NFC.
@@ -123,7 +123,7 @@ export async function getDrivingRoute(
 // Biến kết quả route thành đoạn context để nhét vào prompt (AI chỉ diễn giải, không bịa).
 // Lệnh CỨNG + đặt ở ĐẦU prompt vì llama hay bỏ qua/đọc méo số khi bị vùi dưới 12 chunk RAG.
 export function routeSummaryToPrompt(r: RouteSummary): string {
-  return `\n\n★★★ DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ (Google Maps — ƯU TIÊN TUYỆT ĐỐI) ★★★
+  return `\n\n★★★ DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ (Google Maps - ƯU TIÊN TUYỆT ĐỐI) ★★★
 Khách đang hỏi đường/thời gian di chuyển. BẮT BUỘC trả lời NGAY bằng đúng 2 con số dưới đây,
 KHÔNG được hỏi lại tên địa điểm, KHÔNG được bịa số khác, KHÔNG nói "cần biết thêm":
 - Từ "${r.origin}" đến dự án Ny'ah Phú Định (58A Trương Đình Hội, P.16, Q.8):

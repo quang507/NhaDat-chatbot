@@ -251,7 +251,7 @@ async function sleep(ms) {
 }
 
 // Đọc "retryDelay" (vd "38s") mà Gemini tự đề xuất trong lỗi 429, để đợi ĐÚNG thời gian
-// thay vì đoán cứng — quota free-tier tính theo request/phút nên đợi thiếu vẫn dính lại 429.
+// thay vì đoán cứng - quota free-tier tính theo request/phút nên đợi thiếu vẫn dính lại 429.
 function parseRetryDelaySeconds(errText) {
   const m = errText.match(/"retryDelay"\s*:\s*"(\d+(?:\.\d+)?)s"/);
   return m ? Math.ceil(parseFloat(m[1])) : null;
@@ -261,7 +261,7 @@ async function embedBatch(texts, taskType) {
   if (texts.length === 0) return [];
   const out = [];
 
-  // Dùng Gemini Embedding (gemini-embedding-001, 3072 chiều) — khớp runtime lib/rag.ts
+  // Dùng Gemini Embedding (gemini-embedding-001, 3072 chiều) - khớp runtime lib/rag.ts
   // BATCH_SIZE nhỏ (20) để 1 file lớn không "ăn" hết quota free-tier (100 request/phút) chỉ trong 1 lần gọi.
   const BATCH_SIZE = 20;
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
@@ -286,7 +286,7 @@ async function embedBatch(texts, taskType) {
       if (res.status === 429) {
         const retryS = parseRetryDelaySeconds(errText);
         if (retryS) {
-          console.log(`  (429 — Gemini đề xuất đợi ${retryS}s, đang đợi ${retryS + 3}s...)`);
+          console.log(`  (429 - Gemini đề xuất đợi ${retryS}s, đang đợi ${retryS + 3}s...)`);
           await sleep((retryS + 3) * 1000);
           // Thử lại đúng 1 lần với batch này sau khi đợi đủ thời gian Gemini yêu cầu
           const retryRes = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`, {
@@ -562,7 +562,7 @@ async function main() {
         filesEmbeddedCount++;
         console.log(`-> Thành công sinh vector cho ${annotatedChunks.length} chunks.`);
         
-        // Sleep 20s giữa các file để tránh rate limits (RPM) — 2s trước đây quá ngắn, hay dính 429
+        // Sleep 20s giữa các file để tránh rate limits (RPM) - 2s trước đây quá ngắn, hay dính 429
         await sleep(20000);
       } else {
         console.error(`❌ Lỗi: Không thể sinh vector cho file: ${item.relativePath}. Dừng sinh vector mới để lưu tiến trình.`);
