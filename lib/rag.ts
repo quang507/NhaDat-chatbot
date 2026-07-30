@@ -43,6 +43,37 @@ function ghHeaders() {
 const CHUNK = 1800;
 const OVERLAP = 200;
 
+// ---------- Lọc chunk rác ----------
+// Chunk rác = không mang thông tin nào để trả lời khách: chỉ còn markup ảnh
+// WordPress, danh sách link menu, dòng `---`, tiêu đề trơ ("### TẦNG 2"), hoặc
+// rác OCR từ bản vẽ ("| | | VÀO | | | S | | H |").
+//
+// Chúng vẫn có vector nên VẪN ĐƯỢC TRẢ VỀ khi truy hồi, chiếm slot top-k của
+// đoạn có ích và làm loãng prompt gửi cho LLM.
+//
+// NGUYÊN TẮC: THÀ GIỮ RÁC HƠN XOÁ OAN. Ba chốt an toàn dưới đây phải chạy
+// TRƯỚC phép đo độ dài — mất một dòng số liệu (diện tích, giá) tai hại hơn
+// nhiều so với việc giữ lại vài chunk vô nghĩa.
+export function isJunkChunk(text: string): boolean {
+  const raw = (text || '').replace(/##\s*🔖[^\n]*\n/, ''); // gỡ dòng nhãn nguồn
+
+  // Chốt 1 — số kèm đơn vị (26.5 m², 8,98 tỷ, 20 năm): luôn giữ.
+  if (/\d[\d.,]*\s*(m²|m2|tỷ|tỉ|triệu|%|năm|phút|tầng|phòng)/i.test(raw)) return false;
+  // Chốt 2 — ô bảng có chứa số (bảng diện tích, bảng giá từng lô): luôn giữ.
+  if (/\|[^|\n]*\d/.test(raw)) return false;
+
+  const prose = raw
+    .replace(/!?\[[^\]]*\]\([^)]*\)/g, ' ') // ảnh + link markdown
+    .replace(/https?:\/\/\S+/g, ' ');       // URL trần
+  // Chốt 3 — có câu văn xuôi từ 6 từ liền: luôn giữ.
+  // Dùng lớp ký tự À-ỹ (U+00C0..U+1EF9, phủ hết dấu tiếng Việt) thay cho \p{L}
+  // vì tsconfig của project target dưới ES6, không cho dùng cờ regex `u`.
+  if (/(?:[a-zA-ZÀ-ỹ]+\s+){5,}[a-zA-ZÀ-ỹ]+/.test(prose)) return false;
+
+  // Còn lại: gỡ hết ký tự trang trí, gần như không còn chữ -> rác.
+  return prose.replace(/[#>|\-*=_~\s]+/g, ' ').trim().length < 40;
+}
+
 export function chunkText(raw: string): string[] {
   const text = raw.replace(/\r\n/g, '\n').trim();
   if (!text) return [];
@@ -158,7 +189,13 @@ export async function embedQuery(text: string, forceDim?: number): Promise<numbe
 
 // ---------- Xây chỉ mục ----------
 export async function buildIndex(dataText: string): Promise<Index> {
-  const texts = chunkText(dataText);
+  const raw = chunkText(dataText);
+  // Bỏ chunk rác TRƯỚC khi embed — vừa khỏi tốn tiền embedding, vừa không đưa
+  // rác vào index. Xem isJunkChunk() để biết tiêu chí và các chốt an toàn.
+  const texts = raw.filter(t => !isJunkChunk(t));
+  if (raw.length !== texts.length) {
+    console.log(`[buildIndex] bỏ ${raw.length - texts.length} chunk rác (markup ảnh/menu/tiêu đề trơ).`);
+  }
   const vecs = await embedBatch(texts, 'RETRIEVAL_DOCUMENT');
   // GẮN file cho từng chunk dựa trên marker "## 🔖 [folder] · tên-file" có sẵn trong data.md.
   // Quan trọng: retrieve() cộng điểm ưu tiên theo c.file (03_Human-QA +0.35, drive-extracted +0.05).
@@ -421,8 +458,12 @@ export async function retrieve(query: string, index: Index, k = 20, minScore = 0
 
   const keywords = extractKeywords(query);
 
+  // Lọc rác cho index đã build từ trước (index cũ vẫn còn chunk rác vì lúc đó
+  // buildIndex chưa lọc). Nhờ vậy không phải build lại index mới thấy tác dụng.
+  const sachChunks = index.chunks.filter(c => !isJunkChunk(c.text));
+
   // Lọc bỏ toàn bộ dữ liệu thuộc dự án Villa Ny'ah
-  const phuDinhChunks = index.chunks.filter(c => {
+  const phuDinhChunks = sachChunks.filter(c => {
     const text = c.text.toLowerCase();
     const file = (c.file || '').toLowerCase();
     
