@@ -235,7 +235,10 @@ function scoreTopics(clean: string): { total: number; strong: number; topic?: In
 }
 
 // ── Classifier chính ─────────────────────────────────────────────────────────
-function detectModel(clean: string): string | undefined {
+// NGUỒN DUY NHẤT nhận diện mẫu nhà (tên + phiên âm STT). app/api/slide/route.ts
+// import hàm này — đừng viết lại regex ở nơi khác, dễ lệch nhau.
+export type HouseModel = 'fusion_gen_5' | 'cosmo_gen_2' | 'opus';
+export function detectModel(clean: string): HouseModel | undefined {
   // Fusion Gen 5 — tên + phiên âm STT (phiêu dân, fiu, phiu, fuse, phút dân...)
   if (/fusion|phiêu dân|phiêu-dân|phiu dân|phiu-dân|fiu|phiu|fuse|gen 5|gen5|phút dân/.test(clean)) return 'fusion_gen_5';
   // Cosmo Gen 2 — tên + phiên âm STT (cốt mô, cát mô, cósmo, cashmere → cosmo line)
