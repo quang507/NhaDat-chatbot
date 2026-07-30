@@ -5,7 +5,7 @@ import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
 import { detectUnit, unitContext, imageFamily, getGeneralUnsoldContext } from '@/lib/units';
-import { hasProjectKeyword, isCompetitor, COMPETITORS } from '@/lib/intent';
+import { hasProjectKeyword, isCompetitor, COMPETITORS, detectModel } from '@/lib/intent';
 import {
   matchStaticSlide,
   ROOM_SLIDES, TOPIC_SLIDES, MODEL_INTRO, MODEL_INTRO_NYAH, MODEL_INTRO_KEYWORDS,
@@ -338,14 +338,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ skip: true });
     }
 
-    let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null = null;
-    if (has('fusion', 'gen 5', 'gen5', 'phiêu dân', 'phiêu-dân', 'phiu dân', 'phiu-dân', 'fiu', 'phiu', 'fuse', 'phút dân')) {
-      model = 'fusion_gen_5';
-    } else if (has('opus', 'ô-pút', 'ô pút', 'o pút', 'opút', 'o-pút', 'ô put', 'ô-put', 'o put')) {
-      model = 'opus';
-    } else if (has('cosmo', 'cót mô', 'cót-mô', 'cốt mô', 'cát mô', 'cat mo', 'cát-mô', 'gen 2', 'gen2', 'gen hai')) {
-      model = 'cosmo_gen_2';
-    } else {
+    // Nhận diện mẫu nhà qua lib/intent.ts (nguồn duy nhất, kèm phiên âm STT).
+    let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null = detectModel(cleanMsg) || null;
+    if (!model) {
       const unitNo = detectUnit(message);
       if (unitNo) model = imageModelForUnit(unitNo);
     }
@@ -484,7 +479,8 @@ export async function POST(req: NextRequest) {
       const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|ban-do|datasheet/.test(u));
       if (!staticSlide.layout_type) staticSlide.layout_type = isDiagram ? 'split_image_right' : 'full_background';
       console.log(`[Slide] Ambient FAST static: "${message.slice(0, 50)}" -> "${staticSlide.title}"`);
-      return NextResponse.json(staticSlide);
+      // _source: nhánh nào tạo slide — trang /thu-slide đọc để chẩn đoán.
+      return NextResponse.json({ ...staticSlide, _source: 'static_fast' });
     }
 
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
@@ -613,7 +609,7 @@ export async function POST(req: NextRequest) {
       // Ảnh chụp thực tế (phòng, phối cảnh) → full_background cho hoành tráng.
       const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|datasheet/.test(u));
       base.layout_type = isDiagram ? 'split_image_right' : 'full_background';
-      return NextResponse.json(base);
+      return NextResponse.json({ ...base, _source: 'static_llm_text' });
     }
 
     // Lọc đường dẫn ảnh: phải bắt đầu /images/ VA file phải TON TAI THUC.
@@ -989,7 +985,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json(parsed);
+    return NextResponse.json({ ...parsed, _source: 'dynamic_llm' });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }

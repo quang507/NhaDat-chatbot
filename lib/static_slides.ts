@@ -34,27 +34,47 @@ const IMG = '/images/01_NyAh-PhuDinh';
 // Ảnh gốc toàn dự án (phối cảnh tổng)
 const ROOT = [`${IMG}/ny'ah-phu-dinh-tong-quan-1.jpg`, `${IMG}/ny'ah-phu-dinh-tong-quan-2.jpg`, `${IMG}/ny'ah-phu-dinh-tong-quan-3.jpg`];
 
-// Load slides from JSON file if available, otherwise fallback to hardcoded data
-function loadSlidesFromJSON(): CatalogEntry[] | null {
-  // Only attempt to load JSON on server side (Node.js environment)
-  if (typeof process === 'undefined' || !process.cwd) return null;
+// ── NẠP CATALOG TỪ public/data/slides.json ─────────────────────────────────
+// Sửa slides.json rồi restart app là slide đổi ngay, không cần rebuild.
+// slides.json được sinh từ chính dữ liệu hardcode bên dưới (npm run slides:dump),
+// nên hai bên luôn khớp. Nếu file thiếu/hỏng -> tự quay về dữ liệu hardcode.
+//
+// AN TOÀN: JSON chỉ được dùng khi có ĐỦ số entry tối thiểu. Một file JSON bị cắt
+// ngắn (ví dụ mới trích được vài slide) sẽ bị bỏ qua thay vì âm thầm thay thế
+// cả catalog và làm chết hàng chục slide.
+const MIN_STATIC_SLIDES = 60;
 
+function readSlidesJSON(): Record<string, unknown> | null {
+  // Chỉ đọc file ở phía server (Node), client bundle không có fs.
+  if (typeof process === 'undefined' || !process.cwd) return null;
+  // Script sinh slides.json đặt cờ này để đọc được dữ liệu hardcode (tránh vòng lặp).
+  if (process.env.SLIDES_IGNORE_JSON === '1') return null;
   try {
     const fs = require('fs');
     const path = require('path');
     const jsonPath = path.join(process.cwd(), 'public/data/slides.json');
     if (!fs.existsSync(jsonPath)) return null;
-
-    const data = fs.readFileSync(jsonPath, 'utf-8');
-    const parsed = JSON.parse(data);
-    return parsed.static_slides || null;
+    return JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
   } catch (e) {
-    console.warn('Failed to load slides.json:', e);
+    console.warn('[slides.json] Đọc thất bại, dùng dữ liệu hardcode:', e);
     return null;
   }
 }
 
-export const STATIC_SLIDES: CatalogEntry[] = loadSlidesFromJSON() || [
+const SLIDES_JSON = readSlidesJSON();
+
+function fromJSON<T>(key: string, minLen = 1): T | null {
+  const v = SLIDES_JSON?.[key];
+  if (!v) return null;
+  const len = Array.isArray(v) ? v.length : Object.keys(v as object).length;
+  if (len < minLen) {
+    console.warn(`[slides.json] "${key}" chỉ có ${len} entry (cần ≥${minLen}) — bỏ qua, dùng hardcode.`);
+    return null;
+  }
+  return v as T;
+}
+
+export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_slides', MIN_STATIC_SLIDES) || [
 
   // ── 1. TIẾN ĐỘ & BÀN GIAO ──────────────────────────────────────────────
   {
@@ -893,8 +913,13 @@ export function matchStaticSlide(message: string, phase: 'combo' | 'general'): C
     let score = 0;
     if (isCombo) {
       if (!entry.allOf!.every(hit)) continue;
+      // Entry combo CÓ kèm keywords => nghĩa là "đủ allOf VÀ ít nhất một keyword".
+      // Không có ràng buộc này thì "tiến độ" chung chung sẽ khớp entry
+      // allOf:['tiến độ'] + keywords:['tháng 5'] và trả về slide tháng cũ.
+      const comboKw = entry.keywords.filter(hit);
+      if (entry.keywords.length > 0 && comboKw.length === 0) continue;
       score += entry.allOf!.reduce((s, k) => s + k.length, 0) * 2;
-      score += entry.keywords.filter(hit).reduce((s, k) => s + k.length, 0);
+      score += comboKw.reduce((s, k) => s + k.length, 0);
     } else {
       const matched = entry.keywords.filter(hit);
       if (matched.length === 0) continue;
@@ -925,7 +950,8 @@ export interface RoomVariant {
 export interface RoomEntry { keywords: string[]; variants: Record<RoomModel, RoomVariant>; }
 
 // Phòng có 4 biến thể (cosmo / fusion / opus / nyah-chung).
-export const ROOM_SLIDES: Record<'bep' | 'gara' | 'phong_khach' | 'phong_ngu', RoomEntry> = {
+type RoomSlidesMap = Record<'bep' | 'gara' | 'phong_khach' | 'phong_ngu', RoomEntry>;
+export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides', 4) || {
   bep: {
     keywords: ['bếp', 'nhà ăn', 'nấu ăn', 'phòng ăn', 'bàn ăn'],
     variants: {
@@ -966,24 +992,26 @@ export const ROOM_SLIDES: Record<'bep' | 'gara' | 'phong_khach' | 'phong_ngu', R
 
 // Slide chủ đề đơn (không phân theo mẫu nhà).
 export interface TopicSlideEntry { keywords: string[]; title: string; points: string[]; speech_text: string; image_urls: string[]; maps_url?: string; }
-export const TOPIC_SLIDES: Record<'vi_tri' | 'tien_ich' | 'phap_ly' | 'thanh_toan' | 'gia' | 'phoi_canh' | 'chu_dau_tu', TopicSlideEntry> = {
+type TopicSlidesMap = Record<'vi_tri' | 'tien_ich' | 'phap_ly' | 'thanh_toan' | 'gia' | 'phoi_canh' | 'chu_dau_tu', TopicSlideEntry>;
+export const TOPIC_SLIDES: TopicSlidesMap = fromJSON<TopicSlidesMap>('topic_slides', 7) || {
   vi_tri: { keywords: ['vị trí', 'bản đồ', 'maps', 'địa chỉ', 'đường đi', 'ở đâu', 'chỗ nào', 'nằm ở', 'võ văn kiệt', 'quận 8', 'nguyễn văn linh', 'trương đình hội'], title: 'Vị trí dự án', points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'], speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút qua đại lộ Võ Văn Kiệt.", image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`], maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A' },
   tien_ich: { keywords: ['tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi', 'hồ bơi', 'bể bơi', 'sân thể thao', 'cầu lông', 'bóng rổ', 'khu vui chơi'], title: 'Hệ thống Tiện ích', points: ['Công viên cây xanh nội khu mát mẻ', 'Khu vui chơi trẻ em an toàn', 'Sân thể thao đa năng và Landmark Coffee'], speech_text: 'Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.', image_urls: [`${IMG}/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png`] },
-  phap_ly: { keywords: ['pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu'], title: 'Pháp lý dự án', points: ['Sổ hồng riêng từng căn sở hữu lâu dài', 'Quyết định phê duyệt quy hoạch 1/500', 'Giấy phép xây dựng đầy đủ, minh bạch'], speech_text: 'Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.', image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`] },
-  thanh_toan: { keywords: ['thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách'], title: 'Tiến độ Thanh toán', points: ['Lịch thanh toán linh hoạt theo tiến độ', 'Hỗ trợ vay ngân hàng lãi suất ưu đãi', 'Chiết khấu hấp dẫn khi thanh toán nhanh'], speech_text: 'Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.', image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`] },
-  gia: { keywords: ['giá bán', 'giá', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ'], title: 'Giá bán hấp dẫn', points: ['Giá bán cạnh tranh hàng đầu khu vực', 'Giá trị gia tăng bền vững lâu dài', 'Chỉ từ 5 đến 7 tỷ đồng mỗi căn'], speech_text: 'Giá bán các căn nhà phố thương mại tại dự án cực kỳ hấp dẫn, chỉ từ năm đến bảy tỷ đồng tùy theo diện tích và mẫu nhà.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
+  phap_ly: { keywords: ['pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu'], title: 'Pháp lý dự án', points: ['Sổ hồng riêng từng căn sở hữu lâu dài', 'Quyết định phê duyệt quy hoạch 1/500', 'Giấy phép xây dựng đầy đủ, minh bạch'], speech_text: 'Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.', image_urls: [`${IMG}/phap_ly/logo_nyahphudinh_210531_f-02.png`] },
+  thanh_toan: { keywords: ['thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách'], title: 'Tiến độ Thanh toán', points: ['Lịch thanh toán linh hoạt theo tiến độ', 'Hỗ trợ vay ngân hàng lãi suất ưu đãi', 'Chiết khấu hấp dẫn khi thanh toán nhanh'], speech_text: 'Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat_doi-tac.jpg`] },
+  gia: { keywords: ['giá bán', 'giá', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ'], title: 'Bảng giá T6/2026', points: ['Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)', 'Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị', 'Liên hệ tư vấn để nhận bảng giá chi tiết từng lô'], speech_text: 'Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu — anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.', image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`] },
   phoi_canh: { keywords: ['phối cảnh', 'cảnh quan', 'toàn cảnh', 'tổng thể', 'ngoại thất'], title: 'Kiến trúc Phối cảnh', points: ['Quy hoạch đồng bộ, hiện đại', 'Không gian xanh bao phủ rộng', 'Mặt ngoài kiến trúc tinh tế'], speech_text: 'Dự án được quy hoạch đồng bộ với hạ tầng ngầm, đường nội khu rộng rãi và thiết kế mặt ngoài sang trọng.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
-  chu_dau_tu: { keywords: ['chủ đầu tư', 'nhã đạt', 'nhà phát triển', 'nhà đạt'], title: 'Nhà phát triển Nhã Đạt', points: ['Thương hiệu uy tín, chất lượng', 'Tập trung vào giá trị sống thực tế', 'Cam kết bàn giao hoàn thiện cao'], speech_text: 'Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.', image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`] },
+  chu_dau_tu: { keywords: ['chủ đầu tư', 'nhã đạt', 'nhà phát triển', 'nhà đạt'], title: 'Nhà phát triển Nhã Đạt', points: ['Thương hiệu uy tín, chất lượng', 'Tập trung vào giá trị sống thực tế', 'Cam kết bàn giao hoàn thiện cao'], speech_text: 'Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat-tieu-chi-1.jpg`, `${IMG}/chu_dau_tu/nha_dat/nha-dat_du-an-1.jpg`] },
 };
 
 // Giới thiệu mẫu nhà (dùng chung cho nhánh "mẫu nhà" + nhánh chỉ nhắc tên mẫu).
-export const MODEL_INTRO_KEYWORDS = ['mẫu nhà', 'thiết kế nhà', 'kiến trúc nhà'];
-export const MODEL_INTRO: Record<'cosmo_gen_2' | 'fusion_gen_5' | 'opus', { title: string; points: string[]; speech_text: string; introImages: string[] }> = {
+export const MODEL_INTRO_KEYWORDS = fromJSON<string[]>('model_intro_keywords', 3) || ['mẫu nhà', 'thiết kế nhà', 'kiến trúc nhà'];
+type ModelIntroMap = Record<'cosmo_gen_2' | 'fusion_gen_5' | 'opus', { title: string; points: string[]; speech_text: string; introImages: string[] }>;
+export const MODEL_INTRO: ModelIntroMap = fromJSON<ModelIntroMap>('model_intro', 3) || {
   cosmo_gen_2: { title: 'Mẫu nhà Cosmo Gen 2', points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'], speech_text: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.', introImages: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`] },
   fusion_gen_5: { title: 'Mẫu nhà Fusion Gen 5', points: ['Thiết kế lệch tầng phá cách', 'Không gian bếp đảo rộng mở', 'Tối ưu ánh sáng và gió tự nhiên'], speech_text: 'Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.', introImages: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png`] },
   opus: { title: 'Mẫu nhà Opus', points: ['Phù hợp vừa ở vừa kinh doanh', 'Thiết kế 6 tầng bề thế', 'Mặt tiền thương mại đắt giá'], speech_text: 'Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.', introImages: [`${IMG}/noi_that/opus/opus_tinh-nang-tang-1.jpg`] },
 };
-export const MODEL_INTRO_NYAH: RoomVariant = {
+export const MODEL_INTRO_NYAH: RoomVariant = fromJSON<RoomVariant>('model_intro_nyah', 1) || {
   title: "3 Mẫu nhà Ny'ah",
   points: ['Cosmo Gen 2 — thang máy kính, gara rộng', 'Fusion Gen 5 — thiết kế lệch tầng phá cách', 'Opus — 6 tầng vừa ở vừa kinh doanh'],
   speech_text: "Ny'ah Phú Định cung cấp ba mẫu nhà đặc sắc: Cosmo Gen 2, Fusion Gen 5 và Opus, mỗi mẫu có phong cách riêng phù hợp với từng nhu cầu gia đình.",
