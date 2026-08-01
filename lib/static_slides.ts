@@ -168,8 +168,8 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
   {
     keywords: ['giá bán', 'giá bao nhiêu', 'bao nhiêu tiền', 'bảng giá', 'mức giá', 'giá cả', 'ngân sách', 'tầm giá', 'giá từ', 'rẻ nhất', 'giá thấp nhất', 'giá mềm'],
     slide: {
-      title: 'Bảng giá T6/2026',
-      points: ['Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)', 'Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị', 'Liên hệ tư vấn để nhận bảng giá chi tiết từng lô'],
+      title: 'Bảng giá độc quyền',
+      points: ['Giá gói Air từ 8,981 tỷ (lô Cosmo Gen 2 #42)', 'Lên gói Max "chìa khóa trao tay" chênh nhẹ theo căn', 'Bảng giá chi tiết từng lô: hỏi ngay tư vấn viên'],
       speech_text: 'Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.',
       image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
       forceStatic: true,
@@ -179,7 +179,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     keywords: ['còn căn nào', 'còn hàng', 'rổ hàng', 'còn trống', 'căn nào còn', 'lô nào còn', 'còn bán'],
     slide: {
       title: 'Rổ hàng T6/2026 - 7 lô cuối',
-      points: ['Còn 7 lô: #01, #02, #03, #23, #24, #42, #50', 'Đủ dòng: Office, Cosmo, Cashmere, Opus', 'Giá thô từ 8,98 tỷ (lô #42) đến 16,57 tỷ (lô #26 đã bán)'],
+      points: ['Còn 7 lô: #01, #02, #03, #23, #24, #42, #50', 'Đủ dòng: Office, Cosmo, Cashmere, Opus', 'Giá gói Air từ 8,981 tỷ (lô #42), lô lớn nhất 16,57 tỷ'],
       speech_text: 'Rổ hàng tháng 6 còn đúng 7 lô: lô 1, 2, 3, 23, 24, 42 và 50 - đủ các dòng Office, Cosmo, Cashmere và Opus.',
       image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`, `${IMG}/mat_bang/ban-do-phan-lo-dien-tich.jpg`],
       forceStatic: true,
@@ -684,8 +684,8 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     keywords: ['cashmere'],
     slide: {
       title: 'Dòng Cashmere',
-      points: ['Lô lớn đặc biệt: 65,9 - 73,8 m² đất', 'Sàn sử dụng 294 - 335 m²', 'Lô 23 còn trống - giá thô 10,498 tỷ'],
-      speech_text: 'Cashmere là dòng lô lớn đặc biệt với đất tới bảy mươi ba mét vuông - hiện lô hai mươi ba còn trống, giá thô mười tỷ tư trăm chín mươi tám.',
+      points: ['Lô lớn đặc biệt: 65,9 - 73,8 m² đất', 'Sàn sử dụng 294 - 335 m²', 'Lô 23 còn trống - giá 10,498 tỷ (chưa gồm nội thất)'],
+      speech_text: 'Cashmere là dòng lô lớn đặc biệt với đất tới bảy mươi ba mét vuông - hiện lô hai mươi ba còn trống, giá mười tỷ bốn trăm chín mươi tám triệu chưa gồm nội thất.',
       image_urls: ROOT,
       forceStatic: true,
     },
@@ -1156,7 +1156,7 @@ export const TOPIC_SLIDES: TopicSlidesMap = fromJSON<TopicSlidesMap>('topic_slid
   tien_ich: { keywords: ['tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi', 'hồ bơi', 'bể bơi', 'sân thể thao', 'cầu lông', 'bóng rổ', 'khu vui chơi'], title: 'Hệ thống Tiện ích', points: ['Công viên cây xanh nội khu mát mẻ', 'Khu vui chơi trẻ em an toàn', 'Sân thể thao đa năng và Landmark Coffee'], speech_text: 'Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.', image_urls: [`${IMG}/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png`] },
   phap_ly: { keywords: ['pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu'], title: 'Pháp lý dự án', points: ['Sổ hồng riêng từng căn sở hữu lâu dài', 'Quyết định phê duyệt quy hoạch 1/500', 'Giấy phép xây dựng đầy đủ, minh bạch'], speech_text: 'Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.', image_urls: [`${IMG}/phap_ly/logo_nyahphudinh_210531_f-02.png`] },
   thanh_toan: { keywords: ['thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách'], title: 'Tiến độ Thanh toán', points: ['Lịch thanh toán linh hoạt theo tiến độ', 'Hỗ trợ vay ngân hàng lãi suất ưu đãi', 'Chiết khấu hấp dẫn khi thanh toán nhanh'], speech_text: 'Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat_doi-tac.jpg`] },
-  gia: { keywords: ['giá bán', 'giá bao nhiêu', 'giá nhiêu', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ', 'bảng giá', 'mức giá', 'tầm giá'], title: 'Bảng giá T6/2026', points: ['Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)', 'Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị', 'Liên hệ tư vấn để nhận bảng giá chi tiết từng lô'], speech_text: 'Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.', image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`] },
+  gia: { keywords: ['giá bán', 'giá bao nhiêu', 'giá nhiêu', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ', 'bảng giá', 'mức giá', 'tầm giá'], title: 'Bảng giá độc quyền', points: ['Giá gói Air từ 8,981 tỷ (lô Cosmo Gen 2 #42)', 'Lên gói Max "chìa khóa trao tay" chênh nhẹ theo căn', 'Bảng giá chi tiết từng lô: hỏi ngay tư vấn viên'], speech_text: 'Giá gói Air hiện từ tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.', image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`] },
   phoi_canh: { keywords: ['phối cảnh', 'cảnh quan', 'toàn cảnh', 'tổng thể', 'ngoại thất'], title: 'Kiến trúc Phối cảnh', points: ['Quy hoạch đồng bộ, hiện đại', 'Không gian xanh bao phủ rộng', 'Mặt ngoài kiến trúc tinh tế'], speech_text: 'Dự án được quy hoạch đồng bộ với hạ tầng ngầm, đường nội khu rộng rãi và thiết kế mặt ngoài sang trọng.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
   chu_dau_tu: { keywords: ['chủ đầu tư', 'nhã đạt', 'nhà phát triển', 'nhà đạt'], title: 'Nhà phát triển Nhã Đạt', points: ['Thương hiệu uy tín, chất lượng', 'Tập trung vào giá trị sống thực tế', 'Cam kết bàn giao hoàn thiện cao'], speech_text: 'Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat-tieu-chi-1.jpg`, `${IMG}/chu_dau_tu/nha_dat/nha-dat_du-an-1.jpg`] },
 };

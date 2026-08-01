@@ -8,7 +8,7 @@
 
 ## A. HỎI SẾP / SALES ADMIN (số bán hàng - ưu tiên cao nhất)
 
-- [ ] 1. Bảng giá CHÍNH THỨC đợt hiện tại của 7 lô đang bán (#01, 02, 03, 23, 24, 42, 50) - từng lô bao nhiêu?
+- [x] 1. ~~Bảng giá CHÍNH THỨC~~ → ĐÃ CÓ (ảnh "Bảng giá độc quyền T3/2026 RH v12" anh gửi 01/08 - khớp bảng PRICES trong bot, đã sửa nhãn cột Air/Max + footnote căn #25,26,1,2 kèm nội thất Opus). *(Chỉ cần xác nhận: bảng v12 còn áp dụng cho đợt hiện tại không?)*
 - [x] 2. ~~Lịch thanh toán ĐỦ CÁC ĐỢT~~ → TÌM THẤY trong dữ liệu dự án (không cần hỏi): cọc 10% → 3%/tháng ×7 = 31% → bàn giao Air +8% = 39% → công chứng 61% = 100%. Đã lên slide. *(Chỉ cần sếp xác nhận lịch này còn áp dụng đợt hiện tại)*
 - [ ] 3. Gói Air quy ra TIỀN cỡ bao nhiêu/căn? (Max đã có: 1,6-1,9 tỷ)
 - [ ] 4. Nội thất gói Max: tủ bếp / máy lạnh / kệ - có bảng giá lẻ từng món không, hay chỉ bán trọn gói?

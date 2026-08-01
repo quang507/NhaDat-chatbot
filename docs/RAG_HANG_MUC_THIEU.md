@@ -10,7 +10,7 @@
 
 | # | Hạng mục | Ai cung cấp | Ghi chú |
 |---|---|---|---|
-| 1 | **Giá từng lô** (bảng giá đủ 7 lô đang bán) | Sales admin | RAG chỉ có "từ 8,9 tỷ" - khách hỏi "lô 23 giá nhiêu" là LLM không có số |
+| 1 | ~~Giá từng lô~~ **SỬA SAI 01/08 tối: ĐÃ CÓ** - bảng PRICES trong `lib/units.ts` đủ 9 lô, khớp ảnh "Bảng giá độc quyền T3/2026 RH v12"; bot bơm giá vào ngữ cảnh khi khách nhắc số căn. (Báo cáo trước chỉ quét RAG index nên kết luận thiếu - sai) | - | ✅ xong |
 | 2 | **Số GPXD / số QĐ phê duyệt** | Pháp lý | Có nhắc "1/500" nhưng không có số văn bản - khách kỹ tính sẽ hỏi |
 | 3 | **Mác bê tông / thép / móng sâu bao nhiêu** | Kỹ thuật | Khách kỹ sư hay hỏi; hiện chỉ có 1 câu chung về ép cọc |
 | 4 | **Điện 1 pha/3 pha, công suất** | Kỹ thuật | Quan trọng với khách định kinh doanh (Opus) |

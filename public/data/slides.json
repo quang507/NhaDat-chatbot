@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T16:39:12.336Z",
+  "_builtAt": "2026-08-01T16:53:23.414Z",
   "static_slides": [
     {
       "keywords": [
@@ -226,11 +226,11 @@
         "giá mềm"
       ],
       "slide": {
-        "title": "Bảng giá T6/2026",
+        "title": "Bảng giá độc quyền",
         "points": [
-          "Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)",
-          "Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị",
-          "Liên hệ tư vấn để nhận bảng giá chi tiết từng lô"
+          "Giá gói Air từ 8,981 tỷ (lô Cosmo Gen 2 #42)",
+          "Lên gói Max \"chìa khóa trao tay\" chênh nhẹ theo căn",
+          "Bảng giá chi tiết từng lô: hỏi ngay tư vấn viên"
         ],
         "speech_text": "Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.",
         "image_urls": [
@@ -255,7 +255,7 @@
         "points": [
           "Còn 7 lô: #01, #02, #03, #23, #24, #42, #50",
           "Đủ dòng: Office, Cosmo, Cashmere, Opus",
-          "Giá thô từ 8,98 tỷ (lô #42) đến 16,57 tỷ (lô #26 đã bán)"
+          "Giá gói Air từ 8,981 tỷ (lô #42), lô lớn nhất 16,57 tỷ"
         ],
         "speech_text": "Rổ hàng tháng 6 còn đúng 7 lô: lô 1, 2, 3, 23, 24, 42 và 50 - đủ các dòng Office, Cosmo, Cashmere và Opus.",
         "image_urls": [
@@ -1374,9 +1374,9 @@
         "points": [
           "Lô lớn đặc biệt: 65,9 - 73,8 m² đất",
           "Sàn sử dụng 294 - 335 m²",
-          "Lô 23 còn trống - giá thô 10,498 tỷ"
+          "Lô 23 còn trống - giá 10,498 tỷ (chưa gồm nội thất)"
         ],
-        "speech_text": "Cashmere là dòng lô lớn đặc biệt với đất tới bảy mươi ba mét vuông - hiện lô hai mươi ba còn trống, giá thô mười tỷ tư trăm chín mươi tám.",
+        "speech_text": "Cashmere là dòng lô lớn đặc biệt với đất tới bảy mươi ba mét vuông - hiện lô hai mươi ba còn trống, giá mười tỷ bốn trăm chín mươi tám triệu chưa gồm nội thất.",
         "image_urls": [
           "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-1.jpg",
           "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-2.jpg",
@@ -2491,13 +2491,13 @@
         "mức giá",
         "tầm giá"
       ],
-      "title": "Bảng giá T6/2026",
+      "title": "Bảng giá độc quyền",
       "points": [
-        "Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)",
-        "Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị",
-        "Liên hệ tư vấn để nhận bảng giá chi tiết từng lô"
+        "Giá gói Air từ 8,981 tỷ (lô Cosmo Gen 2 #42)",
+        "Lên gói Max \"chìa khóa trao tay\" chênh nhẹ theo căn",
+        "Bảng giá chi tiết từng lô: hỏi ngay tư vấn viên"
       ],
-      "speech_text": "Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.",
+      "speech_text": "Giá gói Air hiện từ tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.",
       "image_urls": [
         "/images/01_NyAh-PhuDinh/gia_ban/gia-ban_bang-gia-hien-tai.jpg",
         "/images/01_NyAh-PhuDinh/mat_bang/ban-do-phan-lo_can-nha.jpg"
