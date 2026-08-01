@@ -29,6 +29,7 @@ interface SlideData {
   title: string;
   points?: string[];
   speech_text?: string;
+  answer_text?: string;
   image_urls?: string[];
   image_url?: string;
   highlight_number?: string;
@@ -159,6 +160,22 @@ export default function ThuSlidePage() {
       setTrace({ ms, status: res.status, raw: goc, brokenImgs });
       setReplayKey(k => k + 1);
       setLichSu(h => [{ q: cau, title: coSlide ? data.title : '(không ra slide)', ok: coSlide && brokenImgs.length === 0 }, ...h].slice(0, 12));
+
+      // PHA 2 (giống /slide): slide tĩnh hiện xong thì gọi ngầm refine để LLM
+      // viết câu trả lời bám câu hỏi, chèn lên caption (answer_text).
+      if (coSlide && (data as any)._source === 'static_fast' && !(data as any)._forceStatic) {
+        fetch('/api/slide', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: cau, ambient: ambientFlag, refine: true, context: { recent: lichSu.slice(0, 10).map(h => h.q).reverse() } }),
+        })
+          .then(r => (r.ok ? r.json() : null))
+          .then(ref => {
+            if (!ref || ref.skip || !ref.answer_text) return;
+            setSlide(s => (s && s.title === data.title ? { ...s, answer_text: ref.answer_text } : s));
+          })
+          .catch(() => {});
+      }
     } catch (e: unknown) {
       setSlide(null);
       setTrace({ ms: Math.round(performance.now() - t0), status: 0, raw: null, brokenImgs: [], err: e instanceof Error ? e.message : String(e) });
