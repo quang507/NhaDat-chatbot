@@ -1,5 +1,9 @@
 # Dữ liệu tìm được trên Internet - CHỜ DUYỆT trước khi nạp bot (01/08/2026)
 
+> CẬP NHẬT 01/08 tối: anh đã duyệt ("thêm đi") → mục 1 (2 cổng + độ rộng đường)
+> ĐÃ NẠP lên slide "Địa chỉ & 2 cổng dự án" (forceStatic). Riêng mâu thuẫn
+> "Cổ phần vs TNHH" CHƯA nạp - vẫn chờ sếp chốt loại hình doanh nghiệp.
+
 > Nguyên tắc: KHÔNG nạp thẳng bất cứ thứ gì từ mạng vào bot. Mọi mục dưới đây
 > chỉ nạp SAU KHI anh/sếp gật từng dòng. Số bán hàng và thông số kỹ thuật
 > tuyệt đối không lấy từ mạng (lý do ở mục 4).
