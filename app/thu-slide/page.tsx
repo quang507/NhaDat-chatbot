@@ -170,8 +170,10 @@ export default function ThuSlidePage() {
   // Màn đứng: ghim theo chiều CAO (h-[72vh] + w-auto) để khung luôn nằm trong
   // tầm nhìn - nếu ghim theo chiều ngang thì tỉ lệ 9:16 đẩy khung cao quá màn
   // hình và phần chữ dưới slide bị cắt mất.
+  // Lưu ý: KHÔNG thêm w-full ở chỗ dùng - w-full sẽ đè w-auto làm khung 9:16
+  // bị kéo thành ngang (bug 08/2026).
   const khung = doc === 'dung'
-    ? 'h-[76vh] aspect-[9/16] w-auto'
+    ? 'h-[76vh] aspect-[9/16] w-auto max-w-full'
     : 'w-full max-w-[1000px] aspect-video';
 
   return (
@@ -255,7 +257,7 @@ export default function ThuSlidePage() {
       <div className="px-5 py-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] items-start">
         {/* Khung slide - giống hệt màn chiếu thật */}
         <div className="flex justify-center">
-          <div className={`${khung} w-full max-w-[520px] lg:max-w-none rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-[#0C0F0D] relative`}>
+          <div className={`${khung} rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-[#0C0F0D] relative`}>
             {slide ? (
               <SlideBody
                 data={{ ...slide, image_urls: collectImages(slide) }}

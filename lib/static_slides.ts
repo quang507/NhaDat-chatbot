@@ -265,7 +265,8 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Địa chỉ & 2 cổng dự án',
       points: ['Cổng 1: 58A Trương Đình Hội, P. Phú Định (Q.8 cũ)', 'Cổng 2: 92 An Dương Vương', 'Đường trước dự án rộng 20m và 12m', 'Đường nội khu rộng 7m - xe hơi tránh nhau thoải mái'],
       speech_text: 'Dự án có hai cổng: năm mươi tám A Trương Đình Hội và chín mươi hai An Dương Vương. Đường trước dự án rộng hai mươi mét và mười hai mét, đường nội khu bảy mét - xe hơi ra vào rất thoải mái.',
-      image_urls: [`${IMG}/vi_tri/duong_di/vi_tri.jpg`],
+      // vi_tri.jpg là ảnh nghệ thuật (đồng hồ) - dùng bản đồ đường đi cho đúng ngữ cảnh.
+      image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`],
       maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
       forceStatic: true,
     },
@@ -1148,7 +1149,10 @@ export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides',
 export interface TopicSlideEntry { keywords: string[]; title: string; points: string[]; speech_text: string; image_urls: string[]; maps_url?: string; }
 type TopicSlidesMap = Record<'vi_tri' | 'tien_ich' | 'phap_ly' | 'thanh_toan' | 'gia' | 'phoi_canh' | 'chu_dau_tu', TopicSlideEntry>;
 export const TOPIC_SLIDES: TopicSlidesMap = fromJSON<TopicSlidesMap>('topic_slides', 7) || {
-  vi_tri: { keywords: ['vị trí', 'bản đồ', 'maps', 'địa chỉ', 'đường đi', 'ở đâu', 'chỗ nào', 'nằm ở', 'võ văn kiệt', 'quận 8', 'nguyễn văn linh', 'trương đình hội'], title: 'Vị trí dự án', points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'], speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút qua đại lộ Võ Văn Kiệt.", image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`], maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A' },
+  // 'địa chỉ/ở đâu/chỗ nào/nằm ở/trương đình hội' đã BỎ khỏi đây (08/2026):
+  // nhánh topic này chạy TRƯỚC catalog chung trong route, giữ chúng thì slide
+  // "Địa chỉ & 2 cổng dự án" (có số nhà + độ rộng đường) không bao giờ được gọi.
+  vi_tri: { keywords: ['vị trí', 'bản đồ', 'maps', 'đường đi', 'võ văn kiệt', 'quận 8', 'nguyễn văn linh'], title: 'Vị trí dự án', points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'], speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút qua đại lộ Võ Văn Kiệt.", image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`], maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A' },
   tien_ich: { keywords: ['tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi', 'hồ bơi', 'bể bơi', 'sân thể thao', 'cầu lông', 'bóng rổ', 'khu vui chơi'], title: 'Hệ thống Tiện ích', points: ['Công viên cây xanh nội khu mát mẻ', 'Khu vui chơi trẻ em an toàn', 'Sân thể thao đa năng và Landmark Coffee'], speech_text: 'Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.', image_urls: [`${IMG}/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png`] },
   phap_ly: { keywords: ['pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu'], title: 'Pháp lý dự án', points: ['Sổ hồng riêng từng căn sở hữu lâu dài', 'Quyết định phê duyệt quy hoạch 1/500', 'Giấy phép xây dựng đầy đủ, minh bạch'], speech_text: 'Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.', image_urls: [`${IMG}/phap_ly/logo_nyahphudinh_210531_f-02.png`] },
   thanh_toan: { keywords: ['thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách'], title: 'Tiến độ Thanh toán', points: ['Lịch thanh toán linh hoạt theo tiến độ', 'Hỗ trợ vay ngân hàng lãi suất ưu đãi', 'Chiết khấu hấp dẫn khi thanh toán nhanh'], speech_text: 'Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat_doi-tac.jpg`] },

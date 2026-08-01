@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T14:03:45.195Z",
+  "_builtAt": "2026-08-01T14:43:44.348Z",
   "static_slides": [
     {
       "keywords": [
@@ -478,7 +478,7 @@
         ],
         "speech_text": "Dự án có hai cổng: năm mươi tám A Trương Đình Hội và chín mươi hai An Dương Vương. Đường trước dự án rộng hai mươi mét và mười hai mét, đường nội khu bảy mét - xe hơi ra vào rất thoải mái.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg"
+          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg"
         ],
         "maps_url": "https://maps.app.goo.gl/qwf4XibyMCL9sEX6A",
         "forceStatic": true
@@ -2395,15 +2395,10 @@
         "vị trí",
         "bản đồ",
         "maps",
-        "địa chỉ",
         "đường đi",
-        "ở đâu",
-        "chỗ nào",
-        "nằm ở",
         "võ văn kiệt",
         "quận 8",
-        "nguyễn văn linh",
-        "trương đình hội"
+        "nguyễn văn linh"
       ],
       "title": "Vị trí dự án",
       "points": [
