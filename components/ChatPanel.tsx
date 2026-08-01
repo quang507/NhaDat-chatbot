@@ -91,6 +91,17 @@ export default function ChatPanel({ embedded = false }: ChatPanelProps) {
     setMessages(prev => [...prev, { role: 'user', content: msg }]);
     setStreaming(true); // khóa nút send ngay
     setLoading(true);   // hiện 3 chấm chờ
+
+    // Bắn SONG SONG /api/slide (ambient=true -> nhánh slide tĩnh ~0ms, không
+    // tốn LLM) để lấy ảnh dự án đính kèm câu trả lời - cùng cơ chế /voice dùng.
+    // Câu không khớp chủ đề thì slide trả skip -> không đính gì.
+    const slidePromise: Promise<{ skip?: boolean; title?: string; image_urls?: string[] } | null> =
+      fetch('/api/slide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg, ambient: true }),
+      }).then(r => (r.ok ? r.json() : null)).catch(() => null);
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -142,6 +153,25 @@ export default function ChatPanel({ embedded = false }: ChatPanelProps) {
           copy[copy.length - 1] = { role: 'assistant', content: 'Không có phản hồi, vui lòng thử lại.' };
           return copy;
         });
+      } else {
+        // Trả lời xong -> đính ảnh dự án nếu câu hỏi khớp chủ đề có ảnh.
+        // Chờ tối đa 4s: slide tĩnh về ~0ms, chỉ nhánh LLM mới chậm - quá hạn
+        // thì thôi, không giữ khách.
+        const slide = await Promise.race([
+          slidePromise,
+          new Promise<null>(r => setTimeout(() => r(null), 4000)),
+        ]);
+        const imgs = slide && !slide.skip && Array.isArray(slide.image_urls)
+          ? Array.from(new Set(slide.image_urls)).slice(0, 2) : [];
+        if (imgs.length) {
+          const md = '\n\n' + imgs.map(u => `![${slide!.title || 'Ảnh dự án'}](${u})`).join('\n');
+          acc += md;
+          setMessages(prev => {
+            const copy = [...prev];
+            copy[copy.length - 1] = { role: 'assistant', content: acc };
+            return copy;
+          });
+        }
       }
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Không thể kết nối, vui lòng thử lại.' }]);
