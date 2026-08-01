@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T12:43:04.820Z",
+  "_builtAt": "2026-08-01T13:00:54.222Z",
   "static_slides": [
     {
       "keywords": [
@@ -256,6 +256,42 @@
         "image_urls": [
           "/images/01_NyAh-PhuDinh/mat_bang/ban-do-phan-lo_can-nha.jpg",
           "/images/01_NyAh-PhuDinh/mat_bang/ban-do-phan-lo-dien-tich.jpg"
+        ],
+        "forceStatic": true
+      }
+    },
+    {
+      "keywords": [
+        "lịch thanh toán",
+        "tiến độ thanh toán",
+        "phương thức thanh toán",
+        "mấy đợt",
+        "bao nhiêu đợt",
+        "chia đợt",
+        "đóng theo đợt",
+        "thanh toán theo đợt",
+        "thanh toán mấy đợt",
+        "thanh toán bao nhiêu đợt",
+        "đóng mấy đợt",
+        "trả mấy đợt",
+        "trả mấy lần",
+        "thanh toán mấy lần",
+        "đóng mấy lần",
+        "thanh toán như thế nào",
+        "thanh toán thế nào",
+        "thanh toán ra sao"
+      ],
+      "slide": {
+        "title": "Lịch thanh toán theo đợt",
+        "points": [
+          "Ký hợp đồng đặt cọc: 10%",
+          "Mỗi tháng 3% trong 7 tháng → đủ 31%",
+          "Bàn giao hoàn thiện Air: thêm 8% → 39%",
+          "Ký HĐMB công chứng: 61% còn lại → đủ 100%"
+        ],
+        "speech_text": "Lịch thanh toán rất nhẹ: ký cọc mười phần trăm, mỗi tháng chỉ ba phần trăm trong bảy tháng, nhận bàn giao Air thêm tám phần trăm là ba mươi chín phần trăm - phần còn lại đóng khi ký hợp đồng mua bán công chứng.",
+        "image_urls": [
+          "/images/01_NyAh-PhuDinh/gia_ban/gia-ban_bang-gia-hien-tai.jpg"
         ],
         "forceStatic": true
       }

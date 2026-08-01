@@ -186,6 +186,18 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
+    // Lịch thanh toán theo đợt - số liệu từ RAG (Giá & Thanh toán/phuong-thuc-thanh-toan).
+    // Keyword dài hơn 'thanh toán' nên thắng slide vay ngân hàng khi khách hỏi lịch/đợt.
+    keywords: ['lịch thanh toán', 'tiến độ thanh toán', 'phương thức thanh toán', 'mấy đợt', 'bao nhiêu đợt', 'chia đợt', 'đóng theo đợt', 'thanh toán theo đợt', 'thanh toán mấy đợt', 'thanh toán bao nhiêu đợt', 'đóng mấy đợt', 'trả mấy đợt', 'trả mấy lần', 'thanh toán mấy lần', 'đóng mấy lần', 'thanh toán như thế nào', 'thanh toán thế nào', 'thanh toán ra sao'],
+    slide: {
+      title: 'Lịch thanh toán theo đợt',
+      points: ['Ký hợp đồng đặt cọc: 10%', 'Mỗi tháng 3% trong 7 tháng → đủ 31%', 'Bàn giao hoàn thiện Air: thêm 8% → 39%', 'Ký HĐMB công chứng: 61% còn lại → đủ 100%'],
+      speech_text: 'Lịch thanh toán rất nhẹ: ký cọc mười phần trăm, mỗi tháng chỉ ba phần trăm trong bảy tháng, nhận bàn giao Air thêm tám phần trăm là ba mươi chín phần trăm - phần còn lại đóng khi ký hợp đồng mua bán công chứng.',
+      image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`],
+      forceStatic: true,
+    },
+  },
+  {
     keywords: ['thanh toán', 'trả góp', 'vay ngân hàng', 'lãi suất', 'trả trước', 'vay được không', 'hỗ trợ vay', 'vay bao nhiêu', 'vay tối đa', 'trả chậm', 'trả trong bao lâu'],
     slide: {
       title: 'Thanh toán & Vay ngân hàng',

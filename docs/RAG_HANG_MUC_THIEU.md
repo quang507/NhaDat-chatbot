@@ -26,7 +26,7 @@
 
 | # | Hạng mục | Hiện có gì | Cần thêm |
 |---|---|---|---|
-| 12 | Lịch thanh toán theo đợt | Chỉ "đợt 1: 30% + ký cọc với Cty Nhà Đất Đô Thị Mới" | Đủ các đợt 2,3,4… % và mốc |
+| 12 | ~~Lịch thanh toán theo đợt~~ **SỬA SAI 01/08 tối: RAG CÓ ĐỦ** (file Giá & Thanh toán/phuong-thuc-thanh-toan): cọc 10% → 3%/tháng ×7 = 31% → bàn giao Air +8% = 39% → công chứng HĐMB 61% = 100%, kèm ví dụ chiết khấu thanh toán sớm | Đã đưa lên slide "Lịch thanh toán theo đợt" (forceStatic) | ✅ xong |
 | 13 | Trần cao từng tầng | 1 câu | Bảng cao độ từng tầng từng mẫu |
 | 14 | Chống thấm / chống sét | 1 câu | Vật liệu gì, bảo hành mấy năm |
 | 15 | Kích thước cổng/cửa | 1 câu | Datasheet số đo (đã có ảnh tạm chờ) |
