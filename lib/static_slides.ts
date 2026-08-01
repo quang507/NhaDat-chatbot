@@ -986,6 +986,21 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
 
+  {
+    // PHÒNG THỦ GIÁ RÁC: trên mạng đầy tin rao cũ/sai của môi giới (6,8 tỷ,
+    // thậm chí "TT 2 tỷ/căn") - khách đọc được sẽ vặn. Combo 'trên mạng' để
+    // câu "sao trên mạng ghi 6 tỷ mấy" ưu tiên slide này thay vì slide giá.
+    allOf: ['trên mạng'],
+    keywords: [],
+    slide: {
+      title: 'Giá chính thức từ chủ đầu tư',
+      points: ['Tin rao trên mạng là của bên thứ 3 - thường cũ hoặc sai', 'Giá chính thức chỉ công bố qua Nhã Đạt và bảng giá từng đợt', 'Anh chị đối chiếu trực tiếp với tư vấn viên để chốt đúng số'],
+      speech_text: 'Mấy tin trên mạng là của bên thứ ba, hay để giá cũ hoặc giá ảo để kéo khách - giá chính thức anh chị lấy trực tiếp từ Nhã Đạt theo bảng giá từng đợt cho chuẩn ạ.',
+      image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/chu_dau_tu/nha_dat/logo_nha-dat-1.png`],
+      forceStatic: true,
+    },
+  },
+
   // ── 18. XEM NHÀ & LIÊN HỆ ──────────────────────────────────────────────
   {
     keywords: ['nhà mẫu', 'xem nhà', 'tham quan', 'ghé xem', 'hẹn xem', 'đi coi nhà', 'coi thực tế'],
