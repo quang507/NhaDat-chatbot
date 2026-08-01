@@ -257,6 +257,20 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
+    // Địa chỉ 2 cổng + độ rộng đường - nguồn internet ĐÃ ĐƯỢC DUYỆT 01/08
+    // (nhiều trang môi giới khớp nhau, xem docs/DU_LIEU_INTERNET_CHO_DUYET.md).
+    keywords: ['địa chỉ', 'số nhà', 'nằm ở đâu', 'dự án ở đâu', 'chỗ nào', 'đường vào', 'trương đình hội', 'an dương vương', 'đường rộng', 'đường trước nhà', 'đường trước nhà rộng', 'đường trước dự án', 'đường mấy mét', 'đường bao nhiêu mét', 'đường rộng bao nhiêu', 'lộ giới', 'đường nội khu', 'hai cổng', '2 cổng', 'mấy cổng'],
+    slide: {
+      layout_type: 'split_image_right',
+      title: 'Địa chỉ & 2 cổng dự án',
+      points: ['Cổng 1: 58A Trương Đình Hội, P. Phú Định (Q.8 cũ)', 'Cổng 2: 92 An Dương Vương', 'Đường trước dự án rộng 20m và 12m', 'Đường nội khu rộng 7m - xe hơi tránh nhau thoải mái'],
+      speech_text: 'Dự án có hai cổng: năm mươi tám A Trương Đình Hội và chín mươi hai An Dương Vương. Đường trước dự án rộng hai mươi mét và mười hai mét, đường nội khu bảy mét - xe hơi ra vào rất thoải mái.',
+      image_urls: [`${IMG}/vi_tri/duong_di/vi_tri.jpg`],
+      maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
+      forceStatic: true,
+    },
+  },
+  {
     keywords: ['quận 8', 'khu này', 'khu vực này', 'phường phú định'],
     slide: {
       layout_type: 'split_image_right',
