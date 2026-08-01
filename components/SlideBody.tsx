@@ -50,7 +50,9 @@ const Line = ({ children, delay = 0, className = '' }: {
 );
 
 export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKey }: SlideBodyProps) {
-  const imgs = (data.image_urls || []).filter(Boolean).slice(0, 3);
+  // Khử trùng URL: API đôi khi trả cùng một ảnh 2 lần. Không khử thì React báo
+  // trùng key và ta render thừa một lớp ảnh chồng lên chính nó.
+  const imgs = Array.from(new Set((data.image_urls || []).filter(Boolean))).slice(0, 3);
   const points = (data.points || []).filter(Boolean);
   const hasImg = imgs.length > 0;
   const isMapImg = (src: string) => src.includes('vi_tri') || src.includes('18_phut');
