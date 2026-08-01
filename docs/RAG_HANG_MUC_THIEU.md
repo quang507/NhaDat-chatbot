@@ -60,3 +60,56 @@ khoảng cách km/phút (14) · ban quản lý (4) · dự án đã bàn giao (6
 Mỗi hạng mục viết dạng Q&A ngắn (hỏi như khách nói - đáp có SỐ LIỆU) vào file
 trong thư mục dữ liệu, chạy reindex trên /admin, rồi `npm run index:pull` +
 commit để bản đóng gói theo deploy được cập nhật.
+
+
+---
+
+# BỔ SUNG 01/08 (chiều): Quét sâu VẬT LIỆU + GÓI NỘI THẤT
+
+> 27 hạng mục vật liệu + 6 mục gói nội thất, có trích nguồn thật từ RAG.
+
+## Vật liệu - ĐÃ CÓ trong RAG (kèm brand cụ thể)
+
+| Hạng mục | RAG ghi gì |
+|---|---|
+| Sàn | Gạch porcelain Vietceramics / Trường Thịnh / Đồng Tâm; sàn gạch/gỗ theo gói |
+| Tường/sơn | Sơn nội thất Maxilite; ngoại thất ICI Dulux Weathershield Power Flexx |
+| Trần | Thạch cao Vĩnh Tường |
+| Cửa nhôm kính | Hệ Xingfa 55, kính cường lực; cửa chính kim loại cắt CNC |
+| Kính tắm | Cường lực 10mm, phụ kiện Imundex |
+| Cầu thang | Đá Granite (mặt nằm) + Moca trắng (mặt đứng); lan can sắt sơn Jotun, tay vịn gỗ sồi phủ PU |
+| Mặt bếp | Đá granite |
+| Tủ bếp | Ván An Cường (gói Max); tủ quần áo MFC kháng ẩm + đèn led |
+| Thiết bị vệ sinh | Inax đầy đủ (lavabo, bồn cầu, vòi sen, phụ kiện) |
+| Điện | Dây Cadivi |
+| Nước | Ống PPR/PVC Bình Minh; bồn 1000L; máy nước nóng NLMT Đại Thành 210L |
+| Máy lạnh | LG âm trần (phòng ngủ) + treo tường (khách) - gói Max |
+| Kết cấu | Móng cọc BTCT, khung cột sàn BTCT toàn khối, mái BTCT; móng-tường-cột XÂY RIÊNG TỪNG CĂN |
+| AirTop | 9,5 triệu lít khí tươi/ngày |
+| ByteLife | Máy chủ tại bếp, khóa garage, công tắc đèn... |
+
+## Vật liệu - CHƯA CÓ (4)
+
+1. **Cửa cuốn: hãng gì** (Austdoor/Titadoor?)
+2. **Sen vòi: hãng riêng** (đang gộp chung "Inax đầy đủ" - nếu đúng Inax hết thì ghi rõ)
+3. **Thang máy: hãng + tải trọng kg** (nhắc nhiều nhất mà không có spec)
+4. **Gạch bông gió: loại/kích thước** (điểm nhấn kiến trúc mà không có thông số)
+
+## Gói nội thất - CÓ / THIẾU
+
+| Mục | Trạng thái |
+|---|---|
+| Air gồm gì | ✅ sàn, trần, sơn, cầu thang đá, cửa phòng, TBVS Inax, điện nước ngầm, AirTop. Ghi rõ KHÔNG gồm: tủ bếp, thiết bị bếp, máy lạnh, nội thất rời, smarthome |
+| Max gồm gì | ✅ Air + tủ bếp An Cường + trọn bộ thiết bị bếp + máy lạnh LG + kệ trang trí + ByteLife |
+| **Giá gói Max** | ✅ **1,6 - 1,9 tỷ/căn tùy mẫu** ("chìa khóa trao tay") - đã đưa lên slide |
+| Giá gói Air (số tiền) | ❌ chỉ có mốc thanh toán 8% khi bàn giao Air - không có giá gói |
+| Giá TỪNG MÓN (tủ bếp bao nhiêu, máy lạnh bao nhiêu) | ❌ không có |
+| Hãng từng món nội thất rời (sofa, giường, bàn ăn) | ❌ không có |
+| Nội thất Cashmere - danh mục + giá | ❌ không có (chỉ có mô tả không gian) |
+
+## ⚠️ SỐ KHÔNG CÓ NGUỒN - CẦN ANH XÁC NHẬN GẤP
+
+Slide "Gói bàn giao: Thô & Air" và "Bảng giá T6/2026" đang nói **"gói Air cộng
+thêm khoảng 3% giá trị"** - quét toàn bộ RAG **không tìm thấy nguồn nào** cho
+con số 3% này (có từ catalog cũ trước khi tôi tham gia). Nếu 3% sai thì đang
+báo khách số bịa. Anh xác nhận: giữ 3%, đổi thành số khác, hay bỏ ý này?
