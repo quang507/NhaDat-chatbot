@@ -963,6 +963,18 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
+    // Số liệu nguyên văn từ RAG (BÁO CÁO CƠ SỞ DỮ LIỆU TỔNG LỰC.xlsx):
+    // M250, thép Miền Nam/Pomina, xi măng Hà Tiên/Holcim, trần 2,9m/3,1m.
+    keywords: ['mác bê tông', 'bê tông mác', 'bê tông gì', 'thép hãng nào', 'thép gì', 'xi măng gì', 'gạch xây', 'kết cấu', 'xây thô', 'móng cọc', 'ép cọc', 'trần cao', 'chiều cao tầng', 'trần bao nhiêu', 'thông thủy', 'cao độ tầng'],
+    slide: {
+      title: 'Kết cấu & Vật liệu xây thô',
+      points: ['Khung BTCT toàn khối - bê tông tươi thương phẩm M250', 'Thép Miền Nam/Pomina · Xi măng Hà Tiên/Holcim · Gạch tuynel', 'Móng - tường - cột xây RIÊNG từng căn, độc lập bền vững', 'Trần tầng trệt & lửng cao 2,9m - các tầng trên 3,1m'],
+      speech_text: 'Nhà kết cấu bê tông cốt thép toàn khối, bê tông thương phẩm mác hai trăm năm mươi, thép Miền Nam Pomina - móng, tường, cột xây riêng từng căn. Trần trệt và lửng cao hai mét chín, các tầng trên ba mét mốt.',
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/cosmo-gen-2_mat-cat.jpg`],
+      forceStatic: true,
+    },
+  },
+  {
     keywords: ['mặt ngang', 'mặt bên', 'bên hông', 'nhìn ngang', 'side view'],
     slide: {
       title: 'Mặt ngang các mẫu nhà',

@@ -23,8 +23,8 @@
 - [ ] 10. Sen vòi: đúng Inax trọn bộ hay hãng khác?
 - [ ] 11. Gạch bông gió: loại gì (xi măng/đất nung), kích thước?
 - [ ] 12. Điện: 1 pha hay 3 pha? Công suất bao nhiêu? (khách Opus kinh doanh cần)
-- [ ] 13. Mác bê tông, thép hãng gì, cọc ép sâu bao nhiêu mét?
-- [ ] 14. Trần cao từng tầng từng mẫu (đã có 1 câu "trệt 3,x m; tầng trên 3,1m" - cần bảng đủ)
+- [x] 13. ~~Mác bê tông, thép hãng gì~~ → TÌM THẤY trong RAG: bê tông tươi M250, thép Miền Nam/Pomina, xi măng Hà Tiên/Holcim, gạch tuynel. Đã lên slide. *(Còn thiếu: cọc ép sâu bao nhiêu mét)*
+- [x] 14. ~~Trần cao từng tầng~~ → TÌM THẤY trong RAG: trệt & lửng 2,9m; các tầng trên 3,1m. Đã lên slide. *(Nếu có bảng chi tiết hơn theo mẫu thì càng tốt)*
 - [ ] 15. Chống thấm dùng vật liệu gì, bảo hành mấy năm? Chống sét có không?
 - [ ] 16. Kích thước cổng chính / cửa phụ / cửa cuốn (số đo - đang dùng ảnh minh họa chờ)
 
