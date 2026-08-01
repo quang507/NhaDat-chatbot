@@ -254,7 +254,26 @@ export default function SlideBotPage() {
     fetchSlideData(query, true);
   };
 
+  // ── SESSION LƯỢT KHÁCH ────────────────────────────────────────────────────
+  // Nhớ tối đa 3 câu gần nhất của CÙNG một khách để server hiểu "căn đó",
+  // "cho xem bếp" (sau khi nói chuyện Cosmo -> bếp Cosmo). Khách im lặng quá
+  // SLIDE_SESSION_IDLE_MS -> coi là KHÁCH MỚI, xoá ngữ cảnh cũ để câu chuyện
+  // của khách trước không lây sang khách sau.
+  const SLIDE_SESSION_IDLE_MS = 5 * 60 * 1000;
+  const recentRef = useRef<string[]>([]);
+  const lastUtteranceAtRef = useRef(0);
+
   const fetchSlideData = async (text: string, ambient = false) => {
+    // Cập nhật session TRƯỚC khi gọi API: quá hạn -> khách mới, xoá ngữ cảnh.
+    const nowTs = Date.now();
+    if (nowTs - lastUtteranceAtRef.current > SLIDE_SESSION_IDLE_MS) {
+      if (recentRef.current.length) dbg('👤 Khách mới (im lặng >5 phút) - xoá ngữ cảnh cũ');
+      recentRef.current = [];
+    }
+    const recentForCall = [...recentRef.current];
+    recentRef.current = [...recentRef.current, text].slice(-3);
+    lastUtteranceAtRef.current = nowTs;
+
     const t0 = Date.now();
     try {
       isGeneratingRef.current = true;
@@ -268,7 +287,7 @@ export default function SlideBotPage() {
         // slide tĩnh; câu mơ hồ -> skip). Trước đây bỏ cờ này vì server skip quá gắt + mất ảnh,
         // nhưng đã sửa: bỏ luật ép LLM skip (AMBIENT_RULE) nên chủ đề thật luôn có ảnh, chỉ câu
         // mơ hồ/nghe nhầm mới bị bỏ. Kết hợp cổng intent client (scoring) -> 2 lớp lọc slide sai.
-        body: JSON.stringify({ message: text, ambient })
+        body: JSON.stringify({ message: text, ambient, context: { recent: recentForCall } })
       });
 
       if (!res.ok) {

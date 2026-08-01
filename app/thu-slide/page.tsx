@@ -131,10 +131,12 @@ export default function ThuSlidePage() {
     setBrokenImages({});
     const t0 = performance.now();
     try {
+      // Gửi kèm 3 câu gần nhất (cùng phiên thử) - giống hệt /slide gửi, để test
+      // được câu nối ngữ cảnh kiểu "cho xem bếp" sau khi vừa hỏi Cosmo.
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: cau, ambient: ambientFlag }),
+        body: JSON.stringify({ message: cau, ambient: ambientFlag, context: { recent: lichSu.slice(0, 3).map(h => h.q).reverse() } }),
       });
       const ms = Math.round(performance.now() - t0);
       const data: SlideData = await res.json();
@@ -213,6 +215,13 @@ export default function ThuSlidePage() {
           }`}
         >
           {ambient ? 'ambient BẬT (như màn chiếu)' : 'ambient TẮT (chat trực tiếp)'}
+        </button>
+        <button
+          onClick={() => setLichSu([])}
+          title="Xoá ngữ cảnh phiên thử - giả lập khách mới bước vào"
+          className="px-3 py-1 rounded-full text-xs font-semibold border border-white/15 text-white/50 hover:text-white transition"
+        >
+          Khách mới
         </button>
         <Link href="/slide" className="text-xs text-white/50 hover:text-white transition">Màn chiếu →</Link>
         <Link href="/voice" className="text-xs text-white/50 hover:text-white transition">Giọng nói →</Link>

@@ -231,8 +231,10 @@ async function getPersona(): Promise<string> {
   return p;
 }
 
-async function buildPrompt(message: string, ambient = false): Promise<{ prompt: string; hasChunks: boolean }> {
+async function buildPrompt(message: string, ambient = false, recentText = ''): Promise<{ prompt: string; hasChunks: boolean }> {
   const persona = await getPersona();
+  // Câu gần nhất của cùng khách - cho LLM hiểu "căn đó", "cái này" là gì.
+  const convCtx = recentText ? `\n\n=== KHÁCH VỪA NÓI TRƯỚC ĐÓ (cùng một khách, dùng để hiểu đại từ "đó/này/kia"): ${recentText} ===` : '';
 
   // Khách hỏi 1 căn cụ thể -> nhét THÔNG TIN CHÍNH XÁC (mẫu nhà, diện tích, mặt tiền, tầng)
   let unitFacts = '';
@@ -275,7 +277,7 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
       // Có facts của căn cụ thể -> luôn tạo slide kể cả khi RAG rỗng (đã có dữ liệu chính xác)
       if (chunks.length > 0 || unitFacts) {
         return {
-          prompt: `${persona}${unitFacts}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${chunks.join('\n\n')}`,
+          prompt: `${persona}${unitFacts}${convCtx}${SOURCE_RULE}\n\n=== DỮ LIỆU LIÊN QUAN ===\n${chunks.join('\n\n')}`,
           hasChunks: true,
         };
       }
@@ -288,7 +290,7 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
   const data = await readRepoFile('data.md');
   const truncated = data.length > 40000 ? data.slice(0, 40000) : data;
   return {
-    prompt: `${persona}${unitFacts}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
+    prompt: `${persona}${unitFacts}${convCtx}${SOURCE_RULE}\n\n=== DỮ LIỆU ===\n${truncated}`,
     hasChunks: true,
   };
 }
@@ -321,8 +323,19 @@ const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM: Đây là hội thoại đang
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, ambient } = await req.json();
+    const { message, ambient, context } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
+
+    // NGỮ CẢNH LƯỢT KHÁCH: client gửi tối đa 3 câu gần nhất của CÙNG một khách
+    // (client tự xoá khi khách im lặng quá lâu -> khách mới). Dùng để:
+    //   1. Suy ra mẫu nhà/căn khi câu hiện tại không nhắc ("cho xem bếp" sau khi
+    //      vừa nói chuyện Cosmo -> bếp Cosmo, không phải bếp chung chung).
+    //   2. Đưa vào prompt LLM để slide động bám mạch hội thoại.
+    // KHÔNG trộn recent vào chuỗi so khớp keyword - câu cũ đè câu mới sẽ ra
+    // slide sai chủ đề (đã cân nhắc và tránh).
+    const recentRaw = (context && Array.isArray(context.recent)) ? context.recent : [];
+    const recent: string[] = recentRaw.filter((x: unknown): x is string => typeof x === 'string' && !!x.trim()).slice(-3);
+    const recentText = recent.join(' … ').slice(0, 500);
 
     // --- BỘ ĐỆM SLIDE TĨNH: Trả slide ngay lập tức trong 0.1ms nếu khớp từ khóa trực tiếp, bypass AI hoàn toàn ---
     const cleanMsg = message.toLowerCase();
@@ -346,8 +359,21 @@ export async function POST(req: NextRequest) {
       const unitNo = detectUnit(message);
       if (unitNo) model = imageModelForUnit(unitNo);
     }
-    // null = không rõ model → dùng ảnh chung của dự án
+    // hasExplicitModel = khách nhắc mẫu/căn TRONG CHÍNH CÂU NÀY. Phải chốt
+    // TRƯỚC khi suy model từ ngữ cảnh - model ngữ cảnh chỉ để CHỌN BIẾN THỂ
+    // (bếp Cosmo thay vì bếp chung), tuyệt đối không được kích hoạt nhánh
+    // "khách nhắc tên mẫu -> slide giới thiệu mẫu", nếu không thì hỏi
+    // "tiến độ" sau khi bàn về Cosmo sẽ ra nhầm slide giới thiệu Cosmo.
     const hasExplicitModel = model !== null;
+    // Câu hiện tại không nhắc mẫu/căn -> suy từ các câu TRƯỚC của cùng khách.
+    // "mẫu cosmo thế nào" ... "cho xem bếp" -> bếp Cosmo thay vì bếp chung.
+    if (!model && recentText) {
+      model = detectModel(recentText.toLowerCase()) || null;
+      if (!model) {
+        const prevUnit = detectUnit(recentText);
+        if (prevUnit) model = imageModelForUnit(prevUnit);
+      }
+    }
 
     // (0) Catalog COMBO (lib/static_slides.ts, entry có allOf như "bếp + signature")
     // - chạy TRƯỚC chuỗi nhánh generic để tổ hợp cụ thể thắng nhánh chung.
@@ -400,8 +426,9 @@ export async function POST(req: NextRequest) {
           ? `/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-${Math.min(floor, 6)}.jpg`
           : `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 6)}.jpg`;
       const modelLabel = m === 'opus' ? 'Opus' : m === 'fusion_gen_5' ? 'Fusion Gen 5' : 'Cosmo Gen 2';
-      if (hasExplicitModel) {
-        // Khách nói rõ model → trả công năng tầng của model đó.
+      if (model) {
+        // Có model (nói rõ trong câu HOẶC suy từ ngữ cảnh lượt khách - "tầng 3"
+        // sau khi vừa bàn Opus) -> trả công năng tầng của đúng model đó.
         const floorsOfModel = FLOOR_FUNCTIONS[m];
         const info: FloorInfo = floorsOfModel[floor] || floorsOfModel[Math.max(...Object.keys(floorsOfModel).map(Number))];
         staticSlide = {
@@ -494,7 +521,7 @@ export async function POST(req: NextRequest) {
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
     // viết lại text theo ngữ cảnh câu hỏi. (Ảnh luôn cố định theo từ khóa, text bám câu nói.)
 
-    const { prompt: systemText, hasChunks } = await buildPrompt(message, ambient);
+    const { prompt: systemText, hasChunks } = await buildPrompt(message, ambient, recentText);
 
     // Ambient + RAG rỗng + KHÔNG có slide tĩnh khớp → mơ hồ, bỏ qua.
     // (reason trả về để DEBUG HUD trên /slide?debug=1 hiện được vì sao skip)
