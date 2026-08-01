@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-07-30T08:31:58.704Z",
+  "_builtAt": "2026-08-01T09:45:23.492Z",
   "static_slides": [
     {
       "keywords": [
@@ -27,6 +27,33 @@
           "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-2.jpg",
           "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-3.jpg"
         ]
+      }
+    },
+    {
+      "keywords": [
+        "căn",
+        "lô",
+        "nhà tôi",
+        "nhà em",
+        "nhà mình"
+      ],
+      "allOf": [
+        "tiến độ"
+      ],
+      "slide": {
+        "title": "Tiến độ từng căn",
+        "points": [
+          "Ảnh công trường chung mới nhất T6/2026",
+          "Ảnh riêng từng căn: tư vấn viên gửi trực tiếp",
+          "Khách hẹn lịch là ghé xem căn của mình tận nơi"
+        ],
+        "speech_text": "Đây là hình công trường chung mới nhất - còn hình riêng căn của anh chị, tư vấn viên sẽ chụp gửi trực tiếp hoặc mời anh chị ghé xem tận nơi.",
+        "image_urls": [
+          "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-3.jpg",
+          "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-5.jpg",
+          "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-8.jpg"
+        ],
+        "forceStatic": true
       }
     },
     {

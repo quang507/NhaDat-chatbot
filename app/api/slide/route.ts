@@ -351,7 +351,13 @@ export async function POST(req: NextRequest) {
     // - chạy TRƯỚC chuỗi nhánh generic để tổ hợp cụ thể thắng nhánh chung.
     let staticSlide: any = matchStaticSlide(cleanMsg, 'combo');
 
-    if (!staticSlide && has(...TOPIC_SLIDES.vi_tri.keywords)) {
+    if (staticSlide) {
+      // Combo đã khớp (tổ hợp cụ thể do người gán tay) -> GIỮ NGUYÊN, không cho
+      // chuỗi nhánh generic bên dưới đè lên. Trước đây chỉ nhánh vi_tri kiểm tra
+      // !staticSlide, nên câu như "tiến độ căn 22" khớp combo xong vẫn bị nhánh
+      // cuối (hasExplicitModel - căn 22 thuộc dòng Cosmo) thay bằng slide giới
+      // thiệu mẫu nhà - sai hẳn chủ đề khách hỏi.
+    } else if (has(...TOPIC_SLIDES.vi_tri.keywords)) {
       staticSlide = topicSlide('vi_tri');
     } else if (has(...TOPIC_SLIDES.tien_ich.keywords)) {
       staticSlide = topicSlide('tien_ich');

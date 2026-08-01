@@ -87,6 +87,21 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
+    // Khách hỏi tiến độ MỘT CĂN cụ thể. Chưa có ảnh gắn số căn -> dùng ảnh
+    // công trường chung làm ẢNH TẠM, lời đọc nói thẳng là ảnh chung.
+    // Khi có ảnh đích danh (vd tien_do/xay_dung/can-22_thang-08.jpg) thì thay
+    // image_urls ở đây là xong.
+    keywords: ['căn', 'lô', 'nhà tôi', 'nhà em', 'nhà mình'],
+    allOf: ['tiến độ'],
+    slide: {
+      title: 'Tiến độ từng căn',
+      points: ['Ảnh công trường chung mới nhất T6/2026', 'Ảnh riêng từng căn: tư vấn viên gửi trực tiếp', 'Khách hẹn lịch là ghé xem căn của mình tận nơi'],
+      speech_text: 'Đây là hình công trường chung mới nhất - còn hình riêng căn của anh chị, tư vấn viên sẽ chụp gửi trực tiếp hoặc mời anh chị ghé xem tận nơi.',
+      image_urls: [`${IMG}/tien_do/xay_dung/thang_06-2026-3.jpg`, `${IMG}/tien_do/xay_dung/thang_06-2026-5.jpg`, `${IMG}/tien_do/xay_dung/thang_06-2026-8.jpg`],
+      forceStatic: true,
+    },
+  },
+  {
     keywords: ['tháng 5', 'tháng năm'],
     allOf: ['tiến độ'],
     slide: {
