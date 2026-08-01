@@ -334,8 +334,8 @@ export async function POST(req: NextRequest) {
     // KHÔNG trộn recent vào chuỗi so khớp keyword - câu cũ đè câu mới sẽ ra
     // slide sai chủ đề (đã cân nhắc và tránh).
     const recentRaw = (context && Array.isArray(context.recent)) ? context.recent : [];
-    const recent: string[] = recentRaw.filter((x: unknown): x is string => typeof x === 'string' && !!x.trim()).slice(-3);
-    const recentText = recent.join(' … ').slice(0, 500);
+    const recent: string[] = recentRaw.filter((x: unknown): x is string => typeof x === 'string' && !!x.trim()).slice(-10);
+    const recentText = recent.join(' … ').slice(0, 1200);
 
     // --- BỘ ĐỆM SLIDE TĨNH: Trả slide ngay lập tức trong 0.1ms nếu khớp từ khóa trực tiếp, bypass AI hoàn toàn ---
     const cleanMsg = message.toLowerCase();

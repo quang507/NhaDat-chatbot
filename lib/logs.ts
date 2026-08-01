@@ -45,7 +45,7 @@ async function ensureBranch(): Promise<boolean> {
   return branchChecking;
 }
 
-async function sendTelegramMessage(text: string): Promise<boolean> {
+export async function sendTelegramMessage(text: string): Promise<boolean> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return false;
@@ -80,16 +80,11 @@ export async function writeLog(dir: 'chats' | 'leads', obj: Record<string, unkno
       `💬 <b>Tin nhắn khách gửi:</b>\n<i>"${msg}"</i>\n\n` +
       `📅 <b>Thời gian:</b> ${time}`;
     sendTelegramMessage(telegramText).catch(console.error);
-  } else if (dir === 'chats') {
-    // Mọi tin nhắn chat thường → gửi log ngắn gọn
-    const q = String(obj.question || '').slice(0, 200);
-    const a = String(obj.answer || '').slice(0, 300);
-    const telegramText = `💬 <b>Chat mới</b>\n` +
-      `👤 <i>${q}</i>\n` +
-      `🤖 ${a}\n` +
-      `🕐 ${time}`;
-    sendTelegramMessage(telegramText).catch(console.error);
   }
+  // Tin chat thường KHÔNG bắn Telegram từng tin nữa - dội thông báo mà khó đọc
+  // mạch chuyện. Thay bằng 1 bản TỔNG HỢP cả phiên khi khách rời đi
+  // (sendSessionDigest, gọi từ /api/log-session). File log GitHub vẫn ghi đủ
+  // từng tin bên dưới để không mất dữ liệu nếu digest thất lạc.
 
   try {
     if (!process.env.GITHUB_TOKEN) return;
@@ -148,4 +143,55 @@ export function extractPhone(text: string): string | null {
   const cleaned = text.replace(/[ .\-()]/g, '');
   const m = cleaned.match(/(?:\+84|84|0)\d{9}/);
   return m ? m[0] : null;
+}
+
+// ── TỔNG HỢP PHIÊN ───────────────────────────────────────────────────────────
+// Một khách = một tin Telegram duy nhất, gồm toàn bộ hỏi-đáp của phiên.
+// Client (chat widget / màn slide / voice) tự gom transcript và gọi
+// /api/log-session khi phiên kết thúc (khách im lặng quá hạn hoặc rời trang).
+export interface SessionPair { q: string; a?: string }
+
+const esc = (t: string) =>
+  t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+export async function sendSessionDigest(opts: {
+  source: string;
+  transcript: SessionPair[];
+  startedAt?: string;
+}): Promise<void> {
+  const pairs = (opts.transcript || []).slice(0, 30);
+  if (!pairs.length) return;
+
+  const nhan: Record<string, string> = { chat: '💬 Chat web', slide: '📺 Màn slide', voice: '🎧 Giọng nói' };
+  const now = new Date().toISOString();
+  const lines: string[] = [];
+  for (const p of pairs) {
+    lines.push(`👤 <i>${esc(String(p.q || '').slice(0, 300))}</i>`);
+    if (p.a) lines.push(`🤖 ${esc(String(p.a).slice(0, 400))}`);
+  }
+  let body = lines.join('\n');
+  // Telegram giới hạn 4096 ký tự/tin - cắt an toàn ở 3800, báo rõ là bị cắt.
+  if (body.length > 3800) body = body.slice(0, 3800) + '\n…(cắt bớt - xem đủ trong log GitHub)';
+
+  const text =
+    `<b>📋 TỔNG HỢP PHIÊN KHÁCH - ${nhan[opts.source] || esc(opts.source)}</b>\n` +
+    `🗨 ${pairs.length} lượt hỏi · 🕐 ${esc(opts.startedAt || now)} → ${esc(now)}\n\n` +
+    body;
+  await sendTelegramMessage(text);
+
+  // Lưu bản đầy đủ (không cắt) vào GitHub để tra lại.
+  try {
+    if (!process.env.GITHUB_TOKEN) return;
+    if (!(await ensureBranch())) return;
+    const stamp = now.replace(/[:.]/g, '-');
+    await fetch(`${API}/contents/logs/sessions/${stamp}-${Math.random().toString(36).slice(2, 7)}.json`, {
+      method: 'PUT',
+      headers: ghHeaders(),
+      body: JSON.stringify({
+        message: 'log session',
+        content: Buffer.from(JSON.stringify({ ...opts, endedAt: now }, null, 2), 'utf-8').toString('base64'),
+        branch: LOG_BRANCH,
+      }),
+    });
+  } catch { /* log lỗi không được phá luồng chính */ }
 }

@@ -11,6 +11,7 @@ import {
   isSessionExpired,
   buildProfileNote,
 } from '@/lib/conversation';
+import { createSessionRecorder } from '@/lib/session-digest';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 
 interface Message {
@@ -42,6 +43,9 @@ export default function VoicePage() {
   // khách nói; dùng để (1) cá nhân hóa câu trả lời qua `profile`, (2) nhận biết
   // khách đổi giai đoạn để làm mới slide đúng lúc.
   const convStateRef = useRef(createConversationState());
+  // Gom hỏi-đáp cả phiên -> 1 tin Telegram tổng hợp (thay bắn lẻ từng tin).
+  const recorderRef = useRef(createSessionRecorder('voice'));
+  useEffect(() => recorderRef.current.bindUnload(), []);
 
   // Chống nhảy slide liên tục - quyết định đổi/giữ ảnh dùng chung shouldRefreshSlide()
   // (lib/intent.ts) với trang /slide, để 2 nơi không lệch logic.
@@ -122,10 +126,12 @@ export default function VoicePage() {
       convStateRef.current = updateConversationState(convStateRef.current, speechText, intent, nowTs);
       const conv = convStateRef.current;
       if (sessionExpired) {
-        addLog('INFO', 'Phiên cũ đã hết hạn (khách rời đi >25 phút) - bắt đầu ngữ cảnh mới.');
+        addLog('INFO', 'Phiên cũ đã hết hạn (khách rời đi >25 phút) - gửi tổng hợp phiên cũ, bắt đầu ngữ cảnh mới.');
+        recorderRef.current.flush(); // chốt sổ phiên khách trước
         chatHistoryRef.current = [];        // xoá luôn lịch sử chat để không kéo ngữ cảnh khách cũ
         lastSlideRef.current = { topic: null, at: 0 };
       }
+      recorderRef.current.push(speechText);
       const profileNote = buildProfileNote(conv.memory);
       if (profileNote) addLog('INFO', `Bộ nhớ khách [${conv.stage}]:\n${profileNote}`);
 
@@ -198,6 +204,7 @@ export default function VoicePage() {
         const { done, value } = await reader.read();
         if (done) {
           addLog('API', `Đọc xong luồng dữ liệu. Thời gian: ${((Date.now() - startTime) / 1000).toFixed(2)} giây`);
+          recorderRef.current.answerLast(accumulatedText);
           break;
         }
         
