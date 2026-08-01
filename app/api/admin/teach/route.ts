@@ -37,7 +37,7 @@ async function embedTexts(texts: string[]): Promise<number[][]> {
   }
   return out;
 }
-// File tích lũy các cặp Q&A do người dùng "dạy" — đặt tên có '03_Human-QA' để bot ưu tiên bê nguyên văn.
+// File tích lũy các cặp Q&A do người dùng "dạy" - đặt tên có '03_Human-QA' để bot ưu tiên bê nguyên văn.
 const TEACH_PATH = 'data/03_Human-QA/03_Human-QA_day-bot.md';
 
 function ghHeaders() {
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Đọc file Q&A cũ, nối thêm cặp mới
     const { content: old, sha } = await readFile(TEACH_PATH);
-    const header = old.trim() ? old.trimEnd() + '\n\n' : '# 03_Human-QA — Q&A do người dùng dạy bot\n\n> Bot BẮT BUỘC bê nguyên văn câu trả lời (Response) khi khách hỏi câu trùng/tương tự.\n\n';
+    const header = old.trim() ? old.trimEnd() + '\n\n' : '# 03_Human-QA - Q&A do người dùng dạy bot\n\n> Bot BẮT BUỘC bê nguyên văn câu trả lời (Response) khi khách hỏi câu trùng/tương tự.\n\n';
     const block = `## Câu hỏi: ${question.trim()}\n\n**Response:**\n${answer.trim()}\n\n---\n`;
     const updated = header + block;
 

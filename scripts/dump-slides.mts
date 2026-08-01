@@ -2,7 +2,7 @@
 // Chạy: npm run slides:dump
 // Sau khi sửa catalog trong TS, chạy lệnh này để JSON và TS luôn khớp nhau.
 //
-// LƯU Ý: phải dùng dynamic import() — `import` tĩnh bị hoisted và sẽ chạy TRƯỚC
+// LƯU Ý: phải dùng dynamic import() - `import` tĩnh bị hoisted và sẽ chạy TRƯỚC
 // dòng gán env, khiến static_slides.ts đọc lại chính file JSON cũ thay vì dữ
 // liệu hardcode (dump ra y nguyên file cũ, các sửa đổi trong TS bị mất).
 import { writeFileSync } from 'fs';

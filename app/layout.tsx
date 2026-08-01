@@ -5,7 +5,7 @@ import ChatWidgetWrapper from '@/components/ChatWidgetWrapper';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['latin', 'vietnamese'] });
-// Font hiển thị tiêu đề slide — Be Vietnam Pro hỗ trợ đầy đủ dấu tiếng Việt
+// Font hiển thị tiêu đề slide - Be Vietnam Pro hỗ trợ đầy đủ dấu tiếng Việt
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['latin', 'vietnamese'],
   weight: ['400', '500', '600', '700', '800'],

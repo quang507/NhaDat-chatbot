@@ -1,18 +1,18 @@
-// lib/conversation.ts — LỚP QUẢN LÝ HỘI THOẠI (Conversation Manager)
+// lib/conversation.ts - LỚP QUẢN LÝ HỘI THOẠI (Conversation Manager)
 // ─────────────────────────────────────────────────────────────────────────────
 // Đây là "bộ não" mà lib/intent.ts còn thiếu: intent.ts chỉ phân loại 1 CÂU rời rạc
 // (keyword matching), còn module này giữ TRẠNG THÁI cả cuộc trò chuyện:
 //
-//   1. Conversation State Machine — khách đang ở GIAI ĐOẠN nào của phễu bán hàng
+//   1. Conversation State Machine - khách đang ở GIAI ĐOẠN nào của phễu bán hàng
 //      (chào hỏi → tìm hiểu nhu cầu → vị trí → mặt bằng → tiện ích → tài chính →
 //       pháp lý → chốt). Biết stage giúp AI "hiểu khách vừa chuyển chủ đề" thay vì
 //      phản ứng máy móc theo từ khóa.
 //
-//   2. Customer Memory — ghi nhớ điều khách tiết lộ (tên, ngân sách, mối quan tâm,
+//   2. Customer Memory - ghi nhớ điều khách tiết lộ (tên, ngân sách, mối quan tâm,
 //      lo ngại, mẫu nhà ưa thích) để KHÔNG hỏi lại và cá nhân hóa câu trả lời.
 //      Ví dụ: "Anh Long lúc nãy chia sẻ ngân sách khoảng 3 tỷ, trong tầm này..."
 //
-// Thiết kế: THUẦN HÀM (pure functions) + immutable reducer — dễ test, dễ dùng cả
+// Thiết kế: THUẦN HÀM (pure functions) + immutable reducer - dễ test, dễ dùng cả
 // client (giữ state trong useRef) lẫn server (nhận/serialize qua request).
 // Không phụ thuộc DOM/React nên import được ở mọi nơi.
 
@@ -29,7 +29,7 @@ export type SalesStage =
   | 'legal'       // pháp lý / sổ / tiến độ / bàn giao
   | 'close';      // chốt: xem nhà, liên hệ, đặt cọc
 
-// Thứ tự tiến triển tự nhiên của phễu — dùng để gợi ý "bước tiếp theo".
+// Thứ tự tiến triển tự nhiên của phễu - dùng để gợi ý "bước tiếp theo".
 export const STAGE_ORDER: SalesStage[] = [
   'greeting', 'discovery', 'location', 'masterplan', 'amenities', 'finance', 'legal', 'close',
 ];
@@ -60,7 +60,7 @@ export interface ConversationState {
   previousStage: SalesStage | null;
   memory: CustomerMemory;
   turns: number;              // số lượt khách đã nói (để biết đã qua giai đoạn chào hỏi chưa)
-  lastActivityAt: number;     // mốc thời gian (ms) lượt nói gần nhất — dùng để hết hạn phiên
+  lastActivityAt: number;     // mốc thời gian (ms) lượt nói gần nhất - dùng để hết hạn phiên
 }
 
 // Khách rời đi quá lâu (~25 phút, giữa khoảng 20-30') thì coi như HẾT PHIÊN: quên
@@ -92,7 +92,7 @@ const VN_NUMBER_WORDS: Record<string, number> = {
 
 export function extractBudget(text: string): number | undefined {
   const t = text.toLowerCase();
-  // Không phải câu tiết lộ ngân sách nếu chỉ hỏi giá ("giá bao nhiêu tỷ") — cần có
+  // Không phải câu tiết lộ ngân sách nếu chỉ hỏi giá ("giá bao nhiêu tỷ") - cần có
   // đại từ sở hữu/khả năng ("có", "tầm", "khoảng", "ngân sách", "chỉ", "được") đứng gần.
   const budgetCue = /(có|tầm|khoảng|ngân sách|tài chính|chỉ có|được|trong tay|dư|cầm|mang theo|tối đa|trên dưới)/;
   const isAskingPrice = /(giá|bán).*(bao nhiêu|nhiêu tiền)/.test(t);
@@ -226,7 +226,7 @@ export function updateConversationState(
   return {
     stage: nextStage,
     // previousStage = giai đoạn NGAY TRƯỚC lượt này (luôn cập nhật), để didStageChange
-    // phản ánh đúng "có đổi giai đoạn ở CHÍNH lượt này không" — không bị dính (sticky).
+    // phản ánh đúng "có đổi giai đoạn ở CHÍNH lượt này không" - không bị dính (sticky).
     previousStage: state.stage,
     memory,
     turns: state.turns + 1,

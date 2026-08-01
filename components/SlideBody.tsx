@@ -1,16 +1,16 @@
 'use client';
 
 // ============================================================================
-// SlideBody — STYLE TỐI THEO FIGMA "Demo layout" (07/2026):
+// SlideBody - STYLE TỐI THEO FIGMA "Demo layout" (07/2026):
 //
 //  Nguyên tắc: ẢNH LÀ CHỦ ĐẠO, chữ chỉ điểm xuyết.
 //  • Nền: chính ảnh slide phóng to + blur + tối (brightness .35) phủ toàn màn
 //    → không còn khung trắng, ảnh "mờ mờ phía sau" như bản Figma.
 //  • Nhãn nhỏ tracked ở TRÊN (kiểu "mẫu nhà opus") thay cho block title to.
 //  • Text nằm ĐÈ LÊN vùng ảnh, ghim đáy trên gradient đen, cách title một
-//    khoảng lớn (~100px trên màn trình chiếu) — title trên / points dưới.
+//    khoảng lớn (~100px trên màn trình chiếu) - title trên / points dưới.
 //  • full_background: ảnh tràn màn, toàn bộ chữ đè trực tiếp lên ảnh.
-//  • NHIỀU ẢNH: mỗi thời điểm chỉ hiện MỘT ảnh nằm ngang — tự động chuyển
+//  • NHIỀU ẢNH: mỗi thời điểm chỉ hiện MỘT ảnh nằm ngang - tự động chuyển
 //    lần lượt bằng crossfade, KHÔNG BAO GIỜ xếp ảnh cạnh nhau.
 // ============================================================================
 
@@ -50,7 +50,9 @@ const Line = ({ children, delay = 0, className = '' }: {
 );
 
 export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKey }: SlideBodyProps) {
-  const imgs = (data.image_urls || []).filter(Boolean).slice(0, 3);
+  // Khử trùng URL: API đôi khi trả cùng một ảnh 2 lần. Không khử thì React báo
+  // trùng key và ta render thừa một lớp ảnh chồng lên chính nó.
+  const imgs = Array.from(new Set((data.image_urls || []).filter(Boolean))).slice(0, 3);
   const points = (data.points || []).filter(Boolean);
   const hasImg = imgs.length > 0;
   const isMapImg = (src: string) => src.includes('vi_tri') || src.includes('18_phut');
@@ -101,7 +103,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     </div>
   ) : null;
 
-  // Nhãn nhỏ tracked kiểu Figma: "mẫu nhà opus" — lowercase nhẹ nhàng, mờ.
+  // Nhãn nhỏ tracked kiểu Figma: "mẫu nhà opus" - lowercase nhẹ nhàng, mờ.
   const TopLabel = ({ delay = 80 }: { delay?: number }) => (
     <Line delay={delay}>
       <span className="inline-block text-white/60 font-semibold tracking-[0.3em] uppercase text-[clamp(9px,1.4cqw,16px)]">
@@ -110,7 +112,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     </Line>
   );
 
-  // Points ghim đáy — mỗi ý 1 dòng, thanh dọc xanh brand trước chữ (như Figma).
+  // Points ghim đáy - mỗi ý 1 dòng, thanh dọc xanh brand trước chữ (như Figma).
   const BottomPoints = ({ startDelay = 700 }: { startDelay?: number }) => (
     <div className="space-y-[1cqw]">
       {points.slice(0, 3).map((p, i) => (
@@ -131,8 +133,8 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     </div>
   );
 
-  // ══════════════ LAYOUT 1: FULL BACKGROUND — chữ đè trực tiếp lên ảnh ═══════
-  // Nhiều ảnh: nền tràn màn tự chuyển lần lượt (crossfade) — không thumbnail.
+  // ══════════════ LAYOUT 1: FULL BACKGROUND - chữ đè trực tiếp lên ảnh ═══════
+  // Nhiều ảnh: nền tràn màn tự chuyển lần lượt (crossfade) - không thumbnail.
   if (hasImg && (data.layout_type === 'full_background' || !data.layout_type)) {
     return (
       <div style={{ containerType: 'inline-size' }} className="w-full h-full">
@@ -152,12 +154,12 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
           {/* Gradient đen đáy + đỉnh cho label */}
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/35" />
 
-          {/* Label nhỏ trên cùng, giữa — như Figma */}
+          {/* Label nhỏ trên cùng, giữa - như Figma */}
           <div className="absolute top-[3cqw] inset-x-0 text-center">
             <TopLabel />
           </div>
 
-          {/* Title + khoảng cách LỚN + points — ghim đáy trái */}
+          {/* Title + khoảng cách LỚN + points - ghim đáy trái */}
           <div className="absolute left-[5cqw] right-[5cqw] bottom-[4.5cqw] max-w-[78cqw]">
             <h1 className="uppercase font-black leading-[1.06] tracking-tight text-white text-[clamp(22px,5.4cqw,100px)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
               <Line delay={190}>{data.title}</Line>
@@ -192,7 +194,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             </h1>
           </div>
 
-          {/* 2. MỘT ảnh chiếm toàn bộ không gian còn lại — object-contain,
+          {/* 2. MỘT ảnh chiếm toàn bộ không gian còn lại - object-contain,
               không crop. Nhiều ảnh: crossfade lần lượt, không xếp cạnh nhau. */}
           <div className="relative z-10 flex-1 min-h-0 pt-[2cqw] pb-[clamp(90px,16cqw,220px)]">
             <figure
@@ -213,7 +215,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             </figure>
           </div>
 
-          {/* 3. Text đè vùng đáy trên gradient đen — cách ảnh/title khoảng lớn */}
+          {/* 3. Text đè vùng đáy trên gradient đen - cách ảnh/title khoảng lớn */}
           <div aria-hidden className="absolute inset-x-0 bottom-0 h-[clamp(140px,26cqw,320px)] bg-gradient-to-t from-black/90 via-black/55 to-transparent z-10" />
           <div className="absolute inset-x-[5cqw] bottom-[3cqw] z-20">
             <BottomPoints />
@@ -224,7 +226,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     );
   }
 
-  // ══════════════ LAYOUT 3: TEXT-ONLY — giữ nền SÁNG như cũ ══════════════════
+  // ══════════════ LAYOUT 3: TEXT-ONLY - giữ nền SÁNG như cũ ══════════════════
   return (
     <div style={{ containerType: 'inline-size' }} className="w-full h-full flex flex-col">
       <div key={replayKey} className="flex-1 min-h-0 flex flex-col justify-center items-center text-center px-[8cqw] gap-[3cqw]">

@@ -1,13 +1,18 @@
 'use client';
 
 // ============================================================================
-// /thu-slide — TRANG THỬ SLIDE BẰNG CÁCH GÕ CHỮ
+// /thu-slide - TRANG THỬ SLIDE BẰNG CÁCH GÕ CHỮ
 //
 // Mục đích: gõ đúng câu khách hay hỏi -> xem ngay slide thật mà máy sẽ chiếu,
 // không cần nói vào micro, không cần chờ ambient mode.
 //
-// Dùng CHUNG <SlideBody> với /slide và /voice nên bố cục, ảnh, animation
-// giống hệt màn trình chiếu thật — thấy ở đây thế nào thì khách thấy thế đó.
+// Dùng CHUNG <SlideBody> với /slide (màn trình chiếu) nên bố cục, ảnh và
+// animation giống hệt. Trang /voice KHÔNG dùng SlideBody - nó tự render khung
+// ảnh riêng, nên đừng lấy trang này để suy ra giao diện /voice.
+//
+// Gọi API kèm cờ ambient GIỐNG /slide (luôn true). Thiếu cờ này là test nhầm
+// pipeline: server đổi cả model (8B vs 70B), nhiệt độ, số chunk RAG, cổng tin
+// cậy, và bỏ hẳn nhánh trả slide tĩnh ~0ms mà showroom dùng nhiều nhất.
 //
 // Cột phải là bảng chẩn đoán: nhánh nào xử lý (tĩnh/động), mất bao lâu,
 // ảnh nào 404. Dùng để soi khi slide ra sai.
@@ -17,7 +22,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { SlideBody } from '@/components/SlideBody';
 
-const LIME = '#A8D94A'; // xanh brand dùng cho nhấn — khớp SlideBody
+const LIME = '#A8D94A'; // xanh brand dùng cho nhấn - khớp SlideBody
 
 interface SlideData {
   layout_type?: string;
@@ -32,7 +37,7 @@ interface SlideData {
   _source?: 'static_fast' | 'static_llm_text' | 'dynamic_llm';
 }
 
-// Nhãn nhánh xử lý — lấy từ _source do API trả về, KHÔNG suy đoán theo thời gian
+// Nhãn nhánh xử lý - lấy từ _source do API trả về, KHÔNG suy đoán theo thời gian
 // (lần gọi đầu ở dev chậm vì Next phải biên dịch route, dễ báo sai).
 const NHAN_NGUON: Record<string, { ten: string; giai_thich: string }> = {
   static_fast: { ten: 'Slide tĩnh', giai_thich: 'lấy nguyên từ catalog, không qua LLM' },
@@ -40,7 +45,7 @@ const NHAN_NGUON: Record<string, { ten: string; giai_thich: string }> = {
   dynamic_llm: { ten: 'Slide động', giai_thich: 'LLM sinh cả chữ lẫn chọn ảnh từ RAG' },
 };
 
-// Câu mẫu bấm nhanh — gom theo nhóm khách hay hỏi nhất.
+// Câu mẫu bấm nhanh - gom theo nhóm khách hay hỏi nhất.
 const SAMPLES: { nhom: string; cau: string[] }[] = [
   { nhom: 'Tiền & rổ hàng', cau: ['giá bao nhiêu', 'còn căn nào trống', 'thanh toán trả góp', 'gói air hoàn thiện'] },
   { nhom: 'Pháp lý & tiến độ', cau: ['pháp lý sổ hồng', 'tiến độ xây tới đâu', 'khi nào bàn giao'] },
@@ -64,6 +69,11 @@ export default function ThuSlidePage() {
   const [trace, setTrace] = useState<Trace | null>(null);
   const [dangChay, setDangChay] = useState(false);
   const [doc, setDoc] = useState<'dung' | 'ngang'>('dung');
+  // /slide (màn chiếu thật) LUÔN gọi API với ambient=true - đó là chế độ nghe
+  // ngầm ở showroom. Mặc định bật để trang này chạy đúng pipeline khách gặp;
+  // tắt đi để so sánh với nhánh chat trực tiếp (LLM 70B, không có cổng tin cậy).
+  const [ambient, setAmbient] = useState(true);
+  const [cauCuoi, setCauCuoi] = useState('');
   const [replayKey, setReplayKey] = useState(0);
   const [lichSu, setLichSu] = useState<{ q: string; title: string; ok: boolean }[]>([]);
   const [imgOrient, setImgOrient] = useState<Record<string, 'landscape' | 'portrait'>>({});
@@ -93,36 +103,58 @@ export default function ThuSlidePage() {
     return out.filter(u => !brokenImages[u]).slice(0, 3);
   }
 
-  async function chay(q: string) {
+  // Thử tải một ảnh, có hạn giờ. Không có hạn giờ thì một URL treo (server im
+  // lặng, không trả cả onload lẫn onerror) sẽ làm Promise.all chờ mãi và nút
+  // giữ nguyên trạng thái "Đang chạy…" vĩnh viễn.
+  function thuTaiAnh(url: string, hanGio = 8000): Promise<string | null> {
+    return new Promise(resolve => {
+      const im = new window.Image();
+      const xong = (kq: string | null) => { clearTimeout(h); im.onload = im.onerror = null; resolve(kq); };
+      const h = setTimeout(() => xong(url), hanGio); // quá hạn -> coi như hỏng
+      im.onload = () => xong(null);
+      im.onerror = () => xong(url);
+      im.src = url;
+    });
+  }
+
+  function chay(q: string) { return chayVoi(q, ambient); }
+
+  async function chayVoi(q: string, ambientFlag: boolean) {
     const cau = q.trim();
     if (!cau || dangChay) return;
     setDangChay(true);
     setTrace(null);
+    setCauCuoi(cau);
+    // Xoá cờ ảnh hỏng của lần trước, y như /slide làm. Không xoá thì một ảnh
+    // hỏng tạm thời sẽ bị collectImages() ẩn vĩnh viễn suốt phiên, kể cả ở các
+    // slide sau dùng lại đúng ảnh đó -> nhìn thiếu ảnh mà không rõ vì sao.
+    setBrokenImages({});
     const t0 = performance.now();
     try {
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: cau }),
+        body: JSON.stringify({ message: cau, ambient: ambientFlag }),
       });
       const ms = Math.round(performance.now() - t0);
       const data: SlideData = await res.json();
+      // Giữ bản GỐC để panel "JSON máy trả về" hiện đúng cái server trả, không
+      // phải bản đã bị sửa layout_type bên dưới.
+      const goc: SlideData = JSON.parse(JSON.stringify(data));
 
       // Kiểm tra ảnh nào không tải được (404) để báo ngay.
       const urls = Array.isArray(data.image_urls) ? data.image_urls : data.image_url ? [data.image_url] : [];
-      const broken = await Promise.all(
-        urls.map(u => new Promise<string | null>(r => {
-          const im = new window.Image();
-          im.onload = () => r(null);
-          im.onerror = () => r(u);
-          im.src = u;
-        }))
-      );
+      const broken = await Promise.all(urls.map(u => thuTaiAnh(u)));
       const brokenImgs = broken.filter(Boolean) as string[];
+
+      // /slide ép mặc định split_image_right khi API không trả layout_type.
+      // Không làm y hệt thì SlideBody rơi vào nhánh full_background -> nhìn KHÁC
+      // hẳn màn chiếu thật, đúng cái mà trang này phải tránh.
+      if (!data.layout_type) data.layout_type = 'split_image_right';
 
       const coSlide = !data.skip && !!data.title;
       setSlide(coSlide ? data : null);
-      setTrace({ ms, status: res.status, raw: data, brokenImgs });
+      setTrace({ ms, status: res.status, raw: goc, brokenImgs });
       setReplayKey(k => k + 1);
       setLichSu(h => [{ q: cau, title: coSlide ? data.title : '(không ra slide)', ok: coSlide && brokenImgs.length === 0 }, ...h].slice(0, 12));
     } catch (e: unknown) {
@@ -134,7 +166,7 @@ export default function ThuSlidePage() {
   }
 
   // Màn đứng: ghim theo chiều CAO (h-[72vh] + w-auto) để khung luôn nằm trong
-  // tầm nhìn — nếu ghim theo chiều ngang thì tỉ lệ 9:16 đẩy khung cao quá màn
+  // tầm nhìn - nếu ghim theo chiều ngang thì tỉ lệ 9:16 đẩy khung cao quá màn
   // hình và phần chữ dưới slide bị cắt mất.
   const khung = doc === 'dung'
     ? 'h-[76vh] aspect-[9/16] w-auto'
@@ -165,6 +197,23 @@ export default function ThuSlidePage() {
             </button>
           ))}
         </div>
+        <button
+          onClick={() => {
+            const moi = !ambient;
+            setAmbient(moi);
+            // Chạy lại ngay câu vừa thử để so sánh được hai nhánh - đây chính là
+            // việc người dùng muốn khi bấm nút này.
+            if (cauCuoi) chayVoi(cauCuoi, moi);
+          }}
+          title="ambient=true là chế độ màn chiếu thật dùng: có cổng tin cậy, slide tĩnh trả ngay ~0ms, LLM 8B. Tắt = nhánh chat trực tiếp, LLM 70B."
+          className={`px-3 py-1 rounded-full text-xs font-semibold border transition ${
+            ambient
+              ? 'border-[#A8D94A]/60 text-[#A8D94A] bg-[#A8D94A]/10'
+              : 'border-white/15 text-white/50 hover:text-white'
+          }`}
+        >
+          {ambient ? 'ambient BẬT (như màn chiếu)' : 'ambient TẮT (chat trực tiếp)'}
+        </button>
         <Link href="/slide" className="text-xs text-white/50 hover:text-white transition">Màn chiếu →</Link>
         <Link href="/voice" className="text-xs text-white/50 hover:text-white transition">Giọng nói →</Link>
       </header>
@@ -179,7 +228,7 @@ export default function ThuSlidePage() {
             ref={inputRef}
             value={text}
             onChange={e => setText(e.target.value)}
-            placeholder="Gõ câu khách hỏi, ví dụ: còn căn nào trống — rồi bấm Enter"
+            placeholder="Gõ câu khách hỏi, ví dụ: còn căn nào trống - rồi bấm Enter"
             className="flex-1 bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-[15px] placeholder:text-white/30 focus:outline-none focus:border-[#A8D94A]/70 focus:bg-white/[0.07] transition"
           />
           <button
@@ -195,7 +244,7 @@ export default function ThuSlidePage() {
 
       {/* ── Slide + chẩn đoán ───────────────────────────────────────────── */}
       <div className="px-5 py-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] items-start">
-        {/* Khung slide — giống hệt màn chiếu thật */}
+        {/* Khung slide - giống hệt màn chiếu thật */}
         <div className="flex justify-center">
           <div className={`${khung} w-full max-w-[520px] lg:max-w-none rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-[#0C0F0D] relative`}>
             {slide ? (
@@ -211,7 +260,7 @@ export default function ThuSlidePage() {
                   <div>
                     <p className="text-white/80 font-semibold">Câu này không ra slide</p>
                     <p className="text-white/45 text-sm mt-2 leading-relaxed">
-                      Máy trả về <code className="text-[#A8D94A]">skip</code> — không khớp slide tĩnh nào
+                      Máy trả về <code className="text-[#A8D94A]">skip</code> - không khớp slide tĩnh nào
                       và cũng không sinh được slide động.
                     </p>
                   </div>
@@ -230,10 +279,10 @@ export default function ThuSlidePage() {
 
         {/* Bảng chẩn đoán */}
         <aside className="space-y-4">
-          {/* Câu mẫu bấm nhanh — đặt ở cột phải để khung slide bên trái được cao
+          {/* Câu mẫu bấm nhanh - đặt ở cột phải để khung slide bên trái được cao
               tối đa và không bị đẩy tràn khỏi màn hình. */}
           <section className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <h2 className="text-[10px] uppercase tracking-[0.16em] text-white/40 mb-3">Câu mẫu — bấm để thử</h2>
+            <h2 className="text-[10px] uppercase tracking-[0.16em] text-white/40 mb-3">Câu mẫu - bấm để thử</h2>
             <div className="space-y-3">
               {SAMPLES.map(g => (
                 <div key={g.nhom}>
@@ -266,14 +315,14 @@ export default function ThuSlidePage() {
                         {NHAN_NGUON[slide._source]?.giai_thich}
                       </span>
                     </>
-                  ) : '—'}
+                  ) : '-'}
                 </Dong>
                 <Dong nhan="Thời gian">
                   <span className={trace.ms < 500 ? 'text-[#A8D94A]' : trace.ms < 3000 ? 'text-amber-300' : 'text-red-300'}>
                     {trace.ms} ms
                   </span>
                 </Dong>
-                <Dong nhan="HTTP">{trace.status || '—'}</Dong>
+                <Dong nhan="HTTP">{trace.status || '-'}</Dong>
                 <Dong nhan="Bố cục">{slide?.layout_type || '(mặc định)'}</Dong>
                 <Dong nhan="Số ý">{slide?.points?.length ?? 0}</Dong>
                 <Dong nhan="Số ảnh">
@@ -345,9 +394,11 @@ export default function ThuSlidePage() {
       </div>
 
       <footer className="px-5 pb-8 text-[11px] text-white/25 max-w-4xl leading-relaxed">
-        Trang nội bộ để kiểm tra slide. Dùng chung component <code>SlideBody</code> với màn chiếu thật,
-        nên bố cục và ảnh ở đây đúng như khách sẽ thấy. Ô “Nhánh” cho biết slide do catalog tĩnh trả
-        về hay do LLM sinh. Lần gọi đầu tiên có thể chậm vì Next phải biên dịch route.
+        Trang nội bộ để kiểm tra slide. Dùng chung component <code>SlideBody</code> với màn chiếu
+        <code>/slide</code>, và gọi API kèm cờ <code>ambient</code> y như màn chiếu, nên bố cục, ảnh
+        và nhánh xử lý ở đây đúng như khách sẽ gặp. Trang <code>/voice</code> render khung ảnh riêng,
+        không dùng <code>SlideBody</code>. Ô “Nhánh” cho biết slide do catalog tĩnh trả về hay LLM
+        sinh. Lần gọi đầu tiên có thể chậm vì Next phải biên dịch route.
       </footer>
     </div>
   );

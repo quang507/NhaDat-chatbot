@@ -19,12 +19,12 @@ const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 // Chọn thư mục ảnh theo họ mẫu nhà của 1 căn (1 nguồn: lib/units). Chỉ có 3 bộ ảnh.
-// office->opus, cashmere/signature->cosmo (tạm) — xử lý trong imageFamily().
+// office->opus, cashmere/signature->cosmo (tạm) - xử lý trong imageFamily().
 function imageModelForUnit(n: number): 'opus' | 'fusion_gen_5' | 'cosmo_gen_2' {
   return imageFamily(n);
 }
 // Công năng từng tầng THẬT (theo datasheet + data.md). Dùng cho slide tĩnh khi khách
-// hỏi "tầng X" — tránh để LLM bịa số liệu. Cosmo/Fusion là nhà ở đa thế hệ (tầng 2 = ông bà),
+// hỏi "tầng X" - tránh để LLM bịa số liệu. Cosmo/Fusion là nhà ở đa thế hệ (tầng 2 = ông bà),
 // Opus là nhà phố thương mại (tầng dưới kinh doanh/văn phòng).
 type FloorInfo = { name: string; points: string[]; speech: string; img?: string };
 const FLOOR_FUNCTIONS: Record<'cosmo_gen_2' | 'fusion_gen_5' | 'opus', Record<number, FloorInfo>> = {
@@ -105,7 +105,7 @@ function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null
   );
 }
 
-// Gom ảnh của 1 không gian (vd "bep") từ CẢ 3 model + thư mục chung — dùng khi chưa rõ model.
+// Gom ảnh của 1 không gian (vd "bep") từ CẢ 3 model + thư mục chung - dùng khi chưa rõ model.
 // Nếu ko tìm thấy ảnh với keyword, fallback lấy toàn bộ ảnh của space.
 function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): string[] {
   const models: Array<'cosmo_gen_2' | 'fusion_gen_5' | 'opus'> = ['cosmo_gen_2', 'fusion_gen_5', 'opus'];
@@ -133,7 +133,7 @@ function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): stri
   return allImgs;
 }
 
-// Lấy ẢNH GỐC (root) của 1 model — KHÔNG lấy trong các thư mục con (bep, gara, phong_khach...).
+// Lấy ẢNH GỐC (root) của 1 model - KHÔNG lấy trong các thư mục con (bep, gara, phong_khach...).
 // Dùng khi hỏi chung chung "cosmo gen 2" mà không chỉ rõ phòng nào.
 // Lấy ảnh từ các subfolder chính: bep, gara, phong_khach, phong_ngu, etc.
 function getRootImagesForModel(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus'): string[] {
@@ -211,7 +211,7 @@ SỐ LƯỢNG Ý CHÍNH: Đưa ra tối đa 3-4 ý ("points") để slide thoán
 
 VỀ LINK/URL/MÃ KEY: TUYỆT ĐỐI KHÔNG đưa đường link, URL hay mã key nào vào title/points/speech_text (đặc biệt link album Google Photos/Drive kèm "key=..."). Khi dữ liệu có link album/tài liệu, thay bằng: "Liên hệ tư vấn viên để nhận chi tiết". (Trường image_urls dạng "/images/..." thì vẫn dùng bình thường.)
 
-CÁCH CHỌN LAYOUT_TYPE (HÃY ĐA DẠNG, đừng luôn chọn 1 kiểu — biến đổi theo nội dung):
+CÁCH CHỌN LAYOUT_TYPE (HÃY ĐA DẠNG, đừng luôn chọn 1 kiểu - biến đổi theo nội dung):
 - 'text_only': Nếu KHÔNG tìm thấy bất kỳ hình ảnh minh họa hoặc đường dẫn hình ảnh nào liên quan đến câu hỏi trong dữ liệu, hoặc nếu câu trả lời chỉ cần văn bản và số liệu.
 - 'dark_minimal': Nếu nội dung thiên về 1 con số cụ thể cực kỳ ấn tượng (vd: 18 phút đến Q1, 9.5 triệu lít không khí) và có ít nhất 1 hình ảnh đi kèm. Yêu cầu bắt buộc phải có "highlight_number".
 - 'full_background': Nếu đang miêu tả toàn cảnh, cảnh quan, không gian sống bao quát, sang trọng và có 1 hình ảnh chất lượng cao làm nền.
@@ -257,16 +257,16 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
   try {
     const index = await loadIndex();
     if (index && index.chunks.length) {
-      // Ambient: Lọc 2 tầng —
-      //   Tầng 1 (nhanh, miễn phí): Kiểm tra keyword — nếu không có keyword dự án → SKIP ngay
-      //   Tầng 2 (embedding): minScore=0.71 — nếu vector score thấp → SKIP
+      // Ambient: Lọc 2 tầng -
+      //   Tầng 1 (nhanh, miễn phí): Kiểm tra keyword - nếu không có keyword dự án → SKIP ngay
+      //   Tầng 2 (embedding): minScore=0.71 - nếu vector score thấp → SKIP
       // Lý do 2 tầng: score embedding có variance (~±0.02), keyword detection ổn định 100%
       if (ambient && !hasProjectKeyword(message)) {
         console.log(`[Slide] Ambient SKIP (no keyword): "${message.slice(0, 60)}"`);
         return { prompt: '', hasChunks: false };
       }
       // CHỈ nới cổng confidence khi khách nói RÕ số căn/lô (tín hiệu chắc chắn).
-      // KHÔNG nới theo tên mẫu nhà (opus/cosmo/fusion) — STT rất hay nghe NHẦM ra các tên này
+      // KHÔNG nới theo tên mẫu nhà (opus/cosmo/fusion) - STT rất hay nghe NHẦM ra các tên này
       // (xem VN_SPEECH_FIXES), làm cổng tin cậy bị tắt oan -> slide sai. Tên mẫu nhà vẫn qua ngưỡng RAG.
       const hasUnit = detectUnit(message) !== null;
       const minScore = (ambient && !hasUnit) ? 0.71 : 0;
@@ -279,7 +279,7 @@ async function buildPrompt(message: string, ambient = false): Promise<{ prompt: 
           hasChunks: true,
         };
       }
-      // Ambient + rỗng chunks — signal để route tự trả skip:true không cần gọi model
+      // Ambient + rỗng chunks - signal để route tự trả skip:true không cần gọi model
       return { prompt: '', hasChunks: false };
     }
   } catch (e) {
@@ -314,7 +314,7 @@ function parseSlide(text: string | null): Record<string, unknown> {
   }
 }
 
-// CHẾ ĐỘ NGHE NGẦM: chỉ ép "speech ngắn gọn". KHÔNG còn ép LLM tự quyết {"skip":true} —
+// CHẾ ĐỘ NGHE NGẦM: chỉ ép "speech ngắn gọn". KHÔNG còn ép LLM tự quyết {"skip":true} -
 // việc lọc câu mơ hồ đã do CỔNG TIN CẬY xử lý ở tầng deterministic (intent client + minScore RAG
 // + slide tĩnh). Trước đây luật ép-skip khiến LLM trả skip/không ảnh cho cả chủ đề thật -> mất slide.
 const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM: Đây là hội thoại đang diễn ra; hãy tạo slide bám sát chủ đề vừa nghe từ phần dữ liệu bên dưới. "speech_text" phải CỰC KỲ NGẮN GỌN (1-2 câu, ~15 giây đọc), đi thẳng trọng tâm, không chào hỏi dài dòng.`;
@@ -348,7 +348,7 @@ export async function POST(req: NextRequest) {
     const hasExplicitModel = model !== null;
 
     // (0) Catalog COMBO (lib/static_slides.ts, entry có allOf như "bếp + signature")
-    // — chạy TRƯỚC chuỗi nhánh generic để tổ hợp cụ thể thắng nhánh chung.
+    // - chạy TRƯỚC chuỗi nhánh generic để tổ hợp cụ thể thắng nhánh chung.
     let staticSlide: any = matchStaticSlide(cleanMsg, 'combo');
 
     if (!staticSlide && has(...TOPIC_SLIDES.vi_tri.keywords)) {
@@ -451,7 +451,7 @@ export async function POST(req: NextRequest) {
     }
 
     // (1) Catalog GENERAL (~80 slide tĩnh theo chủ đề: tiến độ, giá, pháp lý, tiện ích,
-    // signature, thang xoắn, phong thủy...) — lấp các chủ đề chưa có nhánh riêng ở trên.
+    // signature, thang xoắn, phong thủy...) - lấp các chủ đề chưa có nhánh riêng ở trên.
     if (!staticSlide) staticSlide = matchStaticSlide(cleanMsg, 'general');
 
     // (2) Fallback cuối: nhắc chung đến DỰ ÁN ("tổng quan của em phú định", "giới thiệu
@@ -463,7 +463,7 @@ export async function POST(req: NextRequest) {
         title: "Ny'ah Phú Định",
         points: [
           'Khu nhà phố compound mặt tiền Trương Đình Hội, Quận 8',
-          'Sống đẹp hơn chung cư — sinh lời hơn thổ cư',
+          'Sống đẹp hơn chung cư - sinh lời hơn thổ cư',
           'Chỉ 18 phút đến Quận 1 qua đại lộ Võ Văn Kiệt',
         ],
         speech_text: "Ny'ah Phú Định là khu nhà phố compound tại mặt tiền Trương Đình Hội, Quận 8, chỉ 18 phút đến Quận 1 qua đại lộ Võ Văn Kiệt.",
@@ -472,14 +472,14 @@ export async function POST(req: NextRequest) {
     }
 
     // NGHE NGẦM + đã khớp slide tĩnh -> TRẢ NGAY (~0ms), KHÔNG chờ LLM viết lại text
-    // (LLM mất 3-5s — khách đang nói chuyện mà slide lên chậm 5s là hỏng nhịp sale).
+    // (LLM mất 3-5s - khách đang nói chuyện mà slide lên chậm 5s là hỏng nhịp sale).
     // Chat trực tiếp (ambient=false) vẫn giữ LLM viết text bám ngữ cảnh câu hỏi.
     if (ambient && staticSlide) {
       const imgs: string[] = staticSlide.image_urls || [];
       const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|ban-do|datasheet/.test(u));
       if (!staticSlide.layout_type) staticSlide.layout_type = isDiagram ? 'split_image_right' : 'full_background';
       console.log(`[Slide] Ambient FAST static: "${message.slice(0, 50)}" -> "${staticSlide.title}"`);
-      // _source: nhánh nào tạo slide — trang /thu-slide đọc để chẩn đoán.
+      // _source: nhánh nào tạo slide - trang /thu-slide đọc để chẩn đoán.
       return NextResponse.json({ ...staticSlide, _source: 'static_fast' });
     }
 
@@ -499,7 +499,7 @@ export async function POST(req: NextRequest) {
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
     let rawText: string | null = null;
 
-    // 1) Ưu tiên Groq (free + nhanh) — JSON mode
+    // 1) Ưu tiên Groq (free + nhanh) - JSON mode
     if (GROQ_API_KEY) {
       try {
         const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -614,7 +614,7 @@ export async function POST(req: NextRequest) {
 
     // Lọc đường dẫn ảnh: phải bắt đầu /images/ VA file phải TON TAI THUC.
     // LLM hay nhat path "ma" tu du lieu RAG cu (vd /images/2023/05/Cover-Fusion-3.webp
-    // tu noi dung website 2023) — dung dinh dang /images/ nen loc cu cho qua, nhung file
+    // tu noi dung website 2023) - dung dinh dang /images/ nen loc cu cho qua, nhung file
     // khong co trong repo -> trinh duyet 404 -> slide TRANG ANH. existsSync loai het path
     // ma (chay duoc tren Vercel vi da bundle public/images qua outputFileTracingIncludes).
     // Loc rong -> khoi if ben duoi tu dap anh tinh dung theo tu khoa.
@@ -713,7 +713,7 @@ export async function POST(req: NextRequest) {
       };
 
       // Uu tien category tu CAU HOI. Chi suy tu NOI DUNG LLM khi khach KHONG neu
-      // ro mau nha — neu khong, points nhac "cong vien noi khu" se keo ca slide
+      // ro mau nha - neu khong, points nhac "cong vien noi khu" se keo ca slide
       // "cho xem Fusion" ve anh cong vien. Co model + cau hoi khong neu phong ->
       // category=null -> roi ve anh TONG QUAN cua dung model do.
       const category = getCategoryMatch(queryText) || (model ? null : getCategoryMatch(contentText));

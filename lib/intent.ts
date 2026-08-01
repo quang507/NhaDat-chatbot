@@ -1,10 +1,10 @@
-// lib/intent.ts — NGUỒN SỰ THẬT DUY NHẤT cho intent classification + keyword lists.
+// lib/intent.ts - NGUỒN SỰ THẬT DUY NHẤT cho intent classification + keyword lists.
 // Cả slide/page.tsx (client) và api/slide/route.ts (server) đều import từ đây.
 //
 // Cách tiếp cận: 3 lớp phân loại nhanh (không cần LLM, <1ms):
-//   1. FILLER — câu chêm không mang thông tin (bỏ qua ngay)
-//   2. EXPLICIT — sale chủ động yêu cầu mở slide (ưu tiên cao nhất)
-//   3. TOPIC — nhận diện chủ đề qua từ khóa ngữ nghĩa (có nhóm + độ ưu tiên)
+//   1. FILLER - câu chêm không mang thông tin (bỏ qua ngay)
+//   2. EXPLICIT - sale chủ động yêu cầu mở slide (ưu tiên cao nhất)
+//   3. TOPIC - nhận diện chủ đề qua từ khóa ngữ nghĩa (có nhóm + độ ưu tiên)
 //
 // Khác string.includes() đơn thuần: mỗi từ khóa được gom theo NHÓM NGỮ NGHĨA
 // (price / location / unit / legal / amenity / design / general) giúp downstream
@@ -41,7 +41,7 @@ export const EXPLICIT_TRIGGERS = [
   'mở lên', 'chiếu lên', 'xem trên màn',
 ];
 
-// ── Dự án / thương hiệu đối thủ — nếu xuất hiện thì CHẶN slide của mình ──────
+// ── Dự án / thương hiệu đối thủ - nếu xuất hiện thì CHẶN slide của mình ──────
 export const COMPETITORS = [
   'vinhome', 'vin home', 'vinhomes', 'vin group', 'grand park', 'ocean park', 'cần giờ',
   'eco retreat', 'eco-retreat', 'ecoretreat', 'ecopark', 'eco park',
@@ -121,7 +121,7 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
     'mặt bằng', 'mẫu nhà', 'thiết kế nhà', 'nội thất', 'phối cảnh',
     'kiến trúc nhà', 'sa bàn', 'ngoại thất', 'toàn cảnh', 'sofa', 'giường',
     'nhà mẫu', 'kiến trúc', 'thiết kế',
-    // Đồ nội thất cụ thể — khách hay hỏi thẳng tên món đồ thay vì nói "nội thất" chung chung
+    // Đồ nội thất cụ thể - khách hay hỏi thẳng tên món đồ thay vì nói "nội thất" chung chung
     'bàn ăn', 'bàn bếp', 'tủ bếp', 'tủ quần áo', 'kệ tivi', 'bàn trà', 'đèn trang trí',
   ],
 
@@ -130,7 +130,7 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
     // Tên dự án & chủ đầu tư
     'phú định', "ny'ah", 'nyah', 'niah', 'nhã đạt', 'nha dat', 'nhà đạt',
     'chủ đầu tư', 'founder', 'công ty',
-    // Mẫu nhà — tên chính thức + phiên âm STT phổ biến
+    // Mẫu nhà - tên chính thức + phiên âm STT phổ biến
     'cosmo', 'cót mô', 'cốt mô', 'cot mo', 'côt mô', 'cát mô',
     'fusion', 'phiêu dân', 'phiêu-dân', 'phiu dân', 'fiu', 'phiu', 'fuse',
     'opus', 'ô-pút', 'ô pút', 'o pút', 'opút', 'ô put',
@@ -170,7 +170,7 @@ export function isCompetitor(text: string): boolean {
 // => 1 từ mạnh (2đ) là đủ; nhưng phải có 2 từ yếu (1+1) mới đủ. 1 từ yếu đơn độc → BỎ QUA.
 const STRONG_THRESHOLD = 2;
 
-// Tên riêng dự án / thương hiệu / mẫu nhà — anchor mạnh (trong nhóm general).
+// Tên riêng dự án / thương hiệu / mẫu nhà - anchor mạnh (trong nhóm general).
 const GENERAL_ANCHORS = new Set<string>([
   'phú định', "ny'ah", 'nyah', 'niah', 'nhã đạt', 'nha dat', 'nhà đạt',
   'chủ đầu tư', 'founder',
@@ -182,7 +182,7 @@ const GENERAL_ANCHORS = new Set<string>([
   'thang kính', 'thang máy kính', 'lệch tầng', 'airtop', 'air top', 'gói air',
 ]);
 
-// Từ khóa CHUNG CHUNG (weight 1) — dễ xuất hiện trong tám chuyện, cần tín hiệu thứ 2 đi kèm.
+// Từ khóa CHUNG CHUNG (weight 1) - dễ xuất hiện trong tám chuyện, cần tín hiệu thứ 2 đi kèm.
 const GENERIC_KEYWORDS = new Set<string>([
   // general yếu
   'công ty', 'nhà phố', 'nhà mẫu', 'gen 2', 'gen 5', 'gen hai', 'gen năm',
@@ -236,14 +236,14 @@ function scoreTopics(clean: string): { total: number; strong: number; topic?: In
 
 // ── Classifier chính ─────────────────────────────────────────────────────────
 // NGUỒN DUY NHẤT nhận diện mẫu nhà (tên + phiên âm STT). app/api/slide/route.ts
-// import hàm này — đừng viết lại regex ở nơi khác, dễ lệch nhau.
+// import hàm này - đừng viết lại regex ở nơi khác, dễ lệch nhau.
 export type HouseModel = 'fusion_gen_5' | 'cosmo_gen_2' | 'opus';
 export function detectModel(clean: string): HouseModel | undefined {
-  // Fusion Gen 5 — tên + phiên âm STT (phiêu dân, fiu, phiu, fuse, phút dân...)
+  // Fusion Gen 5 - tên + phiên âm STT (phiêu dân, fiu, phiu, fuse, phút dân...)
   if (/fusion|phiêu dân|phiêu-dân|phiu dân|phiu-dân|fiu|phiu|fuse|gen 5|gen5|phút dân/.test(clean)) return 'fusion_gen_5';
-  // Cosmo Gen 2 — tên + phiên âm STT (cốt mô, cát mô, cósmo, cashmere → cosmo line)
+  // Cosmo Gen 2 - tên + phiên âm STT (cốt mô, cát mô, cósmo, cashmere → cosmo line)
   if (/cosmo|cót mô|cốt mô|cot mo|côt mô|cát mô|cat mo|cát-mô|gen 2|gen2|gen hai/.test(clean)) return 'cosmo_gen_2';
-  // Opus — tên + phiên âm STT (ô pút, o pút, ô-pút, opút, o-pút, ô put...)
+  // Opus - tên + phiên âm STT (ô pút, o pút, ô-pút, opút, o-pút, ô put...)
   if (/\bopus\b|ô-pút|ô pút|o pút|opút|o-pút|ô put|ô-put|o put/.test(clean)) return 'opus';
   return undefined;
 }
@@ -252,7 +252,7 @@ export function classifyAmbientIntent(text: string): AmbientIntent {
   const clean = text.normalize('NFC').toLowerCase().trim();  // NFD (STT) -> NFC để khớp từ khóa
   const wordCount = clean.split(/\s+/).filter(Boolean).length;
 
-  // 1. Explicit trigger — sale chủ động yêu cầu → bắn ngay (ưu tiên cao nhất, kể cả câu ngắn)
+  // 1. Explicit trigger - sale chủ động yêu cầu → bắn ngay (ưu tiên cao nhất, kể cả câu ngắn)
   for (const trigger of EXPLICIT_TRIGGERS) {
     if (clean.includes(trigger)) {
       return { shouldGenerate: true, reason: 'explicit_slide_request', confidence: 1.0, topic: 'general' };
@@ -296,10 +296,10 @@ export function classifyAmbientIntent(text: string): AmbientIntent {
   return { shouldGenerate: true, reason: 'has_project_topic', confidence, topic, detail, score: total, hits };
 }
 
-// ── Chống nhảy slide/ảnh liên tục — DÙNG CHUNG cho app/voice và app/slide ────
+// ── Chống nhảy slide/ảnh liên tục - DÙNG CHUNG cho app/voice và app/slide ────
 // Giữ 1 chủ đề tối thiểu ngần này trước khi đổi sang chủ đề khác. Cùng chủ đề thì
 // giữ nguyên slide/ảnh đang hiện (không timeout, không đổi) cho tới khi khách đổi
-// chủ đề thật — khớp yêu cầu "mỗi chủ đề hiện ổn định, đừng nhảy liên tục".
+// chủ đề thật - khớp yêu cầu "mỗi chủ đề hiện ổn định, đừng nhảy liên tục".
 export const SLIDE_MIN_DISPLAY_MS = 10000;
 
 export interface SlideDisplayState {

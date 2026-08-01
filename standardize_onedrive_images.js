@@ -13,7 +13,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const ENABLE_VISION = !!GEMINI_API_KEY;
 
-// Bộ từ vựng KHÔNG GIAN — phải khớp với category trong app/api/slide/route.ts
+// Bộ từ vựng KHÔNG GIAN - phải khớp với category trong app/api/slide/route.ts
 // (getCategoryMatch) và tên thư mục ảnh để static slide + RAG cùng nhận diện được.
 const SPACE_VOCAB = [
   'bep', 'gara', 'phong-khach', 'phong-ngu-master', 'phong-ngu-con', 'phong-ngu-ong-ba',
@@ -78,8 +78,8 @@ ${modelHint ? `GỢI Ý: ảnh này nằm trong thư mục mẫu nhà "${modelHi
 
 Hãy NHÌN ảnh và trả về JSON thuần (không markdown) với 3 trường:
 {
-  "model": một trong ["cosmo_gen_2","fusion_gen_5","opus","signature","nyah"] — chọn "nyah" nếu là ảnh chung dự án (tiện ích, vị trí, phối cảnh tổng, pháp lý) không thuộc mẫu nhà cụ thể nào,
-  "space": MỘT trong [${SPACE_VOCAB.map(s => `"${s}"`).join(',')}] — loại không gian/chủ đề ảnh thể hiện rõ nhất,
+  "model": một trong ["cosmo_gen_2","fusion_gen_5","opus","signature","nyah"] - chọn "nyah" nếu là ảnh chung dự án (tiện ích, vị trí, phối cảnh tổng, pháp lý) không thuộc mẫu nhà cụ thể nào,
+  "space": MỘT trong [${SPACE_VOCAB.map(s => `"${s}"`).join(',')}] - loại không gian/chủ đề ảnh thể hiện rõ nhất,
   "detail": 1-3 từ tiếng Việt KHÔNG DẤU mô tả chi tiết nổi bật (vd "tu-bep-go", "ban-do", "ho-boi"), hoặc chuỗi rỗng
 }
 Quy tắc space: ảnh bếp/bàn ăn->bep; chỗ đậu ô tô->gara; sofa/tiếp khách->phong-khach; giường master->phong-ngu-master; giường con->phong-ngu-con; toilet/lavabo->wc; bản vẽ mặt bằng tầng->mat-bang; phối cảnh ngoài/mặt đứng->phoi-canh; mặt tiền căn->mat-tien; bản đồ/đường đi->vi-tri; công viên/hồ bơi/sân chơi/cà phê->tien-ich; sổ hồng/giấy phép->phap-ly; ảnh công trường đang xây->tien-do-xay-dung; logo/đội ngũ chủ đầu tư->chu-dau-tu; cầu thang xoắn->thang-xoan; ban công/sân thượng->san-thuong.`;
@@ -94,7 +94,7 @@ Quy tắc space: ảnh bếp/bàn ăn->bep; chỗ đậu ô tô->gara; sofa/ti�
     });
 
     if (!res.ok) {
-      console.warn(`   [Vision] HTTP ${res.status} — bỏ qua, giữ tên cũ.`);
+      console.warn(`   [Vision] HTTP ${res.status} - bỏ qua, giữ tên cũ.`);
       return null;
     }
     const data = await res.json();
@@ -111,7 +111,7 @@ Quy tắc space: ảnh bếp/bàn ăn->bep; chỗ đậu ô tô->gara; sofa/ti�
 
     return { model, space, detail };
   } catch (err) {
-    console.warn(`   [Vision] Lỗi: ${err.message} — giữ tên cũ.`);
+    console.warn(`   [Vision] Lỗi: ${err.message} - giữ tên cũ.`);
     return null;
   }
 }
@@ -242,8 +242,8 @@ async function main() {
   console.log("=== BẮT ĐẦU CHUẨN HÓA TÊN VÀ NÉN ẢNH ONEDRIVE ===");
   console.log(`Thư mục quét: ${TARGET_DIR}`);
   console.log(ENABLE_VISION
-    ? `Gemini Vision: BẬT (model ${GEMINI_MODEL}) — ảnh tên rác sẽ được tự đặt tên theo nội dung.`
-    : `Gemini Vision: TẮT (chưa set GEMINI_API_KEY) — chỉ bỏ dấu + nén, KHÔNG tự đặt tên ảnh rác.`);
+    ? `Gemini Vision: BẬT (model ${GEMINI_MODEL}) - ảnh tên rác sẽ được tự đặt tên theo nội dung.`
+    : `Gemini Vision: TẮT (chưa set GEMINI_API_KEY) - chỉ bỏ dấu + nén, KHÔNG tự đặt tên ảnh rác.`);
   if (!fs.existsSync(TARGET_DIR)) {
     console.error("Lỗi: Không tìm thấy thư mục OneDrive!");
     return;

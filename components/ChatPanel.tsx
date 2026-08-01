@@ -28,11 +28,11 @@ function renderMarkdown(text: string) {
   // (Tránh lookbehind (?<!) vì Safari/iOS ≤ 16.3 ném lỗi -> crash widget.)
   html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">$1</a>');
 
-  // 3. Render raw Google Drive links — bỏ qua URL đã nằm trong href="..." (nhóm bắt tùy chọn thay lookbehind)
+  // 3. Render raw Google Drive links - bỏ qua URL đã nằm trong href="..." (nhóm bắt tùy chọn thay lookbehind)
   html = html.replace(/(href=")?(https:\/\/drive\.google\.com\/[^\s\)"]+)/g, (m, href, url) =>
     href ? m : `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-650 hover:underline font-semibold">Link Google Drive</a>`);
 
-  // 3b. Render raw Google Maps links — tương tự, bỏ qua URL đã trong href
+  // 3b. Render raw Google Maps links - tương tự, bỏ qua URL đã trong href
   html = html.replace(/(href=")?(https:\/\/maps\.(?:app\.goo\.gl|google\.com)\/[^\s\)\]"]+)/g, (m, href, url) =>
     href ? m : `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold">📍 Xem đường đi trên Google Maps</a>`);
 
@@ -59,14 +59,14 @@ function extractProfile(messages: Message[]): string {
 }
 
 interface ChatPanelProps {
-  // true khi panel này chạy trong iframe nhúng (/embed) — 🎧/📊 phải mở tab mới
+  // true khi panel này chạy trong iframe nhúng (/embed) - 🎧/📊 phải mở tab mới
   // thay vì điều hướng ngay trong iframe (iframe nhỏ 360x600 không đủ chỗ hiển thị
   // trang /voice, /slide full-screen; điều hướng tại chỗ sẽ "kẹt" widget ở đó).
   embedded?: boolean;
 }
 
 // Component chat dùng chung cho cả ChatWidget (nút nổi trên trang chính) và
-// trang /embed (nhúng qua iframe vào WordPress) — tránh 2 bản logic lệch nhau.
+// trang /embed (nhúng qua iframe vào WordPress) - tránh 2 bản logic lệch nhau.
 export default function ChatPanel({ embedded = false }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');

@@ -15,7 +15,7 @@ const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 // SOURCE_RULE: chỉ giữ các quy tắc KỸ THUẬT ĐẶC THÙ không có trong persona.md
-// (bỏ: quy tắc giọng điệu, không bịa, không chào lặp — đã có trong persona)
+// (bỏ: quy tắc giọng điệu, không bịa, không chào lặp - đã có trong persona)
 const SOURCE_RULE = `
 
 QUY TẮC KỸ THUẬT BỔ SUNG:

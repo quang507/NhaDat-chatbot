@@ -61,8 +61,25 @@ body {
   animation: scaleUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+/* Ảnh slide phóng nhẹ lúc vào, xong là đứng yên.
+   Ảnh đổi mỗi 2,5s (IMAGE_ROTATE_MS trong SlideBody) nên phải chạy NHANH và
+   CHỈ MỘT LẦN:
+   - 20s như trước thì mỗi ảnh chỉ kịp phóng ~1% rồi bị thay, không thấy gì.
+   - `infinite alternate` ở nhịp ngắn sẽ làm ảnh phập phồng nhiều lần trong
+     lúc hiển thị, nhìn như lỗi. Dùng `forwards` để dừng lại sau một lượt.
+   0,8s khớp đúng thời gian crossfade (duration-[800ms]) nên phóng và mờ dần
+   kết thúc cùng lúc. */
 .animate-ken-burns {
-  animation: kenBurns 20s ease-out infinite alternate;
+  animation: kenBurns 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Tôn trọng thiết lập giảm chuyển động của hệ điều hành: bỏ hiệu ứng phóng,
+   chỉ giữ mờ dần. Màn chiếu showroom không bật thiết lập này, nhưng trang
+   /thu-slide và /slide vẫn xem được trên điện thoại. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-ken-burns {
+    animation: none;
+  }
 }
 
 /* Custom Scrollbar */

@@ -5,7 +5,7 @@ const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
 
 // Văn phong mặc định của bot (kiểu NotebookLM: thân thiện, dẫn nguồn, trung thực)
-export const DEFAULT_PERSONA = `Bạn là trợ lý tư vấn bất động sản của **nhadat.company** — am hiểu, đáng tin và dễ gần. Bạn hỗ trợ khách tìm hiểu về các dự án của Nhà Đất Co. Ltd, hiện gồm **NyAh Phú Định** và **Villa NyAh**.
+export const DEFAULT_PERSONA = `Bạn là trợ lý tư vấn bất động sản của **nhadat.company** - am hiểu, đáng tin và dễ gần. Bạn hỗ trợ khách tìm hiểu về các dự án của Nhà Đất Co. Ltd, hiện gồm **NyAh Phú Định** và **Villa NyAh**.
 
 GIỌNG ĐIỆU:
 - Tự nhiên, ấm áp, lịch sự như đang nhắn tin trực tiếp với khách. Xưng "em", gọi khách là "anh/chị".
@@ -15,7 +15,7 @@ GIỌNG ĐIỆU:
 NGUYÊN TẮC TRẢ LỜI (bám sát nguồn, không bịa):
 - CHỈ trả lời dựa trên dữ liệu được cung cấp. Tuyệt đối KHÔNG bịa số liệu, giá, pháp lý hay thông tin không có trong dữ liệu.
 - Khi nêu thông tin quan trọng (giá, diện tích, pháp lý, tiến độ), dẫn nguồn ngắn gọn nếu có (vd: "theo bảng giá dự án...", "theo thông tin pháp lý...").
-- Nếu dữ liệu KHÔNG có thông tin khách hỏi, nói thật lịch sự: "Dạ thông tin này hiện em chưa có sẵn ạ" — rồi mời khách để lại số điện thoại hoặc liên hệ trực tiếp để được hỗ trợ chính xác. KHÔNG đoán mò.
+- Nếu dữ liệu KHÔNG có thông tin khách hỏi, nói thật lịch sự: "Dạ thông tin này hiện em chưa có sẵn ạ" - rồi mời khách để lại số điện thoại hoặc liên hệ trực tiếp để được hỗ trợ chính xác. KHÔNG đoán mò.
 - Nếu câu hỏi chưa rõ ràng, chủ động hỏi lại 1 câu để hiểu đúng nhu cầu (vd: ngân sách, mục đích đầu tư hay ở, số phòng ngủ...).
 
 CÁCH TRÌNH BÀY:
@@ -49,7 +49,7 @@ export async function getFile(filePath: string): Promise<{ content: string; sha:
   const meta = await metaRes.json();
   const sha: string | null = meta.sha || null;
 
-  // GitHub Contents API trả content rỗng khi file > 1MB — dùng raw URL thay thế
+  // GitHub Contents API trả content rỗng khi file > 1MB - dùng raw URL thay thế
   let content = '';
   if (meta.content) {
     content = Buffer.from(meta.content, 'base64').toString('utf-8');
@@ -60,7 +60,7 @@ export async function getFile(filePath: string): Promise<{ content: string; sha:
   return { content, sha };
 }
 
-// Ghi đè 1 file trên GitHub — tự retry 1 lần nếu SHA lệch (409)
+// Ghi đè 1 file trên GitHub - tự retry 1 lần nếu SHA lệch (409)
 export async function saveFile(filePath: string, content: string, message: string): Promise<void> {
   const encoded = Buffer.from(content, 'utf-8').toString('base64');
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}`;
