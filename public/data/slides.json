@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T10:12:40.230Z",
+  "_builtAt": "2026-08-01T11:59:14.703Z",
   "static_slides": [
     {
       "keywords": [
@@ -1913,6 +1913,46 @@
           "/images/01_NyAh-PhuDinh/ngoai_that/cosmo-gen-2_mat-ngang.jpg",
           "/images/01_NyAh-PhuDinh/ngoai_that/fusion-gen-5_mat-ngang.jpg",
           "/images/01_NyAh-PhuDinh/ngoai_that/opus_mat-ngang.jpg"
+        ],
+        "forceStatic": true
+      }
+    },
+    {
+      "allOf": [
+        "triều cường"
+      ],
+      "keywords": [],
+      "slide": {
+        "title": "Chống ngập & Cao độ nền",
+        "points": [
+          "Đường Trương Đình Hội đã được nâng nền cao",
+          "Nội khu Ny'ah nâng thêm 60cm so với mặt đường",
+          "Hạ tầng thoát nước xây mới đồng bộ toàn khu"
+        ],
+        "speech_text": "Khu Trương Đình Hội đã nâng nền cao, riêng nội khu bên em còn nâng thêm sáu mươi phân so với mặt đường - anh chị yên tâm chuyện triều cường.",
+        "image_urls": [
+          "/images/01_NyAh-PhuDinh/tien_ich/lanscape-khuon-vien-anh-chup/enscape_2021-08-09-13-01-55.jpg",
+          "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-3.jpg"
+        ],
+        "forceStatic": true
+      }
+    },
+    {
+      "allOf": [
+        "ngập"
+      ],
+      "keywords": [],
+      "slide": {
+        "title": "Chống ngập & Cao độ nền",
+        "points": [
+          "Đường Trương Đình Hội đã được nâng nền cao",
+          "Nội khu Ny'ah nâng thêm 60cm so với mặt đường",
+          "Hạ tầng thoát nước xây mới đồng bộ toàn khu"
+        ],
+        "speech_text": "Khu Trương Đình Hội đã nâng nền cao, riêng nội khu bên em còn nâng thêm sáu mươi phân so với mặt đường - anh chị yên tâm chuyện triều cường.",
+        "image_urls": [
+          "/images/01_NyAh-PhuDinh/tien_ich/lanscape-khuon-vien-anh-chup/enscape_2021-08-09-13-01-55.jpg",
+          "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-3.jpg"
         ],
         "forceStatic": true
       }

@@ -933,6 +933,33 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
 
+  {
+    allOf: ['triều cường'],
+    keywords: [],
+    slide: {
+      title: 'Chống ngập & Cao độ nền',
+      points: ['Đường Trương Đình Hội đã được nâng nền cao', "Nội khu Ny'ah nâng thêm 60cm so với mặt đường", 'Hạ tầng thoát nước xây mới đồng bộ toàn khu'],
+      speech_text: 'Khu Trương Đình Hội đã nâng nền cao, riêng nội khu bên em còn nâng thêm sáu mươi phân so với mặt đường - anh chị yên tâm chuyện triều cường.',
+      image_urls: [`${IMG}/tien_ich/lanscape-khuon-vien-anh-chup/enscape_2021-08-09-13-01-55.jpg`, `${IMG}/tien_do/xay_dung/thang_06-2026-3.jpg`],
+      forceStatic: true,
+    },
+  },
+  {
+    // Câu lo ngại lớn nhất về Quận 8. Số liệu lấy từ Q&A chính thức trong RAG:
+    // nội khu nâng nền cao hơn mặt đường Trương Đình Hội thêm 60cm.
+    // allOf ['ngập'] -> phase COMBO chạy TRƯỚC chuỗi nhánh chung, để "quận 8
+    // triều cường" không bị keyword 'quận 8' của nhánh vị trí cướp mất.
+    allOf: ['ngập'],
+    keywords: [],
+    slide: {
+      title: 'Chống ngập & Cao độ nền',
+      points: ['Đường Trương Đình Hội đã được nâng nền cao', 'Nội khu Ny\'ah nâng thêm 60cm so với mặt đường', 'Hạ tầng thoát nước xây mới đồng bộ toàn khu'],
+      speech_text: 'Khu Trương Đình Hội đã nâng nền cao, riêng nội khu bên em còn nâng thêm sáu mươi phân so với mặt đường - anh chị yên tâm chuyện triều cường.',
+      image_urls: [`${IMG}/tien_ich/lanscape-khuon-vien-anh-chup/enscape_2021-08-09-13-01-55.jpg`, `${IMG}/tien_do/xay_dung/thang_06-2026-3.jpg`],
+      forceStatic: true,
+    },
+  },
+
   // ── 18. XEM NHÀ & LIÊN HỆ ──────────────────────────────────────────────
   {
     keywords: ['nhà mẫu', 'xem nhà', 'tham quan', 'ghé xem', 'hẹn xem', 'đi coi nhà', 'coi thực tế'],
