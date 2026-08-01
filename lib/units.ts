@@ -59,16 +59,18 @@ const LOTS: Record<number, Lot> = {
   50: { model: 'Cosmo Gen 2', fam: 'cosmo_gen_2', dtDat: 57, dtSan: 249.32, front: 5, kt: '5.00m (mặt tiền) x 12.11m x 10.77m x 6.00m', huong: 'Tây ( Tây Tứ Mệnh)', diaChi: '' },
 };
 
+// Bảng giá độc quyền T3/2026 (RH v12) - đối chiếu ảnh bảng giá chính thức 01/08.
+// Lưu ý footnote bảng gốc: căn #25+26, #1+2 giá ĐÃ KÈM nội thất mẫu Opus.
 const PRICES: Record<number, string> = {
-  50: 'Giá nhà thô: 11.470.000.000 VNĐ | Giá Gói Air: 11.797.600.000 VNĐ',
-  42: 'Giá nhà thô: 8.981.000.000 VNĐ | Giá Gói Air: 9.277.100.000 VNĐ',
-  3: 'Giá nhà thô: 9.710.000.000 VNĐ | Giá Gói Air: 9.957.800.000 VNĐ',
-  24: 'Giá nhà thô: 12.751.000.000 VNĐ | Giá Gói Air: 13.136.350.000 VNĐ',
-  23: 'Giá nhà thô: 10.498.000.000 VNĐ (Gói Air liên hệ)',
-  25: 'Giá nhà thô: 10.766.000.000 VNĐ',
-  26: 'Giá nhà thô: 16.566.000.000 VNĐ',
-  1: 'Giá nhà thô: 14.443.000.000 VNĐ',
-  2: 'Giá nhà thô: 12.791.000.000 VNĐ',
+  50: 'Giá gói Air: 11.470.000.000 VNĐ | Giá gói Max: 11.797.600.000 VNĐ',
+  42: 'Giá gói Air: 8.981.000.000 VNĐ | Giá gói Max: 9.277.100.000 VNĐ',
+  3: 'Giá gói Air: 9.710.000.000 VNĐ | Giá gói Max: 9.957.800.000 VNĐ',
+  24: 'Giá gói Air: 12.751.000.000 VNĐ | Giá gói Max: 13.136.350.000 VNĐ',
+  23: 'Giá nhà (chưa gồm nội thất): 10.498.000.000 VNĐ',
+  25: 'Giá: 10.766.000.000 VNĐ (đã kèm giá nội thất mẫu Opus)',
+  26: 'Giá: 16.566.000.000 VNĐ (đã kèm giá nội thất mẫu Opus)',
+  1: 'Giá: 14.443.000.000 VNĐ (đã kèm giá nội thất mẫu Opus)',
+  2: 'Giá: 12.791.000.000 VNĐ (đã kèm giá nội thất mẫu Opus)',
 };
 
 const UNSOLD = new Set<number>([1, 2, 3, 23, 24, 42, 50]); // rổ hàng T6.2026: còn trống
@@ -144,7 +146,7 @@ export function unitContext(n: number): { facts: string; modelKeywords: string }
 - Kích thước lô: ${l.kt}
 - Hướng nhà: ${l.huong}${l.diaChi ? `\n- Địa chỉ: ${l.diaChi}` : ''}
 - Trạng thái: ${status}
-${PRICES[n] ? `- Bảng giá T6/2026: ${PRICES[n]}\n` : ''}- Đặc điểm dòng ${FAMILY_NAME[l.fam]}: ${FAMILY_FEATURES[l.fam]}`;
+${PRICES[n] ? `- Bảng giá độc quyền T3/2026 (RH v12): ${PRICES[n]}\n` : ''}- Đặc điểm dòng ${FAMILY_NAME[l.fam]}: ${FAMILY_FEATURES[l.fam]}`;
   const modelKeywords = `${l.model} ${FAMILY_NAME[l.fam]} mẫu nhà diện tích DT mặt tiền hướng datasheet giá bán giá tiền bảng giá`;
   return { facts, modelKeywords };
 }
