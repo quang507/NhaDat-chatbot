@@ -136,7 +136,7 @@ export default function ThuSlidePage() {
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: cau, ambient: ambientFlag, context: { recent: lichSu.slice(0, 3).map(h => h.q).reverse() } }),
+        body: JSON.stringify({ message: cau, ambient: ambientFlag, context: { recent: lichSu.slice(0, 10).map(h => h.q).reverse() } }),
       });
       const ms = Math.round(performance.now() - t0);
       const data: SlideData = await res.json();

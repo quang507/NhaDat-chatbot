@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { createSessionRecorder } from '@/lib/session-digest';
 import Link from 'next/link';
 
 interface Message {
@@ -83,9 +84,14 @@ export default function ChatPanel({ embedded = false }: ChatPanelProps) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  // Gom hỏi-đáp cả phiên -> 1 tin Telegram tổng hợp khi khách rời/im lặng 10'.
+  const recorderRef = useRef(createSessionRecorder('chat'));
+  useEffect(() => recorderRef.current.bindUnload(), []);
+
   async function send(text: string) {
     const msg = text.trim();
     if (!msg || streaming) return;
+    recorderRef.current.push(msg);
     setInput('');
     const history = messages;
     setMessages(prev => [...prev, { role: 'user', content: msg }]);
@@ -154,6 +160,7 @@ export default function ChatPanel({ embedded = false }: ChatPanelProps) {
           return copy;
         });
       } else {
+        recorderRef.current.answerLast(acc);
         // Trả lời xong -> đính ảnh dự án nếu câu hỏi khớp chủ đề có ảnh.
         // Chờ tối đa 4s: slide tĩnh về ~0ms, chỉ nhánh LLM mới chậm - quá hạn
         // thì thôi, không giữ khách.

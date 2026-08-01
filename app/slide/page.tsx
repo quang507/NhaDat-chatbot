@@ -7,6 +7,7 @@ import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/in
 import { matchStaticSlide } from '@/lib/static_slides';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 import { SlideBody } from '@/components/SlideBody';
+import { createSessionRecorder } from '@/lib/session-digest';
 
 type SlideData = {
   layout_type?: 'split_image_right' | 'split_image_left' | 'full_background' | 'dark_minimal' | 'text_only';
@@ -262,16 +263,23 @@ export default function SlideBotPage() {
   const SLIDE_SESSION_IDLE_MS = 5 * 60 * 1000;
   const recentRef = useRef<string[]>([]);
   const lastUtteranceAtRef = useRef(0);
+  // Gom hỏi + tiêu đề slide đã chiếu -> 1 tin Telegram tổng hợp mỗi lượt khách.
+  const recorderRef = useRef(createSessionRecorder('slide'));
+  useEffect(() => recorderRef.current.bindUnload(), []);
 
   const fetchSlideData = async (text: string, ambient = false) => {
     // Cập nhật session TRƯỚC khi gọi API: quá hạn -> khách mới, xoá ngữ cảnh.
     const nowTs = Date.now();
     if (nowTs - lastUtteranceAtRef.current > SLIDE_SESSION_IDLE_MS) {
-      if (recentRef.current.length) dbg('👤 Khách mới (im lặng >5 phút) - xoá ngữ cảnh cũ');
+      if (recentRef.current.length) {
+        dbg('👤 Khách mới (im lặng >5 phút) - gửi tổng hợp phiên cũ + xoá ngữ cảnh');
+        recorderRef.current.flush(); // chốt sổ phiên khách trước
+      }
       recentRef.current = [];
     }
     const recentForCall = [...recentRef.current];
-    recentRef.current = [...recentRef.current, text].slice(-3);
+    // Giữ 10 câu gần nhất - một lượt tư vấn thật dài cỡ chục câu hỏi.
+    recentRef.current = [...recentRef.current, text].slice(-10);
     lastUtteranceAtRef.current = nowTs;
 
     const t0 = Date.now();
@@ -314,6 +322,7 @@ export default function SlideBotPage() {
       dbg(`🖼 Slide OK sau ${secs}s - "${data.title}", ${nImgs} ảnh, layout: ${data.layout_type || 'mặc định'}`);
 
       if (!data.layout_type) data.layout_type = 'split_image_right';
+      recorderRef.current.push(text, `[slide] ${data.title}`);
       setBrokenImages({});
       setSlideKey(k => k + 1);
       setSlide(data);
