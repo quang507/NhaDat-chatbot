@@ -278,7 +278,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Tọa độ Quận 8',
       points: ['Mặt tiền Trương Đình Hội, Phú Định, Quận 8', 'Khu dân cư hiện hữu, tiện ích quanh vùng đầy đủ', 'Cửa ngõ Tây Nam kết nối Quận 1, 5, 6, 7'],
       speech_text: 'Dự án nằm ngay mặt tiền Trương Đình Hội, Quận 8 - cửa ngõ Tây Nam kết nối nhanh các quận trung tâm.',
-      image_urls: [`${IMG}/vi_tri/duong_di/vi_tri.jpg`],
+      image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`],
       maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
     },
   },
@@ -288,7 +288,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Học hành cho con',
       points: ['Trường các cấp hiện hữu quanh khu Quận 8', 'Kết nối nhanh khu trường quốc tế Nam Sài Gòn', 'Tư vấn viên gửi danh sách trường theo nhu cầu'],
       speech_text: 'Quanh dự án có đủ trường các cấp, và kết nối nhanh sang khu trường quốc tế Nam Sài Gòn.',
-      image_urls: [`${IMG}/vi_tri/duong_di/vi_tri.jpg`],
+      image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`],
     },
   },
   {
@@ -297,7 +297,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Y tế quanh dự án',
       points: ['Hệ thống y tế Quận 8 và Quận 5 lân cận', 'Di chuyển nhanh về cụm bệnh viện trung tâm', 'An tâm cho gia đình nhiều thế hệ'],
       speech_text: 'Từ dự án di chuyển rất nhanh về cụm bệnh viện Quận 5 và trung tâm - an tâm cho cả gia đình.',
-      image_urls: [`${IMG}/vi_tri/duong_di/vi_tri.jpg`],
+      image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`],
     },
   },
   {
@@ -306,7 +306,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Mua sắm hằng ngày',
       points: ['Chợ và siêu thị hiện hữu quanh khu dân cư', 'Đi bộ hoặc vài phút xe là tới', 'Nhịp sống tiện lợi ngay cửa nhà'],
       speech_text: 'Chợ, siêu thị đều hiện hữu quanh khu - nhịp sống tiện lợi ngay trước cửa nhà.',
-      image_urls: [`${IMG}/vi_tri/duong_di/vi_tri.jpg`],
+      image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`],
     },
   },
   {

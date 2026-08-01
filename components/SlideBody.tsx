@@ -126,7 +126,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
       {data.answer_text && (
         <Line key={data.answer_text} delay={60}
           className="text-white font-semibold leading-snug text-[clamp(14px,2.9cqw,38px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
-          <span className="inline-block w-[0.45cqw] min-w-[4px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
           {data.answer_text}
         </Line>
       )}
@@ -135,7 +134,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
           className={data.answer_text
             ? 'text-white/70 font-normal leading-snug text-[clamp(11px,1.9cqw,25px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]'
             : 'text-white/95 font-medium leading-snug text-[clamp(13px,2.6cqw,34px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]'}>
-          <span className={`inline-block ${data.answer_text ? 'w-[0.25cqw] min-w-[2px]' : 'w-[0.35cqw] min-w-[3px]'} h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle`} />
           {p}
         </Line>
       ))}
@@ -253,7 +251,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
                 {data.answer_text && (
                   <Line key={data.answer_text} delay={60}
                     className="text-white font-semibold leading-snug text-[clamp(14px,2.7cqw,36px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
-                    <span className="inline-block w-[0.45cqw] min-w-[4px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
                     {data.answer_text}
                   </Line>
                 )}
@@ -262,7 +259,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
                     className={data.answer_text
                       ? 'text-white/70 font-normal leading-snug text-[clamp(11px,1.8cqw,24px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]'
                       : 'text-white/95 font-medium leading-snug text-[clamp(13px,2.4cqw,32px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]'}>
-                    <span className={`inline-block ${data.answer_text ? 'w-[0.25cqw] min-w-[2px]' : 'w-[0.35cqw] min-w-[3px]'} h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle`} />
                     {p}
                   </Line>
                 ))}
@@ -312,7 +308,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
               {points.slice(0, 5).map((p, i) => (
                 <Line key={i} delay={520 + i * 140}
                   className="text-white/95 font-medium leading-snug text-[clamp(13px,2.7cqw,34px)]">
-                  <span className="inline-block w-[0.35cqw] min-w-[3px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
                   {p}
                 </Line>
               ))}
