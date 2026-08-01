@@ -275,7 +275,22 @@ const TMP_CACHE_PATH = path.join(os.tmpdir(), 'rag_index.json');
 export async function loadIndex(): Promise<Index | null> {
   const now = Date.now();
 
-  // 0) Thử đọc trực tiếp từ file index.json local (rất nhanh, ~1-2ms, không tốn network/coldstart)
+  // 0) Cache RAM còn hạn -> trả ngay (0ms). PHẢI đứng trước bước đọc file local:
+  //    thứ tự cũ đọc + JSON.parse 14MB index.json ở MỌI request (~100-200ms/lần)
+  //    dù RAM đã có sẵn.
+  if (memIndex && now - memIndexAt < 5 * 60 * 1000) {
+    if (memIndex.chunks?.[0]?.vec?.length) {
+      return memIndex;
+    } else {
+      memIndex = null;
+      memIndexAt = 0;
+    }
+  }
+
+  // 1) index.json ĐÓNG GÓI THEO DEPLOY (commit trong repo, khai báo
+  //    outputFileTracingIncludes) -> cold start đọc local ~100ms thay vì tải
+  //    14MB từ GitHub (1-3s). Vẫn revalidate ngầm từ GitHub để bản reindex
+  //    mới qua trang /admin không bị bản đóng gói che mất.
   try {
     const localPath = path.join(process.cwd(), 'index.json');
     if (existsSync(localPath)) {
@@ -284,21 +299,12 @@ export async function loadIndex(): Promise<Index | null> {
       if (index && index.chunks && index.chunks.length > 0) {
         memIndex = index;
         memIndexAt = now;
+        revalidateIndexInBackground();
         return memIndex;
       }
     }
   } catch (e) {
     console.warn('[RAG] Đọc index.json local thất bại:', e);
-  }
-
-  // 1) Nếu cache trong RAM chưa quá 5 phút -> trả về ngay (0ms)
-  if (memIndex && now - memIndexAt < 5 * 60 * 1000) {
-    if (memIndex.chunks?.[0]?.vec?.length) {
-      return memIndex;
-    } else {
-      memIndex = null;
-      memIndexAt = 0;
-    }
   }
 
   // 2) Nếu có file cache ở /tmp và chưa quá 15 phút -> đọc từ /tmp cực nhanh (2-5ms)
