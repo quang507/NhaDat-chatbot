@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T12:30:06.303Z",
+  "_builtAt": "2026-08-01T12:43:04.820Z",
   "static_slides": [
     {
       "keywords": [
@@ -1996,6 +1996,26 @@
         "image_urls": [
           "/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat_cong-nghe-3.jpg",
           "/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png"
+        ],
+        "forceStatic": true
+      }
+    },
+    {
+      "allOf": [
+        "trên mạng"
+      ],
+      "keywords": [],
+      "slide": {
+        "title": "Giá chính thức từ chủ đầu tư",
+        "points": [
+          "Tin rao trên mạng là của bên thứ 3 - thường cũ hoặc sai",
+          "Giá chính thức chỉ công bố qua Nhã Đạt và bảng giá từng đợt",
+          "Anh chị đối chiếu trực tiếp với tư vấn viên để chốt đúng số"
+        ],
+        "speech_text": "Mấy tin trên mạng là của bên thứ ba, hay để giá cũ hoặc giá ảo để kéo khách - giá chính thức anh chị lấy trực tiếp từ Nhã Đạt theo bảng giá từng đợt cho chuẩn ạ.",
+        "image_urls": [
+          "/images/01_NyAh-PhuDinh/gia_ban/gia-ban_bang-gia-hien-tai.jpg",
+          "/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/logo_nha-dat-1.png"
         ],
         "forceStatic": true
       }
