@@ -9,7 +9,7 @@
 ## A. HỎI SẾP / SALES ADMIN (số bán hàng - ưu tiên cao nhất)
 
 - [ ] 1. Bảng giá CHÍNH THỨC đợt hiện tại của 7 lô đang bán (#01, 02, 03, 23, 24, 42, 50) - từng lô bao nhiêu?
-- [ ] 2. Lịch thanh toán ĐỦ CÁC ĐỢT: đợt 1 đã có (30% ký cọc) - đợt 2, 3, 4… mỗi đợt bao nhiêu %, mốc nào?
+- [x] 2. ~~Lịch thanh toán ĐỦ CÁC ĐỢT~~ → TÌM THẤY trong dữ liệu dự án (không cần hỏi): cọc 10% → 3%/tháng ×7 = 31% → bàn giao Air +8% = 39% → công chứng 61% = 100%. Đã lên slide. *(Chỉ cần sếp xác nhận lịch này còn áp dụng đợt hiện tại)*
 - [ ] 3. Gói Air quy ra TIỀN cỡ bao nhiêu/căn? (Max đã có: 1,6-1,9 tỷ)
 - [ ] 4. Nội thất gói Max: tủ bếp / máy lạnh / kệ - có bảng giá lẻ từng món không, hay chỉ bán trọn gói?
 - [ ] 5. Nội thất rời (sofa, giường, bàn ăn) hãng gì - có trong gói nào không?
