@@ -918,6 +918,31 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
 
   // ── 17b. ẢNH TẠM (placeholder) - thay ảnh thật CÙNG TÊN là xong ────────
   {
+    // COMBO so sánh 2 mẫu: câu nhắc CẢ Cosmo lẫn Fusion ("cosmo với fusion
+    // khác gì") - trước rơi xuống LLM chậm 3s.
+    allOf: ['cosmo', 'fusion'],
+    keywords: [],
+    slide: {
+      title: 'Cosmo Gen 2 vs Fusion Gen 5',
+      points: ['Cosmo Gen 2: mặt tiền 5m, lô vuông vắn', 'Fusion Gen 5: mặt tiền 4m - dãy lô 27-35 có bản HAI mặt tiền', 'Cùng chuẩn bàn giao, khác bề ngang và cách bố trí phòng'],
+      speech_text: 'Cosmo Gen 2 mặt tiền năm mét lô vuông vắn, còn Fusion Gen 5 mặt tiền bốn mét và có bản hai mặt tiền ở dãy lô 27 đến 35 - cùng chuẩn bàn giao, khác bề ngang và cách bố trí.',
+      image_urls: [`${IMG}/noi_that/mat-tien-so-sanh.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
+      forceStatic: true,
+    },
+  },
+  {
+    // COMBO so sánh Opus vs Office ("office khác opus chỗ nào").
+    allOf: ['opus', 'office'],
+    keywords: [],
+    slide: {
+      title: 'Opus vs Office',
+      points: ['Opus: nhà phố thương mại - trệt làm showroom, có thang máy', 'Office 1 & 2 (lô #01, 02, 25, 26): sàn lớn nhất dự án 396-472m²', 'Office bàn giao kèm nội thất theo mẫu Opus'],
+      speech_text: 'Opus là nhà phố thương mại có thang máy, tầng trệt làm showroom; còn Office là các lô sàn lớn nhất dự án, bàn giao kèm nội thất theo mẫu Opus.',
+      image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`, `${IMG}/noi_that/opus/opus_tong-quan.jpg`],
+      forceStatic: true,
+    },
+  },
+  {
     // COMBO allOf 'max': câu nào nhắc "max" đều ưu tiên slide gói - kể cả
     // "gói max GIÁ bao nhiêu" (trước bị keyword giá của nhánh chung cướp).
     allOf: ['max'],
