@@ -152,7 +152,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
 
   // ── 3. PHÁP LÝ ─────────────────────────────────────────────────────────
   {
-    keywords: ['pháp lý', 'sổ hồng', 'sổ đỏ', 'giấy phép', 'giấy chứng nhận', 'gcn', 'gpxd', 'tranh chấp', 'quy hoạch', 'sổ riêng', 'sang tên', 'chuyển nhượng', 'sang nhượng', 'bán lại'],
+    keywords: ['pháp lý', 'sổ hồng', 'sổ đỏ', 'có sổ', 'ra sổ', 'bao giờ có sổ', 'giấy phép', 'giấy chứng nhận', 'gcn', 'gpxd', 'tranh chấp', 'quy hoạch', 'sổ riêng', 'sang tên', 'chuyển nhượng', 'sang nhượng', 'bán lại', 'sửa nhà', 'cải tạo', 'xin phép xây'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Pháp lý minh bạch',
@@ -368,7 +368,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
-    keywords: ['an ninh', 'bảo vệ', 'camera', 'an toàn không', 'compound', 'khép kín', 'pccc', 'phòng cháy', 'cháy nổ', 'thoát hiểm'],
+    keywords: ['an ninh', 'bảo vệ', 'camera', 'an toàn không', 'trộm', 'trộm cắp', 'an toàn ban đêm', 'compound', 'khép kín', 'pccc', 'phòng cháy', 'cháy nổ', 'thoát hiểm'],
     slide: {
       title: 'Compound an ninh khép kín',
       points: ['Khu compound khép kín, kiểm soát ra vào', 'An ninh tuần tra, camera giám sát', 'Trẻ em chơi trong khu - bố mẹ an tâm'],
@@ -474,7 +474,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
 
   // ── 8. HƯỚNG & PHONG THỦY ──────────────────────────────────────────────
   {
-    keywords: ['hướng nhà', 'phong thủy', 'hướng nào', 'hợp tuổi', 'đông tứ', 'tây tứ', 'hợp mệnh', 'hướng nắng', 'nắng chiều', 'hướng gió'],
+    keywords: ['hướng nhà', 'phong thủy', 'hướng nào', 'hướng tây', 'hướng đông', 'hướng nam', 'hướng bắc', 'nóng không', 'hợp tuổi', 'đông tứ', 'tây tứ', 'hợp mệnh', 'hướng nắng', 'nắng chiều', 'hướng gió'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Hướng nhà & Phong thủy',

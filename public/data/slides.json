@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T09:56:52.630Z",
+  "_builtAt": "2026-08-01T10:03:32.456Z",
   "static_slides": [
     {
       "keywords": [
@@ -176,6 +176,9 @@
         "pháp lý",
         "sổ hồng",
         "sổ đỏ",
+        "có sổ",
+        "ra sổ",
+        "bao giờ có sổ",
         "giấy phép",
         "giấy chứng nhận",
         "gcn",
@@ -186,7 +189,10 @@
         "sang tên",
         "chuyển nhượng",
         "sang nhượng",
-        "bán lại"
+        "bán lại",
+        "sửa nhà",
+        "cải tạo",
+        "xin phép xây"
       ],
       "slide": {
         "layout_type": "split_image_right",
@@ -678,6 +684,9 @@
         "bảo vệ",
         "camera",
         "an toàn không",
+        "trộm",
+        "trộm cắp",
+        "an toàn ban đêm",
         "compound",
         "khép kín",
         "pccc",
@@ -902,6 +911,11 @@
         "hướng nhà",
         "phong thủy",
         "hướng nào",
+        "hướng tây",
+        "hướng đông",
+        "hướng nam",
+        "hướng bắc",
+        "nóng không",
         "hợp tuổi",
         "đông tứ",
         "tây tứ",
