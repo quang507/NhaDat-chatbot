@@ -134,7 +134,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
-    keywords: ['dự án đã làm', 'đã xây dự án', 'kinh nghiệm', 'dự án trước', 'từng làm'],
+    keywords: ['dự án đã làm', 'đã xây dự án', 'kinh nghiệm', 'dự án trước', 'từng làm', 'làm dự án nào', 'đã làm dự án'],
     slide: {
       title: 'Các dự án Nhã Đạt đã thực hiện',
       points: ['Chuỗi dự án nhà phố đã hoàn thành và bàn giao', 'Chất lượng được kiểm chứng qua từng công trình', 'Cư dân thực tế đang an cư tại các dự án'],
@@ -166,7 +166,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
 
   // ── 4. GIÁ & THANH TOÁN & RỔ HÀNG ──────────────────────────────────────
   {
-    keywords: ['giá bán', 'giá bao nhiêu', 'bao nhiêu tiền', 'bảng giá', 'mức giá', 'giá cả', 'ngân sách', 'tầm giá', 'giá từ'],
+    keywords: ['giá bán', 'giá bao nhiêu', 'bao nhiêu tiền', 'bảng giá', 'mức giá', 'giá cả', 'ngân sách', 'tầm giá', 'giá từ', 'rẻ nhất', 'giá thấp nhất', 'giá mềm'],
     slide: {
       title: 'Bảng giá T6/2026',
       points: ['Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)', 'Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị', 'Liên hệ tư vấn để nhận bảng giá chi tiết từng lô'],
@@ -259,7 +259,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
   {
     // Địa chỉ 2 cổng + độ rộng đường - nguồn internet ĐÃ ĐƯỢC DUYỆT 01/08
     // (nhiều trang môi giới khớp nhau, xem docs/DU_LIEU_INTERNET_CHO_DUYET.md).
-    keywords: ['địa chỉ', 'số nhà', 'nằm ở đâu', 'dự án ở đâu', 'chỗ nào', 'đường vào', 'trương đình hội', 'an dương vương', 'đường rộng', 'đường trước nhà', 'đường trước nhà rộng', 'đường trước dự án', 'đường mấy mét', 'đường bao nhiêu mét', 'đường rộng bao nhiêu', 'lộ giới', 'đường nội khu', 'hai cổng', '2 cổng', 'mấy cổng'],
+    keywords: ['địa chỉ', 'số nhà', 'nằm ở đâu', 'dự án ở đâu', 'dự án chỗ nào', 'đường vào', 'trương đình hội', 'an dương vương', 'đường rộng', 'đường trước nhà', 'đường trước nhà rộng', 'đường trước dự án', 'đường mấy mét', 'đường bao nhiêu mét', 'đường rộng bao nhiêu', 'lộ giới', 'đường nội khu', 'hai cổng', '2 cổng', 'mấy cổng'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Địa chỉ & 2 cổng dự án',
@@ -387,7 +387,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
-    keywords: ['cổng vào', 'cổng chính', 'lối vào', 'cổng dự án'],
+    keywords: ['cổng vào', 'cổng chính', 'lối vào', 'cổng dự án', 'cổng chào'],
     slide: {
       title: 'Cổng chào dự án',
       points: ['Cổng vào compound bề thế, nhận diện riêng', 'Kiểm soát ra vào - an ninh khép kín', 'Ấn tượng đầu tiên khi về nhà'],
@@ -416,7 +416,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
 
   // ── 7. MẶT BẰNG & QUY MÔ ───────────────────────────────────────────────
   {
-    keywords: ['phân lô', 'sơ đồ lô', 'bản đồ dự án', 'mặt bằng tổng', 'sơ đồ dự án', 'toàn khu'],
+    keywords: ['phân lô', 'sơ đồ lô', 'bản đồ', 'mặt bằng tổng', 'sơ đồ dự án', 'toàn khu'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Sơ đồ phân lô 50 căn',
@@ -438,7 +438,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
-    keywords: ['quy mô', 'bao nhiêu căn', 'tổng số căn', '50 căn', 'mấy căn'],
+    keywords: ['quy mô', 'bao nhiêu căn', 'tổng số căn', '50 căn', 'mấy căn', 'mấy mẫu', 'bao nhiêu mẫu', 'những mẫu nào', 'các dòng nào', 'tiện ích'],
     slide: {
       title: 'Quy mô 50 căn compound',
       points: ['50 lô nhà phố - mật độ thấp, riêng tư', '6 dòng sản phẩm cho từng nhu cầu sống', 'Compound hoàn chỉnh: công viên, thể thao, cà phê'],
@@ -502,7 +502,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
 
   // ── 8. HƯỚNG & PHONG THỦY ──────────────────────────────────────────────
   {
-    keywords: ['hướng nhà', 'phong thủy', 'hướng nào', 'hướng tây', 'hướng đông', 'hướng nam', 'hướng bắc', 'nóng không', 'hợp tuổi', 'đông tứ', 'tây tứ', 'hợp mệnh', 'hướng nắng', 'nắng chiều', 'hướng gió'],
+    keywords: ['hướng nhà', 'phong thủy', 'hướng nào', 'hướng tây', 'hướng đông', 'hướng nam', 'hướng bắc', 'nóng không', 'hợp tuổi', 'hợp căn nào', 'tuổi nào hợp', 'đông tứ', 'tây tứ', 'hợp mệnh', 'hướng nắng', 'nắng chiều', 'hướng gió'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Hướng nhà & Phong thủy',
@@ -876,7 +876,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
-    keywords: ['khách đỗ xe', 'khách để xe', 'chỗ đậu xe khách', 'bãi xe', 'gửi xe', 'hầm xe'],
+    keywords: ['khách đỗ xe', 'khách để xe', 'khách đậu xe', 'chỗ đậu xe khách', 'đậu xe ở đâu', 'bãi xe', 'gửi xe', 'hầm xe'],
     slide: {
       title: 'Đỗ xe cho khách',
       points: ['Đường nội khu rộng - khách đỗ thuận tiện', 'Mỗi nhà đều có garage riêng trong nhà', 'Không cảnh tranh chỗ đậu như chung cư'],
@@ -940,7 +940,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
   {
-    keywords: ['cổng chính', 'cổng bao nhiêu', 'cổng rộng', 'cổng mấy mét', 'cửa phụ', 'cửa cuốn', 'cửa chính rộng'],
+    keywords: ['cổng chính rộng', 'cổng bao nhiêu', 'cổng rộng', 'cổng mấy mét', 'cửa phụ', 'cửa cuốn', 'cửa chính rộng', 'cửa cuốn cao'],
     slide: {
       layout_type: 'split_image_right',
       title: 'Kích thước cổng & cửa',
