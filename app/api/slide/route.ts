@@ -5,7 +5,7 @@ import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
 import { detectUnit, unitContext, imageFamily, getGeneralUnsoldContext } from '@/lib/units';
-import { hasProjectKeyword, isCompetitor, COMPETITORS, detectModel } from '@/lib/intent';
+import { hasProjectKeyword, isCompetitor, COMPETITORS, detectModel, kwHit } from '@/lib/intent';
 import {
   matchStaticSlide,
   ROOM_SLIDES, TOPIC_SLIDES, MODEL_INTRO, MODEL_INTRO_NYAH, MODEL_INTRO_KEYWORDS,
@@ -330,7 +330,9 @@ export async function POST(req: NextRequest) {
     const removeDiacritics = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
     const noD = removeDiacritics(cleanMsg); // bản không dấu
     // Hàm kiểm tra: khớp nếu có dấu HOẶC không dấu
-    const has = (...keywords: string[]) => keywords.some(k => cleanMsg.includes(k) || noD.includes(removeDiacritics(k)));
+    // So khớp CÓ BIÊN TỪ (kwHit trong lib/intent.ts) - includes() trần từng làm
+    // "cho anh hỏi" nhảy slide chợ (chợ->cho) và "đánh giá cao" nhảy bảng giá.
+    const has = (...keywords: string[]) => keywords.some(k => kwHit(cleanMsg, noD, k));
 
     // CHẶN DỰ ÁN/THƯƠNG HIỆU KHÁC (COMPETITORS imported từ @/lib/intent)
     if (has(...COMPETITORS)) {

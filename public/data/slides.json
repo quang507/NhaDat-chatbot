@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T10:03:32.456Z",
+  "_builtAt": "2026-08-01T10:12:40.230Z",
   "static_slides": [
     {
       "keywords": [
@@ -684,8 +684,9 @@
         "bảo vệ",
         "camera",
         "an toàn không",
-        "trộm",
         "trộm cắp",
+        "trộm cướp",
+        "mất trộm",
         "an toàn ban đêm",
         "compound",
         "khép kín",
@@ -2287,10 +2288,14 @@
     "gia": {
       "keywords": [
         "giá bán",
-        "giá",
+        "giá bao nhiêu",
+        "giá nhiêu",
         "bao nhiêu tiền",
         "bao nhiêu tỷ",
-        "mấy tỷ"
+        "mấy tỷ",
+        "bảng giá",
+        "mức giá",
+        "tầm giá"
       ],
       "title": "Bảng giá T6/2026",
       "points": [

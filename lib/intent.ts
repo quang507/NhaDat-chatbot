@@ -141,6 +141,44 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
   ],
 };
 
+// ── SO KHỚP TỪ KHÓA CÓ BIÊN TỪ (dùng chung cho route.ts + static_slides.ts) ──
+// Hai lỗi chết người của includes() trần:
+//   1. KHÔNG BIÊN TỪ: "giá" khớp giữa "đánh giá cao" -> nhảy slide bảng giá.
+//   2. BỎ DẤU KHÔNG BIÊN: rmDia("chợ")="cho" khớp "cho anh hỏi" -> nhảy slide
+//      chợ búa khi khách chỉ mới mở miệng chào.
+// Luật ở đây:
+//   - Khớp bản CÓ DẤU: yêu cầu biên từ hai đầu (trước/sau không phải chữ-số).
+//   - Khớp bản BỎ DẤU (cứu câu STT mất dấu): CHỈ cho phép khi từ khóa đủ dài
+//     (>=5 ký tự sau khi bỏ dấu) hoặc là cụm nhiều từ - từ ngắn bỏ dấu trùng
+//     với từ phổ thông quá nhiều (chợ->cho, giá->gia, chỗ->cho...).
+export const rmDia = (s: string) =>
+  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+
+// Dải à-ỹ (U+00E0..U+1EF9) phủ toàn bộ chữ thường tiếng Việt có dấu, gồm cả đ.
+const WORD_CH = /[0-9a-zà-ỹ]/;
+
+function boundedIncludes(hay: string, needle: string): boolean {
+  let from = 0;
+  while (true) {
+    const i = hay.indexOf(needle, from);
+    if (i < 0) return false;
+    const before = i === 0 ? '' : hay[i - 1];
+    const after = i + needle.length >= hay.length ? '' : hay[i + needle.length];
+    if (!(before && WORD_CH.test(before)) && !(after && WORD_CH.test(after))) return true;
+    from = i + 1;
+  }
+}
+
+/** msgLower: câu đã toLowerCase; msgNoD: bản bỏ dấu của msgLower. */
+export function kwHit(msgLower: string, msgNoD: string, kw: string): boolean {
+  const k = kw.toLowerCase();
+  if (boundedIncludes(msgLower, k)) return true;
+  const kNoD = rmDia(k);
+  if (kNoD === k) return false; // kw vốn không dấu -> nhánh trên đã đủ
+  if (kNoD.length >= 5 || k.includes(' ')) return boundedIncludes(msgNoD, kNoD);
+  return false;
+}
+
 // Flat list dùng cho server-side pre-filter (import trong api/slide/route.ts)
 export const ALL_PROJECT_KEYWORDS: string[] = [
   ...TOPIC_KEYWORDS.general,

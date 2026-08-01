@@ -5,7 +5,7 @@
 // LƯU Ý: phải dùng dynamic import() - `import` tĩnh bị hoisted và sẽ chạy TRƯỚC
 // dòng gán env, khiến static_slides.ts đọc lại chính file JSON cũ thay vì dữ
 // liệu hardcode (dump ra y nguyên file cũ, các sửa đổi trong TS bị mất).
-import { writeFileSync } from 'fs';
+import { writeFileSync, existsSync } from 'fs';
 import path from 'path';
 
 process.env.SLIDES_IGNORE_JSON = '1'; // đọc dữ liệu hardcode, không đọc chính file JSON
@@ -32,6 +32,22 @@ const out = {
   model_intro: MODEL_INTRO,
   model_intro_nyah: MODEL_INTRO_NYAH,
 };
+
+// KIỂM ẢNH TỒN TẠI trước khi ghi - đường dẫn gõ sai sẽ chết ngay ở đây
+// thay vì thành slide trống hình trên production.
+const missing: string[] = [];
+const walk = (v: unknown): void => {
+  if (typeof v === 'string') {
+    if (v.startsWith('/images/') && !existsSync(path.join(process.cwd(), 'public', v))) missing.push(v);
+  } else if (Array.isArray(v)) v.forEach(walk);
+  else if (v && typeof v === 'object') Object.values(v).forEach(walk);
+};
+walk(out);
+if (missing.length) {
+  console.error(`✗ ${missing.length} ảnh KHÔNG TỒN TẠI - không ghi slides.json:`);
+  missing.forEach(m => console.error('   ', m));
+  process.exit(1);
+}
 
 const dest = path.join(process.cwd(), 'public/data/slides.json');
 writeFileSync(dest, JSON.stringify(out, null, 2), 'utf-8');
