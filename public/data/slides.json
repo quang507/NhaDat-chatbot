@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T17:08:58.113Z",
+  "_builtAt": "2026-08-01T17:45:14.759Z",
   "static_slides": [
     {
       "keywords": [
@@ -501,7 +501,7 @@
         ],
         "speech_text": "Dự án nằm ngay mặt tiền Trương Đình Hội, Quận 8 - cửa ngõ Tây Nam kết nối nhanh các quận trung tâm.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg"
+          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg"
         ],
         "maps_url": "https://maps.app.goo.gl/qwf4XibyMCL9sEX6A"
       }
@@ -524,7 +524,7 @@
         ],
         "speech_text": "Quanh dự án có đủ trường các cấp, và kết nối nhanh sang khu trường quốc tế Nam Sài Gòn.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg"
+          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg"
         ]
       }
     },
@@ -544,7 +544,7 @@
         ],
         "speech_text": "Từ dự án di chuyển rất nhanh về cụm bệnh viện Quận 5 và trung tâm - an tâm cho cả gia đình.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg"
+          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg"
         ]
       }
     },
@@ -565,7 +565,7 @@
         ],
         "speech_text": "Chợ, siêu thị đều hiện hữu quanh khu - nhịp sống tiện lợi ngay trước cửa nhà.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg"
+          "/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg"
         ]
       }
     },
