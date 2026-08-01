@@ -207,7 +207,7 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT
   "image_urls": ["Đường dẫn ảnh 1", "Đường dẫn ảnh 2", ...] (Mảng chứa các đường dẫn hình ảnh tìm thấy trong phần dữ liệu liên quan. CHỈ được chọn các đường dẫn bắt đầu bằng "/images/" như "/images/01_NyAh-PhuDinh/...", TUYỆT ĐỐI KHÔNG lấy các đường dẫn bắt đầu bằng "2 - trình chiếu" hoặc các file PowerPoint local. Nếu không có ảnh nào bắt đầu bằng "/images/", trả về mảng rỗng []).
 }
 
-SỐ LƯỢNG Ý CHÍNH: Đưa ra tối đa 3-4 ý ("points") để slide thoáng. MỖI Ý PHẢI LÀ MỘT CÂU TRẢ LỜI NGẮN, mang thông tin giải thích (vd thay vì "Vị trí đắc địa", hãy viết "Dự án nằm ngay mặt tiền Trương Đình Hội, dễ dàng di chuyển").
+SỐ LƯỢNG Ý CHÍNH: Nếu CÓ ảnh (image_urls không rỗng) → tối đa 3 ý NGẮN để nhường chỗ cho ảnh. Nếu KHÔNG có ảnh (image_urls rỗng) → viết 4-5 ý và mỗi ý ĐẦY ĐỦ hơn (~15-25 chữ) vì chữ là thứ duy nhất trên slide. MỖI Ý PHẢI LÀ MỘT CÂU TRẢ LỜI mang thông tin giải thích (vd thay vì "Vị trí đắc địa", hãy viết "Dự án nằm ngay mặt tiền Trương Đình Hội, dễ dàng di chuyển").
 
 VỀ LINK/URL/MÃ KEY: TUYỆT ĐỐI KHÔNG đưa đường link, URL hay mã key nào vào title/points/speech_text (đặc biệt link album Google Photos/Drive kèm "key=..."). Khi dữ liệu có link album/tài liệu, thay bằng: "Liên hệ tư vấn viên để nhận chi tiết". (Trường image_urls dạng "/images/..." thì vẫn dùng bình thường.)
 

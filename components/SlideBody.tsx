@@ -61,6 +61,9 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   // NGUYÊN TẮC: mỗi thời điểm chỉ hiện MỘT ảnh. Nhiều ảnh -> tự chuyển lần
   // lượt (crossfade), KHÔNG xếp cạnh nhau.
   const [imgIdx, setImgIdx] = useState(0);
+  // Tỉ lệ THẬT của từng ảnh (đo khi ảnh load xong) - để khung ảnh ôm đúng tỉ lệ
+  // và caption luôn nằm SÁT mép dưới ảnh như bản SlideLayout.pdf sếp duyệt.
+  const [ratios, setRatios] = useState<Record<string, number>>({});
   const imgsKey = imgs.join('|');
   useEffect(() => {
     setImgIdx(0);
@@ -128,7 +131,8 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   // Nền mờ phía sau: chính ảnh đang hiện blur + tối phủ toàn khung.
   const BlurBackdrop = ({ src }: { src: string }) => (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
-      <img src={src} alt="" className="w-full h-full object-cover scale-110 blur-2xl brightness-[0.32] saturate-[0.85] transition-opacity duration-1000" />
+      {/* PDF sếp duyệt: nền là ảnh phóng to LÀM TỐI (gần như không blur) */}
+      <img src={src} alt="" className="w-full h-full object-cover scale-110 blur-[3px] brightness-[0.26] saturate-[0.8] transition-opacity duration-1000" />
       <div className="absolute inset-0 bg-black/35" />
     </div>
   );
@@ -177,84 +181,119 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     );
   }
 
-  // ══════════════ LAYOUT 2: ẢNH CHỦ ĐẠO trên nền blur tối ════════════════════
-  // Dùng chung cho màn dọc lẫn ngang: label nhỏ trên → MỘT ảnh chiếm giữa
-  // (contain, không crop; nhiều ảnh tự chuyển lần lượt) → text đè vùng đáy.
+  // ══════════════ LAYOUT 2: ẢNH TỐI ĐA + CAPTION DƯỚI ẢNH (SlideLayout.pdf) ═══
+  // Theo bản duyệt của sếp (08/2026): ảnh giữ nguyên tỉ lệ, phóng tối đa trong
+  // khung; caption là DẢI RIÊNG nằm NGAY DƯỚI ảnh - không bao giờ đè lên ảnh.
+  // Nền phía sau là chính ảnh phóng to làm tối. Tên slide chữ nhỏ góc trên phải.
   if (hasImg) {
     return (
       <div style={{ containerType: 'inline-size' }} className="w-full h-full">
         <div key={replayKey} className="relative w-full h-full overflow-hidden bg-[#0C0F0D] flex flex-col">
           <BlurBackdrop src={cur} />
 
-          {/* 1. Label + title nhỏ gọn trên cùng, giữa */}
-          <div className="relative z-10 shrink-0 text-center pt-[2.6cqw] px-[5cqw]">
-            <TopLabel />
-            <h1 className="mt-[0.8cqw] uppercase font-bold leading-[1.1] tracking-wide text-white/90 text-[clamp(14px,2.6cqw,40px)]">
-              <Line delay={190}>{data.title}</Line>
-            </h1>
+          {/* Tên slide - chữ nhỏ mờ góc trên phải như "mẫu nhà opus" trong PDF */}
+          <div className="absolute top-[2.4cqw] right-[3cqw] z-20 text-right">
+            <Line delay={120}>
+              <span className="inline-block lowercase text-white/70 font-medium tracking-[0.12em] text-[clamp(11px,1.9cqw,24px)] drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
+                {data.title}
+              </span>
+            </Line>
           </div>
 
-          {/* 2. MỘT ảnh chiếm toàn bộ không gian còn lại - object-contain,
-              không crop. Nhiều ảnh: crossfade lần lượt, không xếp cạnh nhau. */}
-          <div className="relative z-10 flex-1 min-h-0 pt-[2cqw] pb-[clamp(90px,16cqw,220px)]">
+          {/* Khối GIỮA: ảnh + caption DÍNH NHAU, canh giữa theo chiều dọc.
+              Khung ảnh ôm theo tỉ lệ THẬT của ảnh (aspectRatio đo lúc load);
+              khi ảnh cao quá thì flex shrink co lại, object-contain lo phần dư.
+              Nhờ vậy caption luôn nằm sát mép dưới ảnh - không lơ lửng đáy màn. */}
+          <div className="relative z-10 flex-1 min-h-0 flex flex-col justify-center">
             <figure
-              className={`img-card relative w-full h-full ${onImageClick ? 'cursor-zoom-in' : ''}`}
-              style={{ animationDelay: '380ms' }}
+              className={`img-card relative w-full shrink min-h-0 ${onImageClick ? 'cursor-zoom-in' : ''}`}
+              style={{
+                animationDelay: '320ms',
+                aspectRatio: ratios[cur] || (orientOf(cur) === 'portrait' ? 3 / 4 : 16 / 9),
+              }}
               onClick={onImageClick ? () => onImageClick(cur) : undefined}
             >
               {imgs.map((src, i) => (
                 <img
                   key={src} src={src} alt=""
-                  className={`absolute inset-0 w-full h-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.55)] transition-all duration-[800ms] ease-out ${
-                    i === imgIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.03] pointer-events-none'
+                  className={`absolute inset-0 w-full h-full object-contain transition-all duration-[800ms] ease-out ${
+                    i === imgIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02] pointer-events-none'
                   }`}
+                  onLoad={e => {
+                    const el = e.currentTarget;
+                    if (el.naturalWidth && el.naturalHeight) {
+                      setRatios(r => r[src] ? r : { ...r, [src]: el.naturalWidth / el.naturalHeight });
+                    }
+                  }}
                   onError={onImageError ? () => onImageError(src) : undefined}
                 />
               ))}
               {isMapImg(cur) && <QrChip />}
             </figure>
+
+            {/* Caption: dải riêng NGAY DƯỚI ảnh - nền tối mờ, vạch xanh + chữ trắng */}
+            {points.length > 0 && (
+              <div className="shrink-0 w-full bg-black/45 backdrop-blur-[2px] px-[4cqw] py-[1.8cqw] space-y-[0.9cqw]">
+                {points.slice(0, 4).map((p, i) => (
+                  <Line key={i} delay={650 + i * 150}
+                    className="text-white/95 font-medium leading-snug text-[clamp(13px,2.4cqw,32px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
+                    <span className="inline-block w-[0.35cqw] min-w-[3px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
+                    {p}
+                  </Line>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* 3. Text đè vùng đáy trên gradient đen - cách ảnh/title khoảng lớn */}
-          <div aria-hidden className="absolute inset-x-0 bottom-0 h-[clamp(140px,26cqw,320px)] bg-gradient-to-t from-black/90 via-black/55 to-transparent z-10" />
-          <div className="absolute inset-x-[5cqw] bottom-[3cqw] z-20">
-            <BottomPoints />
-          </div>
           <Dots />
         </div>
       </div>
     );
   }
 
-  // ══════════════ LAYOUT 3: TEXT-ONLY - giữ nền SÁNG như cũ ══════════════════
+  // ══════════════ LAYOUT 3: TEXT-ONLY - nền ẢNH TỐI như SlideLayout.pdf ═══════
+  // Khung cuối bản duyệt: không có ảnh chủ đề thì nền là ảnh dự án làm tối,
+  // chữ trắng vạch xanh nằm giữa màn - được NHIỀU chữ hơn (tối đa 5 ý).
+  const FALLBACK_BG = "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-1.jpg";
   return (
-    <div style={{ containerType: 'inline-size' }} className="w-full h-full flex flex-col">
-      <div key={replayKey} className="flex-1 min-h-0 flex flex-col justify-center items-center text-center px-[8cqw] gap-[3cqw]">
-        <div className="shrink-0 text-center">
-          <Line delay={60}>
-            <span className="inline-flex px-[2.2cqw] py-[0.7cqw] rounded-full font-bold tracking-[0.18em] uppercase text-[clamp(9px,1.5cqw,17px)] bg-[#E3F0E3] text-[#0E5A34]">
+    <div style={{ containerType: 'inline-size' }} className="w-full h-full">
+      <div key={replayKey} className="relative w-full h-full overflow-hidden bg-[#0C0F0D]">
+        <div aria-hidden className="absolute inset-0 overflow-hidden">
+          <img src={FALLBACK_BG} alt="" className="w-full h-full object-cover brightness-[0.22] saturate-[0.8]" />
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+
+        {/* Tên slide góc trên phải - đồng bộ với layout có ảnh */}
+        <div className="absolute top-[2.4cqw] right-[3cqw] z-20 text-right">
+          <Line delay={120}>
+            <span className="inline-block lowercase text-white/70 font-medium tracking-[0.12em] text-[clamp(11px,1.9cqw,24px)]">
               Ny&apos;ah Phú Định
             </span>
           </Line>
-          <h1 className="mt-[2cqw] uppercase font-black leading-[1.08] tracking-tight text-[#161616] text-[clamp(22px,6cqw,96px)]">
+        </div>
+
+        {/* Khối chữ giữa màn - title + số nổi bật + tối đa 5 ý, canh trái */}
+        <div className="relative z-10 w-full h-full flex flex-col justify-center px-[8cqw] gap-[2.6cqw]">
+          <h1 className="uppercase font-black leading-[1.08] tracking-tight text-white text-[clamp(22px,5.2cqw,88px)] drop-shadow-[0_2px_16px_rgba(0,0,0,0.6)]">
             <Line delay={190}>{data.title}</Line>
           </h1>
+          {data.highlight_number && (
+            <Line delay={340} className="font-black leading-none text-transparent text-[clamp(34px,11cqw,150px)]">
+              <span style={{ WebkitTextStroke: '0.55cqw #A8D94A' }}>{data.highlight_number}</span>
+            </Line>
+          )}
+          {points.length > 0 && (
+            <div className="space-y-[1.4cqw]">
+              {points.slice(0, 5).map((p, i) => (
+                <Line key={i} delay={520 + i * 140}
+                  className="text-white/95 font-medium leading-snug text-[clamp(13px,2.7cqw,34px)]">
+                  <span className="inline-block w-[0.35cqw] min-w-[3px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
+                  {p}
+                </Line>
+              ))}
+            </div>
+          )}
         </div>
-        {data.highlight_number && (
-          <Line delay={340} className="font-black leading-none text-transparent text-[clamp(34px,11cqw,150px)]">
-            <span style={{ WebkitTextStroke: '0.55cqw #2E9E5B' }}>{data.highlight_number}</span>
-          </Line>
-        )}
-        {points.length > 0 && (
-          <div className="space-y-[1.2cqw]">
-            {points.slice(0, 4).map((p, i) => (
-              <Line key={i} delay={520 + i * 150}
-                className="text-neutral-600 font-medium leading-snug text-[clamp(12px,3cqw,30px)]">
-                {p}
-              </Line>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
