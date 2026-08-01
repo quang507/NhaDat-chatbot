@@ -894,8 +894,8 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     keywords: ['gói max', 'goi max', 'lên max', 'max là gì', 'max khác gì', 'air với max', 'air hay max', 'so sánh gói'],
     slide: {
       title: 'Gói Air vs Gói Max',
-      points: ['Air: hoàn thiện đồng bộ + hệ khí tươi AirTop', 'Max: Air + tủ bếp cao cấp + máy lạnh + Smart Home ByteLife', 'Chênh lệch tùy căn - tư vấn viên báo con số chính xác'],
-      speech_text: 'Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - anh chị chọn theo nhu cầu decor.',
+      points: ['Air: hoàn thiện đồng bộ + hệ khí tươi AirTop', 'Max: Air + tủ bếp An Cường + máy lạnh LG + ByteLife', 'Gói Max "chìa khóa trao tay": từ 1,6 - 1,9 tỷ/căn tùy mẫu'],
+      speech_text: 'Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - trọn gói chìa khóa trao tay từ một tỷ sáu đến một tỷ chín tùy mẫu nhà.',
       image_urls: [`${IMG}/noi_that/goi-air-vs-max_bang-so-sanh.jpg`, `${IMG}/noi_that/goi-max_ban-giao.jpg`],
       forceStatic: true,
     },
