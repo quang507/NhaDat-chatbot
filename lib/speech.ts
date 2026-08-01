@@ -271,7 +271,7 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
 //    đủ mức thì tự nắn về đúng tên. Bắt được cả biến thể MỚI chưa gặp.
 //    (Ca méo QUÁ XA vd "danh hài" thì fuzzy không với tới - vẫn cần thêm tay.)
 // ───────────────────────────────────────────────────────────────────────────
-const FUZZY_NAMES = ['cosmo', 'fusion', 'opus', 'signature', 'cashmere', 'office', 'airtop'];
+const FUZZY_NAMES = ['cosmo', 'fusion', 'opus', 'signature', 'cashmere', 'office', 'airtop', 'bytelife', 'codinachs'];
 
 function stripDiacritics(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');

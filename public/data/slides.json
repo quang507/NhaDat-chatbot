@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T12:19:19.804Z",
+  "_builtAt": "2026-08-01T12:30:06.303Z",
   "static_slides": [
     {
       "keywords": [
@@ -1973,6 +1973,29 @@
         "image_urls": [
           "/images/01_NyAh-PhuDinh/tien_ich/lanscape-khuon-vien-anh-chup/enscape_2021-08-09-13-01-55.jpg",
           "/images/01_NyAh-PhuDinh/tien_do/xay_dung/thang_06-2026-3.jpg"
+        ],
+        "forceStatic": true
+      }
+    },
+    {
+      "keywords": [
+        "phí quản lý",
+        "phí dịch vụ",
+        "phí hàng tháng",
+        "đóng phí gì",
+        "phí vận hành"
+      ],
+      "slide": {
+        "title": "Phí quản lý 0 đồng",
+        "points": [
+          "Không thu phí quản lý hàng tháng",
+          "ByteLife tự động hóa vận hành khu - đèn, tiện ích chung",
+          "Chi tiết chính sách: xem cùng tư vấn viên"
+        ],
+        "speech_text": "Điểm đặc biệt của khu là phí quản lý không đồng - hệ ByteLife tự động hóa vận hành nên cư dân không phải đóng phí hàng tháng.",
+        "image_urls": [
+          "/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat_cong-nghe-3.jpg",
+          "/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png"
         ],
         "forceStatic": true
       }

@@ -34,7 +34,9 @@ export async function POST(req: NextRequest) {
           "6 tầng", "mặt tiền 5 mét", "ngang 5 mét", "ngang 4 mét", "nhà phố",
           "bếp fullsize", "giặt sấy tại bếp", "bàn ăn nhanh", "phòng ăn riêng", "đảo bếp",
           "gara ô tô", "sân thượng", "phòng ngủ master", "phòng khách", "thang máy", "giếng trời",
-          "sổ hồng", "bàn giao", "tiến độ", "thanh toán", "ban công", "mặt bằng", "mở slide"
+          "sổ hồng", "bàn giao", "tiến độ", "thanh toán", "ban công", "mặt bằng", "mở slide",
+          "AirTop:2", "ByteLife:2", "gói Air:2", "gói Max:2", "Codinachs:2",
+          "triều cường", "ngập nước", "phí quản lý", "An Cường", "Xingfa"
         ];
         // Đảm bảo URL encode cho tiếng Việt và khoảng trắng
         const keywords = rawKeywords.map(k => encodeURIComponent(k)).join('&keywords=');
@@ -104,7 +106,7 @@ Chỉ trả về văn bản, không thêm lời dẫn.`
     // 3) Fallback GROQ WHISPER
     if (GROQ_API_KEY) {
       try {
-        const STT_PROMPT = "Dự án nhà phố Ny'ah Phú Định, nhà phát triển Nhã Đạt. Mẫu nhà: Cosmo Gen 2 (Cót mô, Cốt mô), Fusion Gen 5 (Phiêu dân, Phiu dân), Opus (Ô pút), Cashmere, Signature. Đường Trương Đình Hội, An Dương Vương, Quận 8. Các từ: gara ô tô, thang máy, giếng trời, ban công, phòng ngủ master, phòng khách, phòng bếp, sân thượng, mặt bằng, vị trí, bản đồ, sổ hồng, bàn giao, tiến độ, thanh toán. Lệnh: mở slide, cho xem, phóng to, thu nhỏ, đóng ảnh.";
+        const STT_PROMPT = "Dự án nhà phố Ny'ah Phú Định, nhà phát triển Nhã Đạt. Mẫu nhà: Cosmo Gen 2 (Cót mô, Cốt mô), Fusion Gen 5 (Phiêu dân, Phiu dân), Opus (Ô pút), Cashmere, Signature. Đường Trương Đình Hội, An Dương Vương, Quận 8. Các từ: gara ô tô, thang máy, giếng trời, ban công, phòng ngủ master, phòng khách, phòng bếp, sân thượng, mặt bằng, vị trí, bản đồ, sổ hồng, bàn giao, tiến độ, thanh toán. Gói bàn giao: gói Air (ê a, e rờ), gói Max (mắc, mách). Công nghệ: AirTop (ê tốp, a tốp), ByteLife (bai lai, bít lai). Kiến trúc sư Codinachs (cô đi nách). Tủ bếp An Cường, cửa nhôm Xingfa. Từ khóa: triều cường, ngập nước, phí quản lý. Lệnh: mở slide, cho xem, phóng to, thu nhỏ, đóng ảnh.";
         const fd = new FormData();
         const blobFromBuffer = new Blob([buffer], { type: mimeType });
         fd.append('file', blobFromBuffer, `audio.${ext}`);
