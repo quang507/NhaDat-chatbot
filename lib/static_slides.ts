@@ -169,7 +169,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Bảng giá T6/2026',
       points: ['Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)', 'Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị', 'Liên hệ tư vấn để nhận bảng giá chi tiết từng lô'],
       speech_text: 'Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.',
-      image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
+      image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
       forceStatic: true,
     },
   },
@@ -373,7 +373,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Compound an ninh khép kín',
       points: ['Khu compound khép kín, kiểm soát ra vào', 'An ninh tuần tra, camera giám sát', 'Trẻ em chơi trong khu - bố mẹ an tâm'],
       speech_text: 'Đây là compound khép kín có kiểm soát ra vào và camera an ninh - trẻ em chơi trong khu bố mẹ hoàn toàn an tâm.',
-      image_urls: [`${IMG}/tien_ich/cong_vao/tien-ich-3.jpg`, `${IMG}/tien_ich/cong_vao/tien-ich-4.jpg`],
+      image_urls: [`${IMG}/tien_ich/cong_vao/tien-ich-3.jpg`, `${IMG}/an_ninh/an-ninh_camera.jpg`, `${IMG}/tien_ich/cong_vao/tien-ich-4.jpg`],
     },
   },
   {
@@ -887,6 +887,50 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
 
+  // ── 17b. ẢNH TẠM (placeholder) - thay ảnh thật CÙNG TÊN là xong ────────
+  {
+    keywords: ['gói max', 'goi max', 'lên max', 'max là gì', 'max khác gì', 'air với max', 'air hay max', 'so sánh gói'],
+    slide: {
+      title: 'Gói Air vs Gói Max',
+      points: ['Air: hoàn thiện đồng bộ + hệ khí tươi AirTop', 'Max: Air + tủ bếp cao cấp + máy lạnh + Smart Home ByteLife', 'Chênh lệch tùy căn - tư vấn viên báo con số chính xác'],
+      speech_text: 'Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - anh chị chọn theo nhu cầu decor.',
+      image_urls: [`${IMG}/noi_that/goi-air-vs-max_bang-so-sanh.jpg`, `${IMG}/noi_that/goi-max_ban-giao.jpg`],
+      forceStatic: true,
+    },
+  },
+  {
+    keywords: ['cổng chính', 'cổng bao nhiêu', 'cổng rộng', 'cổng mấy mét', 'cửa phụ', 'cửa cuốn', 'cửa chính rộng'],
+    slide: {
+      layout_type: 'split_image_right',
+      title: 'Kích thước cổng & cửa',
+      points: ['Cổng chính và cửa phụ theo thiết kế từng mẫu', 'Cửa cuốn gara đỗ vừa SUV, bán tải', 'Số đo chính xác từng lô: xem datasheet cùng tư vấn viên'],
+      speech_text: 'Kích thước cổng chính, cửa phụ và cửa cuốn theo thiết kế từng mẫu - tư vấn viên sẽ gửi anh chị datasheet số đo chính xác của đúng lô mình chọn.',
+      image_urls: [`${IMG}/thong_so/thong-so_cong-chinh.jpg`, `${IMG}/thong_so/thong-so_cua-phu.jpg`],
+      forceStatic: true,
+    },
+  },
+  {
+    keywords: ['nội thất bên nào', 'nội thất hãng nào', 'thương hiệu nội thất', 'thiết bị hãng nào', 'thiết bị vệ sinh hãng', 'hãng thang máy', 'thang máy hãng'],
+    slide: {
+      layout_type: 'split_image_right',
+      title: 'Thương hiệu vật liệu & thiết bị',
+      points: ['Vật liệu hoàn thiện tuyển chọn từ thương hiệu uy tín', 'Khí tươi AirTop - Smart Home ByteLife', 'Danh mục brand chi tiết theo gói bàn giao'],
+      speech_text: 'Vật liệu và thiết bị đều từ thương hiệu tuyển chọn - danh mục brand chi tiết theo từng gói bàn giao, tư vấn viên gửi anh chị bản đầy đủ.',
+      image_urls: [`${IMG}/thong_so/brand_vat-lieu-noi-that.jpg`, `${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`],
+      forceStatic: true,
+    },
+  },
+  {
+    keywords: ['mặt ngang', 'mặt bên', 'bên hông', 'nhìn ngang', 'side view'],
+    slide: {
+      title: 'Mặt ngang các mẫu nhà',
+      points: ['Mặt đứng bên hông từng mẫu Cosmo - Fusion - Opus', 'Thấy rõ chiều sâu nhà và phân tầng', 'Kết hợp mặt cắt để hình dung trọn khối nhà'],
+      speech_text: 'Đây là mặt ngang bên hông của từng mẫu - nhìn rõ chiều sâu và cách phân tầng của căn nhà.',
+      image_urls: [`${IMG}/ngoai_that/cosmo-gen-2_mat-ngang.jpg`, `${IMG}/ngoai_that/fusion-gen-5_mat-ngang.jpg`, `${IMG}/ngoai_that/opus_mat-ngang.jpg`],
+      forceStatic: true,
+    },
+  },
+
   // ── 18. XEM NHÀ & LIÊN HỆ ──────────────────────────────────────────────
   {
     keywords: ['nhà mẫu', 'xem nhà', 'tham quan', 'ghé xem', 'hẹn xem', 'đi coi nhà', 'coi thực tế'],
@@ -1013,7 +1057,7 @@ export const TOPIC_SLIDES: TopicSlidesMap = fromJSON<TopicSlidesMap>('topic_slid
   tien_ich: { keywords: ['tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi', 'hồ bơi', 'bể bơi', 'sân thể thao', 'cầu lông', 'bóng rổ', 'khu vui chơi'], title: 'Hệ thống Tiện ích', points: ['Công viên cây xanh nội khu mát mẻ', 'Khu vui chơi trẻ em an toàn', 'Sân thể thao đa năng và Landmark Coffee'], speech_text: 'Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.', image_urls: [`${IMG}/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png`] },
   phap_ly: { keywords: ['pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu'], title: 'Pháp lý dự án', points: ['Sổ hồng riêng từng căn sở hữu lâu dài', 'Quyết định phê duyệt quy hoạch 1/500', 'Giấy phép xây dựng đầy đủ, minh bạch'], speech_text: 'Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.', image_urls: [`${IMG}/phap_ly/logo_nyahphudinh_210531_f-02.png`] },
   thanh_toan: { keywords: ['thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách'], title: 'Tiến độ Thanh toán', points: ['Lịch thanh toán linh hoạt theo tiến độ', 'Hỗ trợ vay ngân hàng lãi suất ưu đãi', 'Chiết khấu hấp dẫn khi thanh toán nhanh'], speech_text: 'Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat_doi-tac.jpg`] },
-  gia: { keywords: ['giá bán', 'giá', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ'], title: 'Bảng giá T6/2026', points: ['Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)', 'Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị', 'Liên hệ tư vấn để nhận bảng giá chi tiết từng lô'], speech_text: 'Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.', image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`] },
+  gia: { keywords: ['giá bán', 'giá', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ'], title: 'Bảng giá T6/2026', points: ['Giá nhà thô từ ~8,98 tỷ đồng (lô Cosmo Gen 2 #42)', 'Gói hoàn thiện Air: cộng thêm khoảng 3% giá trị', 'Liên hệ tư vấn để nhận bảng giá chi tiết từng lô'], speech_text: 'Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.', image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`] },
   phoi_canh: { keywords: ['phối cảnh', 'cảnh quan', 'toàn cảnh', 'tổng thể', 'ngoại thất'], title: 'Kiến trúc Phối cảnh', points: ['Quy hoạch đồng bộ, hiện đại', 'Không gian xanh bao phủ rộng', 'Mặt ngoài kiến trúc tinh tế'], speech_text: 'Dự án được quy hoạch đồng bộ với hạ tầng ngầm, đường nội khu rộng rãi và thiết kế mặt ngoài sang trọng.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
   chu_dau_tu: { keywords: ['chủ đầu tư', 'nhã đạt', 'nhà phát triển', 'nhà đạt'], title: 'Nhà phát triển Nhã Đạt', points: ['Thương hiệu uy tín, chất lượng', 'Tập trung vào giá trị sống thực tế', 'Cam kết bàn giao hoàn thiện cao'], speech_text: 'Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat-tieu-chi-1.jpg`, `${IMG}/chu_dau_tu/nha_dat/nha-dat_du-an-1.jpg`] },
 };

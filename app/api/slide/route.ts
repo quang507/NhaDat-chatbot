@@ -393,10 +393,10 @@ export async function POST(req: NextRequest) {
       const m = (model || 'cosmo_gen_2') as 'cosmo_gen_2' | 'fusion_gen_5' | 'opus';
       // Ảnh tính năng tầng theo model (file có sẵn: *_tinh-nang-tang-{1..4})
       const featImg = m === 'opus'
-        ? `/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-${Math.min(floor, 4)}.jpg`
+        ? `/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-${Math.min(floor, 6)}.jpg`
         : m === 'fusion_gen_5'
-          ? `/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-${Math.min(floor, 4)}.jpg`
-          : `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 4)}.jpg`;
+          ? `/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-${Math.min(floor, 6)}.jpg`
+          : `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 6)}.jpg`;
       const modelLabel = m === 'opus' ? 'Opus' : m === 'fusion_gen_5' ? 'Fusion Gen 5' : 'Cosmo Gen 2';
       if (hasExplicitModel) {
         // Khách nói rõ model → trả công năng tầng của model đó.
@@ -419,7 +419,7 @@ export async function POST(req: NextRequest) {
           title: `Tầng ${floor} · Ny'ah Phú Định`,
           points: g.points,
           speech_text: g.speech,
-          image_urls: [g.img || `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 4)}.jpg`],
+          image_urls: [g.img || `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 6)}.jpg`],
         };
       }
     } else if (hasExplicitModel && model) {
