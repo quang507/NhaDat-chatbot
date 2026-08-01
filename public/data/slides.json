@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T12:17:15.664Z",
+  "_builtAt": "2026-08-01T12:19:19.804Z",
   "static_slides": [
     {
       "keywords": [
@@ -1813,6 +1813,26 @@
           "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-2.jpg",
           "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-3.jpg"
         ]
+      }
+    },
+    {
+      "allOf": [
+        "max"
+      ],
+      "keywords": [],
+      "slide": {
+        "title": "Gói Air vs Gói Max",
+        "points": [
+          "Air: hoàn thiện đồng bộ + hệ khí tươi AirTop",
+          "Max: Air + tủ bếp An Cường + máy lạnh LG + ByteLife",
+          "Gói Max \"chìa khóa trao tay\": từ 1,6 - 1,9 tỷ/căn tùy mẫu"
+        ],
+        "speech_text": "Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - trọn gói chìa khóa trao tay từ một tỷ sáu đến một tỷ chín tùy mẫu nhà.",
+        "image_urls": [
+          "/images/01_NyAh-PhuDinh/noi_that/goi-air-vs-max_bang-so-sanh.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/goi-max_ban-giao.jpg"
+        ],
+        "forceStatic": true
       }
     },
     {
