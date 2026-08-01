@@ -24,6 +24,9 @@ export interface SlideBodyData {
   title: string;
   points?: string[];
   speech_text?: string;
+  // Câu trả lời LLM bám đúng câu khách hỏi (pha 2 refine). Có nó thì hiện TO
+  // ở trên, còn points tĩnh thu NHỎ và tụt xuống dưới.
+  answer_text?: string;
   image_urls?: string[];
   highlight_number?: string;
   maps_url?: string;
@@ -116,12 +119,23 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   );
 
   // Points ghim đáy - mỗi ý 1 dòng, thanh dọc xanh brand trước chữ (như Figma).
+  // Có answer_text (pha 2 refine): câu trả lời LLM hiện TO trên cùng, points
+  // tĩnh thu nhỏ mờ đi bên dưới.
   const BottomPoints = ({ startDelay = 700 }: { startDelay?: number }) => (
     <div className="space-y-[1cqw]">
+      {data.answer_text && (
+        <Line key={data.answer_text} delay={60}
+          className="text-white font-semibold leading-snug text-[clamp(14px,2.9cqw,38px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+          <span className="inline-block w-[0.45cqw] min-w-[4px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
+          {data.answer_text}
+        </Line>
+      )}
       {points.slice(0, 3).map((p, i) => (
-        <Line key={i} delay={startDelay + i * 150}
-          className="text-white/95 font-medium leading-snug text-[clamp(13px,2.6cqw,34px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
-          <span className="inline-block w-[0.35cqw] min-w-[3px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
+        <Line key={i} delay={(data.answer_text ? 300 : startDelay) + i * 150}
+          className={data.answer_text
+            ? 'text-white/70 font-normal leading-snug text-[clamp(11px,1.9cqw,25px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]'
+            : 'text-white/95 font-medium leading-snug text-[clamp(13px,2.6cqw,34px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]'}>
+          <span className={`inline-block ${data.answer_text ? 'w-[0.25cqw] min-w-[2px]' : 'w-[0.35cqw] min-w-[3px]'} h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle`} />
           {p}
         </Line>
       ))}
@@ -231,13 +245,24 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
               {isMapImg(cur) && <QrChip />}
             </figure>
 
-            {/* Caption: dải riêng NGAY DƯỚI ảnh - nền tối mờ, vạch xanh + chữ trắng */}
-            {points.length > 0 && (
+            {/* Caption: dải riêng NGAY DƯỚI ảnh - nền tối mờ, vạch xanh + chữ trắng.
+                Có answer_text (pha 2 refine): câu trả lời hiện TO ở trên, các
+                points tĩnh thu NHỎ và tụt xuống dưới. */}
+            {(points.length > 0 || data.answer_text) && (
               <div className="shrink-0 w-full bg-black/45 backdrop-blur-[2px] px-[4cqw] py-[1.8cqw] space-y-[0.9cqw]">
-                {points.slice(0, 4).map((p, i) => (
-                  <Line key={i} delay={650 + i * 150}
-                    className="text-white/95 font-medium leading-snug text-[clamp(13px,2.4cqw,32px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
-                    <span className="inline-block w-[0.35cqw] min-w-[3px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
+                {data.answer_text && (
+                  <Line key={data.answer_text} delay={60}
+                    className="text-white font-semibold leading-snug text-[clamp(14px,2.7cqw,36px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
+                    <span className="inline-block w-[0.45cqw] min-w-[4px] h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle" />
+                    {data.answer_text}
+                  </Line>
+                )}
+                {points.slice(0, data.answer_text ? 3 : 4).map((p, i) => (
+                  <Line key={i} delay={(data.answer_text ? 300 : 650) + i * 150}
+                    className={data.answer_text
+                      ? 'text-white/70 font-normal leading-snug text-[clamp(11px,1.8cqw,24px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]'
+                      : 'text-white/95 font-medium leading-snug text-[clamp(13px,2.4cqw,32px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]'}>
+                    <span className={`inline-block ${data.answer_text ? 'w-[0.25cqw] min-w-[2px]' : 'w-[0.35cqw] min-w-[3px]'} h-[1em] rounded-full bg-[#A8D94A] mr-[1.4cqw] align-middle`} />
                     {p}
                   </Line>
                 ))}

@@ -15,6 +15,7 @@ type SlideData = {
   points: string[];
   highlight_number?: string;
   speech_text: string;
+  answer_text?: string; // câu trả lời LLM chèn pha 2 (refine)
   image_url?: string;
   image_urls?: string[];
   maps_url?: string;
@@ -38,6 +39,9 @@ export default function SlideBotPage() {
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
   const [slideKey, setSlideKey] = useState(0);
+  // Ref soi key hiện tại cho callback refine (pha 2) - tránh đè slide đã đổi.
+  const slideKeyRef = useRef(0);
+  useEffect(() => { slideKeyRef.current = slideKey; }, [slideKey]);
   // Chu de bat duoc tu giong noi khach - '' = chua bat, dang lang nghe.
   const [topicLabel, setTopicLabel] = useState('');
   const [heardText, setHeardText] = useState('');
@@ -60,6 +64,8 @@ export default function SlideBotPage() {
           speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút.",
           image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'],
           maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
+          // demo pha 2 refine: câu trả lời LLM chèn trên, points tĩnh nhỏ lại
+          answer_text: 'Dạ từ dự án ra chợ Bình Điền chỉ khoảng 5 phút chạy xe, rất tiện đi chợ đầu mối sớm anh ạ.',
         },
         '2': {
           layout_type: 'full_background',
@@ -326,6 +332,27 @@ export default function SlideBotPage() {
       setBrokenImages({});
       setSlideKey(k => k + 1);
       setSlide(data);
+
+      // PHA 2 "đỡ ngu mà vẫn nhanh": slide tĩnh đã hiện (~0ms), gọi ngầm refine
+      // để LLM viết câu trả lời bám ĐÚNG câu khách hỏi rồi chèn lên caption
+      // (answer_text) - text tĩnh tự thu nhỏ tụt xuống. forceStatic thì thôi.
+      if ((data as any)._source === 'static_fast' && !(data as any)._forceStatic) {
+        const myKey = slideKeyRef.current + 1; // key vừa set ở trên
+        fetch('/api/slide', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, ambient, refine: true, context: { recent: recentForCall } }),
+        })
+          .then(r => (r.ok ? r.json() : null))
+          .then(ref => {
+            if (!ref || ref.skip || !ref.answer_text) return;
+            // Khách đã sang slide khác trong lúc chờ -> bỏ, không đè.
+            if (slideKeyRef.current !== myKey) return;
+            dbg(`✨ Refine về sau ${((Date.now() - t0) / 1000).toFixed(1)}s - chèn câu trả lời lên slide`);
+            setSlide(s => (s ? { ...s, answer_text: ref.answer_text } : s));
+          })
+          .catch(() => {}); // refine lỗi thì slide tĩnh vẫn đứng - không sao
+      }
 
       setState('listening');
       setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");

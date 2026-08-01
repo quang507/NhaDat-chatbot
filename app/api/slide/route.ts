@@ -323,7 +323,10 @@ const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM: Đây là hội thoại đang
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, ambient, context } = await req.json();
+    // refine=true: PHA 2 của cơ chế "hiện nhanh rồi làm mượt" - client đã có
+    // slide tĩnh (pha 1, ~0ms), gọi lại để LLM viết CHỮ bám đúng câu khách hỏi
+    // (ảnh giữ nguyên). forceStatic thì không refine - số liệu khóa cứng.
+    const { message, ambient, context, refine } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
 
     // NGỮ CẢNH LƯỢT KHÁCH: client gửi tối đa 3 câu gần nhất của CÙNG một khách
@@ -509,13 +512,14 @@ export async function POST(req: NextRequest) {
     // NGHE NGẦM + đã khớp slide tĩnh -> TRẢ NGAY (~0ms), KHÔNG chờ LLM viết lại text
     // (LLM mất 3-5s - khách đang nói chuyện mà slide lên chậm 5s là hỏng nhịp sale).
     // Chat trực tiếp (ambient=false) vẫn giữ LLM viết text bám ngữ cảnh câu hỏi.
-    if (ambient && staticSlide) {
+    if (ambient && staticSlide && (!refine || staticSlide.forceStatic)) {
       const imgs: string[] = staticSlide.image_urls || [];
       const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|ban-do|datasheet/.test(u));
       if (!staticSlide.layout_type) staticSlide.layout_type = isDiagram ? 'split_image_right' : 'full_background';
       console.log(`[Slide] Ambient FAST static: "${message.slice(0, 50)}" -> "${staticSlide.title}"`);
       // _source: nhánh nào tạo slide - trang /thu-slide đọc để chẩn đoán.
-      return NextResponse.json({ ...staticSlide, _source: 'static_fast' });
+      // _forceStatic: chữ khóa cứng (số liệu) - client biết đường KHỎI gọi refine.
+      return NextResponse.json({ ...staticSlide, _source: 'static_fast', _forceStatic: !!staticSlide.forceStatic });
     }
 
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
@@ -635,6 +639,18 @@ export async function POST(req: NextRequest) {
     // còn TEXT thì lấy của LLM (bám ngữ cảnh). LLM skip/lỗi -> rớt về text tĩnh có sẵn.
     if (staticSlide) {
       const llmOk = !parsed.skip && parsed.title && parsed.speech_text && Array.isArray(parsed.points) && parsed.points.length;
+      // PHA 2 (refine): giữ NGUYÊN slide tĩnh, chỉ CHÈN câu trả lời LLM lên trên
+      // (answer_text) - client sẽ thu nhỏ và đẩy text tĩnh xuống dưới.
+      if (refine && llmOk && !staticSlide.forceStatic) {
+        const imgs0: string[] = staticSlide.image_urls || [];
+        const isDiagram0 = imgs0.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|datasheet/.test(u));
+        return NextResponse.json({
+          ...staticSlide,
+          layout_type: staticSlide.layout_type || (isDiagram0 ? 'split_image_right' : 'full_background'),
+          answer_text: String(parsed.speech_text).slice(0, 220),
+          _source: 'static_llm_text',
+        });
+      }
       // forceStatic: câu mơ hồ (vd "tầng 2") dễ bị LLM bịa số liệu → ép DÙNG LUÔN text tĩnh
       const base = (staticSlide.forceStatic || !llmOk) ? staticSlide : parsed;
       const imgs: string[] = staticSlide.image_urls || [];
