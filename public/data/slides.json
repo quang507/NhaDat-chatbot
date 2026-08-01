@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T13:06:11.291Z",
+  "_builtAt": "2026-08-01T14:03:45.195Z",
   "static_slides": [
     {
       "keywords": [
@@ -134,7 +134,9 @@
         "đã xây dự án",
         "kinh nghiệm",
         "dự án trước",
-        "từng làm"
+        "từng làm",
+        "làm dự án nào",
+        "đã làm dự án"
       ],
       "slide": {
         "title": "Các dự án Nhã Đạt đã thực hiện",
@@ -218,7 +220,10 @@
         "giá cả",
         "ngân sách",
         "tầm giá",
-        "giá từ"
+        "giá từ",
+        "rẻ nhất",
+        "giá thấp nhất",
+        "giá mềm"
       ],
       "slide": {
         "title": "Bảng giá T6/2026",
@@ -445,7 +450,7 @@
         "số nhà",
         "nằm ở đâu",
         "dự án ở đâu",
-        "chỗ nào",
+        "dự án chỗ nào",
         "đường vào",
         "trương đình hội",
         "an dương vương",
@@ -738,7 +743,8 @@
         "cổng vào",
         "cổng chính",
         "lối vào",
-        "cổng dự án"
+        "cổng dự án",
+        "cổng chào"
       ],
       "slide": {
         "title": "Cổng chào dự án",
@@ -810,7 +816,7 @@
       "keywords": [
         "phân lô",
         "sơ đồ lô",
-        "bản đồ dự án",
+        "bản đồ",
         "mặt bằng tổng",
         "sơ đồ dự án",
         "toàn khu"
@@ -860,7 +866,12 @@
         "bao nhiêu căn",
         "tổng số căn",
         "50 căn",
-        "mấy căn"
+        "mấy căn",
+        "mấy mẫu",
+        "bao nhiêu mẫu",
+        "những mẫu nào",
+        "các dòng nào",
+        "tiện ích"
       ],
       "slide": {
         "title": "Quy mô 50 căn compound",
@@ -994,6 +1005,8 @@
         "hướng bắc",
         "nóng không",
         "hợp tuổi",
+        "hợp căn nào",
+        "tuổi nào hợp",
         "đông tứ",
         "tây tứ",
         "hợp mệnh",
@@ -1806,7 +1819,9 @@
       "keywords": [
         "khách đỗ xe",
         "khách để xe",
+        "khách đậu xe",
         "chỗ đậu xe khách",
+        "đậu xe ở đâu",
         "bãi xe",
         "gửi xe",
         "hầm xe"
@@ -1939,13 +1954,14 @@
     },
     {
       "keywords": [
-        "cổng chính",
+        "cổng chính rộng",
         "cổng bao nhiêu",
         "cổng rộng",
         "cổng mấy mét",
         "cửa phụ",
         "cửa cuốn",
-        "cửa chính rộng"
+        "cửa chính rộng",
+        "cửa cuốn cao"
       ],
       "slide": {
         "layout_type": "split_image_right",
