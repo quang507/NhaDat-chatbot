@@ -973,6 +973,19 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
     },
   },
 
+  {
+    // Anh Quang xác nhận 01/08: chính sách "phí quản lý 0 đồng nhờ ByteLife"
+    // CÒN hiệu lực (nguồn: 13 chunk RAG + xác nhận nội bộ).
+    keywords: ['phí quản lý', 'phí dịch vụ', 'phí hàng tháng', 'đóng phí gì', 'phí vận hành'],
+    slide: {
+      title: 'Phí quản lý 0 đồng',
+      points: ['Không thu phí quản lý hàng tháng', 'ByteLife tự động hóa vận hành khu - đèn, tiện ích chung', 'Chi tiết chính sách: xem cùng tư vấn viên'],
+      speech_text: 'Điểm đặc biệt của khu là phí quản lý không đồng - hệ ByteLife tự động hóa vận hành nên cư dân không phải đóng phí hàng tháng.',
+      image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat_cong-nghe-3.jpg`, `${IMG}/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png`],
+      forceStatic: true,
+    },
+  },
+
   // ── 18. XEM NHÀ & LIÊN HỆ ──────────────────────────────────────────────
   {
     keywords: ['nhà mẫu', 'xem nhà', 'tham quan', 'ghé xem', 'hẹn xem', 'đi coi nhà', 'coi thực tế'],
