@@ -29,6 +29,18 @@ const PLACEHOLDERS = [
   ['noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-6.jpg', 'FUSION · TẦNG 6', 'Sân thượng - công năng tầng 6'],
   ['noi_that/opus/opus_tinh-nang-tang-5.jpg', 'OPUS · TẦNG 5', 'Công năng tầng 5'],
   ['noi_that/opus/opus_tinh-nang-tang-6.jpg', 'OPUS · TẦNG 6', 'Sân thượng - công năng tầng 6'],
+
+  // ── ẢNH MINH HỌA THEO TỪNG MÓN (08/2026 - yêu cầu: mỗi món 1 ảnh ghi rõ
+  //    "đây là ảnh minh họa cho cái gì", không dùng 1 ảnh chung chung) ──────
+  ['noi_that/thiet_bi/tu-bep_an-cuong.jpg', 'TỦ BẾP', 'Ván An Cường chống ẩm - có trong gói Max'],
+  ['noi_that/thiet_bi/thiet-bi-bep.jpg', 'THIẾT BỊ BẾP', 'Trọn bộ thiết bị bếp - có trong gói Max'],
+  ['noi_that/thiet_bi/may-lanh_lg.jpg', 'MÁY LẠNH LG', 'Âm trần phòng ngủ · treo tường phòng khách - gói Max'],
+  ['noi_that/thiet_bi/thiet-bi-ve-sinh_inax.jpg', 'THIẾT BỊ VỆ SINH INAX', 'Lavabo · bồn cầu · vòi sen - đủ 2 gói'],
+  ['noi_that/thiet_bi/may-nuoc-nong_dai-thanh.jpg', 'MÁY NƯỚC NÓNG NLMT', 'Đại Thành 210L - năng lượng mặt trời'],
+  ['noi_that/thiet_bi/tu-quan-ao_mfc.jpg', 'TỦ QUẦN ÁO', 'MFC kháng ẩm + đèn led - gói Max'],
+  ['thong_so/thang-may.jpg', 'THANG MÁY', 'Hãng và tải trọng: đang chờ xác nhận'],
+  ['thong_so/cua-cuon.jpg', 'CỬA CUỐN GARA', 'Đỗ vừa SUV, bán tải - hãng đang chờ xác nhận'],
+  ['thong_so/gach-bong-gio.jpg', 'GẠCH BÔNG GIÓ', 'Điểm nhấn mặt tiền - thông gió tự nhiên'],
 ];
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

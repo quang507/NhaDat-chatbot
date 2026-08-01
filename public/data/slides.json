@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T14:43:44.348Z",
+  "_builtAt": "2026-08-01T16:39:12.336Z",
   "static_slides": [
     {
       "keywords": [
@@ -1921,7 +1921,8 @@
         "speech_text": "Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - trọn gói chìa khóa trao tay từ một tỷ sáu đến một tỷ chín tùy mẫu nhà.",
         "image_urls": [
           "/images/01_NyAh-PhuDinh/noi_that/goi-air-vs-max_bang-so-sanh.jpg",
-          "/images/01_NyAh-PhuDinh/noi_that/goi-max_ban-giao.jpg"
+          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/tu-bep_an-cuong.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/may-lanh_lg.jpg"
         ],
         "forceStatic": true
       }
@@ -1947,7 +1948,8 @@
         "speech_text": "Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - trọn gói chìa khóa trao tay từ một tỷ sáu đến một tỷ chín tùy mẫu nhà.",
         "image_urls": [
           "/images/01_NyAh-PhuDinh/noi_that/goi-air-vs-max_bang-so-sanh.jpg",
-          "/images/01_NyAh-PhuDinh/noi_that/goi-max_ban-giao.jpg"
+          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/tu-bep_an-cuong.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/may-lanh_lg.jpg"
         ],
         "forceStatic": true
       }
@@ -1974,7 +1976,8 @@
         "speech_text": "Kích thước cổng chính, cửa phụ và cửa cuốn theo thiết kế từng mẫu - tư vấn viên sẽ gửi anh chị datasheet số đo chính xác của đúng lô mình chọn.",
         "image_urls": [
           "/images/01_NyAh-PhuDinh/thong_so/thong-so_cong-chinh.jpg",
-          "/images/01_NyAh-PhuDinh/thong_so/thong-so_cua-phu.jpg"
+          "/images/01_NyAh-PhuDinh/thong_so/thong-so_cua-phu.jpg",
+          "/images/01_NyAh-PhuDinh/thong_so/cua-cuon.jpg"
         ],
         "forceStatic": true
       }
@@ -2000,7 +2003,8 @@
         "speech_text": "Vật liệu và thiết bị đều từ thương hiệu tuyển chọn - danh mục brand chi tiết theo từng gói bàn giao, tư vấn viên gửi anh chị bản đầy đủ.",
         "image_urls": [
           "/images/01_NyAh-PhuDinh/thong_so/brand_vat-lieu-noi-that.jpg",
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png"
+          "/images/01_NyAh-PhuDinh/thong_so/thang-may.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/thiet-bi-ve-sinh_inax.jpg"
         ],
         "forceStatic": true
       }
