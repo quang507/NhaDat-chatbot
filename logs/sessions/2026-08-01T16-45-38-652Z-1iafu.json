@@ -1,0 +1,17 @@
+{
+  "source": "chat",
+  "transcript": [
+    {
+      "q": "căn số 3 là mẫu nhà gì"
+    },
+    {
+      "q": "căn số 3 bao nhiêu tiền"
+    },
+    {
+      "q": "mua căn số 3 với giá gói max là bao nhiêu tiền",
+      "a": "Dạ, căn số 3 (mẫu Cosmo v2) có bảng giá niêm yết (cập nhật tháng 06/2026) cụ thể như sau ạ:\n\n• **Giá nhà thô:** **9.710.000.000 VNĐ**\n• **Giá Gói Air:** **9.957.800.000 VNĐ** (đã bao gồm hệ thống cấp khí tươi AirTop)\n\nAnh/chị có cần em gửi thêm phương thức thanh toán chi tiết hoặc đăng ký lịch đi xem thực tế căn này không ạ? 🏠"
+    }
+  ],
+  "startedAt": "2026-08-01T16:43:52.842Z",
+  "endedAt": "2026-08-01T16:45:38.652Z"
+}
