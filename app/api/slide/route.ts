@@ -12,6 +12,12 @@ import {
 } from '@/lib/static_slides';
 
 export const runtime = 'nodejs';
+
+// Cache câu trả lời refine (pha 2) trong RAM của lambda: câu hỏi lặp lại trong
+// showroom trả ngay 0ms. Mất khi lambda nguội - chấp nhận được, đây là cache
+// tăng tốc chứ không phải nguồn dữ liệu.
+const ANSWER_CACHE = new Map<string, { ans: string; at: number }>();
+const ANSWER_CACHE_TTL_MS = 6 * 3600e3;
 export const maxDuration = 60;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
@@ -527,6 +533,19 @@ export async function POST(req: NextRequest) {
     // KHÔNG return sớm nữa: giữ staticSlide làm ẢNH cố định + TEXT DỰ PHÒNG, nhưng cho LLM
     // viết lại text theo ngữ cảnh câu hỏi. (Ảnh luôn cố định theo từ khóa, text bám câu nói.)
 
+    // CACHE CÂU TRẢ LỜI REFINE: showroom toàn câu lặp (giá, ngập, thang máy...)
+    // -> câu giống hệt (sau khi bỏ dấu + thường hóa) đã trả lời rồi thì trả
+    // NGAY 0ms, khỏi tốn cả RAG lẫn LLM. Không cache câu có đại từ ngữ cảnh
+    // ("căn đó", "cái này") vì đáp án phụ thuộc câu trước của từng khách.
+    const refineCacheKey = noD.replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+    const cacheable = refineCacheKey.length >= 10 && !/\b(do|nay|kia|no)\b/.test(refineCacheKey);
+    if (refine && staticSlide && !staticSlide.forceStatic && cacheable) {
+      const hit = ANSWER_CACHE.get(refineCacheKey);
+      if (hit && Date.now() - hit.at < ANSWER_CACHE_TTL_MS) {
+        return NextResponse.json({ answer_text: hit.ans, _source: 'static_llm_text', _cached: true });
+      }
+    }
+
     const { prompt: systemText, hasChunks } = await buildPrompt(message, ambient, recentText);
 
     // ĐƯỜNG TẮT REFINE (pha 2): chỉ cần MỘT câu trả lời chèn lên slide tĩnh
@@ -553,6 +572,10 @@ export async function POST(req: NextRequest) {
           const j = JSON.parse(d.choices?.[0]?.message?.content || '{}');
           const ans = typeof j.answer === 'string' ? j.answer.trim() : '';
           if (ans) {
+            if (cacheable) {
+              if (ANSWER_CACHE.size > 500) ANSWER_CACHE.clear(); // chặn phình bộ nhớ
+              ANSWER_CACHE.set(refineCacheKey, { ans: ans.slice(0, 220), at: Date.now() });
+            }
             return NextResponse.json({ answer_text: ans.slice(0, 220), _source: 'static_llm_text' });
           }
           // LLM nói không có thông tin -> đừng chèn gì, giữ nguyên slide tĩnh.
