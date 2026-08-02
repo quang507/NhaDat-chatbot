@@ -217,20 +217,23 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
         <div key={replayKey} className="relative w-full h-full overflow-hidden bg-[#0C0F0D] flex flex-col">
           <BlurBackdrop src={cur} />
 
-          {/* Tên slide - chữ nhỏ mờ góc trên phải như "mẫu nhà opus" trong PDF */}
-          <div className="absolute top-[2.4cqw] right-[3cqw] z-20 text-right">
-            <Line delay={120}>
-              <span className="inline-block lowercase text-white/70 font-medium tracking-[0.12em] text-[clamp(11px,1.9cqw,24px)] drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
-                {data.title}
-              </span>
-            </Line>
-          </div>
-
+          {/* Tên slide - nằm NGAY SÁT mép trên ảnh phía ngoài (không đè lên
+              ảnh, không lơ lửng góc màn): là dòng đầu của khối canh giữa nên
+              luôn dính theo vị trí ảnh. */}
           {/* Khối GIỮA: ảnh + caption DÍNH NHAU, canh giữa theo chiều dọc.
               Khung ảnh ôm theo tỉ lệ THẬT của ảnh (aspectRatio đo lúc load);
               khi ảnh cao quá thì flex shrink co lại, object-contain lo phần dư.
               Nhờ vậy caption luôn nằm sát mép dưới ảnh - không lơ lửng đáy màn. */}
           <div className="relative z-10 flex-1 min-h-0 flex flex-col justify-center">
+            {/* Tên slide - dòng đầu khối canh giữa, SÁT mép trên ảnh phía
+                ngoài (không đè lên ảnh, không lơ lửng góc màn). */}
+            <div className="shrink-0 text-right pr-[2.2cqw] pb-[0.9cqw] pointer-events-none">
+              <Line delay={120}>
+                <span className="inline-block lowercase text-white/75 font-medium tracking-[0.12em] text-[clamp(11px,1.9cqw,24px)] drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
+                  {data.title}
+                </span>
+              </Line>
+            </div>
             <figure
               className={`img-card relative w-full shrink min-h-0 ${onImageClick ? 'cursor-zoom-in' : ''}`}
               style={{
