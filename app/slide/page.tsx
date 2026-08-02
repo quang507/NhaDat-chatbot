@@ -632,43 +632,34 @@ export default function SlideBotPage() {
         {renderSlideBody()}
       </main>
 
-      {/* Marquee slogan đã BỎ theo yêu cầu (chạy chạy gây rối khi trình chiếu) */}
-      <footer className="relative z-10 px-[4vw] py-[1.2vh] flex items-center justify-center gap-3 shrink-0">
-        <div
-          key={topicLabel ? `t:${topicLabel}` : `s:${state}`}
-          className={`transcript-swap flex-1 max-w-[52vw] min-w-0 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white border font-medium transition-colors text-[clamp(11px,1.2vw,17px)] ${
-            topicLabel ? 'border-[#2E9E5B]/60 justify-start' : `justify-center ${state === 'processing' ? 'border-amber-300' : state === 'listening' ? 'border-[#2E9E5B]/50' : 'border-black/10'}`
-          }`}
-        >
-          {topicLabel ? (
-            <>
-              <span className="flex items-end gap-0.5 h-4 shrink-0" aria-hidden>
-                <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
-                <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
-                <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
-              </span>
-              <span className="shrink-0 text-neutral-500">Người ta đang nói về</span>
-              <span className="shrink-0 px-3 py-1 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold whitespace-nowrap">{topicLabel}</span>
-              {heardText && <span className="truncate text-neutral-400 italic hidden md:inline">“{heardText}”</span>}
-            </>
-          ) : (
-            <>
-              {state === 'listening' && (
-                <span className="flex items-end gap-0.5 h-4 shrink-0" aria-hidden>
-                  <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
-                  <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
-                  <span className="w-0.5 bg-[#2E9E5B] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
-                </span>
-              )}
-              {state === 'processing' && (
-                <span className="w-3.5 h-3.5 shrink-0 border-2 border-amber-400/40 border-t-amber-500 rounded-full animate-spin" aria-hidden />
-              )}
-              {errorMsg
-                ? <span className="truncate text-red-600 font-semibold">⚠️ {errorMsg}</span>
-                : <span className="truncate text-neutral-600">{transcript}</span>}
-            </>
-          )}
-        </div>
+      {/* Thanh trắng dưới đáy đã XÓA (08/2026) - lệch tông với slide tối.
+          Thay bằng chip nổi tối màu góc phải dưới: mic (bắt buộc giữ - trình
+          duyệt cần 1 chạm mới cho bật micro) + trạng thái nghe/xử lý/lỗi gọn. */}
+      <div className="absolute bottom-[2vh] right-[2vw] z-30 flex items-center gap-2.5">
+        {errorMsg ? (
+          <span className="max-w-[60vw] truncate px-4 py-2 rounded-full bg-black/70 backdrop-blur text-red-300 font-semibold text-[clamp(11px,1.2vw,16px)]">⚠️ {errorMsg}</span>
+        ) : topicLabel ? (
+          <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 backdrop-blur text-white/85 text-[clamp(11px,1.2vw,16px)]">
+            <span className="flex items-end gap-0.5 h-3.5" aria-hidden>
+              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
+              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
+              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+            </span>
+            <span className="font-bold text-[#A8D94A] whitespace-nowrap">{topicLabel}</span>
+          </span>
+        ) : state === 'processing' ? (
+          <span className="w-8 h-8 grid place-items-center rounded-full bg-black/60 backdrop-blur" aria-hidden>
+            <span className="w-3.5 h-3.5 border-2 border-amber-300/40 border-t-amber-300 rounded-full animate-spin" />
+          </span>
+        ) : state === 'listening' ? (
+          <span className="w-8 h-8 grid place-items-center rounded-full bg-black/60 backdrop-blur" aria-hidden>
+            <span className="flex items-end gap-0.5 h-3.5">
+              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
+              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
+              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+            </span>
+          </span>
+        ) : null}
 
         <div className="relative">
           {state !== 'idle' && (
@@ -679,16 +670,17 @@ export default function SlideBotPage() {
           )}
           <button
             onClick={toggleMic}
-            className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-xl transition-all duration-300 relative z-10 ${
+            aria-label={state !== 'idle' ? 'Tắt micro' : 'Bật micro'}
+            className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-xl transition-all duration-300 relative z-10 ${
               state !== 'idle'
-                ? 'bg-red-500 hover:bg-red-600 shadow-red-500/25 text-white'
+                ? 'bg-black/60 backdrop-blur hover:bg-black/75 text-white/90'
                 : 'bg-[#2E9E5B] hover:bg-[#0E5A34] shadow-[#2E9E5B]/30 text-white'
             }`}
           >
             {state !== 'idle' ? '⏹️' : '🎤'}
           </button>
         </div>
-      </footer>
+      </div>
 
       {selectedImage && (
         <div
