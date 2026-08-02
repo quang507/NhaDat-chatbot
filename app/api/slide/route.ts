@@ -204,7 +204,7 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT
   "points": ["Ý chính 1 (Là một CÂU TRẢ LỜI NGẮN GỌN súc tích, đủ ý, ~10-20 chữ. KHÔNG dùng dạng gạch đầu dòng/đầu mục cụt lủn)", "Ý chính 2", "Ý chính 3"],
   "highlight_number": "Một con số nổi bật nhất trong đoạn văn (ví dụ '18 phút', '9,5 triệu lít', '5,19 tỷ'). Nếu không có số liệu nào ấn tượng, để trống ''. Chỉ dùng cho layout dark_minimal hoặc split.",
   "speech_text": "Câu trả lời NGẮN GỌN để HIỂN THỊ trên slide (KHÔNG đọc ra tiếng). Tối đa 1-2 câu, súc tích, đi thẳng trọng tâm. KHÔNG emoji, KHÔNG ký tự đặc biệt (*, _, #), KHÔNG ngoặc kép.",
-  "image_urls": ["Đường dẫn ảnh 1", "Đường dẫn ảnh 2", ...] (Mảng chứa các đường dẫn hình ảnh tìm thấy trong phần dữ liệu liên quan. CHỈ được chọn các đường dẫn bắt đầu bằng "/images/" như "/images/01_NyAh-PhuDinh/...", TUYỆT ĐỐI KHÔNG lấy các đường dẫn bắt đầu bằng "2 - trình chiếu" hoặc các file PowerPoint local. Nếu không có ảnh nào bắt đầu bằng "/images/", trả về mảng rỗng []).
+  "image_urls": ["Đường dẫn ảnh"] (CHỈ CHỌN ĐÚNG 1 ẢNH khớp CHÍNH XÁC chủ đề câu hỏi - chọn sai chủ đề còn tệ hơn không có ảnh, KHÔNG CHẮC thì trả mảng rỗng []. Chỉ được chọn đường dẫn bắt đầu bằng "/images/" như "/images/01_NyAh-PhuDinh/...", TUYỆT ĐỐI KHÔNG lấy các đường dẫn bắt đầu bằng "2 - trình chiếu" hoặc các file PowerPoint local).
 }
 
 SỐ LƯỢNG Ý CHÍNH: Nếu CÓ ảnh (image_urls không rỗng) → tối đa 3 ý NGẮN để nhường chỗ cho ảnh. Nếu KHÔNG có ảnh (image_urls rỗng) → viết 4-5 ý và mỗi ý ĐẦY ĐỦ hơn (~15-25 chữ) vì chữ là thứ duy nhất trên slide. MỖI Ý PHẢI LÀ MỘT CÂU TRẢ LỜI mang thông tin giải thích (vd thay vì "Vị trí đắc địa", hãy viết "Dự án nằm ngay mặt tiền Trương Đình Hội, dễ dàng di chuyển").
@@ -643,7 +643,7 @@ export async function POST(req: NextRequest) {
               points: { type: "ARRAY", items: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." } },
               highlight_number: { type: "STRING", description: "Con số nổi bật (nếu có)" },
               speech_text: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt. Kịch bản đọc." },
-              image_urls: { type: "ARRAY", items: { type: "STRING" }, description: "Danh sách URL hình ảnh. CHỈ được chọn các đường dẫn bắt đầu bằng '/images/'. BẮT BUỘC bỏ qua các đường dẫn bắt đầu bằng '2 - trình chiếu' hoặc không bắt đầu bằng '/images/'. Tối đa 3 ảnh. Nếu không có, trả về mảng rỗng []." }
+              image_urls: { type: "ARRAY", items: { type: "STRING" }, description: "CHỈ ĐÚNG 1 ảnh khớp CHÍNH XÁC chủ đề câu hỏi, đường dẫn phải bắt đầu bằng '/images/'. Không chắc khớp thì trả mảng rỗng []. BẮT BUỘC bỏ qua đường dẫn bắt đầu bằng '2 - trình chiếu'." }
             },
             required: ["layout_type", "title", "points", "speech_text", "image_urls"]
           }
