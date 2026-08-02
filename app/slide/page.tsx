@@ -33,8 +33,24 @@ const TOPIC_LABELS: Record<string, string> = {
   general: "Dự án Ny'ah Phú Định",
 };
 
+// Ảnh cho màn chờ (attract screen) - xoay chậm 7s/tấm khi chưa có slide.
+const IDLE_PHOTOS = [
+  "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-1.jpg",
+  "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-4.jpg",
+  "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-7.jpg",
+  '/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png',
+  "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-10.jpg",
+];
+
 export default function SlideBotPage() {
   const [slide, setSlide] = useState<SlideData | null>(null);
+  // Chỉ số ảnh màn chờ - chỉ chạy khi CHƯA có slide.
+  const [idleIdx, setIdleIdx] = useState(0);
+  useEffect(() => {
+    if (slide) return;
+    const t = setInterval(() => setIdleIdx(i => (i + 1) % IDLE_PHOTOS.length), 7000);
+    return () => clearInterval(t);
+  }, [slide]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
@@ -439,23 +455,38 @@ export default function SlideBotPage() {
 
   const renderSlideBody = () => {
     if (!slide) {
+      // MÀN CHỜ = ATTRACT SCREEN: slideshow ảnh dự án làm tối chạy chậm phía
+      // sau thay cho nền kem trống - showroom phải khoe nhà ngay cả lúc nghỉ.
       return (
-        <div className="flex-1 flex flex-col items-center justify-center text-center gap-[2.5vh] px-[5vw]">
-          <Line delay={100}>
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#E3F0E3] text-[#0E5A34] font-bold tracking-[0.2em] uppercase text-[clamp(11px,1.2vw,17px)]">
-              Smart Showroom · Nhã Đạt
-            </span>
-          </Line>
-          {/* Khong dung tracking-tight o day: tracking tinh theo em, o co chu toi 190px
-              no co moi cap chu lai ~5px - qua nhieu voi chu hoa dam co dau tieng Viet,
-              lam dau (mu, moc, nang) bi de len chu ben canh. */}
-          <h1 className="uppercase font-black leading-[1.5] tracking-[0.05em]">
-            <Line delay={240} className="text-[#2E9E5B] text-[clamp(44px,9vw,150px)]">Ny&apos;ah</Line>
-            <Line delay={400} className="text-[#161616] text-[clamp(52px,11vw,190px)]">Phú Định</Line>
-          </h1>
-          <Line delay={580} className="text-neutral-500 text-[clamp(15px,2vw,28px)] max-w-[78%] mx-auto leading-relaxed">
-            Chạm nút micro - slide sẽ tự hiện theo câu chuyện của bạn.
-          </Line>
+        <div className="flex-1 relative overflow-hidden flex flex-col items-center justify-center text-center gap-[2.5vh] px-[5vw]">
+          <div aria-hidden className="absolute inset-0">
+            {IDLE_PHOTOS.map((src, i) => (
+              <img
+                key={src} src={src} alt=""
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ease-out ${
+                  i === idleIdx ? 'opacity-100 animate-ken-burns' : 'opacity-0'
+                }`}
+              />
+            ))}
+            <div className="absolute inset-0 bg-black/55" />
+          </div>
+          <div className="relative z-10">
+            <Line delay={100}>
+              <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 backdrop-blur text-white/90 font-bold tracking-[0.2em] uppercase text-[clamp(11px,1.2vw,17px)]">
+                Smart Showroom · Nhã Đạt
+              </span>
+            </Line>
+            {/* Khong dung tracking-tight o day: tracking tinh theo em, o co chu toi 190px
+                no co moi cap chu lai ~5px - qua nhieu voi chu hoa dam co dau tieng Viet,
+                lam dau (mu, moc, nang) bi de len chu ben canh. */}
+            <h1 className="uppercase font-black leading-[1.5] tracking-[0.05em] mt-[2vh]">
+              <Line delay={240} className="text-[#A8D94A] text-[clamp(44px,9vw,150px)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)]">Ny&apos;ah</Line>
+              <Line delay={400} className="text-white text-[clamp(52px,11vw,190px)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)]">Phú Định</Line>
+            </h1>
+            <Line delay={580} className="text-white/80 text-[clamp(15px,2vw,28px)] max-w-[78%] mx-auto leading-relaxed mt-[2vh]">
+              Chạm nút micro - slide sẽ tự hiện theo câu chuyện của bạn.
+            </Line>
+          </div>
         </div>
       );
     }

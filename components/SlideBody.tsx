@@ -298,7 +298,8 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
           <h1 className="uppercase font-black leading-[1.08] tracking-tight text-white text-[clamp(22px,5.2cqw,88px)] drop-shadow-[0_2px_16px_rgba(0,0,0,0.6)]">
             <Line delay={190}>{data.title}</Line>
           </h1>
-          {data.highlight_number && (
+          {/* Ẩn số nổi bật nếu title ĐÃ chứa đúng số đó - tránh lặp "18 phút" 2 lần */}
+          {data.highlight_number && !data.title.toLowerCase().includes(data.highlight_number.toLowerCase()) && (
             <Line delay={340} className="font-black leading-none text-transparent text-[clamp(34px,11cqw,150px)]">
               <span style={{ WebkitTextStroke: '0.55cqw #A8D94A' }}>{data.highlight_number}</span>
             </Line>
