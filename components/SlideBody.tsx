@@ -67,6 +67,20 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   // Tỉ lệ THẬT của từng ảnh (đo khi ảnh load xong) - để khung ảnh ôm đúng tỉ lệ
   // và caption luôn nằm SÁT mép dưới ảnh như bản SlideLayout.pdf sếp duyệt.
   const [ratios, setRatios] = useState<Record<string, number>>({});
+  // Đo khung THẬT (không dùng matchMedia - khung thử 9:16 nằm trong cửa sổ
+  // ngang sẽ đo sai): cao > rộng = MÀN ĐỨNG -> ảnh luôn FULL CHIỀU NGANG,
+  // thừa chiều cao thì object-cover cắt dọc thay vì co lại chừa viền 2 bên.
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const [framePortrait, setFramePortrait] = useState(false);
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(entries => {
+      for (const e of entries) setFramePortrait(e.contentRect.height > e.contentRect.width);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const imgsKey = imgs.join('|');
   useEffect(() => {
     setImgIdx(0);
@@ -199,7 +213,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   // Nền phía sau là chính ảnh phóng to làm tối. Tên slide chữ nhỏ góc trên phải.
   if (hasImg) {
     return (
-      <div style={{ containerType: 'inline-size' }} className="w-full h-full">
+      <div ref={rootRef} style={{ containerType: 'inline-size' }} className="w-full h-full">
         <div key={replayKey} className="relative w-full h-full overflow-hidden bg-[#0C0F0D] flex flex-col">
           <BlurBackdrop src={cur} />
 
@@ -228,7 +242,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
               {imgs.map((src, i) => (
                 <img
                   key={src} src={src} alt=""
-                  className={`absolute inset-0 w-full h-full object-contain transition-all duration-[800ms] ease-out ${
+                  className={`absolute inset-0 w-full h-full ${framePortrait ? 'object-cover' : 'object-contain'} transition-all duration-[800ms] ease-out ${
                     i === imgIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02] pointer-events-none'
                   }`}
                   onLoad={e => {
