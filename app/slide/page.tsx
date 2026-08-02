@@ -310,6 +310,15 @@ export default function SlideBotPage() {
       setState('processing');
       dbg(`📡 Gọi /api/slide (ambient=${ambient})…`);
 
+      // PHA 2 bắn SONG SONG với pha 1 (không chờ pha 1 về mới gọi) - tiết kiệm
+      // trọn một vòng mạng. Kết quả chỉ được dùng nếu pha 1 ra static_fast
+      // không khóa cứng; các trường hợp khác thì bỏ (tốn 1 call 8b rẻ tiền).
+      const refinePromise = fetch('/api/slide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, ambient, refine: true, context: { recent: recentForCall } }),
+      }).then(r => (r.ok ? r.json() : null)).catch(() => null);
+
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -354,20 +363,13 @@ export default function SlideBotPage() {
       // (answer_text) - text tĩnh tự thu nhỏ tụt xuống. forceStatic thì thôi.
       if ((data as any)._source === 'static_fast' && !(data as any)._forceStatic) {
         const myKey = slideKeyRef.current + 1; // key vừa set ở trên
-        fetch('/api/slide', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, ambient, refine: true, context: { recent: recentForCall } }),
-        })
-          .then(r => (r.ok ? r.json() : null))
-          .then(ref => {
-            if (!ref || ref.skip || !ref.answer_text) return;
-            // Khách đã sang slide khác trong lúc chờ -> bỏ, không đè.
-            if (slideKeyRef.current !== myKey) return;
-            dbg(`✨ Refine về sau ${((Date.now() - t0) / 1000).toFixed(1)}s - chèn câu trả lời lên slide`);
-            setSlide(s => (s ? { ...s, answer_text: ref.answer_text } : s));
-          })
-          .catch(() => {}); // refine lỗi thì slide tĩnh vẫn đứng - không sao
+        refinePromise.then(ref => {
+          if (!ref || ref.skip || !ref.answer_text) return;
+          // Khách đã sang slide khác trong lúc chờ -> bỏ, không đè.
+          if (slideKeyRef.current !== myKey) return;
+          dbg(`✨ Refine về sau ${((Date.now() - t0) / 1000).toFixed(1)}s - chèn câu trả lời lên slide`);
+          setSlide(s => (s ? { ...s, answer_text: ref.answer_text } : s));
+        });
       }
 
       setState('listening');
