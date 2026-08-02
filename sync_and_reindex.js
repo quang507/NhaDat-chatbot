@@ -320,7 +320,37 @@ async function embedBatch(texts, taskType) {
 }
 
 // ---------- Tự động trích xuất tag từ tên file ảnh và sinh file markdown chỉ mục ----------
-function generateImageMetadata(imagesDir, outputMdPath) {
+// ─── MÔ TẢ ẢNH BẰNG VISION (08/2026) ───────────────────────────────────────
+// Gemini Flash NHÌN ảnh thật và viết mô tả 1-2 câu -> RAG/LLM chọn ảnh theo
+// NỘI DUNG thật thay vì đoán mù theo tên file (tránh vụ vi_tri.jpg hóa ra là
+// ảnh đồng hồ). Kết quả cache trong image_descriptions.json (theo đường dẫn +
+// kích thước file) nên chỉ ảnh MỚI/ĐỔI mới tốn API - chạy lại gần như miễn phí.
+const VISION_CACHE_FILE = path.join(__dirname, 'image_descriptions.json');
+
+async function describeImageWithVision(fullPath, rel) {
+  const stat = fs.statSync(fullPath);
+  if (stat.size > 4 * 1024 * 1024) return null; // >4MB: bỏ qua cho nhẹ
+  const ext = path.extname(fullPath).toLowerCase();
+  const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : ext === '.gif' ? 'image/gif' : 'image/jpeg';
+  const b64 = fs.readFileSync(fullPath).toString('base64');
+  const res = await fetch(`${EMBED_BASE}/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [
+        { inline_data: { mime_type: mime, data: b64 } },
+        { text: `Ảnh thuộc dự án nhà phố Ny'ah Phú Định (đường dẫn: ${rel}). Mô tả ảnh trong 1-2 câu tiếng Việt: ảnh chụp/vẽ gì (phòng nào, ngoại thất, bản đồ, bảng thông số...), đặc điểm nổi bật. Nếu ảnh có chữ "ẢNH MINH HỌA" thì ghi rõ đây là ảnh minh họa giữ chỗ. CHỈ trả về câu mô tả, không mở đầu.` },
+      ]}],
+      generationConfig: { temperature: 0.2, maxOutputTokens: 120 },
+    }),
+  });
+  if (!res.ok) throw new Error(`vision ${res.status}`);
+  const d = await res.json();
+  const txt = d.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  return txt || null;
+}
+
+async function generateImageMetadata(imagesDir, outputMdPath) {
   if (!fs.existsSync(imagesDir)) {
     if (fs.existsSync(outputMdPath)) {
       try { fs.unlinkSync(outputMdPath); } catch (e) {}
@@ -353,18 +383,40 @@ function generateImageMetadata(imagesDir, outputMdPath) {
       // Encode đường dẫn để URL hợp lệ kể cả khi tên file có dấu cách / tiếng Việt
       const urlPath = rel.split('/').map(encodeURIComponent).join('/');
 
-      entries.push(`## 🔖 [Ảnh Minh Họa] · ${baseName}
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: ${keywords}.
-Chi tiết: ${title}.
-Đường dẫn hình ảnh: ![${title}](/images/${urlPath})
-
----`);
+      entries.push({ rel, full, baseName, keywords, title, urlPath });
     }
   };
   walk(imagesDir);
 
+  // Vision: mô tả từng ảnh (cache theo rel + size, chỉ ảnh mới/đổi mới gọi API)
+  let cache = {};
+  try { cache = JSON.parse(fs.readFileSync(VISION_CACHE_FILE, 'utf-8')); } catch {}
+  let described = 0, cached = 0, failed = 0;
+  for (const e of entries) {
+    const size = fs.statSync(e.full).size;
+    const hit = cache[e.rel];
+    if (hit && hit.size === size && hit.desc) { e.desc = hit.desc; cached++; continue; }
+    if (!GEMINI_API_KEY) continue;
+    try {
+      const desc = await describeImageWithVision(e.full, e.rel);
+      if (desc) { e.desc = desc; cache[e.rel] = { size, desc }; described++; }
+      await new Promise(r => setTimeout(r, 250)); // nhẹ tay với rate limit
+    } catch (err) {
+      failed++;
+      if (failed <= 3) console.warn(`  ! vision lỗi ${e.rel}: ${err.message}`);
+    }
+  }
+  try { fs.writeFileSync(VISION_CACHE_FILE, JSON.stringify(cache, null, 1), 'utf-8'); } catch {}
+  console.log(`Vision mô tả ảnh: ${described} mới, ${cached} từ cache, ${failed} lỗi.`);
+
   if (entries.length > 0) {
-    const content = `# 📸 Danh Sách Ảnh Minh Họa Tự Động Sinh\n\nTài liệu này chứa thông tin và đường dẫn đến các hình ảnh dự án phục vụ cho RAG.\n\n${entries.join('\n\n')}\n`;
+    const blocks = entries.map(e => `## 🔖 [Ảnh Minh Họa] · ${e.baseName}
+Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: ${e.keywords}.
+Chi tiết: ${e.title}.${e.desc ? `\nMô tả nội dung (AI nhìn ảnh thật): ${e.desc}` : ''}
+Đường dẫn hình ảnh: ![${e.title}](/images/${e.urlPath})
+
+---`);
+    const content = `# 📸 Danh Sách Ảnh Minh Họa Tự Động Sinh\n\nTài liệu này chứa thông tin và đường dẫn đến các hình ảnh dự án phục vụ cho RAG.\n\n${blocks.join('\n\n')}\n`;
     fs.writeFileSync(outputMdPath, content, 'utf-8');
     console.log(`Đã tạo/cập nhật chỉ mục ảnh minh họa với ${entries.length} ảnh tại ${outputMdPath}.`);
   } else {
@@ -436,7 +488,7 @@ async function main() {
       console.log("Bỏ qua đồng bộ ảnh: thư mục ảnh OneDrive trống hoặc không tồn tại.");
     }
     // Sinh metadata ảnh (đường dẫn /images/...) để RAG/slide biết URL ảnh mà chèn vào slide
-    generateImageMetadata(LOCAL_IMAGES_DIR, LOCAL_IMAGES_METADATA_FILE);
+    await generateImageMetadata(LOCAL_IMAGES_DIR, LOCAL_IMAGES_METADATA_FILE);
 
     // 2c. COMMIT + PUSH data/ và public/images/ lên main NGAY BÂY GIỜ, trước khi đụng tới nhánh
     // chatbot-logs. QUAN TRỌNG: nếu để việc này tới cuối script (sau khi đã checkout sang
