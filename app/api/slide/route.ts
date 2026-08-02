@@ -529,6 +529,41 @@ export async function POST(req: NextRequest) {
 
     const { prompt: systemText, hasChunks } = await buildPrompt(message, ambient, recentText);
 
+    // ĐƯỜNG TẮT REFINE (pha 2): chỉ cần MỘT câu trả lời chèn lên slide tĩnh
+    // đã hiện - bỏ hẳn khâu sinh slide JSON đầy đủ (layout/points/ảnh) cho
+    // nhanh. Model 8b-instant + max 150 token -> thường dưới 1 giây.
+    // Lỗi thì KHÔNG return - rơi xuống đường hybrid cũ (chậm hơn nhưng chắc).
+    const REFINE_GROQ_KEY = process.env.GROQ_API_KEY || '';
+    if (refine && staticSlide && !staticSlide.forceStatic && REFINE_GROQ_KEY) {
+      try {
+        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "..."} - MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu không có thông tin: {"answer": ""}.';
+        const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${REFINE_GROQ_KEY}` },
+          body: JSON.stringify({
+            model: 'llama-3.1-8b-instant',
+            messages: [{ role: 'system', content: sys }, { role: 'user', content: message }],
+            temperature: 0.3,
+            max_tokens: 150,
+            response_format: { type: 'json_object' },
+          }),
+        });
+        if (r.ok) {
+          const d = await r.json();
+          const j = JSON.parse(d.choices?.[0]?.message?.content || '{}');
+          const ans = typeof j.answer === 'string' ? j.answer.trim() : '';
+          if (ans) {
+            return NextResponse.json({ answer_text: ans.slice(0, 220), _source: 'static_llm_text' });
+          }
+          // LLM nói không có thông tin -> đừng chèn gì, giữ nguyên slide tĩnh.
+          return NextResponse.json({ skip: true, reason: 'refine_no_info' });
+        }
+        console.warn(`[Slide] Refine nhanh Groq lỗi ${r.status} - rơi về đường hybrid`);
+      } catch (e) {
+        console.warn('[Slide] Refine nhanh lỗi mạng - rơi về đường hybrid', e);
+      }
+    }
+
     // Ambient + RAG rỗng + KHÔNG có slide tĩnh khớp → mơ hồ, bỏ qua.
     // (reason trả về để DEBUG HUD trên /slide?debug=1 hiện được vì sao skip)
     if (ambient && !hasChunks && !staticSlide) {
