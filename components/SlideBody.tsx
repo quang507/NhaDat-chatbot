@@ -112,19 +112,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     </a>
   );
 
-  // Chấm chỉ báo vị trí ảnh khi slide có nhiều ảnh.
-  const Dots = () => imgs.length > 1 ? (
-    <div className="absolute bottom-[2cqw] right-[3cqw] z-20 flex gap-[1cqw] bg-black/50 backdrop-blur px-[2cqw] py-[1cqw] rounded-full">
-      {imgs.map((_, i) => (
-        <span
-          key={i}
-          className={`h-[1.4cqw] min-h-[6px] rounded-full transition-all duration-300 ${
-            i === imgIdx ? 'w-[3.5cqw] min-w-[16px] bg-[#A8D94A]' : 'w-[1.4cqw] min-w-[6px] bg-white/40'
-          }`}
-        />
-      ))}
-    </div>
-  ) : null;
 
   // Nhãn nhỏ tracked kiểu Figma: "mẫu nhà opus" - lowercase nhẹ nhàng, mờ.
   const TopLabel = ({ delay = 80 }: { delay?: number }) => (
@@ -203,7 +190,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             </div>
           </div>
 
-          <Dots />
           {isMapImg(cur) && <QrChip />}
         </div>
       </div>
@@ -286,7 +272,6 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             )}
           </div>
 
-          <Dots />
         </div>
       </div>
     );
