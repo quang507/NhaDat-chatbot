@@ -487,6 +487,15 @@ async function main() {
     } else {
       console.log("Bỏ qua đồng bộ ảnh: thư mục ảnh OneDrive trống hoặc không tồn tại.");
     }
+    // TÁI TẠO ảnh minh họa giữ chỗ SAU khi mirror: 26 ảnh placeholder chỉ nằm
+    // trong repo (không có trong OneDrive) nên mirror vừa xóa mất chúng - chạy
+    // lại script sinh (script KHÔNG đè file đã tồn tại, ảnh thật cùng tên từ
+    // OneDrive luôn thắng).
+    try {
+      execSync('node scripts/gen-placeholder-images.js', { stdio: 'inherit' });
+    } catch (e) {
+      console.warn('Cảnh báo: không tái tạo được ảnh minh họa giữ chỗ:', e.message);
+    }
     // Sinh metadata ảnh (đường dẫn /images/...) để RAG/slide biết URL ảnh mà chèn vào slide
     await generateImageMetadata(LOCAL_IMAGES_DIR, LOCAL_IMAGES_METADATA_FILE);
 
