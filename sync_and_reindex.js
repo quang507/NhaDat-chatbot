@@ -333,7 +333,7 @@ async function describeImageWithVision(fullPath, rel) {
   const ext = path.extname(fullPath).toLowerCase();
   const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : ext === '.gif' ? 'image/gif' : 'image/jpeg';
   const b64 = fs.readFileSync(fullPath).toString('base64');
-  const res = await fetch(`${EMBED_BASE}/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+  const res = await fetch(`${EMBED_BASE}/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -341,7 +341,7 @@ async function describeImageWithVision(fullPath, rel) {
         { inline_data: { mime_type: mime, data: b64 } },
         { text: `Ảnh thuộc dự án nhà phố Ny'ah Phú Định (đường dẫn: ${rel}). Mô tả ảnh trong 1-2 câu tiếng Việt: ảnh chụp/vẽ gì (phòng nào, ngoại thất, bản đồ, bảng thông số...), đặc điểm nổi bật. Nếu ảnh có chữ "ẢNH MINH HỌA" thì ghi rõ đây là ảnh minh họa giữ chỗ. CHỈ trả về câu mô tả, không mở đầu.` },
       ]}],
-      generationConfig: { temperature: 0.2, maxOutputTokens: 120 },
+      generationConfig: { temperature: 0.2, maxOutputTokens: 300, thinkingConfig: { thinkingBudget: 0 } },
     }),
   });
   if (!res.ok) throw new Error(`vision ${res.status}`);
