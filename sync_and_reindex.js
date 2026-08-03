@@ -333,7 +333,7 @@ async function describeImageWithVision(fullPath, rel) {
   const ext = path.extname(fullPath).toLowerCase();
   const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : ext === '.gif' ? 'image/gif' : 'image/jpeg';
   const b64 = fs.readFileSync(fullPath).toString('base64');
-  const res = await fetch(`${EMBED_BASE}/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+  const res = await fetch(`${EMBED_BASE}/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
