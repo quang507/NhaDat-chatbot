@@ -386,6 +386,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // CHẶN CHỦ THỂ LẠ (log Telegram 02/08): tiếng TV/chuyện ngoài chứa đúng
+    // keyword ('vị trí của minecraft', 'cổng vào của vinaphone') vẫn trúng
+    // slide tĩnh. Nếu câu nhắc chủ thể lạ mà KHÔNG có neo dự án -> bỏ luôn.
+    const FOREIGN_SUBJECTS = ['vinaphone', 'viettel', 'mobifone', 'minecraft', 'madrid', 'cảnh sát', 'công an', 'hiện trường', 'điều động', 'truy nã', 'bắt giữ', 'ca sĩ', 'cầu thủ', 'bóng đá', 'trận đấu', 'thời tiết', 'bão số', 'tổng thống', 'thủ tướng', 'showbiz', 'tiktok', 'facebook', 'youtube', 'trò chơi', 'điện thoại di động', 'sim số'];
+    const PROJECT_ANCHORS = ["ny'ah", 'nyah', 'nhã đạt', 'phú định', 'trương đình hội', 'an dương vương', 'cosmo', 'fusion', 'opus', 'cashmere', 'signature', 'dự án', 'nhà mẫu', 'showroom', 'airtop', 'bytelife', 'căn', 'lô', 'nhà phố', 'compound'];
+    if (ambient && has(...FOREIGN_SUBJECTS) && !has(...PROJECT_ANCHORS)) {
+      console.log(`[Slide] Ambient skip (chủ thể lạ): "${message.slice(0, 60)}"`);
+      return NextResponse.json({ skip: true, reason: 'chủ thể lạ - không phải hỏi về dự án' });
+    }
+
     // (0) Catalog COMBO (lib/static_slides.ts, entry có allOf như "bếp + signature")
     // - chạy TRƯỚC chuỗi nhánh generic để tổ hợp cụ thể thắng nhánh chung.
     let staticSlide: any = matchStaticSlide(cleanMsg, 'combo');
