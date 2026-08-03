@@ -319,6 +319,24 @@ export default function SlideBotPage() {
         body: JSON.stringify({ message: text, ambient, refine: true, context: { recent: recentForCall } }),
       }).then(r => (r.ok ? r.json() : null)).catch(() => null);
 
+      // HIỆN TẠM: câu trả lời nhanh (~1s) thường về TRƯỚC slide đầy đủ (2-3s)
+      // với câu không trúng keyword. Có nó trước thì hiện ngay trên nền chữ -
+      // slide đầy đủ (có ảnh) về sau sẽ thay thế. Khách không phải nhìn màn
+      // hình đứng yên 3 giây.
+      let pha1Xong = false;
+      refinePromise.then(ref => {
+        if (pha1Xong || !ref || ref.skip || !ref.answer_text) return;
+        dbg('⚡ Câu trả lời nhanh về trước slide - hiện tạm');
+        setSlideKey(k => k + 1);
+        setSlide({
+          layout_type: 'text_only',
+          title: "Ny'ah Phú Định",
+          points: [],
+          speech_text: ref.answer_text,
+          answer_text: ref.answer_text,
+        } as SlideData);
+      });
+
       const res = await fetch('/api/slide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -334,6 +352,7 @@ export default function SlideBotPage() {
         throw new Error(`API ${res.status}: ${body.slice(0, 120) || res.statusText}`);
       }
       const data: SlideData = await res.json();
+      pha1Xong = true; // slide đầy đủ đã về - interim (nếu có) sẽ bị thay
       const secs = ((Date.now() - t0) / 1000).toFixed(1);
 
       if (data.skip || !data.speech_text || !data.title || data.title === 'Lỗi hiển thị' || data.title.includes('Lỗi hiển thị')) {
