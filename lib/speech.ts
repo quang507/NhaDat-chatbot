@@ -258,6 +258,9 @@ const VN_SPEECH_FIXES: [RegExp, string][] = [
   [vnWord('chủ\\s*đầu\\s*t[ưu]'), 'chủ đầu tư'],
   [vnWord('tiến\\s*độ'), 'tiến độ'],
   [vnWord('bàn\\s*giao'), 'bàn giao'],
+  // Tên riêng dự án hay bị nghe méo (log Telegram 02/08: "nhà phú điền")
+  [vnWord('phú\\s*đi[ềêè]n'), 'phú định'],
+  [vnWord('phú\\s*đinh'), 'phú định'],
   // Gen số
   [vnWord('gen\\s*hai'), 'gen 2'],
   [vnWord('gen\\s*năm'), 'gen 5'],
