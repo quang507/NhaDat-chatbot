@@ -556,9 +556,15 @@ export async function POST(req: NextRequest) {
     // lời về trước ~1s cho client hiện tạm, slide đầy đủ (pha 1 chậm hơn) về
     // sau sẽ thay thế. forceStatic vẫn miễn.
     const REFINE_GROQ_KEY = process.env.GROQ_API_KEY || '';
+    // CỔNG NGOÀI LỀ (sửa hồi quy PR #100): nghe ngầm + câu KHÔNG trúng slide
+    // tĩnh + RAG cũng không khớp = chuyện ngoài lề nghe lỏm -> IM LẶNG,
+    // tuyệt đối không để 8B "nhiệt tình" trả lời chuyện thiên hạ.
+    if (refine && ambient && !staticSlide && !hasChunks) {
+      return NextResponse.json({ skip: true, reason: 'refine_off_topic' });
+    }
     if (refine && !(staticSlide && staticSlide.forceStatic) && REFINE_GROQ_KEY) {
       try {
-        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "..."} - MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu không có thông tin: {"answer": ""}.';
+        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "..."} - MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu câu hỏi KHÔNG liên quan dự án/bất động sản (chuyện phiếm, thời sự, chủ đề ngoài lề) hoặc không có thông tin: {"answer": ""} - im lặng tốt hơn trả lời lạc đề.';
         const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${REFINE_GROQ_KEY}` },
