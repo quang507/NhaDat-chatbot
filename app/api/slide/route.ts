@@ -539,7 +539,7 @@ export async function POST(req: NextRequest) {
     // ("căn đó", "cái này") vì đáp án phụ thuộc câu trước của từng khách.
     const refineCacheKey = noD.replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
     const cacheable = refineCacheKey.length >= 10 && !/\b(do|nay|kia|no)\b/.test(refineCacheKey);
-    if (refine && staticSlide && !staticSlide.forceStatic && cacheable) {
+    if (refine && !(staticSlide && staticSlide.forceStatic) && cacheable) {
       const hit = ANSWER_CACHE.get(refineCacheKey);
       if (hit && Date.now() - hit.at < ANSWER_CACHE_TTL_MS) {
         return NextResponse.json({ answer_text: hit.ans, _source: 'static_llm_text', _cached: true });
@@ -552,8 +552,11 @@ export async function POST(req: NextRequest) {
     // đã hiện - bỏ hẳn khâu sinh slide JSON đầy đủ (layout/points/ảnh) cho
     // nhanh. Model 8b-instant + max 150 token -> thường dưới 1 giây.
     // Lỗi thì KHÔNG return - rơi xuống đường hybrid cũ (chậm hơn nhưng chắc).
+    // Áp dụng cho CẢ câu không trúng keyword (không có staticSlide): 1 câu trả
+    // lời về trước ~1s cho client hiện tạm, slide đầy đủ (pha 1 chậm hơn) về
+    // sau sẽ thay thế. forceStatic vẫn miễn.
     const REFINE_GROQ_KEY = process.env.GROQ_API_KEY || '';
-    if (refine && staticSlide && !staticSlide.forceStatic && REFINE_GROQ_KEY) {
+    if (refine && !(staticSlide && staticSlide.forceStatic) && REFINE_GROQ_KEY) {
       try {
         const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "..."} - MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu không có thông tin: {"answer": ""}.';
         const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
