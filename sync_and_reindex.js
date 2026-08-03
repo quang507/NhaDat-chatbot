@@ -341,12 +341,13 @@ async function describeImageWithVision(fullPath, rel) {
         { inline_data: { mime_type: mime, data: b64 } },
         { text: `Ảnh thuộc dự án nhà phố Ny'ah Phú Định (đường dẫn: ${rel}). Mô tả ảnh trong 1-2 câu tiếng Việt: ảnh chụp/vẽ gì (phòng nào, ngoại thất, bản đồ, bảng thông số...), đặc điểm nổi bật. Nếu ảnh có chữ "ẢNH MINH HỌA" thì ghi rõ đây là ảnh minh họa giữ chỗ. CHỈ trả về câu mô tả, không mở đầu.` },
       ]}],
-      generationConfig: { temperature: 0.2, maxOutputTokens: 300, thinkingConfig: { thinkingBudget: 0 } },
+      generationConfig: { temperature: 0.2, maxOutputTokens: 1200 },
     }),
   });
   if (!res.ok) throw new Error(`vision ${res.status}`);
   const d = await res.json();
-  const txt = d.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  const parts = d.candidates?.[0]?.content?.parts || [];
+  const txt = parts.filter((p) => p.text && !p.thought).map((p) => p.text).join(' ').trim();
   return txt || null;
 }
 
