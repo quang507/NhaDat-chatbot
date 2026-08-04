@@ -1,10 +1,7 @@
-# NPD TINH NANG SAN PHAM
+# THƯƠNG HIỆU CÔNG NGHỆ BYTELIFE
 
----
-
-|  |  |  |
-| --- | --- | --- |
-| **LOGO** | **Miêu tả tổng quan** | **Chi tiết** |
-| ByteLife | Là sản phẩm công nghệ ưu việt, là chất liệu hạnh phúc Nhã Đạt đem đến nhằm nâng tầm chất lượng trong nhà Ny’ah.  ByteLife lấy con người làm trung tâm, lấy nhịp sinh học làm thông số: khí tươi cho phổi, ánh sáng dịu dàng cho mắt, lúc làm việc lúc ngủ lúc chơi, vv.    Lấy cảm hứng từ các chiều kích trong không gian, phần chữ “ByteLife" như chạm vào cửa ngõ của những rung động đa tần, đa sắc. Khoảnh khắc bạn chạm vào “ByteLife" là khoảnh khắc cộng hưởng của rung cảm. “ByteLife" cảm nhận những rung động từ nhịp sinh học của cơ thể bạn để nuông chiều cuộc sống của bạn theo cách trọn vẹn nhất. | **Phần chữ:**  Byte tượng trưng cho công nghệ, sự thông minh của trí tuệ nhân tạo. Life là cuộc sống, tượng trưng cho con người.  Byte là đơn vị bộ nhớ nhỏ nhất, cho thấy sự tiết kiệm thấp nhất của hệ thống khi đem lại lợi ích cho con người.    ByteLife với chữ trắng tương phản trên nền đen, font chữ mảnh mà mạnh, chân phương như chất lượng chân thật của ByteLife.    **Phần hình:** mô phỏng rung động cơ học bằng các dải màu đa sắc lồng ghép vào nhau. Từng dải màu với từng biên độ dao động riêng lại quyện vào chung một mô thức, tạo nên hiệu ứng thị giác như một chiếc vân tay chạm vào những rung động. “Động" và “chạm” lúc này như rung lên trên nền ảnh tĩnh lặng, mở toang giác quan từ điểm tựa thị giác. |
-
----
+| Mục | Nội dung |
+|---|---|
+| ByteLife là gì | Sản phẩm công nghệ của Nhã Đạt nâng tầm chất lượng sống trong nhà Ny'ah; lấy con người làm trung tâm, nhịp sinh học làm thông số: khí tươi cho phổi, ánh sáng dịu cho mắt, theo từng trạng thái làm việc/ngủ/chơi |
+| Ý nghĩa tên | "Byte" = công nghệ, trí tuệ nhân tạo, đơn vị bộ nhớ nhỏ nhất (tiêu hao thấp nhất khi phục vụ con người); "Life" = cuộc sống, con người |
+| Nhận diện | Chữ trắng trên nền đen, font mảnh mà mạnh; phần hình mô phỏng rung động đa sắc như "vân tay chạm vào rung động" |

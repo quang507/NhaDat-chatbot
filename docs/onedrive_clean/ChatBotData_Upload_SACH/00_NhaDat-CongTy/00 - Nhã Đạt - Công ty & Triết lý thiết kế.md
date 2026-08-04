@@ -108,9 +108,3 @@ Tiêu chuẩn chung mọi mẫu: phòng ngủ gia chủ rộng 2/3 chiều dài 
 - Tagline: "Sống đẹp hơn chung cư, sinh lời hơn thổ cư"
 - Pháp lý: sổ đỏ từng căn, chủ quyền nhà riêng biệt từng hộ
 - Hạ tầng: Công văn số 1968/UBND-ĐT ngày 16/09/2022 của UBND Quận 8
-
-## 12. Quy trình Lễ bàn giao nhà (quy chuẩn nội bộ)
-
-**Chuẩn bị (trước giờ G ít nhất 2 giờ)**: trang trí bàn ghế, hoa tươi, băng khánh thành, bảng số căn, bảng "Chúc anh chị về nhà mới"; setup bàn tiếp khách, rượu vang, nước suối; chuẩn bị chìa khóa + giấy tờ bàn giao; kỹ sư mặc áo khoác công trường, các bộ phận dán logo Nhã Đạt.
-
-**Trình tự lễ**: đón khách, mời nước → tham quan từng tầng (có sales và kỹ sư dẫn) → chụp hình tại khu trang trí trước nhà → nghi thức cắt băng khánh thành → khui sâm panh, nâng ly chúc mừng → ký nhận bàn giao, giao chìa khóa tận tay → kỹ sư hướng dẫn kỹ thuật điện nước, bảo trì, vận hành → mời khách ghé nhà mẫu trò chuyện thân mật.
