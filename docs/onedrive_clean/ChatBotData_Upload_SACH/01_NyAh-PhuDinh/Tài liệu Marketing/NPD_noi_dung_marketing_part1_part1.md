@@ -2,8 +2,6 @@
 
 ---
 
-## Bài Post - Airtop.docx
-
 **AIRTOP BY NHADAT**
 
 1. **SỐNG KHỎE HƠN, THỞ LÀNH HƠN NGAY GIỮA LÒNG THÀNH PHỐ**
@@ -37,8 +35,6 @@ Hơn ai hết, **Nhã Đạt** hiểu và tin rằng, một ngôi nhà tiện ng
 Ny'ah Phú Định by Nhã Đạt - "Trạm sạc năng lượng" mỗi ngày của bạn.
 
 ---
-
-## kế hoạch tổng quan phễu mktg tháng 6.docx
 
 # KẾ HOẠCH TỔNG QUAN PHỄU MARKETING THÁNG 6/2026.
 
@@ -118,8 +114,6 @@ Thiết kế theo hành trình khách hàng:
 
 ---
 
-## Series câu chuyện Garage.docx
-
 **Tập 1: Câu chuyện khởi nguồn - Nỗi ám ảnh mang tên “Đậu vỉa hè”**
 
 **“Không thể để ‘xe cưng’ ngủ ngoài đường!”**
@@ -198,8 +192,6 @@ Anh Leo đúc kết: *“Tiện nghi là khi ai cũng thoải mái trong chính 
 
 ---
 
-## Tin bài đăng cafebiz - final 23.12.25.docx
-
 **Khi nhà phố được ‘định nghĩa lại’ để cân bằng tiện ích chung cư và giá trị thổ cư.**
 
 *Giờ đây, bạn đã đủ để mua một căn nhà mơ ước, nhưng lại đứng trước một lựa chọn: Chung cư tiện nghi, nhưng giới hạn về không gian và quyền sở hữu. Hay nhà phố thổ cư giá trị nền đất ổn định, nhưng thiếu tiện ích đồng bộ, chất lượng sống dễ bị ảnh hưởng bởi quy hoạch tự phát.*
@@ -251,8 +243,6 @@ Anh Ngô Trần Công Luận nhấn mạnh trải nghiệm sống tiện nghi, v
 ~~~~
 
 ---
-
-## kịch bản phát triển nội dung Podcast.docx
 
 # 🎙️PODCAST THƯ VIỆN DI SẢN NY’AH PHÚ ĐỊNH
 

@@ -134,6 +134,20 @@ export function detectUnit(message: string): number | null {
 }
 
 // Khối facts chính xác để nhét vào prompt + từ khóa tăng cường RAG.
+// Số tầng + thang máy theo dòng mẫu (chốt với anh Quang 04/08):
+// Fusion Gen 4 / Cosmo Gen 1 = 5 tầng KHÔNG thang máy; Gen 5 / Cosmo Gen 2 = 5 tầng CÓ;
+// Opus 6 tầng thang máy lên sân thượng; Office 7 tầng thương mại có hầm + thang máy.
+export function floorsAndLift(model: string): string {
+  const m = model.toLowerCase();
+  if (m.includes('office')) return '7 tầng (tòa nhà thương mại, có tầng hầm), CÓ thang máy';
+  if (m.includes('opus')) return '6 tầng, CÓ thang máy lên tận sân thượng';
+  if (m.includes('gen 4')) return '5 tầng, KHÔNG có thang máy (Fusion Gen 4)';
+  if (m.includes('gen 5')) return '5 tầng, CÓ thang máy';
+  if (m.includes('cosmo gen 2')) return '5 tầng, CÓ thang máy';
+  if (m.startsWith('cosmo')) return '5 tầng, KHÔNG có thang máy (Cosmo Gen 1)';
+  return '5 tầng, thiết kế sẵn hố thang máy';
+}
+
 export function unitContext(n: number): { facts: string; modelKeywords: string } {
   const l = LOTS[n];
   if (!l) return { facts: '', modelKeywords: '' };
@@ -146,7 +160,7 @@ export function unitContext(n: number): { facts: string; modelKeywords: string }
 - Kích thước lô: ${l.kt}
 - Hướng nhà: ${l.huong}${l.diaChi ? `\n- Địa chỉ: ${l.diaChi}` : ''}
 - Trạng thái: ${status}
-${PRICES[n] ? `- Bảng giá độc quyền T3/2026 (RH v12): ${PRICES[n]}\n` : ''}- Đặc điểm dòng ${FAMILY_NAME[l.fam]}: ${FAMILY_FEATURES[l.fam]}`;
+${PRICES[n] ? `- Bảng giá độc quyền T3/2026 (RH v12): ${PRICES[n]}\n` : ''}- Số tầng & thang máy: ${floorsAndLift(l.model)}\n- Đặc điểm dòng ${FAMILY_NAME[l.fam]}: ${FAMILY_FEATURES[l.fam]}`;
   const modelKeywords = `${l.model} ${FAMILY_NAME[l.fam]} mẫu nhà diện tích DT mặt tiền hướng datasheet giá bán giá tiền bảng giá`;
   return { facts, modelKeywords };
 }

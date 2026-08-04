@@ -1,4 +1,3 @@
-## Tin bài đăng cafebiz - final 23.12.25.docx
 **Khi nhà phố được ‘định nghĩa lại’ để cân bằng tiện ích chung cư và giá trị thổ cư.**
 
 *Giờ đây, bạn đã đủ để mua một căn nhà mơ ước, nhưng lại đứng trước một lựa chọn: Chung cư tiện nghi, nhưng giới hạn về không gian và quyền sở hữu. Hay nhà phố thổ cư giá trị nền đất ổn định, nhưng thiếu tiện ích đồng bộ, chất lượng sống dễ bị ảnh hưởng bởi quy hoạch tự phát.*
@@ -50,8 +49,6 @@ Anh Ngô Trần Công Luận nhấn mạnh trải nghiệm sống tiện nghi, v
 ~~~~
 
 ---
-
-## kịch bản phát triển nội dung Podcast.docx
 
 # 🎙️PODCAST THƯ VIỆN DI SẢN NY’AH PHÚ ĐỊNH
 

@@ -328,8 +328,6 @@ kiến thức đầy bất ngờ tiếp theo
 
 ---
 
-## tại sao là Ny'ah Phú Định, ý nghĩa tên vùng đất.docx
-
 **(Từ bến sông cổ đến tọa độ đô thị mới)**
 
 **[Tone giọng mở đầu: Trầm lắng, gợi mở, mang màu sắc hoài niệm nhưng đầy nội lực]**

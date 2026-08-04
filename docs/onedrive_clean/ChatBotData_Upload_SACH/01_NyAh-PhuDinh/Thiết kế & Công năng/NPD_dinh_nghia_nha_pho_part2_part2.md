@@ -1,4 +1,3 @@
-## features - định nghĩa lại nhà phố.docx
 
 **KHI NHÀ PHỐ ĐƯỢC *TÁI ĐỊNH NGHĨA LẠI* - NHÃ ĐẠT ĐÃ LÀM ĐIỀU ĐÓ NHƯ THẾ NÀO?**
 

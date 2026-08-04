@@ -1,4 +1,3 @@
-## 1 - rổ hàng\RH 13.05.26.jpg
 
 156 AN DƯƠNG VƯƠNG
 
@@ -70,16 +69,12 @@ TRƯỜNG ĐÌNH HỘI
 
 ---
 
-## 2 - trình chiếu\2a - bản đồ phân lô\[2a1b] bản đồ phân lô JPG\NPD so do phan lo-05.jpg
-
 Ny'ah
 PHÚ ĐỊNH
 
 A development by NHÃ ĐẠT nd
 
 ---
-
-## 2 - trình chiếu\2a - bản đồ phân lô\[2a1b] bản đồ phân lô JPG\NPD so do phan lo-01.jpg
 
 ## 156 AN DƯƠNG VƯƠNG
 
@@ -116,8 +111,6 @@ A development by NHÃ ĐẠT nd
 **TRƯƠNG ĐỊNH HỘI**
 
 ---
-
-## 2 - trình chiếu\2a - bản đồ phân lô\[2a1b] bản đồ phân lô JPG\NPD so do phan lo-02.jpg
 
 ## **Kế hoạch chi tiết khu đất**
 
@@ -191,8 +184,6 @@ A development by NHÃ ĐẠT nd
 
 ---
 
-## 2 - trình chiếu\2a - bản đồ phân lô\[2a1b] bản đồ phân lô JPG\NPD so do phan lo-03.jpg
-
 ## 3 mẫu nhà Ny’ah Phú Định
 
 ### MẪU NHÀ **Fusion**
@@ -226,8 +217,6 @@ A development by NHÃ ĐẠT nd
 
 ---
 
-## 2 - trình chiếu\2a - bản đồ phân lô\[2a1b] bản đồ phân lô JPG\NPD so do phan lo-04.jpg
-
 ## Nguồn kháng thể tự nhiên
 
 ### Đặc quyền 17 tiện ích
@@ -244,8 +233,6 @@ Chìa khóa trao tay, Ny'ah trao bạn sự thấu tỏ khi giải mã pháp lý
 - **Ảnh - không có nội dung văn bản**
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c7 - mẫu nhà Office 1,2\[2c7b] mẫu nhà office 1,2\NDP_maunha 0ffice (15).jpg
 
 ## Giá bán
 
@@ -277,8 +264,6 @@ Chìa khóa trao tay, Ny'ah trao bạn sự thấu tỏ khi giải mã pháp lý
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c7 - mẫu nhà Office 1,2\[2c7b] mẫu nhà office 1,2\NDP_maunha 0ffice (6).jpg
-
 ## **'Chất keo' siết chặt dòng tiền nhờ các công năng đúng trend**
 
 | Tầng | Tổng diện tích sàn | Công năng |
@@ -288,8 +273,6 @@ Chìa khóa trao tay, Ny'ah trao bạn sự thấu tỏ khi giải mã pháp lý
 | Sân thượng |  | BBQ & sân vườn |
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c7 - mẫu nhà Office 1,2\[2c7b] mẫu nhà office 1,2\NDP_maunha 0ffice (7).jpg
 
 ## **‘Thời nam châm’ 3 tầng thu hút của Phường Phú Định**
 
@@ -302,8 +285,6 @@ Chìa khóa trao tay, Ny'ah trao bạn sự thấu tỏ khi giải mã pháp lý
 - Gấp **3 tài** trong thông thương, sàng cho những ‘nhiệm vụ’ đa dạng.
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c7 - mẫu nhà Office 1,2\[2c7b] mẫu nhà office 1,2\NDP_maunha 0ffice (8).jpg
 
 ## 3 tầng kinh doanh  
 **(gym, spa, showroom...)**
@@ -325,8 +306,6 @@ Chìa khóa trao tay, Ny'ah trao bạn sự thấu tỏ khi giải mã pháp lý
 - Hình ảnh 3D thể hiện kết cấu của công trình với 3 tầng.
 
 ---
-
-## 2 - trình chiếu\đặc quyền 17 tiện ích.png
 
 ## Nguồn kháng thể tự nhiên tại Ny'ah
 
@@ -351,8 +330,6 @@ Chìa khóa trao tay, Ny'ah trao bạn sự thấu tỏ khi giải mã pháp lý
 
 ---
 
-## 4 - pháp lý\[1] giải mã pháp lý\Giải mã pháp lý.jpg
-
 ## GIẢI MÃ PHÁP LÝ
 
 Khu nhà được phê duyệt 1/500, có sổ hồng riêng từng căn trước khi xây dựng.
@@ -368,8 +345,6 @@ Khu nhà được phê duyệt 1/500, có sổ hồng riêng từng căn trướ
 4. **Hợp đồng mua bán công chứng sang tên**
 
 ---
-
-## 7 - đối tác\Đối tác.jpg
 
 ## ĐỐI TÁC
 
@@ -498,11 +473,9 @@ Bộ hồ sơ pháp lý đầy đủ từng căn:
 17. Trạm khử khuẩn hàng shipper
 
 ## Các mẫu nhà (datasheet)
-Trong thư mục `2 - trình chiếu\2b - datasheet` có các bộ datasheet (ảnh JPG) — nội dung chi tiết từng mẫu nhà (Opus, Cosmo Gen 1, Cosmo Gen 2, Fusion Gen 5, Office 1,2) đã OCR, xem phần sau trong tài liệu này. Bản đồ phân lô (5 ảnh) xem phần đầu tài liệu.
+Datasheet chi tiết từng mẫu nhà (Opus, Cosmo Gen 1, Cosmo Gen 2, Fusion Gen 5, Office 1-2) nằm ở phần sau tài liệu này.
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c2 - mẫu nhà Opus datasheet\[2c2b] mẫu nhà Opus datasheet JPGs\NPD mau nha Opus-00.jpg
 
 ## **Nội dung trích xuất Markdown**
 
@@ -520,15 +493,11 @@ Trong thư mục `2 - trình chiếu\2b - datasheet` có các bộ datasheet (�
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c2 - mẫu nhà Opus datasheet\[2c2b] mẫu nhà Opus datasheet JPGs\NPD mau nha Opus-01.jpg
-
 mẫu nhà Opus
 
 *Mẫu nhà Opus tiền thân là mẫu nhà Fusion MT
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c2 - mẫu nhà Opus datasheet\[2c2b] mẫu nhà Opus datasheet JPGs\NPD mau nha Opus-03.jpg
 
 ## Điểm xuất phát đầy lợi thế
 
@@ -563,8 +532,6 @@ mẫu nhà Opus
 - Nguyễn Văn Linh
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c2 - mẫu nhà Opus datasheet\[2c2b] mẫu nhà Opus datasheet JPGs\NPD mau nha Opus-04.jpg
 
 ## Điểm xuất phát đầy lợi thế
 
@@ -602,8 +569,6 @@ mẫu nhà Opus
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c2 - mẫu nhà Opus datasheet\[2c2b] mẫu nhà Opus datasheet JPGs\NPD mau nha Opus-05.jpg
-
 ## Thông Tin Sản phẩm
 
 - **Tên sản phẩm:** Nyah - Phú Định
@@ -632,8 +597,6 @@ mẫu nhà Opus
 - Sảnh tầng và khu giặt sấy: $5.66 m²$
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c2 - mẫu nhà Opus datasheet\[2c2b] mẫu nhà Opus datasheet JPGs\NPD mau nha Opus-06.jpg
 
 ## **Mẫu nhà Opus**
 
@@ -711,8 +674,6 @@ Mặt tiền thanh thoát với những đường nét hiện đại sẽ gây �
 - **Demo sản phẩm:** Khu vực để “đập hộp” và trải nghiệm sản phẩm.
 - **Không gian làm việc:** Thoáng đãng, hỗ trợ xử lý đơn hàng hiệu quả cho 10 nhân viên.
 
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-01.jpg
-
 ## SƠ ĐỒ PHÂN LÔ THEO MẪU NHÀ
 
 ### **156 AN DƯƠNG VƯƠNG**
@@ -728,8 +689,6 @@ Mặt tiền thanh thoát với những đường nét hiện đại sẽ gây �
 (*) Chi tiết sẽ thay đổi theo thực tế và sự phê duyệt của cơ quan thẩm quyền, nếu có.
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-02.jpg
 
 ## MẪU NHÀ Cosmo
 
@@ -747,8 +706,6 @@ Mặt tiền thanh thoát với những đường nét hiện đại sẽ gây �
 | Sân thượng                 | 30             |
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-03.jpg
 
 ## MẪU NHÀ Cosmo
 
@@ -782,8 +739,6 @@ Mặt tiền thanh thoát với những đường nét hiện đại sẽ gây �
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-04.jpg
-
 ## MẪU NHÀ Cosmo
 
 ### TẦNG 4
@@ -807,8 +762,6 @@ Không có nội dung văn bản.
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-05.jpg
-
 ## MẪU NHÀ Cosmo
 
 ### TẦNG 1 - GARAGE VÀ PHÒNG SINH HOẠT
@@ -821,8 +774,6 @@ Không có nội dung văn bản.
 - **Sảnh đón trang trọng nhờ cửa đi riêng**
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-06.jpg
 
 ## MẪU NHÀ Cosmo
 
@@ -838,8 +789,6 @@ Không có nội dung văn bản.
 ## [BẢN VẼ TẦNG 2 - BẾP, BAR VÀ PHÒNG ĂN (KHÔNG CÓ CHI TIẾT SỐ LIỆU CỤ THỂ TRONG ẢNH)]
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-07.jpg
 
 ## MẪU NHÀ Cosmo
 
@@ -859,15 +808,11 @@ Không có nội dung văn bản.
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-10.jpg
-
 - SƠ ĐỒ PHÂN LÔ CHẤT LƯỢNG CAO
 - ALBUM NỘI THẤT ĐẶC SẮC CỦA COSMO
 - NHỮNG PHIÊN BẢN VÀ TỦY CHỌN PHONG PHỦ CHO MẪU NHÀ COSMO
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c3 - mẫu nhà Cosmo datasheet\[2c3b] mẫu nhà Cosmo Gen 1 datasheet JPG\NPD mau nha Cosmo-11.jpg
 
 ## Nyah PHÚ ĐINH
 
@@ -875,8 +820,6 @@ A development by **NHÀ ĐẠT**
 **nd**
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-10.jpg
 
 ## 3D WALKTHROUGH MẪU NHÀ FUSION
 
@@ -890,15 +833,11 @@ A development by **NHÀ ĐẠT**
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-11.jpg
-
 ## Nỹah PHÚ ĐÌNH
 A development by NHÀ ĐẠT
 nd
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-12.jpg
 
 ## MẪU NHÀ GEN 5
 
@@ -925,8 +864,6 @@ nd
 | Sân phơi sau              | 3.5                |
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-2.jpg
 
 ## **Mẫu Nhà GEN 5 - Fusion**
 
@@ -958,8 +895,6 @@ nd
 | Thang máy     | -              |
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-3.jpg
 
 ## MẪU NHÀ GEN 5
 
@@ -994,8 +929,6 @@ nd
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-4.jpg
-
 ## MẪU NHÀ GEN 5 - Fusion
 
 ### GARAGE VÀ PHÒNG SINH HOẠT
@@ -1024,8 +957,6 @@ nd
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-5.jpg
-
 ## Mẫu nhà GEN 5 - Fusion
 
 ### **Tầng lửng riêng cho ông bà**
@@ -1043,8 +974,6 @@ nd
 | TV Area         |                |
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-6.jpg
 
 ## MẪU NHÀ GEN 5
 
@@ -1065,8 +994,6 @@ nd
 | KHÔNG GIAN BẾP | 17.84 |
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c5 - mẫu nhà Fusion Gen 5 datasheet\[2c5b] mẫu nhà Fusion Gen 5 JPG\[2c5a] mß║½u nh├á Fusion Gen 5 datasheet-images-7.jpg
 
 ## MẪU NHÀ GEN 5
 
@@ -1138,8 +1065,6 @@ nd
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c6 -  mẫu nhà Cosmo Gen 2 datasheet\[2c6b] mẫu nhà Cosmo Gen 2 datasheet JPGs\[2c6a] mß║½u nh├á Cosmo Gen 2 datasheet-images-10.jpg
-
 ## MẪU NHÀ GEN 2 COSMO
 
 ### Thông Tin Chung
@@ -1182,23 +1107,17 @@ nd
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c6 -  mẫu nhà Cosmo Gen 2 datasheet\[2c6b] mẫu nhà Cosmo Gen 2 datasheet JPGs\[2c6a] mß║½u nh├á Cosmo Gen 2 datasheet-images-11.jpg
-
 - **SƠ ĐỒ PHÂN LÔ CHẤT LƯỢNG CAO**  
 - **ALBUM NỘI THẤT ĐẶC SẮC CỦA COSMO**  
 - **NHỮNG PHIÊN BẢN VÀ TỦY CHỌN PHONG PHỦ CHO MẪU NHÀ COSMO**
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c6 -  mẫu nhà Cosmo Gen 2 datasheet\[2c6b] mẫu nhà Cosmo Gen 2 datasheet JPGs\[2c6a] mß║½u nh├á Cosmo Gen 2 datasheet-images-12.jpg
-
 ## Nỹah PHÚ ĐỊNH
 A development by NHÀ ĐẠT  
 nd
 
 ---
-
-## 2 - trình chiếu\2b - datasheet\2c6 -  mẫu nhà Cosmo Gen 2 datasheet\[2c6b] mẫu nhà Cosmo Gen 2 datasheet JPGs\[2c6a] mß║½u nh├á Cosmo Gen 2 datasheet-images-2.jpg
 
 ## MẪU NHÀ GEN 2 COSMO
 
@@ -1224,8 +1143,6 @@ nd
 
 ---
 
-## 2 - trình chiếu\2b - datasheet\2c6 -  mẫu nhà Cosmo Gen 2 datasheet\[2c6b] mẫu nhà Cosmo Gen 2 datasheet JPGs\[2c6a] mß║½u nh├á Cosmo Gen 2 datasheet-images-3.jpg
-
 ## MẪU NHÀ GEN 2 COSMO
 
 ### TẦNG 1
@@ -1248,8 +1165,6 @@ nd
 | Phòng bếp    | 35             |
 | Sân phơi     | -              |
 | Giêng trời  | -              |
-
-## 2 - trình chiếu\2b - datasheet\2c6 -  mẫu nhà Cosmo Gen 2 datasheet\[2c6b] mẫu nhà Cosmo Gen 2 datasheet JPGs\[2c6a] mß║½u nh├á Cosmo Gen 2 datasheet-images-7.jpg
 
 ## Mẫu nhà Cosmo Gen 2
 

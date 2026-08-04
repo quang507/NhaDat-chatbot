@@ -1,4 +1,3 @@
-## office 1, 2 - Ny'ah Phú Định.pdf
 Tòa nhà thương mại 7 tầng độc nhất trên
 | tuyến | đường | Trương Đình Hội  |
 | ----- | ----- | ---------------- |

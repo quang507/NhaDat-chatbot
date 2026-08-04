@@ -1,4 +1,3 @@
-## transcript Định nghĩa lại nhà phố P2 noi ve khong khi.txt
 TRANSCRIPT – KHÔNG KHÍ TRONG NHÀ PHỐ
 Nhã Đạt
 

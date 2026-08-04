@@ -1,4 +1,3 @@
-## Transcript video định nghĩa lại nhà phố sài gòn.docx
 **Transcript**
 
 **Định nghĩa lại nhà phố cho người Sài Gòn** (<

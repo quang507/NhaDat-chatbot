@@ -2,8 +2,6 @@
 
 ---
 
-## Quy mô bàn giao.pdf
-
 QUY MÔ BÀN GIAO
 
 QUY MÔ BÀN GIAO
@@ -15,8 +13,6 @@ Hoàn thiện nội thất
 gói Max
 
 ---
-
-## Quy trình lễ bàn giao.docx
 
 **KỊCH BẢN & QUY TRÌNH TỔ CHỨC LỄ BÀN GIAO NHÀ**
 

@@ -1,4 +1,3 @@
-## features - định nghĩa lại nhà phố tách từ video có sửa lại.txt
 
 hãy tưởng tượng một kịch bản ờ
 vô cùng quen thuộc ở các đô thị lớn hiện nay

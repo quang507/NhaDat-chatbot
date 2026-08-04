@@ -1,4 +1,3 @@
-## NPD_Leaflet_v3 - Mat1.pdf
 Nguồn kháng thể tự nhiên
 
 Đặc quyền 17 tiện ích

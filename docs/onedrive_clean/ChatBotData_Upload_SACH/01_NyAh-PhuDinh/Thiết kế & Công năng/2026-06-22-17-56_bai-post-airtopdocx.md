@@ -1,4 +1,3 @@
-## Bài Post - Airtop.docx
 **AIRTOP BY NHADAT**
 
 1. **SỐNG KHỎE HƠN, THỞ LÀNH HƠN NGAY GIỮA LÒNG THÀNH PHỐ**
@@ -32,8 +31,6 @@ Hơn ai hết, **Nhã Đạt** hiểu và tin rằng, một ngôi nhà tiện ng
 Ny'ah Phú Định by Nhã Đạt - "Trạm sạc năng lượng" mỗi ngày của bạn.
 
 ---
-
-## kế hoạch tổng quan phễu mktg tháng 6.docx
 
 # KẾ HOẠCH TỔNG QUAN PHỄU MARKETING THÁNG 6/2026.
 
