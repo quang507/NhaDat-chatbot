@@ -1,119 +1,22 @@
-QTGC 22/07/2024 15:10pm
+# BOOKING — QUY TRÌNH GIỮ CHỖ & KÝ HỢP ĐỒNG (QTGC 22/07/2024)
 
-Quy trình nhận giữ chỗ và ký hợp đồng
-RỔ HÀNG “THANG MÁY LÊN TẬN SÂN THƯỢNG”
+Rổ hàng "Thang máy lên tận sân thượng" — 50 căn nhà phố thương mại có garage ô tô từng nhà.
 
-1.  Quy trình giữ chỗ.
+## Quy trình giữ chỗ
 
-Admin thông báo
+| Bước | Nội dung | Thời hạn |
+|---|---|---|
+| 1 | Admin thông báo booking | — |
+| 2 | Lock mã căn | Trong vòng 1 giờ |
+| 3 | Xác nhận chuyển khoản | Sau 1 giờ chưa nhận tiền → mã căn trả về rổ hàng |
+| 4 | Chính thức booking | Giấy xác nhận gửi khách trong 24h |
 
-booking
+## Hai hình thức booking (mốc khánh thành nhà mẫu Fusion Gen 5, 17/08/2024)
 
-Lock mã căn
+| Hình thức | Số tiền | Điều kiện |
+|---|---|---|
+| Booking có điều kiện | 100 triệu đồng | Ký xác nhận chuyển cọc ngày 17/08 |
+| Booking không điều kiện | 20 triệu đồng | Ký xác nhận chuyển cọc & nộp đủ 100 triệu ngày 17/08 |
 
-trong vòng 1h
-
-Xác nhận
-
-chuyển khoản
-
-Chính thức
-Booking
-
-Ghi chú :
-
-  Nếu sau 1 giờ lock chưa nhận được số tiền booking, mã căn sẽ được trả về rổ hàng.
-  Sau khi nhận được tiền booking, khách hàng sẽ nhận được giấy xác nhận trong vòng 24h.
-
-2.  Ký hợp đồng
-
-2.1  Ngày 17/08/2024 : Khánh Thành Nhà Mẫu Fusion Gen 5.
-
-Booking có điều kiện (100 triệu đồng)
-Ký xác nhận chuyển cọc
-
-Booking không điều kiện (20 triệu đồng)
-
-Ngày 17/08/2024
-
-Ký xác nhận chuyển cọc & thanh toán đủ 100 triệu đồng
-
-Ngày 17/08/2024
-
-  Tất cả các khách hàng đã xác nhận chuyển cọc tại ngày khánh thành nhà mẫu Fusion Gen
-
-5 sẽ ký hợp đồng cọc vào ngày 19/08/2024 và thanh toán cọc đợt 1.
-
-  Những khách hàng booking không được chọn căn ngày khai trương, sẽ được hoàn lại tiền
-
-cọc trong 3 ngày kể từ ngày 19/08/2024.
-
-50 CĂN NHÀ PHỐ THƯƠNG MẠI CÓ GARAGE Ô TÔ TỪNG NHÀ
-
----
-
-# NPD DINH NGHIA NHA PHO
-
----
-
-# Định nghĩa lại nhà phố
-
----
-
-# NPD CHINH SACH BOOKING
-
----
-
-QTGC 22/07/2024 15:10pm
-
-Quy trình nhận giữ chỗ và ký hợp đồng
-RỔ HÀNG “THANG MÁY LÊN TẬN SÂN THƯỢNG”
-
-1.  Quy trình giữ chỗ.
-
-Admin thông báo
-
-booking
-
-Lock mã căn
-
-trong vòng 1h
-
-Xác nhận
-
-chuyển khoản
-
-Chính thức
-Booking
-
-Ghi chú :
-
-  Nếu sau 1 giờ lock chưa nhận được số tiền booking, mã căn sẽ được trả về rổ hàng.
-  Sau khi nhận được tiền booking, khách hàng sẽ nhận được giấy xác nhận trong vòng 24h.
-
-2.  Ký hợp đồng
-
-2.1  Ngày 17/08/2024 : Khánh Thành Nhà Mẫu Fusion Gen 5.
-
-Booking có điều kiện (100 triệu đồng)
-Ký xác nhận chuyển cọc
-
-Booking không điều kiện (20 triệu đồng)
-
-Ngày 17/08/2024
-
-Ký xác nhận chuyển cọc & thanh toán đủ 100 triệu đồng
-
-Ngày 17/08/2024
-
-  Tất cả các khách hàng đã xác nhận chuyển cọc tại ngày khánh thành nhà mẫu Fusion Gen
-
-5 sẽ ký hợp đồng cọc vào ngày 19/08/2024 và thanh toán cọc đợt 1.
-
-  Những khách hàng booking không được chọn căn ngày khai trương, sẽ được hoàn lại tiền
-
-cọc trong 3 ngày kể từ ngày 19/08/2024.
-
-50 CĂN NHÀ PHỐ THƯƠNG MẠI CÓ GARAGE Ô TÔ TỪNG NHÀ
-
----
+- Khách đã xác nhận chuyển cọc tại ngày khánh thành → ký hợp đồng cọc ngày 19/08/2024 và thanh toán cọc đợt 1.
+- Khách booking không được chọn căn ngày khai trương → hoàn tiền cọc trong 3 ngày kể từ 19/08/2024.
