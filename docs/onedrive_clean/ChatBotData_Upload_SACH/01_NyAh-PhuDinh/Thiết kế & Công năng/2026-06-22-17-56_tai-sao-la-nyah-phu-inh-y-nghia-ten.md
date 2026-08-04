@@ -1,4 +1,3 @@
-## tại sao là Ny'ah Phú Định, ý nghĩa tên vùng đất.docx
 **(Từ bến sông cổ đến tọa độ đô thị mới)**
 
 **[Tone giọng mở đầu: Trầm lắng, gợi mở, mang màu sắc hoài niệm nhưng đầy nội lực]**
@@ -59,7 +58,5 @@ Cảm ơn bạn đã lắng nghe tập đầu tiên này. Hãy cùng chờ đón
 # NPD QNA TU VAN
 
 ---
-
-## Q&A.docx
 
 # [Ny'ah Phu Dinh] **Q&A** - Customer Journey Framework

@@ -26,8 +26,6 @@ Kết quả của triết lý thiết kế duy mỹ và giàu tính công năng 
 
 ---
 
-## transcript video Định nghĩa lại nhà phố ( P1) - TS Ngô Trần Công Luận.txt
-
 TRANSCRIPT – ĐỊNH NGHĨA LẠI NHÀ PHỐ CHO NGƯỜI SÀI GÒN
 Nhã Đạt | 
 
@@ -85,8 +83,6 @@ Bếp phải được trang bị đầy đủ: lò nướng, bếp từ, máy r�
 
 ---
 
-## Transcript video định nghĩa lại nhà phố sài gòn.docx
-
 **Transcript**
 
 **Định nghĩa lại nhà phố cho người Sài Gòn** (<
@@ -104,8 +100,6 @@ Kết quả của hệ thang bộ biến hóa và sáng tạo này là không gi
 Với mẫu nhà phố Ny’ah, ánh sáng mặt trời soi vào từng góc nhỏ, gió ùa vào cửa theo áp lực của thiên nhiên rồi nối đuôi nhau thoát ra từ giếng trời. Nhà phố như vậy đã được định nghĩa lại và đã được giải mã.
 
 ---
-
-## transcript Định nghĩa lại nhà phố P2 noi ve khong khi.txt
 
 TRANSCRIPT – KHÔNG KHÍ TRONG NHÀ PHỐ
 Nhã Đạt

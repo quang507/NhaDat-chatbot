@@ -2,8 +2,6 @@
 
 ---
 
-## Mô tả logo ByteLife.docx
-
 |  |  |  |
 | --- | --- | --- |
 | **LOGO** | **Miêu tả tổng quan** | **Chi tiết** |

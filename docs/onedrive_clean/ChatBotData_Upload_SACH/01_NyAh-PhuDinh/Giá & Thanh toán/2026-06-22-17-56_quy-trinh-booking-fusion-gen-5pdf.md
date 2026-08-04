@@ -1,4 +1,3 @@
-## Quy trình booking Fusion Gen 5.pdf
 QTGC 22/07/2024 15:10pm
 
 Quy trình nhận giữ chỗ và ký hợp đồng
@@ -56,7 +55,5 @@ cọc trong 3 ngày kể từ ngày 19/08/2024.
 # NPD DINH NGHIA NHA PHO
 
 ---
-
-## định nghĩa lại nhà phố - Ny'ah.docx
 
 # Định nghĩa lại nhà phố

@@ -2,8 +2,6 @@
 
 ---
 
-## NPD#14 PL B v4.pdf
-
 Ver. 4
 
 PHỤ LỤC B
@@ -367,8 +365,6 @@ Ghi chú: (*) Xây dựng với mật độ tối đa (xem Hợp đồng).
 
 ---
 
-## NPD#22 PL B v4.pdf
-
 PHỤ LỤC B
 NHÀ SỐ 22
 Ver. 4
@@ -488,8 +484,6 @@ Trang 03/03
 
 ---
 
-## NPD#23 PL B v4.pdf
-
 PHỤ LỤC B
 NHÀ SỐ 23
 Ver. 4
@@ -608,8 +602,6 @@ Trang 03/03
 )*(00.4
 
 ---
-
-## NPD#3 PL B v4.pdf
 
 PHỤ LỤC B
 
@@ -832,8 +824,6 @@ Trang 02/02
 Ghi chú: (*) Xây dựng với mật độ tối đa (xem Hợp đồng).
 
 ---
-
-## NPD#50 PL B v4.pdf
 
 PHỤ LỤC B
 NHÀ SỐ 50

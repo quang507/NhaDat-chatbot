@@ -1,4 +1,3 @@
-## bai viết Ny'ah - Covid.docx
 ***Các giải pháp trong thiết kế nhà ở để chống và sống chung cùng Covid***
 
 **Sự an toàn của chúng ta trước đại dịch Covid-19?**

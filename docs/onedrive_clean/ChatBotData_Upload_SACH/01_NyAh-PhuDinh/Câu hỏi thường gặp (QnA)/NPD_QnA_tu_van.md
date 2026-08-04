@@ -2,8 +2,6 @@
 
 ---
 
-## Q&A.docx
-
 # [Ny'ah Phu Dinh] **Q&A** - Customer Journey Framework
 
 ## Giai đoạn 1- tìm hiểu chung
@@ -225,8 +223,6 @@ Ngoài ra về pháp lý, nhà hẻm rất dễ dính quy hoạch hoặc sai ph�
 Tại Ny'ah, anh chị mua một 'gói giải pháp sống': có bảo vệ Face ID, có không khí sạch, có cộng đồng hàng xóm đồng bộ lối sống và đặc biệt là nhà xây mới 100% với thiết kế hiện đại tối giản. Tính ra chi phí xây dựng và công nghệ đã chiếm một phần lớn trong giá trị căn nhà rồi, anh chị ở sẽ rất nhàn và sang ạ.
 
 ---
-
-## Script câu hỏi phỏng vấn (Anh Khôi).docx
 
 **Script câu hỏi phỏng vấn**
 

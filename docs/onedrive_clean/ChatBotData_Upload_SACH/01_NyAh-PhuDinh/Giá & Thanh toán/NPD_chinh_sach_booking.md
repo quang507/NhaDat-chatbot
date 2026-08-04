@@ -2,8 +2,6 @@
 
 ---
 
-## Quy trình booking Fusion Gen 5.pdf
-
 QTGC 22/07/2024 15:10pm
 
 Quy trình nhận giữ chỗ và ký hợp đồng

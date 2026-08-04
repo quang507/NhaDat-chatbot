@@ -1,4 +1,3 @@
-## tại sao là Ny'ah Phú Định, ý nghĩa tên vùng đất dạng đối thoại.txt
 
 mọi người hãy thử tưởng tượng
 một kịch bản như thế này nhá ờ

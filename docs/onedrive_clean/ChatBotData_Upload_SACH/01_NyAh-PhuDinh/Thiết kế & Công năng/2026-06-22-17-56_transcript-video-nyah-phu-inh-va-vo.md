@@ -1,4 +1,3 @@
-## Transcript video  Ny'ah Phú Định và vòng tay siết chặt hạ tầng.docx
 Nhà đầu tư không tìm nơi đã "hot" mà họ tìm những nơi sắp trở thành trung tâm mới.
 
 Khi Thành phố Hồ Chí Minh đang dịch chuyển tâm điểm về phía Tây, những cuộc hẹn cà phê đầu tư cũng bắt đầu xoay trục. Hàng loạt dự án hạ tầng chiến lược đang khởi công quyết liệt, thi công thần tốc.

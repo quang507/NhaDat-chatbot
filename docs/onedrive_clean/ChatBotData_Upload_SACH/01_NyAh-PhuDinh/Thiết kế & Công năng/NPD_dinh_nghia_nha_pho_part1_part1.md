@@ -2,8 +2,6 @@
 
 ---
 
-## định nghĩa lại nhà phố - Ny'ah.docx
-
 # Định nghĩa lại nhà phố
 
 # *Tái định nghĩa lại không gian sống trong nhà phố nhỏ tại Sài Gòn*
@@ -53,8 +51,6 @@ Chú trọng sức khỏe và trải nghiệm sống hàng ngày với 4 chất 
 *mktg-nhadat.company*
 
 ---
-
-## ĐỊNH NGHĨA LẠI NHÀ PHỐ.pdf
 
 ĐỊNH NGHĨA LẠI NHÀ PHỐ
 
@@ -169,8 +165,6 @@ ngắn.
 tiếp giáp với giếng trời hay sân sau.
 
 ---
-
-## Transcript video  Ny'ah Phú Định và vòng tay siết chặt hạ tầng.docx
 
 Nhà đầu tư không tìm nơi đã "hot" mà họ tìm những nơi sắp trở thành trung tâm mới.
 

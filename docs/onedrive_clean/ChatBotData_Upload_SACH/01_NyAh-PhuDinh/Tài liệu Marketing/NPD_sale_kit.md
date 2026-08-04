@@ -2,8 +2,6 @@
 
 ---
 
-## NPD_Leaflet_v3 - Mat1.pdf
-
 Nguồn kháng thể tự nhiên
 
 Đặc quyền 17 tiện ích
@@ -79,8 +77,6 @@ cơ hội duy nhất:
 Ny'ah Phú Định - Nhất định nội thành!
 
 ---
-
-## NPD_Leaflet_v3 - Mat2.pdf
 
 N G
 Ơ

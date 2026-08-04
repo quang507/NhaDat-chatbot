@@ -2,8 +2,6 @@
 
 ---
 
-## office 1, 2 - Ny'ah Phú Định.pdf
-
 Tòa nhà thương mại 7 tầng độc nhất trên
 | tuyến | đường | Trương Đình Hội  |
 | ----- | ----- | ---------------- |
@@ -170,8 +168,6 @@ sàng tư vấn và đón tiếp bạn!
 
 ---
 
-## bai viết Ny'ah - Covid.docx
-
 ***Các giải pháp trong thiết kế nhà ở để chống và sống chung cùng Covid***
 
 **Sự an toàn của chúng ta trước đại dịch Covid-19?**
@@ -215,8 +211,6 @@ Dưới góc độ là đơn vị thiết kế xây dựng với sứ mệnh đe
 Tham gia chương trình Nhã Đạt - Tư vấn miễn phí các giải pháp chống và sống cùng Covid vui lòng nhấn Link đăng ký
 
 ---
-
-## Văn bản text.docx
 
 **Sống đẹp hơn chung cư**
 

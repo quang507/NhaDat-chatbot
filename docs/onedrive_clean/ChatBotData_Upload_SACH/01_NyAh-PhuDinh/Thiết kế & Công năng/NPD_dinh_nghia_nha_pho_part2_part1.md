@@ -16,8 +16,6 @@ và chúc mọi người một ngày tràn đầy năng lượng tích cực
 
 ---
 
-## features - định nghĩa lại nhà phố tách từ video.txt
-
 g như đã cạn kiệt
 mọi ý tưởng sáng tạo từ chục năm nay
 nay đã được thổi hồn

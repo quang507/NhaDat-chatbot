@@ -1,4 +1,3 @@
-## Văn bản text.docx
 **Sống đẹp hơn chung cư**
 
 **Bắt đầu từ câu hỏi:** *Làm sao để giữ trọn sự tiện nghi như chung cư, mà thoát khỏi những giới hạn vốn có chỉ nhà phố mới mang lại?*
