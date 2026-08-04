@@ -69,3 +69,46 @@
 - **Office 1 & 2** (7 tầng thương mại, có hầm + thang máy): #01, 02 (Office 1) và #25, 26 (Office 2)
 - **Cashmere** (lô lớn đặc biệt): #19, 22, 23
 - **Signature by Codinachs** (góc vát vòng cung): #43, 44
+
+## Diện tích theo tầng / theo phòng (tối đa dữ liệu hiện có)
+
+### Office 1 & 2 (lô #01, 02 - tòa thương mại 7 tầng, 2 thửa kết hợp)
+
+| Tầng | Căn 1 - thửa 438/103 (m²) | Căn 2 - thửa 13/103 (m²) | Tổng 2 căn (m²) |
+|---|---|---|---|
+| Tầng hầm | 58,48 | 54,65 | 113,13 |
+| Tầng trệt | 58,48 | 54,65 | 113,13 |
+| Tầng lửng | 37,70 | 35,36 | 73,06 |
+| Lầu 1 | 58,48 | 54,65 | 113,13 |
+| Lầu 2 | 58,48 | 54,65 | 113,13 |
+| Lầu 3 | 58,48 | 54,65 | 113,13 |
+| Lầu 4 | 58,48 | 54,65 | 113,13 |
+| Mái che cầu thang | 9,39 | 14,33 | 23,72 |
+| Ban công | 74,56 | 18,48 | 93,04 |
+| **Tổng diện tích sàn XD** | **472,53** | **396,07** | **868,60** |
+
+### Opus - mẫu nhà thương mại văn phòng (4 tầng ở + 2 tầng thương mại)
+
+| Phòng chức năng | Diện tích (m²) |
+|---|---|
+| Tầng 1 + 2: Thương mại văn phòng | 44,69 + 25,73 |
+| Sinh hoạt gia đình | 13,37 |
+| Bếp, bàn bar, phòng ăn | 24,74 |
+| Phòng ngủ master | 25,71 |
+| Sảnh master | 12,43 |
+| Phòng ngủ 2 | 13,83 |
+| Phòng ngủ 3 | 15,05 |
+| Sảnh tầng | 6,53 |
+| Sân thượng & khu giặt sấy | 5,66 |
+| Ban công (3 vị trí) | 3,36 + 4,20 + 2,64 |
+
+### Signature by Codinachs (lô #43, 44)
+
+- 2 tầng thương mại phía dưới + 4 tầng (tầng 3-6): mỗi tầng ~98,8m², tổng ~400m² sàn ở; sân thượng BBQ & sân vườn. Kết cấu thiết kế sẵn cho tải trọng ×3.
+
+### Chiều cao tầng (mọi mẫu)
+
+- Tầng trệt và tầng lửng: cao 2,9m · Các tầng trên: cao 3,1m
+
+> CHƯA có bảng diện tích từng tầng của Cosmo và Fusion - chỉ có tổng sàn (xem
+> bảng 50 lô ở trên) và kích thước lô. Khi kỹ thuật cung cấp sẽ bổ sung.
