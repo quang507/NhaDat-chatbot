@@ -110,5 +110,36 @@
 
 - Tầng trệt và tầng lửng: cao 2,9m · Các tầng trên: cao 3,1m
 
-> CHƯA có bảng diện tích từng tầng của Cosmo và Fusion - chỉ có tổng sàn (xem
-> bảng 50 lô ở trên) và kích thước lô. Khi kỹ thuật cung cấp sẽ bổ sung.
+### Fusion Gen 5 — diện tích phòng theo tầng
+
+| Tầng | Phòng & diện tích (m²) |
+|---|---|
+| Trệt | Garage 22 (xe 7 chỗ/bán tải) · Phòng khách 18,5 |
+| Lửng | Phòng ngủ ông bà 22 (en-suite + TV area) |
+| Tầng 3 | Bếp 18 · Phòng ăn 16 |
+| Tầng 4 | Ngủ master 29 (2/3 chiều dài nhà) · Sảnh master 9 |
+| Tầng 5 | Ngủ 2: 16 · Ngủ 3: 10,5 · Sảnh tầng 7 |
+| Tầng 6 | Sân thượng trước 28 · Phòng thờ 8 · Sân phơi sau 3,5 |
+
+### Cosmo Gen 1 — diện tích phòng theo tầng
+
+| Tầng | Phòng & diện tích (m²) |
+|---|---|
+| Trệt | Garage 21,5 · Phòng khách 18 |
+| Tầng 2 | Bếp và phòng ăn 26,5 |
+| Tầng 3 | Ngủ master 38 (cả tầng) |
+| Tầng 4 | Ngủ 2: 14 · Ngủ 3: 12 · Sảnh tầng 6,5 |
+| Sân thượng | 30 (+ phòng đa năng 10, phòng thờ 5,7) |
+
+### Cosmo Gen 2 — diện tích phòng theo tầng
+
+| Tầng | Phòng & diện tích (m²) |
+|---|---|
+| Trệt | Garage 21,5 · Phòng sinh hoạt 18 |
+| Tầng 2 | Phòng ngủ ông bà 21 (en-suite, sảnh riêng) |
+| Tầng 3 | Bếp 17,5 · Phòng ăn 17,5 |
+| Tầng 4 | Ngủ master 33,5 · Sảnh master 4 |
+| Tầng 5 | Ngủ 2: 16 · Ngủ 3: 11,3 · Phòng thờ 4 · Sảnh tầng 4 |
+| Sân thượng | Trước 19,7 · Sân phơi sau 16,8 |
+
+(Datasheet chi tiết hơn xem file "05 - Ny'ah Phú Định (Tổng quan).md" cùng thư mục.)

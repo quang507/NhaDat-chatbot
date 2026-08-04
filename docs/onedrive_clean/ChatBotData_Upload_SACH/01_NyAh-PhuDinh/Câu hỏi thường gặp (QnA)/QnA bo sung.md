@@ -1,40 +1,39 @@
-Q: Dự án Ny’ah Phú Định có bao nhiêu căn nhà phố tất cả vậy em?
-A: Dạ, dự án là khu nhà phố compound gồm 50 căn được thiết kế kiến trúc đồng bộ ạ.
+# QnA TƯ VẤN BỔ SUNG (đã tinh gọn, khử trùng lặp)
 
-Q: Nhà ở đây được xây dựng mấy tầng, có thang máy không em?
-A: Dạ, nhà được xây dựng 6 tầng (1 trệt, 1 lửng, 3 lầu, sân thượng), có sẵn hố thang máy, garage trong nhà và hệ thống cấp khí tươi cho mỗi căn ạ.
+Q: Dự án Ny’ah Phú Định có bao nhiêu căn nhà phố tất cả vậy em? / Căn nhà tại dự án Ny’ah Phú Định có giá bao nhiêu vậy em? / Dự án NyAh Phú Định có bao nhiêu căn tất cả vậy em?
+A: Hiện tại bên em đang mở bán mẫu nhà Cosmo Gen 2 với mức giá từ 8.9 tỷ/căn ạ. Nhà hoàn thiện cơ bản có hệ thống khí tươi.
+
+Q: Nhà ở đây được xây dựng mấy tầng, có thang máy không em? / Nhà ở đây có được xây cao không và có thang máy không?
+A: Các căn nhà mẫu Opus được xây dựng với số tầng cao vượt trội và đặc biệt là được tích hợp sẵn thang máy trong nhà, rất thuận tiện cho việc kinh doanh và sinh hoạt.
 
 Q: Vị trí chính xác của dự án nằm ở đâu?
 A: Dạ, dự án tọa lạc tại số 58A Trương Đình Hội, Phường 16, Quận 8. Từ đây anh chị chỉ mất khoảng 18 phút để di chuyển đến Quận 1 và xung quanh có đầy đủ tiện ích trong bán kính 2km ạ.
 
-Q: Pháp lý dự án như thế nào, có sổ chưa em?
-A: Dạ, dự án Ny’ah Phú Định đảm bảo pháp lý với sổ hồng riêng từng căn nên anh chị hoàn toàn yên tâm ạ.
+Q: Pháp lý dự án như thế nào, có sổ chưa em? / Pháp lý dự án này thế nào, đã có sổ chưa em? / Pháp lý dự án này thế nào, có sổ hồng chưa em? / Pháp lý dự án Ny'ah Phú Định hiện tại như thế nào, đã có sổ chưa em?
+A: Dạ, dự án hiện đã có sổ đỏ riêng cho từng căn và đầy đủ giấy phép xây dựng. Sau khi ký hợp đồng và thanh toán, anh chị sẽ được công chứng sang tên ngay, sở hữu lâu dài vĩnh viễn ạ.
 
 Q: Sống ở đây có tốn phí quản lý hàng tháng không em?
 A: Dạ, ở đây 0 đồng phí quản lý.Cổng chính đóng và mở bởi hệ thống nhận diện Face ID cùng camera an ninh 24/7 ạ.
 
-Q: Tiện ích nội khu tại có những gì?
-A: Dạ, ngoài đường nội bộ 7m, cư dân được tận hưởng 2 công viên xanh mát, khu vui chơi trẻ em và khu tập thể dục ngoài trời ngay trong khuôn viên khu nhà ạ.
+Q: Tiện ích nội khu tại có những gì? / Tiện ích nội khu của dự án có những gì?
+A: NyAh Phú Định được trang bị đầy đủ tiện ích hiện đại như khu vui chơi, công viên cây xanh, khu sinh hoạt cộng đồng và hệ thống an ninh 24/7 để phục vụ cư dân.
 
 Q: Dự án này giá bao nhiêu và diện tích thế nào em nhỉ?
 A: Dạ, hiện tại bên em có mẫu nhà Cosmo Gen 2 với giá từ 8.9 tỷ/căn. Diện tích đất là 5x9m, diện tích sử dụng lên đến 250m² sàn (xây dựng 6 tầng) ạ.
 
-Q: Khu này có vẻ hơi nhỏ, tiện ích có gì không em?
+Q: Khu này có vẻ hơi nhỏ, tiện ích có gì không em? / Khu này có tiện ích gì nổi bật không em?
 A: Ny'ah là khu compound biệt lập ưu tiên sự riêng tư và an toàn. Tiện ích tập trung vào mảng xanh, khu vui chơi cho bé và công nghệ quản lý hiện đại như cổng Face ID, Camera AI 24/7 qua App. Đặc biệt, anh chị được tận hưởng không gian sống mà không phải đóng phí quản lý hàng tháng ạ.
 
-Q: Chủ đầu tư Nhã Đạt đã có kinh nghiệm làm dự án nào chưa?
+Q: Chủ đầu tư Nhã Đạt đã có kinh nghiệm làm dự án nào chưa? / Xin thông tin chủ đầu tư, họ đã làm dự án nào trước đây chưa?
 A: Dạ, Nhã Đạt đã có hơn 20 năm kinh nghiệm. Các dự án tiêu biểu bên em đã thực hiện gồm: Galleria Nam Sài Gòn, Valéo Đầm Sen Ny'ah Tân Hóa, Phú Lâm Court, gần nhất là Ny’ah Bình Tây và Ny'ah Phú Định. Anh chị có thể ghé tham quan thực tế tại Ny’ah Bình Tây để kiểm chứng chất lượng xây dựng ạ.
 
-Q: Pháp lý dự án này thế nào, đã có sổ chưa em?
-A: Dạ, khu nhà Ny'ah được phân lô tách sổ đỏ từng căn rồi ạ. Sau khi hoàn thiện sẽ cập nhật tài sản.
-
-Q: Nhà bàn giao thì có sẵn những gì vậy em?
+Q: Nhà bàn giao thì có sẵn những gì vậy em? / Nhà bàn giao thì có sẵn những gì bên trong vậy em?
 A: Nhà được bàn giao hoàn thiện đồng bộ, đặc biệt là đã có sẵn hệ thống cấp khí tươi AirTop để đảm bảo không gian sống chất lượng cho gia đình mình ạ.
 
 Q: Diện tích đất nhìn có vẻ hơi nhỏ, liệu nhà có bị chật không em?
 A: Dạ, tuy diện tích đất nhỏ nhưng Ny'ah Phú Định tối ưu không gian rất tốt với tổng diện tích sàn lên tới 250m2. Thiết kế bên em loại bỏ các góc chết nên không gian bên trong cực kỳ rộng và thoáng, anh/chị có thể xem clip VR mẫu nhà Cosmo gen 2 để cảm nhận thực tế ạ.
 
-Q: Nhà ở NyAh Phú Định có thiết kế thang máy không em, có sẵn hay phải tự lắp?
+Q: Nhà ở NyAh Phú Định có thiết kế thang máy không em, có sẵn hay phải tự lắp? / Nhà cao 6 tầng như vậy thì có thang máy không em, hay phải tự lắp?
 A: Dạ có ạ. Tất cả các mẫu nhà đều được thiết kế sẵn hố thang máy xuyên suốt 6 tầng với 6 điểm dừng lên tận sân thượng. Nếu chưa có nhu cầu dùng ngay, anh chị có thể lấp kết cấu tạm, sau này lắp thang máy vào rất dễ dàng mà không cần đập phá hay ảnh hưởng đến kết cấu nhà. Đây là hạng mục được tặng kèm khi mua nhà bên em hiện tại ạ.
 
 Q: Chị muốn thay đổi vị trí bếp và cầu thang cho hợp phong thủy được không em?
@@ -55,8 +54,8 @@ A: Anh/chị yên tâm, mọi chi tiết vật liệu đều được chọn l�
 Q: Khu vực tập kết rác nằm ở đâu, có sợ bị hôi không em?
 A: Nhà rác được bố trí kín đáo ngay đầu cổng để xe thu gom tiếp cận từ bên ngoài. Nhà rác có hệ thống thông gió và được đơn vị môi trường chở đi xử lý ngay trong ngày, không để ứ đọng qua đêm nên không có mùi hôi ạ.
 
-Q: Cư dân có cần tuân thủ quy định gì về việc đổ rác không?
-A: Để giữ không gian sống chuẩn sạch, cư dân sẽ cùng thực hiện phân loại rác tại nguồn và bỏ rác đúng múi giờ quy định theo ý thức cộng đồng tự quản ạ.
+Q: Cư dân có cần tuân thủ quy định gì về việc đổ rác không? / Ngoài vấn đề vệ sinh, cư dân có cần tuân thủ quy định gì về rác thải không? / Cư dân mình có cần lưu ý gì khi đổ rác không?
+A: Dạ có ạ, để đảm bảo môi trường sống văn minh, cư dân sẽ cùng thực hiện phân loại rác tại nguồn và bỏ rác đúng múi giờ quy định để đảm bảo không gian luôn sạch đẹp.
 
 Q: An ninh ở đây có đảm bảo không em, có bảo vệ trực 24/7 không?
 A: Dạ, Ny’ah không dùng bảo vệ truyền thống mà sử dụng hệ thống tự vận hành hiện đại. Cổng dùng Face ID và Camera AI nhận diện cư dân để mở tự động, anh chị có thể giám sát 24/7 qua điện thoại, đảm bảo sự riêng tư tuyệt đối ạ.
@@ -73,14 +72,11 @@ A: Dạ, nhà tập kết rác được bố trí kín đáo ngay đầu cổng 
 Q: Giá 8.9 tỷ cho một căn ở đây có vẻ cao so với mặt bằng chung khu vực, bên mình có gì đặc biệt không?
 A: Dạ, mức giá này phản ánh đúng giá trị thực của dự án: nhà phố xây mới 6 tầng, diện tích sử dụng lên tới 250m² ngay nội thành. Đặc biệt, dự án có pháp lý sổ hồng riêng hoàn công đầy đủ và hệ thống khí tươi AirTop bảo vệ sức khỏe, điều mà nhà lẻ bên ngoài khó có được ạ.
 
-Q: Pháp lý dự án Ny'ah Phú Định hiện tại như thế nào rồi em?
+Q: Pháp lý dự án Ny'ah Phú Định hiện tại như thế nào rồi em? / Pháp lý của dự án NyAh Phú Định hiện tại như thế nào rồi? / Pháp lý dự án hiện tại như thế nào rồi em?
 A: Dự án hiện đã có sổ hồng riêng và hoàn công đầy đủ, đây là điểm cộng rất lớn và cực kỳ hiếm trên thị trường hiện nay nên anh/chị hoàn toàn có thể yên tâm về tính pháp lý ạ.
 
 Q: Nhà ở đây có diện tích sử dụng bao nhiêu vậy em?
 A: Dạ, mỗi căn nhà phố tại Ny'ah Phú Định được xây dựng 6 tầng với diện tích sử dụng là 250m² ạ.
-
-Q: Ngoài vấn đề vệ sinh, cư dân có cần tuân thủ quy định gì về rác thải không?
-A: Dạ có ạ, để đảm bảo môi trường sống văn minh, cư dân sẽ cùng thực hiện phân loại rác tại nguồn và bỏ rác đúng múi giờ quy định để đảm bảo không gian luôn sạch đẹp.
 
 Q: Hệ thống khí tươi AirTop mà bên em nhắc đến có tác dụng gì vậy?
 A: Dạ, hệ thống khí tươi AirTop giúp thanh lọc không khí, bảo vệ sức khỏe cho cả gia đình. Với hệ thống này, anh/chị gần như không cần tốn thêm chi phí để mua máy lọc không khí riêng nữa ạ.
@@ -100,9 +96,6 @@ A: Dạ, mỗi căn nhà tại dự án có kết cấu 6 tầng với tổng di
 Q: Giá bán bên mình nghe nói cao hơn mặt bằng chung khu vực, vậy có gì đặc biệt không em?
 A: Dạ, giá trị của Ny'ah không chỉ ở đất mà là "giải pháp sống". Anh chị được sở hữu nhà phố compound, pháp lý sổ hồng riêng ngay nội thành, cùng môi trường sống văn minh, không ồn ào chợ búa, cư dân đồng bộ tri thức.
 
-Q: Pháp lý dự án Ny'ah Phú Định hiện tại như thế nào em?
-A: Dạ, dự án đảm bảo pháp lý an toàn với sổ hồng riêng từng căn, anh chị hoàn toàn yên tâm khi đầu tư hoặc an cư ạ.
-
 Q: Môi trường sống ở đây có gì khác biệt so với nhà phố thông thường?
 A: Điểm khác biệt là cộng đồng cư dân tri thức, văn minh, không có tình trạng buôn bán lấn chiếm hay ồn ào, tạo ra môi trường giáo dục gián tiếp rất tốt cho con cái mà không phải khu vực nào cũng có được.
 
@@ -112,8 +105,8 @@ A: Dạ có ạ. Anh chị có thể chọn bất kỳ ngân hàng nào, nhưng 
 Q: Pháp lý dự án hiện tại ra sao, bao giờ thì mình có sổ?
 A: Dự án đã có sổ đỏ từng căn và Giấy phép xây dựng đầy đủ. Sau khi ký hợp đồng, bên em sẽ tiến hành công chứng sang tên, xây dựng, hoàn công và cập nhật sổ cho anh chị. Đây là hình thức sở hữu vĩnh viễn ạ.
 
-Q: Nếu mình thanh toán nhanh thì có được ưu đãi gì không?
-A: Dạ có ạ. Nếu anh chị chọn phương thức thanh toán nhanh 85% để công chứng sang tên sổ, bên em sẽ có mức chiết khấu rất tốt dành cho mình ạ.
+Q: Nếu mình thanh toán nhanh thì có được ưu đãi gì không? / Nếu mình muốn nhận nhà sớm thì có phương thức thanh toán nào nhanh không?
+A: Dạ có, anh chị có thể chọn phương thức thanh toán nhanh 85% để được công chứng sang tên sổ hồng ngay và nhận mức chiết khấu rất tốt từ Chủ đầu tư ạ.
 
 Q: Nhà ở đây xây chung tường hay riêng tường vậy em?
 A: Dạ, nhà bên em là sổ riêng nên tất cả đều sở hữu riêng biệt: tường riêng, cột riêng. Anh chị hoàn toàn có thể kiểm tra hồ sơ kỹ thuật để thấy mọi thứ tách biệt, đảm bảo độ bền lâu dài ạ.
@@ -121,7 +114,7 @@ A: Dạ, nhà bên em là sổ riêng nên tất cả đều sở hữu riêng b
 Q: Anh chị muốn qua xem nhà thực tế thì có cần đặt lịch trước không?
 A: Dạ, bên em có nhân viên trực tại khu nhà từ 8h đến 18h hằng ngày. Anh chị cứ ghé tham quan thực tế để cảm nhận nhé. Anh chị cho em xin số điện thoại, em sẽ đặt lịch đón tiếp mình chu đáo ạ.
 
-Q: Nhà ở đây có chỗ đậu ô tô không em, hay phải gửi bên ngoài?
+Q: Nhà ở đây có chỗ đậu ô tô không em, hay phải gửi bên ngoài? / Nhà ở đây có chỗ để xe ô tô không hay phải gửi bên ngoài?
 A: Dạ, nhà tại Ny'ah được thiết kế có garage riêng ngay trong nhà, anh chị hoàn toàn yên tâm về chỗ đậu ô tô mà không cần phải gửi bên ngoài ạ.
 
 Q: Tại sao chị nên chọn Ny'ah thay vì mua nhà phố ở các quận trung tâm như Quận 10?
@@ -151,11 +144,8 @@ A: Dạ, dự án là khu compound biệt lập chỉ có 50 căn nhà phố. M�
 Q: Mình muốn biết vị trí dự án nằm ở đâu, có tiện đi lại không?
 A: Dạ, dự án tọa lạc tại số 58A Trương Đình Hội, Phường 16, Quận 8. Vị trí này rất thuận tiện vì nằm gần trục Võ Văn Kiệt, chỉ mất khoảng 18 phút để di chuyển vào Quận 1 và trong bán kính 2km có đầy đủ trường học, bệnh viện, trung tâm thương mại.
 
-Q: Pháp lý dự án này thế nào, có sổ hồng chưa em?
-A: Dạ, dự án Ny’ah Phú Định có pháp lý minh bạch, sổ hồng riêng từng căn và khách hàng được sở hữu vĩnh viễn ạ.
-
 Q: Mình có thể xem vị trí dự án trên bản đồ không?
-A: Dạ được ạ, anh chị có thể xem vị trí chính xác của dự án qua link Google Maps này nhé: 
+A: Dạ được ạ, anh chị có thể xem vị trí chính xác của dự án qua link Google Maps này nhé:
 
 Q: Khu này an ninh thế nào em, có bảo vệ trực không?
 A: Dạ, dự án mình là khu compound khép kín, an ninh được đảm bảo bằng công nghệ hiện đại với cổng kiểm soát tự động Face ID và hệ thống Camera AI giám sát 24/7, rất an toàn và riêng tư ạ.
@@ -163,23 +153,11 @@ A: Dạ, dự án mình là khu compound khép kín, an ninh được đảm b�
 Q: Đường nội bộ trong dự án có đủ rộng để xe hơi ra vào không em?
 A: Dạ đường nội bộ tại Ny'ah Phú Định được thiết kế rộng 7m, rất thoáng đãng và thuận tiện cho việc di chuyển xe hơi ạ.
 
-Q: Xin thông tin chủ đầu tư, họ đã làm dự án nào trước đây chưa?
-A: Dạ, Nhã Đạt đã có hơn 20 năm kinh nghiệm. Họ đã bàn giao nhiều dự án như Galleria Nam Sài Gòn, Phú Lâm Court, Ny’ah Tân Hóa, Valéo Đầm Sen, Ny’ah Bình Tây và Ny’ah Phú Định. Anh/chị có thể ghé tham quan thực tế dự án Ny’ah Bình Tây để kiểm chứng chất lượng bàn giao ạ.
-
-Q: Căn nhà tại dự án Ny’ah Phú Định có giá bao nhiêu vậy em?
-A: Hiện tại bên em đang mở bán mẫu nhà Cosmo Gen 2 với mức giá từ 8.9 tỷ/căn ạ. Nhà hoàn thiện cơ bản có hệ thống khí tươi.
-
-Q: Pháp lý dự án này như thế nào, có sổ chưa em?
-A: Dự án đã có sổ riêng từng căn, anh/chị hoàn toàn yên tâm vì có thể công chứng sang tên ngay khi giao dịch ạ.
-
 Q: Anh muốn tìm hiểu thêm thông tin chính thức của chủ đầu tư thì xem ở đâu?
 A: Dạ, anh/chị có thể truy cập website chính thức của chủ đầu tư tại địa chỉ:  để xem thông tin chi tiết ạ.
 
 Q: Diện tích sử dụng của căn nhà là bao nhiêu, có mấy tầng vậy?
 A: Căn nhà được xây dựng trên nền đất 5x9m, kết cấu 6 tầng với diện tích sử dụng lên đến 250m² sàn ạ.
-
-Q: Nhà bàn giao thì có sẵn những gì bên trong vậy em?
-A: Nhà được bàn giao theo tiêu chuẩn hoàn thiện cơ bản (Gói Air), đặc biệt là đã tích hợp sẵn hệ thống cấp khí tươi AirTop cho toàn bộ căn nhà ạ.
 
 Q: Diện tích đất 45-50m2 có vẻ hơi nhỏ, ở gia đình đông người có bị chật không em?
 A: Dạ không đâu ạ, Ny'ah được thiết kế tối ưu không gian với tổng diện tích sàn sử dụng lên tới 250m² (6 tầng). Phòng ngủ Master rộng từ 35m² - 38m², có cả garage riêng và bếp full-size nên rất thoải mái cho gia đình anh chị ạ.
@@ -192,9 +170,6 @@ A: Dạ có ạ, nhờ thiết kế này mà phòng ngủ Master có thể chi�
 
 Q: Anh muốn xem thực tế không gian bên trong nhà thì xem ở đâu được?
 A: Dạ, anh có thể xem qua clip thực tế VR 3D hoặc link google hình ảnh thực tế để cảm nhận không gian thực tế ạ. Em xin gửi anh link tham khảo:  (Soi mẫu nhà 3D) và  (Bấm chuông nhà thực tế).
-
-Q: Nhà cao 6 tầng như vậy thì có thang máy không em, hay phải tự lắp?
-A: Dạ, tất cả các căn Ny'ah đều được thiết kế sẵn hố thang máy xuyên suốt 6 tầng (6 điểm dừng lên tận sân thượng). Nếu hiện tại chưa có nhu cầu, bên em sẽ lấp kết cấu tạm bằng vật liệu thẩm mỹ, sau này anh chị muốn lắp chỉ cần đặt thang vào vận hành, không cần đập phá hay ảnh hưởng đến kết cấu nhà.
 
 Q: Hệ thống khí tươi ở đây hoạt động như thế nào, có thực sự hiệu quả không?
 A: Dạ, hệ thống khí tươi AirTop hoạt động bằng cách bơm khí sạch từ sân thượng qua bộ lọc chuyên dụng đến từng phòng. Cứ mỗi 3 giờ, toàn bộ không khí cũ trong nhà được thay mới hoàn toàn (tương đương 9.5 triệu lít khí sạch/ngày), giúp nhà luôn thoáng mát, khử mùi và rất tốt cho sức khỏe.
@@ -238,14 +213,11 @@ A: Dạ, em rất hiểu nỗi lo này của chị. Tuy nhiên, dự án mình h
 Q: Nếu chị muốn kiểm chứng xem dự án có bị ngập thật không thì sao?
 A: Dạ, bên em có sẵn video quay thực tế tại dự án vào đúng thời điểm đỉnh triều cường để anh chị kiểm chứng ạ. Hệ thống thoát nước tại đây được đầu tư rất bài bản và khép kín, nên anh chị cứ yên tâm là khu nhà mình luôn sạch sẽ, không lo ngập nước đâu ạ.
 
-Q: Nhà rác của dự án NyAh Phú Định nằm ở đâu vậy bạn?
-A: Dạ, nhà tập kết rác được bố trí kín đáo ngay tại khu vực đầu cổng dự án để đảm bảo không ảnh hưởng đến không gian sống bên trong ạ.
+Q: Nhà rác của dự án NyAh Phú Định nằm ở đâu vậy bạn? / Dự án NyAh Phú Định nằm ở đâu vậy bạn? / Dự án NyAh Phú Định nằm ở đâu vậy em? / Dự án NyAh Phú Định nằm ở đâu vậy em, có thuận tiện đi lại không?
+A: Dự án tọa lạc tại mặt tiền đường Trịnh Quang Nghị, phường 7, Quận 8, TP.HCM. Vị trí này rất thuận tiện kết nối nhanh chóng vào trung tâm Quận 5, Quận 6 và các quận lân cận thông qua các trục đường huyết mạch.
 
 Q: Để rác ở đầu cổng như vậy thì có bị mùi hôi bay vào nhà cư dân không?
 A: Anh/chị yên tâm ạ, nhà rác được thiết kế khép kín với hệ thống thông gió khử mùi riêng biệt, đồng thời rác sẽ được xe môi trường thu gom và xử lý sạch sẽ ngay trong ngày.
-
-Q: Cư dân mình có cần lưu ý gì khi đổ rác không?
-A: Để giữ gìn cảnh quan chung luôn sạch đẹp, cư dân sẽ cùng thực hiện phân loại rác tại nguồn và bỏ rác đúng múi giờ quy định ạ.
 
 Q: Dự án có quy trình xử lý rác thải hàng ngày không hay để lâu mới dọn?
 A: Dạ có ạ, rác thải tại dự án được thu gom và chở đi xử lý ngay trong ngày để đảm bảo môi trường sống luôn chuẩn sạch cho cư dân.
@@ -268,23 +240,14 @@ A: Dạ, giá sẽ dao động tùy thuộc vào 3 yếu tố chính: dòng sả
 Q: Nếu tôi muốn mua nhà bàn giao thô để tự thiết kế thì có được không?
 A: Dạ được ạ. Bên em có tùy chọn bàn giao thô với mức giá ưu đãi hơn so với gói hoàn thiện. Anh chị có thể lựa chọn tùy theo nhu cầu sử dụng và gu thẩm mỹ cá nhân của mình ạ.
 
-Q: Dự án NyAh Phú Định có hỗ trợ gói hoàn thiện nội thất không em?
+Q: Dự án NyAh Phú Định có hỗ trợ gói hoàn thiện nội thất không em? / Dự án NyAh Phú Định có những gói hoàn thiện nội thất nào vậy em?
 A: Dạ có ạ. Bên em có gói "Chìa khóa trao tay" (Gói MAX) với mức giá từ 1.6 - 1.9 tỷ/căn tùy mẫu nhà, bao gồm full nội thất cao cấp, hệ thống máy lạnh và nhà thông minh ByteLife.
-
-Q: Nếu mình muốn nhận nhà sớm thì có phương thức thanh toán nào nhanh không?
-A: Dạ có, anh chị có thể chọn phương thức thanh toán nhanh 85% để được công chứng sang tên sổ hồng ngay và nhận mức chiết khấu rất tốt từ Chủ đầu tư ạ.
 
 Q: Mua nhà ở đây thì ngân hàng nào hỗ trợ cho vay và được bao nhiêu % vậy em?
 A: Hiện tại dự án được BIDV và Vietcombank hỗ trợ cho vay tối đa lên đến 70% giá trị căn nhà với lãi suất ưu đãi cực kỳ tốt ạ.
 
-Q: Pháp lý dự án này thế nào, đã có sổ chưa em?
-A: Dạ, dự án đã có sổ đỏ từng căn nên pháp lý cực kỳ sạch và an tâm, anh chị hoàn toàn có thể yên tâm khi giao dịch ạ.
-
 Q: Gói nội thất MAX của bên mình bao gồm những gì vậy?
 A: Gói MAX bao gồm toàn bộ danh mục của Gói Air (hoàn thiện cơ bản + khí tươi AirTop), full nội thất cao cấp (tủ bếp, kệ vách...), hệ thống máy lạnh toàn nhà và hệ thống nhà thông minh ByteLife ạ.
-
-Q: Pháp lý dự án Ny'ah Phú Định hiện tại như thế nào, đã có sổ chưa em?
-A: Dạ, dự án hiện đã có sổ đỏ riêng cho từng căn và đầy đủ giấy phép xây dựng. Sau khi ký hợp đồng và thanh toán, anh chị sẽ được công chứng sang tên ngay, sở hữu lâu dài vĩnh viễn ạ.
 
 Q: Khi nào thì tôi được nhận sổ hồng đứng tên mình?
 A: Sau khi anh chị ký hợp đồng và thanh toán theo tiến độ, hai bên sẽ tiến hành công chứng sang tên, bàn giao nhà và thực hiện cập nhật sổ hồng (ghi nhận tài sản gắn liền với đất) cho mình ạ.
@@ -334,8 +297,8 @@ A: Gói AIR chỉ bàn giao hệ thống ống đồng chờ sẵn. Gói MAX đ�
 Q: Những tính năng nào chỉ có ở gói MAX?
 A: Gói MAX sở hữu hệ thống ByteLife bao gồm máy chủ đặt tại bếp, khóa cửa thông minh cho garage và các công tắc điều khiển Zigbee/Wifi toàn nhà để quản lý hệ thống đèn và khí tươi.
 
-Q: Thiết bị vệ sinh trong nhà sử dụng của thương hiệu nào?
-A: Tất cả thiết bị vệ sinh bao gồm lavabo, bồn cầu, vòi sen tắm mưa, gương soi và phụ kiện đều được bàn giao đầy đủ từ thương hiệu Inax.
+Q: Thiết bị vệ sinh trong nhà sử dụng của thương hiệu nào? / Thiết bị vệ sinh trong nhà sử dụng của hãng nào vậy?
+A: Toàn bộ thiết bị vệ sinh như bàn cầu, vòi sen tắm mưa, chậu rửa lavabo, vòi nóng lạnh và các phụ kiện như móc treo, khay giấy đều sử dụng thương hiệu Inax cao cấp.
 
 Q: Nhà có sẵn máy nước nóng không hay tôi phải tự lắp?
 A: Bạn hoàn toàn yên tâm, dự án đã trang bị sẵn bồn nước 1000L và máy nước nóng năng lượng mặt trời 210L của thương hiệu Đại Thành.
@@ -355,9 +318,6 @@ A: Các hạng mục đồ gỗ rời như bàn, ghế, giường, tủ thờ ha
 Q: Gói bàn giao AIR và MAX khác nhau cơ bản ở điểm nào vậy em?
 A: Gói AIR là gói hoàn thiện cơ bản, còn gói MAX là gói hoàn thiện "chìa khóa trao tay". Điểm khác biệt lớn nhất là gói MAX đã bao gồm sẵn máy lạnh LG, hệ tủ bếp, hệ thống SmartHome ByteLife, và các kệ gỗ trang trí, trong khi gói AIR chỉ có ống đồng chờ máy lạnh và không bao gồm các nội thất này.
 
-Q: Thiết bị vệ sinh trong nhà sử dụng của hãng nào vậy?
-A: Dự án NyAh Phú Định sử dụng trọn bộ thiết bị vệ sinh cao cấp của thương hiệu Inax cho tất cả các căn nhà.
-
 Q: Nếu mình chọn gói MAX thì hệ thống SmartHome có thể điều khiển được những gì?
 A: Với gói SmartHome ByteLife, bạn có thể quản lý hệ thống đèn chiếu sáng và hệ thống khí tươi thông qua công tắc Zigbee/Wifi. Ngoài ra, gói này còn bao gồm khóa thông minh tại khu vực garage.
 
@@ -373,10 +333,7 @@ A: Chúng tôi chú trọng chất lượng hạ tầng với dây điện Cadiv
 Q: Gói AIR và gói MAX khác nhau như thế nào em nhỉ?
 A: Dạ, gói AIR là gói hoàn thiện cơ bản (sàn, tường, trần, thiết bị vệ sinh Inax) kèm hệ thống khí tươi AirTop. Gói MAX bao gồm tất cả của gói AIR và nâng cấp thêm full nội thất cao cấp như tủ bếp An Cường, máy lạnh LG, smarthome ByteLife và kệ trang trí ạ.
 
-Q: Nếu mình chọn gói AIR thì nhà có sẵn máy lạnh và tủ bếp không?
-A: Dạ không ạ. Với gói AIR, nhà chỉ đi sẵn hệ thống ống đồng chờ, còn tủ bếp và thiết bị bếp chưa được bao gồm trong gói này.
-
-Q: Vậy nếu mình muốn có sẵn máy lạnh và tủ bếp thì phải chọn gói nào?
+Q: Nếu mình chọn gói AIR thì nhà có sẵn máy lạnh và tủ bếp không? / Vậy nếu mình muốn có sẵn máy lạnh và tủ bếp thì phải chọn gói nào?
 A: Dạ, anh chị nên chọn gói MAX ạ. Gói này đã bao gồm hệ thống máy lạnh LG cho toàn nhà, full tủ bếp An Cường và trọn bộ thiết bị bếp như bếp từ, máy hút mùi, lò vi sóng, máy rửa chén và tủ lạnh.
 
 Q: Hệ thống máy lạnh trong gói MAX được lắp ở những khu vực nào vậy em?
@@ -439,29 +396,23 @@ A: Căn mã lô 42 thuộc mẫu Cosmo Gen 2, có giá là 8,981,000,000 đồng
 Q: Căn mã lô 24 (mẫu Opus v3) có giá là bao nhiêu?
 A: Căn mã lô 24 có giá là 12,751,000,000 đồng (chưa bao gồm nội thất) và 13,136,350,000 đồng nếu bao gồm gói hoàn thiện nội thất Air.
 
-Q: Các căn Office 2 mã lô 25 và 26 có giá lần lượt là bao nhiêu?
+Q: Các căn Office 2 mã lô 25 và 26 có giá lần lượt là bao nhiêu? / Giá bán các căn Office 1 mã lô 1 và 2 là bao nhiêu?
 A: Căn mã lô 25 có giá 10,766,000,000 đồng và căn mã lô 26 có giá 16,566,000,000 đồng (giá chưa bao gồm nội thất).
 
-Q: Căn mã lô 50 mẫu Cosmo Gen 2 có giá là bao nhiêu?
+Q: Căn mã lô 50 mẫu Cosmo Gen 2 có giá là bao nhiêu? / Căn mã lô 3 thuộc mẫu nhà nào và giá bao nhiêu?
 A: Căn mã lô 50 mẫu Cosmo Gen 2 có giá 11,470,000,000 đồng (chưa bao gồm nội thất) và 11,797,600,000 đồng nếu bao gồm gói hoàn thiện nội thất Air.
 
 Q: Tôi thấy bảng giá có ghi chú về mẫu nhà Opus cho các căn 25, 26, 1 và 2, cụ thể là sao vậy?
 A: Đúng rồi ạ, các căn mã lô 25, 26, 1 và 2 sẽ kèm theo giá nội thất của mẫu nhà Opus và áp dụng các điều khoản độc quyền đã công bố.
 
-Q: Căn mã lô 3 thuộc mẫu nhà nào và giá bao nhiêu?
-A: Căn mã lô 3 thuộc mẫu Cosmo, có giá 9,710,000,000 đồng (chưa bao gồm nội thất) và 9,957,800,000 đồng nếu bao gồm gói hoàn thiện nội thất Air.
-
-Q: Giá bán các căn Office 1 mã lô 1 và 2 là bao nhiêu?
-A: Căn mã lô 1 có giá 14,443,000,000 đồng và căn mã lô 2 có giá 12,791,000,000 đồng (giá chưa bao gồm nội thất).
-
-Q: Dự án Ny’ah Phú Định có những mẫu nhà nào và diện tích ra sao?
-A: Dự án có 3 mẫu nhà: Fusion (4m x 11m), Opus (4m x 12.5m) và Cosmo (5m x 8.75m).
+Q: Dự án Ny’ah Phú Định có những mẫu nhà nào và diện tích ra sao? / Dự án NyAh Phú Định có những loại diện tích nào và giá bán ra sao?
+A: Dự án hiện có các căn với diện tích đa dạng, giá bán khởi điểm từ [điền số liệu từ file] tùy thuộc vào vị trí và tầng của từng căn.
 
 Q: Kết cấu xây dựng của các mẫu nhà tại dự án như thế nào?
 A: Mẫu Fusion và Opus có kết cấu trệt, lửng, 3 lầu và sân thượng. Mẫu Cosmo có kết cấu trệt, lửng, 2 lầu và sân thượng.
 
-Q: Dự án Ny’ah Phú Định nằm ở đâu vậy bạn?
-A: Dự án tọa lạc tại địa chỉ 156 An Dương Vương, giáp với đường Trương Đình Hội.
+Q: Dự án Ny’ah Phú Định nằm ở đâu vậy bạn? / Dự án Ny’ah Phú Định nằm chính xác ở đâu vậy bạn?
+A: Dự án có 2 cổng vào: Cổng chính tại 58A Trương Đình Hội và Cổng 2 tại đường 156 An Dương Vương, Phường 16, Quận 8, TP.HCM.
 
 Q: Tôi thấy có nhắc đến 17 tiện ích, đó là những gì?
 A: Dự án sở hữu 17 tiện ích nội khu nổi bật như: cổng chính tự động, khu Landmark Coffee, sân bóng rổ mini, sân cầu lông, khu vui chơi trẻ em, khu thể thao ngoài trời, công viên, trạm khử khuẩn hàng shipper và nhiều tiện ích cảnh quan khác.
@@ -469,20 +420,14 @@ A: Dự án sở hữu 17 tiện ích nội khu nổi bật như: cổng chính 
 Q: Mẫu nhà Opus tại dự án có gì đặc biệt vậy bạn?
 A: Mẫu nhà Opus là dòng nhà phố "2 trong 1" lần đầu ra mắt tại Ny’ah Phú Định, được thiết kế chuyên biệt để phục vụ các ngành nghề xu thế, rất phù hợp cho khách hàng muốn khởi nghiệp ngay tại nội thành.
 
-Q: Nhà ở đây có được xây cao không và có thang máy không?
-A: Các căn nhà mẫu Opus được xây dựng với số tầng cao vượt trội và đặc biệt là được tích hợp sẵn thang máy trong nhà, rất thuận tiện cho việc kinh doanh và sinh hoạt.
-
 Q: Tôi muốn mua nhà để kinh doanh thì mẫu nhà Opus có phù hợp không?
 A: Rất phù hợp ạ. Đây là dòng "nhà phố khởi nghiệp" được thiết kế tối ưu cho kinh doanh, kế thừa tinh thần lập nghiệp của đất Sài Gòn, giúp bạn có một điểm xuất phát đầy lợi thế.
 
 Q: Dự án này có gần các tiện ích nào không?
 A: Dự án nằm trong khu vực có kết nối giao thông thuận tiện, gần các trục đường lớn như Võ Văn Kiệt, Kinh Dương Vương, Quốc lộ 1A và các tiện ích như AEON Mall, trường học, tạo môi trường sống và kinh doanh rất tiềm năng.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy bạn?
-A: Dự án có vị trí đắc địa tại số 156 An Dương Vương, phường 16, quận 8, TP.HCM.
-
-Q: Diện tích ngang và dài của các căn nhà tại đây như thế nào?
-A: Các căn nhà tại dự án có chiều ngang từ 4m đến 5m và chiều dài từ 14m đến 19m.
+Q: Diện tích ngang và dài của các căn nhà tại đây như thế nào? / Diện tích các căn hộ tại đây như thế nào? / Diện tích các căn hộ tại NyAh Phú Định khoảng bao nhiêu m2?
+A: Các căn hộ tại dự án được thiết kế đa dạng diện tích, phù hợp với nhu cầu của nhiều đối tượng khách hàng, từ căn hộ 1 phòng ngủ đến 3 phòng ngủ với không gian tối ưu công năng.
 
 Q: Kết cấu xây dựng của một căn nhà tại đây gồm những gì?
 A: Nhà được thiết kế xây dựng gồm: Trệt + lửng + 3 lầu full + tầng mái có sân thượng.
@@ -514,8 +459,8 @@ A: Dạ, mẫu nhà Cosmo có mặt tiền rộng 5m và chiều dài 8,75m ạ.
 Q: Nhà Cosmo có chỗ để xe riêng không em?
 A: Dạ có ạ, mẫu nhà này được thiết kế có sảnh đón và cổng garage riêng biệt với diện tích garage là 21,5m2.
 
-Q: Diện tích phòng ngủ master của mẫu nhà này rộng bao nhiêu?
-A: Dạ, phòng ngủ master của mẫu nhà Cosmo có diện tích là 38m2 ạ.
+Q: Diện tích phòng ngủ master của mẫu nhà này rộng bao nhiêu? / Phòng ngủ master của mẫu nhà này rộng bao nhiêu?
+A: Phòng ngủ master của mẫu nhà Fusion Gen 5 có diện tích rất lớn, lên đến 31m2, chưa bao gồm sảnh tầng master rộng 6.4m2 đi kèm.
 
 Q: Bếp và phòng ăn của mẫu nhà Cosmo có rộng không?
 A: Dạ, khu vực bếp và phòng ăn được thiết kế rộng rãi với diện tích là 26,5m2 ạ.
@@ -544,9 +489,6 @@ A: Phòng khách của mẫu nhà này rộng 18.5m2, trong khi không gian bế
 Q: Nhà có chỗ để xe không và diện tích bao nhiêu?
 A: Dạ có, mẫu nhà Fusion Gen 5 được thiết kế khu vực Garage để xe riêng biệt với diện tích là 21.8m2, rất thoải mái cho gia đình bạn.
 
-Q: Phòng ngủ master của mẫu nhà này rộng bao nhiêu?
-A: Phòng ngủ master của mẫu nhà Fusion Gen 5 có diện tích rất lớn, lên đến 31m2, chưa bao gồm sảnh tầng master rộng 6.4m2 đi kèm.
-
 Q: Sân thượng của mẫu nhà Fusion Gen 5 rộng bao nhiêu?
 A: Sân thượng của mẫu nhà này có diện tích 33.1m2, đây là không gian lý tưởng để gia đình bạn tổ chức tiệc ngoài trời hoặc làm sân vườn nhỏ.
 
@@ -559,14 +501,11 @@ A: Mẫu nhà Cosmo Gen 2 được thiết kế theo phong cách hiện đại, 
 Q: Dự án này nằm ở đâu, có thuận tiện đi lại không em?
 A: Dự án NyAh Phú Định tọa lạc tại vị trí đắc địa thuộc Quận 8, TP.HCM, kết nối thuận tiện với các quận trung tâm và các trục đường huyết mạch, rất thuận lợi cho việc di chuyển hàng ngày.
 
-Q: Pháp lý của dự án NyAh Phú Định hiện tại như thế nào rồi?
-A: Dự án đảm bảo đầy đủ các thủ tục pháp lý theo quy định hiện hành. Anh/chị hoàn toàn có thể yên tâm về tính minh bạch khi tìm hiểu và đặt mua sản phẩm tại đây.
-
-Q: Chính sách thanh toán khi mua nhà tại NyAh Phú Định có linh hoạt không?
+Q: Chính sách thanh toán khi mua nhà tại NyAh Phú Định có linh hoạt không? / Tôi muốn mua thì chính sách thanh toán có linh hoạt không?
 A: Chủ đầu tư có chính sách thanh toán rất linh hoạt, chia thành nhiều đợt theo tiến độ xây dựng, giúp anh/chị dễ dàng cân đối dòng tiền khi sở hữu nhà.
 
-Q: Diện tích đất của căn 1 và căn 2 là bao nhiêu?
-A: Diện tích đất của căn 1 (thửa 438/103) là 67,3 m² và căn 2 (thửa 13/103) là 62,9 m². Tổng diện tích đất của 2 căn là 130,2 m².
+Q: Diện tích đất của căn 1 và căn 2 là bao nhiêu? / Diện tích đất của căn tôi chọn là bao nhiêu?
+A: Diện tích của lô đất sẽ được ghi chính xác theo giấy chứng nhận tại mục "Diện tích (theo giấy chứng nhận)" với đơn vị là m2 trong hợp đồng đặt cọc của quý khách.
 
 Q: Tổng diện tích sàn xây dựng của từng căn là bao nhiêu?
 A: Tổng diện tích sàn xây dựng của căn 1 là 472,53 m² và căn 2 là 396,07 m². Tổng diện tích sàn của cả 2 căn là 868,60 m².
@@ -583,7 +522,7 @@ A: Đây là nguyên tắc của Ny'ah nhằm giúp khách hàng an tâm "hạ t
 Q: Diện tích ban công của căn 1 và căn 2 có giống nhau không?
 A: Không, diện tích ban công của căn 1 là 74,56 m² và căn 2 là 18,48 m². Tổng diện tích ban công của 2 căn là 93,04 m².
 
-Q: Dự án NyAh Phú Định có tổng diện tích sàn là bao nhiêu?
+Q: Dự án NyAh Phú Định có tổng diện tích sàn là bao nhiêu? / Tổng diện tích của dự án Ny’ah Phú Định là bao nhiêu?
 A: Dự án có tổng diện tích sàn khoảng 400m², được thiết kế với quy mô 4 tầng (tầng 3 đến tầng 6).
 
 Q: Khối đế thương mại của dự án được thiết kế như thế nào?
@@ -592,8 +531,8 @@ A: Khối đế thương mại gồm 3 tầng (hầm, trệt và lửng), đư�
 Q: Tôi muốn kinh doanh gym hoặc spa thì tải trọng sàn có đảm bảo không?
 A: Hoàn toàn yên tâm ạ. Khối đế 3 tầng tại đây có tải trọng gấp 3 lần thông thường, sẵn sàng cho các loại hình kinh doanh đa dạng như gym, spa hay showroom.
 
-Q: Dự án có tiện ích gì nổi bật cho cư dân không?
-A: Dự án được trang bị phòng tập gym cao cấp, thiết kế sẵn cho 24 căn hộ dịch vụ theo phong cách Cashmere, cùng sân thượng BBQ và sân vườn thư giãn.
+Q: Dự án có tiện ích gì nổi bật cho cư dân không? / Tiện ích tại dự án này có gì nổi bật cho người thuê không? / Dự án này có những tiện ích gì nổi bật không? / Dự án có những tiện ích gì nổi bật không em?
+A: Dự án rất chú trọng trải nghiệm người dùng với thang máy đi thẳng lên tận sân thượng, sân thượng được thiết kế cực chill, tầng trệt đủ chỗ để 1-2 xe máy mỗi căn và đặc biệt có tiện ích AirTop độc quyền ạ.
 
 Q: Về vấn đề an toàn phòng cháy chữa cháy thì sao?
 A: Dự án có hệ thống PCCC hoàn thiện với hầm nước chữa cháy riêng biệt, đây là ưu điểm vượt trội mà các nhà phố cải tạo thông thường không có được.
@@ -610,8 +549,8 @@ A: Dự án tọa lạc tại "Giao lộ thịnh vượng" Võ Văn Kiệt và V
 Q: Pháp lý của dự án này đã đầy đủ chưa, tôi có cần lo lắng về sổ đỏ không?
 A: Bạn hoàn toàn yên tâm vì dự án đã có sẵn sổ đỏ, giấy phép xây dựng và giấy tờ thẩm tra PCCC theo tiêu chuẩn mới nhất, không cần phải sửa chữa hay đập phá chắp vá.
 
-Q: Giá bán của một căn tại dự án NyAh Phú Định hiện là bao nhiêu?
-A: Giá bán hiện tại là 32.23 tỷ đồng/căn.
+Q: Giá bán của một căn tại dự án NyAh Phú Định hiện là bao nhiêu? / Giá bán hiện tại của dự án là bao nhiêu một căn? / Giá bán dự kiến của căn hộ tại NyAh Phú Định là bao nhiêu? / Giá bán hiện tại của dự án là bao nhiêu?
+A: Hiện tại, mức giá dự kiến của dự án đang rất cạnh tranh so với khu vực, chỉ từ [Điền số liệu từ văn bản của bạn] triệu/m2. Anh/chị có thể liên hệ trực tiếp để nhận bảng giá chi tiết từng căn.
 
 Q: Lộ trình thanh toán và sở hữu khi mua dự án này như thế nào?
 A: Khách hàng ký hợp đồng cọc 30% trong 1 tháng, công chứng chuyển nhượng đất sau 1 tháng cọc, thanh toán 100% (có thể vay ngân hàng), sau đó xây dựng hoàn thiện trong 9 tháng và bắt đầu nhận dòng tiền cho thuê.
@@ -625,29 +564,20 @@ A: Sau khi hoàn công, khách hàng sẽ xin lại giấy phép xây dựng, c�
 Q: Mẫu nhà Cashmere tại NyAh Phú Định có gì đặc biệt về thiết kế thang bộ không em?
 A: Dạ, mẫu nhà Cashmere được tối ưu thiết kế nên chỉ cần 1 hệ thang duy nhất, không cần phải xây thêm hệ thang thoát hiểm thứ 2, giúp tiết kiệm diện tích rất hiệu quả ạ.
 
-Q: Tiện ích tại dự án này có gì nổi bật cho người thuê không?
-A: Dự án rất chú trọng trải nghiệm người dùng với thang máy đi thẳng lên tận sân thượng, sân thượng được thiết kế cực chill, tầng trệt đủ chỗ để 1-2 xe máy mỗi căn và đặc biệt có tiện ích AirTop độc quyền ạ.
-
 Q: Dự án NyAh Phú Định này thuộc loại hình bất động sản gì vậy?
 A: Đây là dự án bất động sản dòng tiền được thiết kế bởi Nhã Đạt, hướng đến cơ hội đầu tư cho thuê bền vững đang được nhiều nhà đầu tư quan tâm hiện nay ạ.
 
-Q: Tổng số vốn đầu tư ban đầu để sở hữu và hoàn thiện dự án này là bao nhiêu?
-A: Tổng vốn đầu tư ban đầu cho dự án là 14,447,850,000 VNĐ, bao gồm giá mua nhà, chi phí xây gác lửng, nội thất và hoàn thiện.
+Q: Tổng số vốn đầu tư ban đầu để sở hữu và hoàn thiện dự án này là bao nhiêu? / Tổng vốn đầu tư ban đầu để sở hữu một căn tại NyAh Phú Định là bao nhiêu?
+A: Tổng vốn đầu tư ban đầu cho dự án là 14,447,850,000 VNĐ, bao gồm giá mua nhà, chi phí xây gác lửng, nội thất và hoàn thiện nhà.
 
-Q: Diện tích đất và diện tích sàn xây dựng của dự án là bao nhiêu vậy em?
-A: Dự án có diện tích đất là 73,8 m² và diện tích sàn theo giấy phép xây dựng là 334,92 m².
+Q: Diện tích đất và diện tích sàn xây dựng của dự án là bao nhiêu vậy em? / Diện tích đất và diện tích sàn xây dựng của dự án này như thế nào?
+A: Dự án có diện tích đất là 73,8 m² và diện tích sàn theo giấy phép xây dựng (GPXD) là 334,92 m².
 
 Q: Với quy mô này thì dự án có bao nhiêu căn hộ cho thuê và giá thuê dự kiến thế nào?
 A: Dự án được thiết kế với 12 căn hộ cho thuê, giá thuê ban đầu là 4 triệu đồng/căn/tháng.
 
 Q: Chi phí để hoàn thiện nội thất cho 12 căn hộ này là bao nhiêu?
 A: Chi phí nội thất cho 12 căn hộ là 1,800,000,000 VNĐ, tương đương 150 triệu đồng/căn.
-
-Q: Tổng vốn đầu tư ban đầu để sở hữu một căn tại NyAh Phú Định là bao nhiêu?
-A: Tổng vốn đầu tư ban đầu cho dự án là 14,447,850,000 VNĐ, bao gồm giá mua nhà, chi phí xây gác lửng, nội thất và hoàn thiện nhà.
-
-Q: Diện tích đất và diện tích sàn xây dựng của dự án này như thế nào?
-A: Dự án có diện tích đất là 73,8 m² và diện tích sàn theo giấy phép xây dựng (GPXD) là 334,92 m².
 
 Q: Nếu tôi đầu tư và giữ trong 10 năm rồi bán lại thì tổng thu nhập dự kiến là bao nhiêu?
 A: Sau 10 năm, nếu bạn bán nhà (đã trừ khấu hao và 2% phí môi giới) kết hợp với số dư tiết kiệm từ tiền thuê, tổng tiền mặt quy đổi thu về là 32,280,558,100 VNĐ.
@@ -676,7 +606,7 @@ A: Thay vì những lời hứa hẹn kỳ vọng ảo, chúng tôi trao cho b�
 Q: Thiết kế của NyAh Phú Định có giúp ích gì cho việc kinh doanh hay cho thuê không?
 A: Thiết kế của dự án được tính toán kỹ lưỡng để tối ưu hóa chi phí vận hành, giúp bạn giảm thiểu rủi ro và tối đa hóa lợi nhuận từ việc khai thác bất động sản.
 
-Q: Chủ đầu tư dự án NyAh Phú Định là ai và họ có kinh nghiệm gì không?
+Q: Chủ đầu tư dự án NyAh Phú Định là ai và họ có kinh nghiệm gì không? / Chủ đầu tư dự án NyAh Phú Định là ai và có uy tín không?
 A: Dự án được phát triển bởi Công ty TNHH Nhã Đạt. Đây là đơn vị đã có 20 năm hình thành và phát triển, chuyên tiên phong kiến tạo các sản phẩm nhà ở có kiến trúc độc đáo và khác biệt.
 
 Q: Triết lý thiết kế của Nhã Đạt tại dự án này có gì đặc biệt?
@@ -685,41 +615,20 @@ A: Nhã Đạt thiết kế nhà với tâm huyết như "tay mẹ dịu dàng",
 Q: Tại sao Nhã Đạt lại chú trọng yếu tố thiên nhiên trong thiết kế nhà ở?
 A: Nhã Đạt hiểu rằng "chất liệu hạnh phúc" rất quý giá và dễ trở nên khan hiếm. Vì vậy, họ quyết tâm hòa quyện các yếu tố thiên nhiên vào công trình để tạo dựng cuộc sống đầy cảm xúc và giá trị bền vững cho gia đình bạn.
 
-Q: Tổng diện tích của dự án Ny’ah Phú Định là bao nhiêu?
-A: Tổng diện tích của dự án là 3737.14 m2.
-
 Q: Quy mô của dự án Ny’ah Phú Định gồm bao nhiêu căn nhà phố?
 A: Dự án có quy mô gồm 51 căn nhà phố khu biệt lập.
 
-Q: Tổng giá trị đầu tư của dự án Ny’ah Phú Định là bao nhiêu?
+Q: Tổng giá trị đầu tư của dự án Ny’ah Phú Định là bao nhiêu? / Tổng mức đầu tư của dự án này là bao nhiêu?
 A: Tổng giá trị của dự án Ny’ah Phú Định là 300 tỷ đồng.
 
 Q: Dự án Ny’ah Phú Định dự kiến hoàn thành vào năm nào?
 A: Dự án Ny’ah Phú Định dự kiến hoàn thành vào năm 2025.
-
-Q: Dự án Ny’ah Phú Định nằm ở đâu vậy bạn?
-A: Dự án Ny’ah Phú Định tọa lạc tại Quận 8, Thành phố Hồ Chí Minh.
-
-Q: Dự án Ny’ah Phú Định nằm ở đâu vậy bạn?
-A: Dự án tọa lạc tại huyện Cần Giuộc, tỉnh Long An, với tổng quy mô 11 ha.
-
-Q: Tổng mức đầu tư của dự án này là bao nhiêu?
-A: Tổng giá trị của dự án Ny’ah là 2.000 tỷ đồng.
 
 Q: Giá chuyển nhượng ghi trong hợp đồng đã bao gồm VAT chưa?
 A: Giá chuyển nhượng (Tiền đất) ghi trong hợp đồng là giá trị đã bao gồm VAT cho căn hộ/lô đất của quý khách.
 
 Q: Tôi muốn đến văn phòng công ty Nhã Đạt để tìm hiểu thêm thì địa chỉ ở đâu?
 A: Văn phòng chúng tôi đặt tại Tầng 6.02, Tháp B, Everich Infinity, số 290 An Dương Vương, Phường 4, Quận 5, TP.HCM.
-
-Q: Diện tích đất của căn tôi chọn là bao nhiêu?
-A: Diện tích của lô đất sẽ được ghi chính xác theo giấy chứng nhận tại mục "Diện tích (theo giấy chứng nhận)" với đơn vị là m2 trong hợp đồng đặt cọc của quý khách.
-
-Q: Giá chuyển nhượng ghi trong hợp đồng đã bao gồm VAT chưa?
-A: Giá chuyển nhượng (Tiền đất) ghi trong hợp đồng là giá trị đã bao gồm VAT cho căn hộ/lô đất của quý khách.
-
-Q: Tổng mức đầu tư của dự án này là bao nhiêu?
-A: Tổng giá trị của dự án Ny’ah là 2.000 tỷ đồng.
 
 Q: Tôi muốn biết thông tin cụ thể về lô đất tôi định mua thì xem ở đâu?
 A: Thông tin chi tiết về lô đất bao gồm số lô, diện tích và các thông số kỹ thuật liên quan sẽ được thể hiện rõ tại mục "Thửa đất - Lô số" và sơ đồ đính kèm ở Phụ lục A trong hợp đồng đặt cọc.
@@ -730,8 +639,8 @@ A: Dự án dự kiến hoàn thành vào năm 20246.
 Q: Tôi nghe nói dự án có công nghệ thông minh, cụ thể là gì?
 A: Ny’ah ứng dụng công nghệ ByteLife với hơn 30 cảm biến tự động điều khiển thiết bị điện theo bước chân, đồng thời cung cấp hệ thống lọc khí tươi lên đến 9,5 triệu lít mỗi ngày.
 
-Q: Phí quản lý tại đây như thế nào?
-A: Nhờ sự thông minh của hệ thống ByteLife, cư dân được hưởng chính sách phí quản lý 0 đồng.
+Q: Phí quản lý tại đây như thế nào? / Tôi có phải đóng phí quản lý hàng tháng không?
+A: Tại Ny’ah, bạn được hưởng chính sách phí quản lý 0 đồng nhờ vào sự thông minh của hệ thống ByteLife.
 
 Q: Quy mô dự án này lớn không và bao gồm bao nhiêu căn?
 A: Dự án có tổng diện tích 11 ha với quy mô 700 lô biệt thự.
@@ -742,7 +651,7 @@ A: Theo quy định của dự án, quý khách sẽ xây dựng nhà theo mẫu
 Q: Bên nào là đơn vị đứng ra ký kết hợp đồng đặt cọc với tôi?
 A: Hợp đồng đặt cọc sẽ được ký kết giữa Công ty CP nhà đất ĐÔ THỊ MỚI (đơn vị chủ đầu tư/phát triển dự án) và quý khách hàng (Bên B).
 
-Q: Tôi cần chuẩn bị những thông tin gì để hoàn tất hợp đồng đặt cọc?
+Q: Tôi cần chuẩn bị những thông tin gì để hoàn tất hợp đồng đặt cọc? / Khi ký hợp đồng xây dựng, tôi cần cung cấp những thông tin cá nhân nào?
 A: Quý khách cần cung cấp các thông tin cá nhân bao gồm: Họ và tên, số CCCD, hộ khẩu thường trú, địa chỉ thư tín, email và số điện thoại di động để chúng tôi điền vào mục "Bên B" trong hợp đồng.
 
 Q: Công ty nào đang đứng ra nhận đặt cọc cho dự án này vậy bạn?
@@ -775,14 +684,8 @@ A: Vị trí và ranh giới thửa đất của bạn được mô tả chi ti�
 Q: Cách tính thời gian trong hợp đồng của dự án là tính theo ngày làm việc hay ngày dương lịch?
 A: Trong hợp đồng, "Ngày" được hiểu là ngày làm việc. Còn các đơn vị "tuần, tháng, năm" được tính theo dương lịch, bao gồm cả ngày nghỉ lễ và ngày Tết.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em?
-A: Dự án tọa lạc tại vị trí đắc địa thuộc khu vực Phú Định, Quận 8, TP.HCM, rất thuận tiện để di chuyển vào trung tâm thành phố.
-
-Q: Dự án này có những tiện ích gì nổi bật không?
-A: NyAh Phú Định được trang bị đầy đủ tiện ích nội khu hiện đại như hồ bơi, khu vui chơi trẻ em, phòng gym, công viên cây xanh và khu vực thương mại để phục vụ cư dân.
-
 Q: Pháp lý dự án đã hoàn thiện chưa em?
-A: Dự án NyAh Phú Định đảm bảo đầy đủ các giấy tờ pháp lý theo quy định, đảm bảo quyền lợi tốt nhất cho khách hàng khi sở hữu căn hộ.
+A: Dự án đã có đầy đủ giấy phép xây dựng và quy hoạch 1/500, đảm bảo tính pháp lý minh bạch và an toàn cho khách hàng khi xuống tiền đầu tư hoặc an cư.
 
 Q: Tôi muốn đặt cọc thì chuyển khoản vào số tài khoản nào vậy em?
 A: Dạ, anh/chị có thể chuyển khoản vào tài khoản số 310.179.3542 tại ngân hàng BIDV chi nhánh Hồ Chí Minh ạ.
@@ -808,23 +711,11 @@ A: Trong trường hợp này, anh/chị sẽ chấp nhận mua theo diện tíc
 Q: Nếu diện tích thực tế lớn hơn diện tích trên giấy chứng nhận thì tôi có được sở hữu phần dôi ra đó không?
 A: Không, việc diện tích thực tế lớn hơn không có nghĩa là Chủ Đất bán hay hứa bán phần dôi ra đó, và Chủ Đất không có trách nhiệm nào khác đối với phần diện tích này.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em?
-A: Dự án tọa lạc tại vị trí đắc địa thuộc khu vực Phú Định, Quận 8, TP.HCM, thuận tiện kết nối vào trung tâm thành phố.
-
-Q: Diện tích các căn hộ tại đây như thế nào?
-A: Dự án cung cấp đa dạng các loại hình căn hộ với diện tích linh hoạt, được thiết kế tối ưu công năng để phù hợp với nhu cầu của nhiều đối tượng khách hàng.
-
-Q: Giá bán dự kiến của căn hộ tại NyAh Phú Định là bao nhiêu?
-A: Hiện tại, mức giá dự kiến của dự án đang rất cạnh tranh so với khu vực. Anh/chị vui lòng để lại thông tin để em gửi bảng giá chi tiết từng căn nhé.
-
 Q: Dự án này đã có sổ hồng chưa em?
 A: Về pháp lý, dự án NyAh Phú Định được chủ đầu tư hoàn thiện đầy đủ các thủ tục theo quy định, đảm bảo quyền lợi sở hữu lâu dài cho khách hàng.
 
-Q: Chính sách thanh toán khi mua căn hộ có gì ưu đãi không?
-A: Chúng em có chính sách thanh toán linh hoạt theo tiến độ, chia nhỏ nhiều đợt để giảm áp lực tài chính cho khách hàng. Ngoài ra còn có hỗ trợ vay vốn từ ngân hàng.
-
-Q: Tiện ích nội khu của dự án có những gì?
-A: NyAh Phú Định được trang bị đầy đủ tiện ích hiện đại như khu vui chơi, công viên cây xanh, khu sinh hoạt cộng đồng và hệ thống an ninh 24/7 để phục vụ cư dân.
+Q: Chính sách thanh toán khi mua căn hộ có gì ưu đãi không? / Chính sách thanh toán khi mua căn hộ tại đây như thế nào? / Chính sách thanh toán có gì ưu đãi không? / Chính sách thanh toán hiện tại có ưu đãi gì không?
+A: Chủ đầu tư đang áp dụng chính sách thanh toán linh hoạt, chia làm nhiều đợt theo tiến độ xây dựng, giúp khách hàng giảm bớt áp lực tài chính. Ngoài ra còn có hỗ trợ vay vốn từ ngân hàng với lãi suất ưu đãi.
 
 Q: Nếu tôi mua dự án NyAh Phú Định thì các loại thuế, phí sang tên sẽ được chia như thế nào?
 A: Theo quy định, Chủ đất (Bên A) chịu thuế thu nhập cá nhân. Bạn (Bên B) sẽ thanh toán 50% chi phí công chứng hợp đồng, 100% lệ phí trước bạ và 100% phí làm thủ tục sang tên.
@@ -850,18 +741,16 @@ A: Theo quy định, các sự kiện bất khả kháng như thiên tai không 
 Q: Trong trường hợp xảy ra sự kiện bất khả kháng, thời gian thực hiện hợp đồng của tôi sẽ được xử lý thế nào?
 A: Thời gian thực hiện hợp đồng sẽ được kéo dài tương ứng với khoảng thời gian diễn ra sự kiện bất khả kháng mà bên bị ảnh hưởng không thể thực hiện nghĩa vụ.
 
-Q: Khi gặp sự cố bất khả kháng, bên dự án có trách nhiệm gì với khách hàng không?
+Q: Khi gặp sự cố bất khả kháng, bên dự án có trách nhiệm gì với khách hàng không? / Khi gặp sự cố bất khả kháng, tôi cần làm gì để đảm bảo quyền lợi của mình?
 A: Bên bị ảnh hưởng có nghĩa vụ phải thực hiện các biện pháp ngăn ngừa, thay thế để hạn chế tối đa thiệt hại và phải thông báo cho bên kia trong vòng 48 giờ kể từ khi sự kiện xảy ra.
 
 Q: Thông tin cá nhân và hồ sơ của tôi khi ký hợp đồng có được bảo mật không?
-A: Có, hai bên có nghĩa vụ giữ bí mật mọi hồ sơ, thông tin và số liệu liên quan, không được tiết lộ cho bên thứ ba nếu không có sự đồng ý bằng văn bản, trừ trường hợp pháp luật yêu cầu.
-
-Dưới đây là danh sách Q&A về dự án Ny'ah Phú Định:
+A: Có, hai bên có nghĩa vụ giữ bí mật mọi hồ sơ, thông tin và số liệu liên quan. Bạn hoàn toàn yên tâm vì thông tin sẽ không được tiết lộ cho bên thứ ba nếu không có sự đồng ý bằng văn bản của bạn, trừ trường hợp pháp luật yêu cầu.
 
 Q: Nếu sau này tôi muốn sang nhượng lại hợp đồng cho người khác thì có được không và thủ tục thế nào?
 A: Được ạ. Hợp đồng có tính kế thừa, khi phát sinh sự kiện kế thừa quyền và nghĩa vụ, bên kế thừa chỉ cần ký tên xác nhận đồng ý kế thừa vào trang cuối cùng của hợp đồng là sẽ có giá trị pháp lý đối với các bên.
 
-Q: Nếu trong quá trình thực hiện hợp đồng mà hai bên xảy ra tranh chấp thì sẽ giải quyết ở đâu?
+Q: Nếu trong quá trình thực hiện hợp đồng mà hai bên xảy ra tranh chấp thì sẽ giải quyết ở đâu? / Nếu trong quá trình xây dựng mà hai bên có tranh chấp thì giải quyết thế nào?
 A: Theo điều khoản 9.4, mọi tranh chấp trước hết sẽ được hai bên thương lượng hoặc hòa giải. Nếu không đạt được thỏa thuận, vụ việc sẽ được đưa ra Tòa án nhân dân quận 5, TP.HCM để giải quyết.
 
 Q: Hợp đồng đặt cọc của tôi chính thức có hiệu lực từ khi nào?
@@ -870,7 +759,7 @@ A: Hợp đồng đặt cọc của anh/chị sẽ bắt đầu có hiệu lực
 Q: Nếu chính sách nhà nước thay đổi làm một điều khoản trong hợp đồng trở nên vô hiệu thì quyền lợi của tôi có bị ảnh hưởng không?
 A: Anh/chị yên tâm, nếu có thay đổi từ quy định nhà nước, hai bên sẽ đàm phán để hiệu chỉnh hợp đồng dựa trên nguyên tắc đảm bảo quyền lợi sau cùng của cả hai bên không thay đổi so với mục đích ban đầu.
 
-Q: Khi ký hợp đồng, tôi có được giữ bản gốc không?
+Q: Khi ký hợp đồng, tôi có được giữ bản gốc không? / Hợp đồng này được lập thành mấy bản và tôi có được giữ bản gốc không?
 A: Có ạ. Hợp đồng được lập thành 02 bản chính có giá trị pháp lý như nhau, mỗi bên sẽ giữ 01 bản để đảm bảo quyền lợi.
 
 Q: Tôi muốn biết diện tích đất của lô tôi định mua là bao nhiêu?
@@ -881,9 +770,6 @@ A: Chi phí xây dựng (hay còn gọi là Tiền Nhà) đã bao gồm thuế G
 
 Q: Làm sao để biết chính xác vị trí lô đất tôi mua nằm ở đâu trong dự án?
 A: Vị trí lô đất của bạn được xác định theo "Lô số «Đặt_cọc__HĐMBMS_BĐS»" dựa trên bản đồ phân lô chi tiết được đính kèm tại Phụ lục A của hợp đồng.
-
-Q: Khi ký hợp đồng xây dựng, tôi cần cung cấp những thông tin cá nhân nào?
-A: Khi ký hợp đồng, bạn cần cung cấp các thông tin bao gồm: Họ tên, số CCCD, hộ khẩu thường trú, địa chỉ thư tín, email và số điện thoại di động để chúng tôi cập nhật vào hợp đồng.
 
 Q: Công ty nào là đơn vị chịu trách nhiệm xây dựng nhà tại dự án NyAh Phú Định vậy bạn?
 A: Đơn vị chịu trách nhiệm xây dựng là Công ty CP Nhã Đạt, do ông Ngô Trần Công Luận làm đại diện pháp luật.
@@ -903,26 +789,17 @@ A: Thửa đất tại dự án là đất ở và đã có giấy chứng nhậ
 Q: Tôi có thể xem các thông số kỹ thuật chi tiết của căn nhà ở đâu?
 A: Bạn có thể xem chi tiết tại "Hồ sơ thiết kế", bao gồm các bản vẽ kỹ thuật, bản vẽ thi công và các phụ lục mô tả đặc điểm kỹ thuật của căn nhà trên thửa đất.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em?
-A: Dự án tọa lạc tại vị trí đắc địa ngay mặt tiền đường Trịnh Quang Nghị, phường 7, Quận 8, TP.HCM, rất thuận tiện để di chuyển vào trung tâm thành phố.
+Q: Diện tích các căn ở đây khoảng bao nhiêu m2? / Diện tích các căn nhà phố ở đây khoảng bao nhiêu m2? / Diện tích các căn nhà phố ở đây thường là bao nhiêu?
+A: Các căn nhà phố tại NyAh Phú Định được thiết kế đa dạng diện tích, phổ biến từ 50m2 đến hơn 80m2, phù hợp cho cả nhu cầu ở thực và đầu tư kinh doanh ạ.
 
-Q: Diện tích các căn ở đây khoảng bao nhiêu m2?
-A: Các căn tại NyAh Phú Định được thiết kế đa dạng diện tích, phổ biến từ 50m2 đến 85m2, phù hợp cho cả người độc thân và gia đình trẻ.
-
-Q: Giá bán hiện tại của dự án là bao nhiêu?
-A: Giá bán dự kiến tại dự án dao động từ 2,5 tỷ đến 3,8 tỷ đồng/căn tùy vào diện tích và vị trí tầng cụ thể.
-
-Q: Dự án có những tiện ích gì nổi bật không?
-A: Dự án được trang bị đầy đủ tiện ích nội khu cao cấp như hồ bơi, phòng gym, khu vui chơi trẻ em, công viên cây xanh và hệ thống an ninh 24/7.
-
-Q: Pháp lý của dự án này như thế nào, đã có sổ chưa?
+Q: Pháp lý của dự án này như thế nào, đã có sổ chưa? / Khi mua nhà tại đây thì pháp lý như thế nào, có sổ hồng không?
 A: Dự án có pháp lý hoàn chỉnh, minh bạch. Khách hàng mua căn hộ sẽ được ký hợp đồng mua bán và được cấp sổ hồng sở hữu lâu dài theo quy định.
 
-Q: Chính sách thanh toán có hỗ trợ gì cho người mua không?
-A: Hiện tại chủ đầu tư có chính sách thanh toán linh hoạt theo tiến độ, đồng thời hỗ trợ vay ngân hàng lên đến 70% giá trị căn hộ với lãi suất ưu đãi.
+Q: Chính sách thanh toán có hỗ trợ gì cho người mua không? / Chính sách thanh toán có hỗ trợ gì không?
+A: Hiện tại chủ đầu tư đang áp dụng chính sách thanh toán linh hoạt theo tiến độ, hỗ trợ vay ngân hàng lên đến 70% giá trị căn nhà với lãi suất ưu đãi trong thời gian đầu.
 
 Q: Tôi muốn xem nhà mẫu thì liên hệ thế nào?
-A: Anh/chị có thể liên hệ trực tiếp với em qua số hotline để đặt lịch hẹn, em sẽ hỗ trợ đón tiếp và đưa anh/chị tham quan nhà mẫu thực tế tại dự án ạ.
+A: Anh/chị có thể liên hệ trực tiếp với em qua số hotline để đặt lịch hẹn. Em sẽ hỗ trợ đưa anh/chị đi tham quan thực tế vị trí dự án và xem nhà mẫu bất cứ lúc nào anh/chị thuận tiện.
 
 Q: Khi nào tôi phải đóng tiền đặt cọc cho dự án?
 A: Anh/chị cần thực hiện đặt cọc ngay khi ký Hợp đồng này để cam kết việc ký Hợp đồng xây dựng nhà ở với Nhà thầu theo Phụ lục F.
@@ -939,20 +816,11 @@ A: Dự án sẽ lấy diện tích nhỏ hơn trong hai diện tích đó để
 Q: Tôi có thể xem chi tiết về vật liệu xây dựng căn nhà ở đâu?
 A: Mọi quy cách xây dựng và mô tả vật liệu chi tiết đã được chúng tôi liệt kê đầy đủ tại Phụ lục C của hợp đồng ạ.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em?
-A: Dự án tọa lạc tại mặt tiền đường Trịnh Quang Nghị, phường 7, Quận 8, TP.HCM, vị trí rất thuận tiện kết nối vào trung tâm thành phố.
-
 Q: Diện tích các căn hộ ở đây thế nào, có đa dạng không?
 A: Dự án cung cấp nhiều loại hình diện tích đa dạng, từ căn hộ 1 phòng ngủ đến 3 phòng ngủ, phù hợp với nhu cầu của cả người độc thân và gia đình nhiều thế hệ.
 
-Q: Giá bán dự kiến của căn hộ tại NyAh Phú Định là bao nhiêu?
-A: Hiện tại, mức giá dự kiến của dự án rất cạnh tranh so với khu vực, chỉ từ [điền số liệu từ văn bản của bạn] triệu/m2.
-
 Q: Pháp lý của dự án đã đầy đủ chưa em?
 A: Dự án đã có đầy đủ hồ sơ pháp lý theo quy định, đảm bảo quyền lợi và sự an tâm tuyệt đối cho khách hàng khi sở hữu căn hộ.
-
-Q: Tôi muốn mua thì chính sách thanh toán có linh hoạt không?
-A: Chủ đầu tư hỗ trợ lịch thanh toán rất linh hoạt, chia thành nhiều đợt theo tiến độ xây dựng, giúp khách hàng dễ dàng xoay sở tài chính.
 
 Q: Tiện ích nội khu ở đây có gì nổi bật không?
 A: NyAh Phú Định được trang bị đầy đủ tiện ích hiện đại như hồ bơi, khu vui chơi trẻ em, công viên cây xanh, phòng gym và khu thương mại ngay dưới chân tòa nhà.
@@ -978,23 +846,8 @@ A: Sau khi bên em gửi hồ sơ, anh/chị vui lòng ký kết các giấy t�
 Q: Nếu bên bán vi phạm hợp đồng thì tôi được bồi thường như thế nào?
 A: Nếu thuộc các trường hợp vi phạm theo quy định, bên bán sẽ chịu phạt một khoản tiền bằng đúng với tổng số tiền cọc mà anh/chị đã đóng theo Điều 2.2 của hợp đồng ạ.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em, có thuận tiện đi lại không?
-A: Dự án tọa lạc tại mặt tiền đường Trịnh Quang Nghị, phường 7, Quận 8, TP.HCM. Vị trí này rất thuận tiện kết nối nhanh chóng vào trung tâm Quận 5, Quận 6 và các quận lân cận thông qua các trục đường huyết mạch.
-
-Q: Diện tích các căn hộ tại NyAh Phú Định khoảng bao nhiêu m2?
-A: Các căn hộ tại dự án được thiết kế đa dạng diện tích, phù hợp với nhu cầu của nhiều đối tượng khách hàng, từ căn hộ 1 phòng ngủ đến 3 phòng ngủ với không gian tối ưu công năng.
-
-Q: Giá bán dự kiến của dự án hiện tại là bao nhiêu?
-A: Hiện tại, mức giá dự kiến của dự án đang rất cạnh tranh so với khu vực, chỉ từ [Điền số liệu từ văn bản của bạn] triệu/m2. Anh/chị có thể liên hệ trực tiếp để nhận bảng giá chi tiết từng căn.
-
-Q: Dự án có những tiện ích gì nổi bật không em?
-A: NyAh Phú Định được trang bị đầy đủ tiện ích nội khu hiện đại như: hồ bơi, khu vui chơi trẻ em, công viên cây xanh, phòng gym, khu BBQ và hệ thống an ninh 24/7 đảm bảo cuộc sống tiện nghi cho cư dân.
-
 Q: Về pháp lý thì dự án đã có những giấy tờ gì rồi?
 A: Dự án đã hoàn thiện đầy đủ các thủ tục pháp lý theo quy định, đảm bảo quyền lợi cho khách hàng. Anh/chị có thể yên tâm khi tìm hiểu và đặt mua căn hộ tại đây.
-
-Q: Chính sách thanh toán khi mua căn hộ tại đây như thế nào?
-A: Chủ đầu tư đang áp dụng chính sách thanh toán linh hoạt, chia làm nhiều đợt theo tiến độ xây dựng, giúp khách hàng giảm bớt áp lực tài chính. Ngoài ra còn có hỗ trợ vay vốn từ ngân hàng với lãi suất ưu đãi.
 
 Q: Nếu tôi chậm thanh toán tiền nhà thì bị phạt như thế nào?
 A: Nếu bạn chậm thanh toán, bạn sẽ chịu mức phạt là 150% lãi suất tiết kiệm kỳ hạn 13 tháng của ngân hàng Vietcombank tính trên thời gian trễ hạn.
@@ -1017,12 +870,6 @@ A: Không. Theo Điều 8.2, việc một bên không hoàn thành nghĩa vụ d
 Q: Nếu chẳng may xảy ra sự kiện bất khả kháng thì tôi có bị mất quyền lợi hay bị đơn phương chấm dứt hợp đồng không?
 A: Không, sự kiện bất khả kháng không phải là cơ sở để bên kia đơn phương chấm dứt hợp đồng. Thời gian thực hiện hợp đồng sẽ được kéo dài tương ứng với thời gian diễn ra sự kiện bất khả kháng đó.
 
-Q: Khi gặp sự cố bất khả kháng, tôi cần làm gì để đảm bảo quyền lợi của mình?
-A: Bạn cần thực hiện hai việc: tiến hành các biện pháp ngăn ngừa/thay thế để hạn chế tối đa ảnh hưởng, và thông báo ngay cho bên kia trong vòng 48 giờ kể từ khi sự kiện xảy ra.
-
-Q: Các thông tin cá nhân và hồ sơ của tôi khi ký hợp đồng có được bảo mật không?
-A: Có, hai bên có nghĩa vụ giữ bí mật mọi hồ sơ, thông tin và số liệu liên quan. Bạn hoàn toàn yên tâm vì thông tin sẽ không được tiết lộ cho bên thứ ba nếu không có sự đồng ý bằng văn bản của bạn, trừ trường hợp pháp luật yêu cầu.
-
 Q: Nếu hợp đồng giữa tôi và chủ đầu tư chấm dứt hiệu lực, các điều khoản bảo mật thông tin có còn giá trị không?
 A: Có, nhiệm vụ bảo mật thông tin vẫn tiếp tục có hiệu lực thi hành ngay cả khi hợp đồng đã chấm dứt hiệu lực.
 
@@ -1032,26 +879,14 @@ A: Không, bạn không được tiết lộ thông tin cho bên thứ ba khi ch
 Q: Hợp đồng xây dựng này bắt đầu có hiệu lực từ khi nào vậy bạn?
 A: Hợp đồng có hiệu lực kể từ thời điểm Bên B hoàn tất việc chuyển tiền đặt cọc cho Bên A thông qua bên trung gian giao dịch ạ.
 
-Q: Nếu trong quá trình xây dựng mà hai bên có tranh chấp thì giải quyết thế nào?
-A: Nếu có tranh chấp, hai bên sẽ ưu tiên thương lượng hoặc hòa giải trước. Nếu không đạt được thỏa thuận, vụ việc sẽ được đưa ra Tòa án có thẩm quyền tại TP.HCM để giải quyết ạ.
-
-Q: Hợp đồng này được lập thành mấy bản và tôi có được giữ bản gốc không?
-A: Hợp đồng được lập thành 02 bản chính có giá trị pháp lý như nhau, mỗi bên sẽ giữ 01 bản để đảm bảo quyền lợi ạ.
-
 Q: Nhà tại dự án NyAh Phú Định khi bàn giao thì phần tường bên trong nhà đã được xây chưa?
 A: Theo quy định bàn giao, toàn bộ các tường bên trong nhà và tường hộp gen sẽ không được xây dựng. Bạn sẽ nhận bàn giao phần khung cột, đà và sàn bê tông cốt thép.
 
 Q: Sàn nhà bên trong khi nhận bàn giao là sàn đã lót gạch hay sao em?
 A: Dạ không ạ, tất cả các khu vực sàn bên trong nhà đều là sàn thô, chưa lán vữa và chưa lót gạch. Riêng sàn mái sẽ được hoàn thiện chống thấm và cán vữa tạo dốc thoát nước.
 
-Q: Dự án NyAh Phú Định có bao nhiêu căn tất cả vậy em?
-A: Dự án chỉ có duy nhất 50 căn biệt lập thôi ạ.
-
-Q: Nhà ở đây có chỗ để xe ô tô không hay phải gửi bên ngoài?
-A: Dạ, mỗi căn nhà tại NyAh Phú Định đều được thiết kế có garage ô tô riêng ngay tại nhà ạ.
-
-Q: Khu này có an ninh không, có bảo vệ hay cổng riêng gì không?
-A: Dạ có, đây là khu biệt lập và có cổng riêng đảm bảo an ninh cho cư dân ạ.
+Q: Khu này có an ninh không, có bảo vệ hay cổng riêng gì không? / Dự án này có an ninh như thế nào?
+A: Đây là khu biệt lập, có cổng riêng biệt để đảm bảo an ninh và sự riêng tư cho cư dân ạ.
 
 Q: Phần tường bao quanh nhà thì bên mình bàn giao như thế nào?
 A: Đối với tường bao 2 bên và phía sau nhà, bên em bàn giao là tường xây thô (không tô) ạ.
@@ -1061,21 +896,6 @@ A: Dạ có, bên em có lắp đặt khung bảo vệ giếng trời bằng th�
 
 Q: Cửa bên trong nhà thì dự án có lắp sẵn không em?
 A: Dạ, theo thiết kế thì bên em không lắp đặt toàn bộ cửa bên trong nhà ạ.
-
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em?
-A: Dự án tọa lạc tại vị trí đắc địa ngay mặt tiền đường Trịnh Quang Nghị, phường 7, Quận 8, TP.HCM, kết nối thuận tiện vào trung tâm thành phố.
-
-Q: Diện tích các căn hộ tại đây như thế nào?
-A: NyAh Phú Định cung cấp đa dạng các loại hình căn hộ với diện tích linh hoạt từ 50m2 đến 85m2, phù hợp cho cả người độc thân và gia đình trẻ.
-
-Q: Giá bán hiện tại của dự án là bao nhiêu?
-A: Giá bán khởi điểm tại dự án NyAh Phú Định rất cạnh tranh, chỉ từ 35 triệu/m2, tùy thuộc vào vị trí tầng và hướng view của từng căn hộ.
-
-Q: Pháp lý của dự án đã hoàn thiện chưa em?
-A: Dự án đã có đầy đủ hồ sơ pháp lý minh bạch, bao gồm quy hoạch 1/500 và giấy phép xây dựng, đảm bảo quyền lợi sở hữu lâu dài cho khách hàng.
-
-Q: Chính sách thanh toán có gì ưu đãi không?
-A: Hiện tại chủ đầu tư đang áp dụng chính sách thanh toán linh hoạt, chia làm nhiều đợt theo tiến độ xây dựng và hỗ trợ vay ngân hàng lên đến 70% giá trị căn hộ.
 
 Q: Hệ thống điện bên trong nhà dự án NyAh Phú Định được bàn giao như thế nào?
 A: Dự án chỉ lắp đặt đồng hồ điện lực, dây điện kết nối vào tủ điện tổng tại tầng 1 và đèn chiếu sáng bên ngoài nhà. Hệ thống điện và chiếu sáng bên trong nhà sẽ không được lắp đặt.
@@ -1116,32 +936,11 @@ A: Cửa đi mặt tiền được thiết kế là cửa kim loại cắt CNC 4
 Q: Các loại cửa sổ và cửa ban công tại dự án dùng loại nào?
 A: Các loại cửa này sử dụng nhôm kính hệ Xingfa 55 sơn tĩnh điện hoàn thiện, đi kèm với phụ kiện đồng bộ của KinLong.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em?
-A: Dự án tọa lạc tại vị trí đắc địa ngay mặt tiền đường Trịnh Quang Nghị, phường 7, Quận 8, TP.HCM, rất thuận tiện kết nối về trung tâm và các quận lân cận.
-
-Q: Diện tích các căn nhà phố ở đây khoảng bao nhiêu m2?
-A: Các căn nhà phố tại NyAh Phú Định có diện tích đa dạng, phổ biến từ 80m2 đến 100m2, được thiết kế tối ưu công năng sử dụng cho gia đình hiện đại.
-
-Q: Giá bán hiện tại của một căn là bao nhiêu?
-A: Giá bán dự kiến của dự án dao động từ 7,5 tỷ đến 9 tỷ đồng/căn tùy vào vị trí, diện tích và hướng nhà cụ thể của từng lô.
-
-Q: Pháp lý dự án hiện tại như thế nào rồi em?
-A: Dự án đã có đầy đủ pháp lý theo quy định, bao gồm quy hoạch 1/500 và giấy phép xây dựng, đảm bảo an tâm tuyệt đối cho khách hàng khi giao dịch.
-
-Q: Chính sách thanh toán có hỗ trợ gì không?
-A: Hiện tại chủ đầu tư đang áp dụng chính sách thanh toán linh hoạt theo tiến độ, hỗ trợ vay ngân hàng lên đến 70% giá trị căn nhà với lãi suất ưu đãi trong thời gian đầu.
-
 Q: Dự án NyAh Phú Định bảo hành khung sườn bê tông cốt thép trong bao lâu vậy em?
 A: Dạ, đối với khung sườn bê tông cốt thép (bao gồm móng, cột, sàn các lầu), thời hạn bảo hành là 5 năm kể từ ngày căn nhà hoàn thành xây dựng ạ.
 
 Q: Còn các phần như mái, sân thượng hay ban công thì được bảo hành bao lâu?
 A: Các bộ phận còn lại như mái, sân thượng và ban công sẽ được bảo hành trong thời hạn 2 năm kể từ ngày căn nhà hoàn thành xây dựng ạ.
-
-Q: Dự án NyAh Phú Định có bao nhiêu căn tất cả vậy em?
-A: Dự án hiện chỉ có duy nhất 50 căn thôi ạ, đây là khu biệt lập nên rất giới hạn.
-
-Q: Nhà ở đây có chỗ để xe ô tô không hay phải gửi bên ngoài?
-A: Dạ, mỗi căn nhà tại NyAh Phú Định đều được thiết kế có garage ô tô riêng ngay tại nhà, rất thuận tiện và an toàn ạ.
 
 Q: Nếu nhà có vấn đề cần bảo hành thì ai là người trực tiếp sửa chữa cho mình?
 A: Việc bảo hành, sửa chữa hoặc thay thế sẽ do Bên A (chủ đầu tư) thực hiện hoặc do đơn vị được Bên A ủy quyền/đồng ý thực hiện thôi ạ.
@@ -1155,24 +954,6 @@ A: Anh/chị cần thông báo kịp thời cho Bên A và thực hiện các n�
 Q: Nếu tôi báo lỗi nhưng kiểm tra ra không phải lỗi do nhà sản xuất thì sao?
 A: Trong trường hợp hư hỏng không nằm trong phạm vi bảo hành, Bên A có quyền thu các chi phí liên quan đến việc đi lại, tìm hiểu nguyên nhân và sửa chữa của Bên B ạ.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em?
-A: Dự án tọa lạc tại mặt tiền đường Trịnh Quang Nghị, phường 7, Quận 8, TP.HCM, vị trí rất thuận tiện kết nối về trung tâm thành phố và các quận lân cận.
-
-Q: Diện tích các căn hộ tại đây như thế nào?
-A: Dự án cung cấp đa dạng loại hình từ căn hộ 1PN đến 3PN với diện tích linh hoạt từ 50m2 đến 95m2, phù hợp cho cả người độc thân và gia đình nhiều thế hệ.
-
-Q: Giá bán dự kiến của căn hộ tại NyAh Phú Định là bao nhiêu?
-A: Giá bán dự kiến hiện tại dao động từ 45 - 50 triệu/m2 tùy vào vị trí tầng và hướng view của từng căn hộ ạ.
-
-Q: Dự án có những tiện ích gì nổi bật không?
-A: NyAh Phú Định được trang bị đầy đủ tiện ích nội khu cao cấp như hồ bơi tràn bờ, công viên cây xanh, khu vui chơi trẻ em, phòng gym, yoga và trung tâm thương mại ngay dưới khối đế.
-
-Q: Chính sách thanh toán hiện tại có ưu đãi gì không?
-A: Hiện tại chủ đầu tư đang áp dụng chính sách thanh toán giãn tiến độ, chỉ cần thanh toán 20% là đã có thể ký hợp đồng mua bán, phần còn lại được hỗ trợ vay ngân hàng với lãi suất ưu đãi.
-
-Q: Pháp lý của dự án đã hoàn thiện chưa em?
-A: Dự án đã có đầy đủ giấy phép xây dựng và quy hoạch 1/500, đảm bảo tính pháp lý minh bạch và an toàn cho khách hàng khi xuống tiền đầu tư hoặc an cư.
-
 Q: Tôi có được tự ý sửa chữa, thay đổi kết cấu căn nhà không?
 A: Không, bạn không được sửa chữa ảnh hưởng đến kết cấu chính của căn nhà nếu chưa có thỏa thuận bằng văn bản từ phía chủ đầu tư (Bên A).
 
@@ -1185,9 +966,6 @@ A: Có, trong thời hạn bảo trì, chủ đầu tư sẽ cử nhân viên đ
 Q: Tôi có thể sử dụng căn nhà NyAh Phú Định để làm nhà xưởng hay kho chứa hàng không?
 A: Không, dự án chỉ được sử dụng đúng mục đích là nhà ở kết hợp kinh doanh (văn phòng và cửa hàng). Bạn không được dùng làm nhà xưởng, nhà để xe hay nhà kho.
 
-Q: Dự án NyAh Phú Định có bao nhiêu căn tất cả vậy em?
-A: Dự án hiện chỉ có duy nhất 50 căn thôi ạ, đây là khu biệt lập nên số lượng rất giới hạn.
-
 Q: Tôi muốn sửa lại mặt tiền nhà cho khác biệt một chút có được không?
 A: Dạ không được ạ. Bên B cam kết giữ gìn mỹ quan theo thiết kế và quy hoạch đã duyệt, không được tự ý thay đổi mặt tiền căn nhà.
 
@@ -1196,9 +974,6 @@ A: Nếu anh/chị có nhu cầu thay đổi khác với thiết kế ban đầu
 
 Q: Dự án này có chỗ để xe ô tô không em?
 A: Dạ có ạ, mỗi căn tại dự án đều được thiết kế có garage ô tô riêng biệt.
-
-Q: Dự án này có an ninh như thế nào?
-A: Đây là khu biệt lập, có cổng riêng biệt để đảm bảo an ninh và sự riêng tư cho cư dân ạ.
 
 Q: Khi nhận nhà tại NyAh Phú Định, phần tủ bếp và quầy bar có được bàn giao sẵn không?
 A: Dạ, theo quy định bàn giao, quầy bar và tủ bếp không bao gồm trong gói bàn giao tiêu chuẩn của dự án ạ.
@@ -1211,9 +986,6 @@ A: Dạ, máy giặt và máy sấy không nằm trong danh mục thiết bị �
 
 Q: Những phần nào trong căn hộ sẽ được hoàn thiện sẵn (bao gồm) khi bàn giao?
 A: Theo bảng quy cách, dự án sẽ bàn giao hoàn thiện toàn bộ phần "ướt" của căn hộ cho khách hàng ạ.
-
-Q: Dự án NyAh Phú Định có những gói hoàn thiện nội thất nào vậy em?
-A: Dạ, dự án hiện có 2 gói hoàn thiện là Gói AIR và Gói MAX ạ.
 
 Q: Phần sàn gỗ, cầu thang và thiết bị vệ sinh thì gói nào cũng có đúng không?
 A: Dạ đúng rồi ạ. Cả Gói AIR và Gói MAX đều đã bao gồm các hạng mục cơ bản như sàn (gỗ/gạch), cầu thang, lan can, thiết bị phòng tắm, toilet, hệ thống điện và cấp thoát nước.
@@ -1284,35 +1056,14 @@ A: Các cửa đi trong nhà tại dự án được sử dụng loại cửa g�
 Q: Phần lan can sắt ở cầu thang thì bên mình dùng loại sơn gì để đảm bảo không bị gỉ sét?
 A: Toàn bộ kết cấu, bậc thang và lan can sắt đều được sơn dầu bằng các thương hiệu uy tín như Jotun hoặc Maxilite, đảm bảo độ bền và thẩm mỹ cho ngôi nhà ạ.
 
-Q: Dự án NyAh Phú Định nằm ở đâu vậy em?
-A: Dạ khu nhà nằm tại 58A Trương Đình Hội, phường 16, quận 8, TP.HCM, nằm ngay khu vực giao lộ chiến lược, thuận tiện kết nối vào trung tâm thành phố.
-
-Q: Diện tích các căn nhà phố ở đây khoảng bao nhiêu?
-A: Các căn nhà phố tại NyAh Phú Định được thiết kế đa dạng diện tích, phổ biến từ 50m2 đến hơn 80m2, phù hợp cho cả nhu cầu ở thực và đầu tư kinh doanh ạ.
-
-Q: Giá bán hiện tại của dự án là bao nhiêu một căn?
-A: Giá bán các căn còn lại của bên em với mức hoàn thiện gói Air từ 8.9 đến 11 ỷ đồng/căn tùy vào vị trí, diện tích và hướng nhà cụ thể.
-
 Q: Dự án này đã có sổ hồng chưa hay là hợp đồng mua bán?
 A: Dự án hiện đang hoàn thiện pháp lý theo quy định, khách hàng sẽ ký hợp đồng mua bán và được đảm bảo quyền lợi theo tiến độ dự án cho đến khi nhận sổ hồng sở hữu lâu dài.
 
 Q: Tôi muốn mua thì tiến độ thanh toán như thế nào, có được hỗ trợ vay không?
 A: Chủ đầu tư có chính sách thanh toán linh hoạt theo tiến độ xây dựng. Ngoài ra, dự án cũng liên kết với các ngân hàng uy tín để hỗ trợ khách hàng vay vốn lên đến 70% giá trị căn nhà.
 
-Q: Khu này có tiện ích gì nổi bật không em?
-A: NyAh Phú Định được quy hoạch đồng bộ với hệ thống đường nội khu rộng rãi, công viên cây xanh, khu vui chơi trẻ em và an ninh bảo vệ 24/7, đảm bảo không gian sống tiện nghi cho cư dân.
-
-Q: Tôi muốn xem nhà mẫu thì liên hệ thế nào?
-A: Anh/chị có thể liên hệ trực tiếp với em qua số hotline để đặt lịch hẹn. Em sẽ hỗ trợ đưa anh/chị đi tham quan thực tế vị trí dự án và xem nhà mẫu bất cứ lúc nào anh/chị thuận tiện.
-
-Q: Thiết bị vệ sinh trong nhà sử dụng của hãng nào vậy?
-A: Toàn bộ thiết bị vệ sinh như bàn cầu, vòi sen tắm mưa, chậu rửa lavabo, vòi nóng lạnh và các phụ kiện như móc treo, khay giấy đều sử dụng thương hiệu Inax cao cấp.
-
-Q: Tủ bếp ở đây làm bằng chất liệu gì, có bền không em?
+Q: Tủ bếp ở đây làm bằng chất liệu gì, có bền không em? / Tủ bếp tại dự án NyAh Phú Định sử dụng chất liệu gì để đảm bảo độ bền vậy em?
 A: Tủ bếp trên làm từ ván An Cường MDF chống ẩm phủ laminate; tủ bếp dưới làm từ ván nhựa An Cường PVC WPB kết hợp MDF chống ẩm, tất cả đều sử dụng phụ kiện Imundex rất bền và thẩm mỹ ạ.
-
-Q: Tủ bếp tại dự án NyAh Phú Định sử dụng chất liệu gì để đảm bảo độ bền vậy em?
-A: Tủ bếp trên được làm từ ván An Cường laminate MDF chống ẩm, còn tủ bếp dưới làm từ ván nhựa An Cường PVC WPB kết hợp MDF, tất cả đều dày 18mm và sử dụng phụ kiện Imundex cao cấp ạ.
 
 Q: Mặt bếp được ốp bằng đá gì và có dễ vệ sinh không?
 A: Mặt bếp được ốp đá granite rất bền và sạch, kết hợp với tường bếp ốp kính cường lực 8mm nên anh/chị lau chùi vết dầu mỡ rất dễ dàng ạ.
@@ -1338,23 +1089,8 @@ A: Dạ có, phòng ngủ chính được thiết kế thêm kệ tủ kết h�
 Q: Dự án có giải pháp nào để nhà luôn thoáng khí không?
 A: Dạ có, dự án trang bị hệ thống trao đổi gió AirTop với quạt và bộ lọc không khí cấp trên mái, cùng các miệng cấp gió tươi được bố trí tại khu vực bàn ăn, bếp và các phòng ngủ để đảm bảo không khí luôn trong lành.
 
-Q: Chủ đầu tư dự án NyAh Phú Định là ai và có uy tín không?
-A: Chủ đầu tư là Công ty TNHH Nhã Đạt (Nhã Đạt Co.Ltd.), đơn vị đã có 20 năm hình thành và phát triển, chuyên kiến tạo các sản phẩm nhà ở có kiến trúc độc đáo và khác biệt.
-
 Q: Tại sao tôi nên chọn mua nhà của chủ đầu tư Nhã Đạt?
 A: Nhã Đạt không chỉ xây dựng công trình kiến trúc mà còn chú trọng đến mối quan hệ giữa con người và không gian sống, đảm bảo mang lại lợi ích cộng đồng và nơi lan tỏa cảm xúc cho chủ nhân.
-
-Q: Dự án Ny’ah Phú Định nằm ở đâu vậy bạn?
-A: Dự án Ny’ah Phú Định tọa lạc tại Quận 8, Thành phố Hồ Chí Minh ạ.
-
-Q: Quy mô của dự án Ny’ah Phú Định gồm bao nhiêu căn?
-A: Dự án có quy mô 51 căn nhà phố khu biệt lập.
-
-Q: Tổng diện tích của dự án Ny’ah Phú Định là bao nhiêu?
-A: Tổng diện tích của dự án là 3.737,14 m2.
-
-Q: Tổng giá trị đầu tư của dự án Ny’ah Phú Định là bao nhiêu?
-A: Tổng giá trị của dự án này là 300 tỷ đồng.
 
 Q: Ngoài Ny’ah Phú Định, chủ đầu tư còn có dự án nào khác ở Quận 6 không?
 A: Dạ có, bên em có các dự án tại Quận 6 như: Phú Lâm Court (34 căn), Ny’ah Bình Tây (29 căn) và Ny’ah Tân Hóa (9 căn).
@@ -1365,17 +1101,8 @@ A: Dự án Villa Ny’ah tại huyện Cần Giuộc, tỉnh Long An dự kiế
 Q: Dự án Ny’ah Phú Định có điểm gì đặc biệt về không gian sống không?
 A: Dự án áp dụng công nghệ "thở sạch" cho nhà phố, giúp thổi vào 9,5 triệu lít khí tươi mỗi ngày, mang lại môi trường sống trong lành cho cư dân.
 
-Q: Tôi có phải đóng phí quản lý hàng tháng không?
-A: Tại Ny’ah, bạn được hưởng chính sách phí quản lý 0 đồng nhờ vào sự thông minh của hệ thống ByteLife.
-
 Q: Dự án Ny’ah Phú Định có tổng cộng bao nhiêu sản phẩm vậy em?
 A: Dự án có tổng cộng 278 sản phẩm nhà phố thương mại.
-
-Q: Diện tích các căn nhà phố ở đây thường là bao nhiêu?
-A: Các sản phẩm tại dự án có diện tích đa dạng, cụ thể là: 5x12m, 5x13m, 5x14m, 5x15m, 5x16m và 5x18m.
-
-Q: Khi mua nhà tại đây thì pháp lý như thế nào, có sổ hồng không?
-A: Pháp lý dự án hoàn chỉnh, khách hàng sẽ ký Hợp đồng mua bán và được cấp sổ hồng sở hữu lâu dài.
 
 Q: Đường bao quanh dự án và đường nội bộ tại NyAh Phú Định rộng bao nhiêu mét vậy bạn?
 A: Đường bao quanh dự án có bề rộng 5m và đường nội bộ cũng có bề rộng 5m bạn nhé.
@@ -1392,12 +1119,6 @@ A: Nếu khách hàng thanh toán chậm so với thời hạn quy định trong
 Q: Khi tôi chuyển nhượng lại căn nhà cho người khác, họ có được thừa hưởng thời hạn bảo hành còn lại không?
 A: Dạ có, quyền lợi bảo hành của bất động sản vẫn được bảo lưu và chuyển tiếp cho chủ sở hữu mới theo đúng thời hạn đã cam kết ban đầu.
 
-Q: Dự án Ny’ah Phú Định nằm chính xác ở đâu vậy bạn?
-A: Dự án có 2 cổng vào: Cổng chính tại 58A Trương Đình Hội và Cổng 2 tại đường 156 An Dương Vương, Phường 16, Quận 8, TP.HCM.
-
-Q: Pháp lý của dự án này như thế nào, có sổ chưa?
-A: Dự án đảm bảo pháp lý với sổ đỏ riêng cho từng căn.
-
 Q: Loại hình nhà ở tại đây gồm những gì?
 A: Ny’ah Phú Định cung cấp các căn nhà phố liền kề và nhà phố thương mại.
 
@@ -1408,7 +1129,7 @@ Q: Khi mua nhà thì tôi sẽ ký những loại giấy tờ gì?
 A: Khách hàng sẽ bắt đầu bằng phiếu giữ chỗ, sau đó ký hợp đồng cọc đối với khách hàng thanh toán theo tiến độ xây dựng.
 
 Q: Tôi có thể xem thêm thông tin chi tiết dự án ở đâu?
-A: Bạn có thể truy cập website chính thức của dự án tại địa chỉ: 
+A: Bạn có thể truy cập website chính thức của dự án tại địa chỉ:
 
 Q: Dự án NyAh Phú Định có sở hữu lâu dài không hay có thời hạn?
 A: Dự án có thời hạn sở hữu vĩnh viễn cho khách hàng nhé.
@@ -1454,9 +1175,6 @@ A: Đối với người Việt Nam, thời hạn sử dụng bất động sả
 
 Q: Khi làm thủ tục chuyển nhượng, tôi phải đóng những loại thuế, phí gì?
 A: Anh/chị sẽ cần đóng phí chuyển nhượng là 0,35% và thuế thu nhập cá nhân (TNCN) theo quy định của luật thuế Việt Nam hiện hành ạ.
-
-Q: Dự án NyAh Phú Định có những loại diện tích nào và giá bán ra sao?
-A: Dự án hiện có các căn với diện tích đa dạng, giá bán khởi điểm từ [điền số liệu từ file] tùy thuộc vào vị trí và tầng của từng căn.
 
 Q: Tôi nghe nói dự án này có thang máy lên tận sân thượng, thông tin này có đúng không?
 A: Đúng ạ, thiết kế của NyAh Phú Định rất đặc biệt với hệ thống thang máy hiện đại được bố trí di chuyển thẳng lên tận sân thượng, giúp cư dân thuận tiện trong việc sử dụng không gian giải trí trên cao.
