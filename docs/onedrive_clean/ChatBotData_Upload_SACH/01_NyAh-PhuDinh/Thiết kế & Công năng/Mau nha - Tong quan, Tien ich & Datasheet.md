@@ -96,3 +96,72 @@ Khu nhà được phê duyệt 1/500, có sổ hồng riêng từng căn TRƯỚ
 
 - Rổ hàng T5.2026 (cập nhật 13.05.26): các lô đánh dấu "LOCK ngay giá tốt": #02, 03, 23, 24, 42, 50.
 - Đối tác: phát triển & phân phối Nhã Đạt (nhà đất Đô Thị Mới); xây dựng: Vĩnh Khang, KACONS; ngân hàng: TPBank, Techcombank, MB, BIDV.
+
+---
+
+# MẪU NHÀ FUSION GEN 5 — "Định nghĩa lại nhà phố"
+
+Ra mắt từ 2016, cải tiến qua 5 thế hệ — mẫu nhà được công nhận và yêu thích nhất của Nhã Đạt. Thiết kế thang biến hóa làm không gian "tách biệt nhưng không cách biệt": ánh sáng soi vào từng góc nhỏ, gió vào theo áp lực tự nhiên rồi thoát ra giếng trời.
+
+## Điểm nhấn theo không gian
+
+| Không gian | Điểm nhấn |
+|---|---|
+| Garage | Fullsize, chứa cả xe bán tải; vách kính cách âm, cách nhiệt, ngăn khói bụi vào nhà |
+| Phòng khách | Thông tầng trần cao, nhìn lên lửng |
+| Thang biến hóa | "Thang đi thong thả, nhà không chia đôi" — mọi góc nhìn đều đẹp |
+| Phòng bếp | Đầy đủ thiết bị hiện đại: tủ lạnh side-by-side, lò nướng, quầy bar cao cấp |
+| Phòng ăn riêng | Ấm cúng & thiêng liêng, tách biệt bếp |
+| Phòng ngủ master | Chiếm trọn 2/3 chiều dài căn nhà + sảnh master sang trọng |
+| Sân thượng | Cho tiệc barbecue |
+| Thang máy | Lên tận sân thượng |
+
+## Công nghệ ByteLife đi kèm
+
+| Tính năng | Nội dung |
+|---|---|
+| 9,5 triệu lít khí tươi/ngày | Thổi liên tục vào từng căn — thở sạch cả đêm |
+| Hơn 30 cảm biến tự động | Bật thiết bị điện theo bước chân, tự tắt khi rời đi |
+| Phí quản lý 0 đồng | Điều khiển tiện ích toàn khu như trong chính căn nhà |
+
+Diện tích từng phòng: xem "Bang chuan 50 lo.md" / "05 - Tổng quan". Liên hệ: info@nhadat.company · 0909176119 · Block VPB, The EverRich Infinity, 290 An Dương Vương, P.04, Q.5, TP.HCM.
+
+---
+
+# MẪU NHÀ OPUS — "Nhà phố khởi nghiệp hạng A" (2 trong 1)
+
+Trên mặt tiền cách Quận 1 chỉ 18 phút, số tầng cao vượt trội, tích hợp thang máy — mẫu nhà 2 trong 1 lần đầu ra mắt tại Ny'ah Phú Định, phục vụ những ngành nghề xu thế, kế thừa tinh thần lập nghiệp của đất Sài Gòn. "Hãy khởi nghiệp bằng một căn nhà Hạng A!"
+
+## Điểm nhấn theo không gian
+
+| Không gian | Điểm nhấn |
+|---|---|
+| Mặt tiền | Thanh thoát, hiện đại — "mặt tiền tạo nên bản sắc" thương hiệu; nhiều tùy chọn mặt tiền |
+| Văn phòng hạng A (2 tầng dưới) | Co-working mở cho viết code/làm game; mặt tiền trưng bày + góc livestream + văn phòng nhóm 10 người trên tầng lửng |
+| Garage tự động trong nhà | Xe hơi fullsize 7 chỗ |
+| Phòng khách | Thiết kế mở |
+| Phòng bếp | Đầy đủ thiết bị bếp hiện đại nhất |
+| Phòng ăn | Ấm cúng, riêng tư |
+| Phòng ngủ gia chủ | Chiếm trọn 2/3 chiều dài căn nhà + sảnh gia chủ đẳng cấp |
+| Thang biến hóa | Mọi góc nhìn view nào cũng đẹp |
+| Thang máy | Lên tận sân thượng, "bay" khắp các tầng |
+| Tầng 3-5 | "Căn hộ sân vườn" hạng sang 3 phòng ngủ tiêu chuẩn |
+
+## 2 kịch bản khởi nghiệp
+
+| Kịch bản | Thiết kế phục vụ |
+|---|---|
+| Viết code, làm game | Văn phòng mở co-working năng động cho lực lượng sáng tạo trình độ cao |
+| Kinh doanh online | Mặt tiền trưng bày, góc livestream, văn phòng nhóm 10 thành viên |
+
+(Datasheet diện tích từng tầng Opus + thông tin Office 1&2 xem "05 - Tổng quan" và "Bang chuan 50 lo.md" — không lặp lại ở đây.)
+
+---
+
+# THƯƠNG HIỆU CÔNG NGHỆ BYTELIFE
+
+| Mục | Nội dung |
+|---|---|
+| ByteLife là gì | Sản phẩm công nghệ của Nhã Đạt nâng tầm chất lượng sống trong nhà Ny'ah; lấy con người làm trung tâm, nhịp sinh học làm thông số: khí tươi cho phổi, ánh sáng dịu cho mắt, theo từng trạng thái làm việc/ngủ/chơi |
+| Ý nghĩa tên | "Byte" = công nghệ, trí tuệ nhân tạo, đơn vị bộ nhớ nhỏ nhất (tiêu hao thấp nhất khi phục vụ con người); "Life" = cuộc sống, con người |
+| Nhận diện | Chữ trắng trên nền đen, font mảnh mà mạnh; phần hình mô phỏng rung động đa sắc như "vân tay chạm vào rung động" |
