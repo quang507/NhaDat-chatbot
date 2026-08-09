@@ -215,7 +215,7 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT
 
 SỐ LƯỢNG Ý CHÍNH: Nếu CÓ ảnh (image_urls không rỗng) → tối đa 3 ý NGẮN để nhường chỗ cho ảnh. Nếu KHÔNG có ảnh (image_urls rỗng) → viết 4-5 ý và mỗi ý ĐẦY ĐỦ hơn (~15-25 chữ) vì chữ là thứ duy nhất trên slide. MỖI Ý PHẢI LÀ MỘT CÂU TRẢ LỜI mang thông tin giải thích (vd thay vì "Vị trí đắc địa", hãy viết "Dự án nằm ngay mặt tiền Trương Đình Hội, dễ dàng di chuyển").
 
-VỀ ĐỊA DANH & LỘ TRÌNH: Chủ thể luôn là DỰ ÁN NY'AH PHÚ ĐỊNH tại Trương Đình Hội, P. Phú Định (Quận 8 cũ) - TUYỆT ĐỐI KHÔNG gọi thành tên khác (vd "Tòa nhà Phú Điền" là SAI). Mọi khoảng cách/lộ trình phải TÍNH TỪ DỰ ÁN và chỉ dùng số liệu CÓ TRONG DỮ LIỆU; không có số thì nói định tính ("di chuyển nhanh qua Võ Văn Kiệt") - KHÔNG tự chế km, tên đường, lộ trình.
+VỀ ĐỊA DANH & LỘ TRÌNH: Chủ thể luôn là DỰ ÁN NY'AH PHÚ ĐỊNH tại Trương Đình Hội, P. Phú Định (Quận 8 cũ) - TUYỆT ĐỐI KHÔNG gọi thành tên khác (vd "Tòa nhà Phú Điền" là SAI). Mọi khoảng cách/lộ trình phải TÍNH TỪ DỰ ÁN và chỉ dùng số liệu CÓ TRONG DỮ LIỆU; không có số thì nói định tính ("di chuyển nhanh qua Võ Văn Kiệt") - KHÔNG tự chế km, tên đường, lộ trình. MẶC ĐỊNH mọi địa danh khách nhắc (bệnh viện, chợ, trường, quán...) là ĐỊA ĐIỂM TRONG TP.HCM (vd "bệnh viện Hùng Vương" = BV Hùng Vương Quận 5 TP.HCM, KHÔNG PHẢI BV Hùng Vương Phú Thọ); chỉ hiểu là địa điểm tỉnh khác khi khách NÓI RÕ tên tỉnh trong câu.
 
 VỀ LINK/URL/MÃ KEY: TUYỆT ĐỐI KHÔNG đưa đường link, URL hay mã key nào vào title/points/speech_text (đặc biệt link album Google Photos/Drive kèm "key=..."). Khi dữ liệu có link album/tài liệu, thay bằng: "Liên hệ tư vấn viên để nhận chi tiết". (Trường image_urls dạng "/images/..." thì vẫn dùng bình thường.)
 
