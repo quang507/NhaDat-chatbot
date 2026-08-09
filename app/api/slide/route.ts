@@ -533,7 +533,7 @@ export async function POST(req: NextRequest) {
     // NGHE NGẦM + đã khớp slide tĩnh -> TRẢ NGAY (~0ms), KHÔNG chờ LLM viết lại text
     // (LLM mất 3-5s - khách đang nói chuyện mà slide lên chậm 5s là hỏng nhịp sale).
     // Chat trực tiếp (ambient=false) vẫn giữ LLM viết text bám ngữ cảnh câu hỏi.
-    if (ambient && staticSlide && (!refine || staticSlide.forceStatic)) {
+    if (ambient && staticSlide && !refine) {
       const imgs: string[] = staticSlide.image_urls || [];
       const isDiagram = imgs.some((u: string) => /vi_tri|18_phut|tinh-nang|mat-bang|mat_bang|cau-truc|ban-do|datasheet/.test(u));
       if (!staticSlide.layout_type) staticSlide.layout_type = isDiagram ? 'split_image_right' : 'full_background';
@@ -556,7 +556,7 @@ export async function POST(req: NextRequest) {
     const ctxUnit = detectUnit(message) || (recentText ? detectUnit(recentText) : null);
     const refineCacheKey = `${model || ''}|${ctxUnit || ''}|` + noD.replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
     const cacheable = refineCacheKey.length >= 12 && !/\b(do|nay|kia|no)\b/.test(refineCacheKey);
-    if (refine && !(staticSlide && staticSlide.forceStatic) && cacheable) {
+    if (refine && cacheable) {
       const hit = ANSWER_CACHE.get(refineCacheKey);
       if (hit && Date.now() - hit.at < ANSWER_CACHE_TTL_MS) {
         return NextResponse.json({ answer_text: hit.ans, _source: 'static_llm_text', _cached: true });
@@ -590,7 +590,10 @@ export async function POST(req: NextRequest) {
       console.log(`[Slide] Skip (no RAG match, ambient=${!!ambient}): "${message.slice(0, 60)}"`);
       return NextResponse.json({ skip: true, reason: 'RAG không khớp dữ liệu + không trúng từ khóa slide tĩnh' });
     }
-    if (refine && !(staticSlide && staticSlide.forceStatic) && REFINE_GROQ_KEY) {
+    // forceStatic KHÔNG còn miễn refine: số liệu trên slide vẫn khóa cứng
+    // (refine chỉ trả answer_text chèn thêm, không đụng points/ảnh), nhưng câu
+    // hỏi vặn kiểu "không phải ... à?" giờ có câu xác nhận đúng/sai thẳng.
+    if (refine && REFINE_GROQ_KEY) {
       try {
         const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "..."} - MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu câu hỏi KHÔNG liên quan dự án/bất động sản (chuyện phiếm, thời sự, chủ đề ngoài lề) hoặc không có thông tin: {"answer": ""} - im lặng tốt hơn trả lời lạc đề.';
         const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
