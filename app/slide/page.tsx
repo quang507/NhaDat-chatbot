@@ -379,8 +379,9 @@ export default function SlideBotPage() {
 
       // PHA 2 "đỡ ngu mà vẫn nhanh": slide tĩnh đã hiện (~0ms), gọi ngầm refine
       // để LLM viết câu trả lời bám ĐÚNG câu khách hỏi rồi chèn lên caption
-      // (answer_text) - text tĩnh tự thu nhỏ tụt xuống. forceStatic thì thôi.
-      if ((data as any)._source === 'static_fast' && !(data as any)._forceStatic) {
+      // (answer_text) - text tĩnh tự thu nhỏ tụt xuống. forceStatic cũng chèn
+      // (số liệu tĩnh giữ nguyên, chỉ thêm câu xác nhận bám câu hỏi).
+      if ((data as any)._source === 'static_fast') {
         const myKey = slideKeyRef.current + 1; // key vừa set ở trên
         refinePromise.then(ref => {
           if (!ref || ref.skip || !ref.answer_text) return;
