@@ -122,26 +122,17 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     </Line>
   );
 
-  // Points ghim đáy - mỗi ý 1 dòng, thanh dọc xanh brand trước chữ (như Figma).
-  // Có answer_text (pha 2 refine): câu trả lời LLM hiện TO trên cùng, points
-  // tĩnh thu nhỏ mờ đi bên dưới.
-  const BottomPoints = ({ startDelay = 700 }: { startDelay?: number }) => (
-    <div className="space-y-[1cqw]">
-      {data.answer_text && (
+  // Chỉ hiện CÂU TRẢ LỜI LLM (answer_text) - sếp chốt: bỏ hẳn points tĩnh trên
+  // slide có ảnh. Chưa có/không có answer (Groq sập, câu ngoài đề) -> chỉ ảnh.
+  const BottomPoints = (_: { startDelay?: number }) => (
+    data.answer_text ? (
+      <div className="space-y-[1cqw]">
         <Line key={data.answer_text} delay={60}
           className="text-white font-semibold leading-snug text-[clamp(14px,2.9cqw,38px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
           {data.answer_text}
         </Line>
-      )}
-      {points.slice(0, 3).map((p, i) => (
-        <Line key={i} delay={(data.answer_text ? 300 : startDelay) + i * 150}
-          className={data.answer_text
-            ? 'text-white/70 font-normal leading-snug text-[clamp(11px,1.9cqw,25px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]'
-            : 'text-white/95 font-medium leading-snug text-[clamp(13px,2.6cqw,34px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]'}>
-          {p}
-        </Line>
-      ))}
-    </div>
+      </div>
+    ) : null
   );
 
   // Nền mờ phía sau: chính ảnh đang hiện blur + tối phủ toàn khung.
@@ -249,25 +240,14 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
               {isMapImg(cur) && <QrChip />}
             </figure>
 
-            {/* Caption: dải riêng NGAY DƯỚI ảnh - nền tối mờ, vạch xanh + chữ trắng.
-                Có answer_text (pha 2 refine): câu trả lời hiện TO ở trên, các
-                points tĩnh thu NHỎ và tụt xuống dưới. */}
-            {(points.length > 0 || data.answer_text) && (
-              <div className="shrink-0 w-full bg-black/45 backdrop-blur-[2px] px-[4cqw] py-[1.8cqw] space-y-[0.9cqw]">
-                {data.answer_text && (
-                  <Line key={data.answer_text} delay={60}
-                    className="text-white font-semibold leading-snug text-[clamp(14px,2.7cqw,36px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
-                    {data.answer_text}
-                  </Line>
-                )}
-                {points.slice(0, data.answer_text ? 3 : 4).map((p, i) => (
-                  <Line key={i} delay={(data.answer_text ? 300 : 650) + i * 150}
-                    className={data.answer_text
-                      ? 'text-white/70 font-normal leading-snug text-[clamp(11px,1.8cqw,24px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]'
-                      : 'text-white/95 font-medium leading-snug text-[clamp(13px,2.4cqw,32px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]'}>
-                    {p}
-                  </Line>
-                ))}
+            {/* Caption: dải riêng NGAY DƯỚI ảnh - CHỈ câu trả lời LLM (sếp chốt:
+                bỏ points tĩnh; không có answer thì ảnh full, không caption). */}
+            {data.answer_text && (
+              <div className="shrink-0 w-full bg-black/45 backdrop-blur-[2px] px-[4cqw] py-[1.8cqw]">
+                <Line key={data.answer_text} delay={60}
+                  className="text-white font-semibold leading-snug text-[clamp(14px,2.7cqw,36px)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
+                  {data.answer_text}
+                </Line>
               </div>
             )}
           </div>
