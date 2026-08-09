@@ -279,7 +279,10 @@ async function buildPrompt(message: string, ambient = false, recentText = ''): P
       // KHÔNG nới theo tên mẫu nhà (opus/cosmo/fusion) - STT rất hay nghe NHẦM ra các tên này
       // (xem VN_SPEECH_FIXES), làm cổng tin cậy bị tắt oan -> slide sai. Tên mẫu nhà vẫn qua ngưỡng RAG.
       const hasUnit = detectUnit(message) !== null;
-      const minScore = (ambient && !hasUnit) ? 0.71 : 0;
+      // Chat trực tiếp cũng có ngưỡng (0.5, thấp hơn ambient 0.71): trước đây
+      // minScore=0 nên câu NGOÀI LỀ vẫn nhận đủ 10 chunk "liên quan" và việc
+      // từ chối phụ thuộc 100% vào LLM tự giác -> dễ gượng ép trả lời lạc đề.
+      const minScore = hasUnit ? 0 : (ambient ? 0.71 : 0.5);
       // Nghe ngầm: ít chunk hơn (6) -> prompt ngắn -> LLM trả NHANH hơn; chat trực tiếp giữ 10.
       const chunks = await retrieve(ragQuery, index, ambient ? 6 : 10, minScore);
       // Có facts của căn cụ thể -> luôn tạo slide kể cả khi RAG rỗng (đã có dữ liệu chính xác)
@@ -547,8 +550,12 @@ export async function POST(req: NextRequest) {
     // -> câu giống hệt (sau khi bỏ dấu + thường hóa) đã trả lời rồi thì trả
     // NGAY 0ms, khỏi tốn cả RAG lẫn LLM. Không cache câu có đại từ ngữ cảnh
     // ("căn đó", "cái này") vì đáp án phụ thuộc câu trước của từng khách.
-    const refineCacheKey = noD.replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
-    const cacheable = refineCacheKey.length >= 10 && !/\b(do|nay|kia|no)\b/.test(refineCacheKey);
+    // Key cache PHẢI kèm ngữ cảnh mẫu nhà/căn (model suy từ chính câu HOẶC các
+    // câu trước của khách): "giá bao nhiêu" sau khi bàn Cosmo khác hẳn "giá bao
+    // nhiêu" sau khi bàn Opus - thiếu ngữ cảnh thì khách B nhận đáp án của khách A.
+    const ctxUnit = detectUnit(message) || (recentText ? detectUnit(recentText) : null);
+    const refineCacheKey = `${model || ''}|${ctxUnit || ''}|` + noD.replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+    const cacheable = refineCacheKey.length >= 12 && !/\b(do|nay|kia|no)\b/.test(refineCacheKey);
     if (refine && !(staticSlide && staticSlide.forceStatic) && cacheable) {
       const hit = ANSWER_CACHE.get(refineCacheKey);
       if (hit && Date.now() - hit.at < ANSWER_CACHE_TTL_MS) {
@@ -566,11 +573,22 @@ export async function POST(req: NextRequest) {
     // lời về trước ~1s cho client hiện tạm, slide đầy đủ (pha 1 chậm hơn) về
     // sau sẽ thay thế. forceStatic vẫn miễn.
     const REFINE_GROQ_KEY = process.env.GROQ_API_KEY || '';
-    // CỔNG NGOÀI LỀ (sửa hồi quy PR #100): nghe ngầm + câu KHÔNG trúng slide
-    // tĩnh + RAG cũng không khớp = chuyện ngoài lề nghe lỏm -> IM LẶNG,
-    // tuyệt đối không để 8B "nhiệt tình" trả lời chuyện thiên hạ.
-    if (refine && ambient && !staticSlide && !hasChunks) {
-      return NextResponse.json({ skip: true, reason: 'refine_off_topic' });
+    // CỔNG NGOÀI LỀ (sửa hồi quy PR #100, mở rộng cho CẢ chat trực tiếp):
+    // RAG không khớp dữ liệu -> không có gì để LLM bám -> IM LẶNG / giữ slide
+    // tĩnh, tuyệt đối không gọi LLM với prompt RỖNG (trước đây nhánh
+    // staticSlide + !hasChunks vẫn lọt xuống refine/hybrid với systemText=''
+    // -> LLM tự trả lời bằng kiến thức nền, dễ bịa).
+    if (!hasChunks) {
+      if (refine) {
+        return NextResponse.json({ skip: true, reason: 'refine_no_data' });
+      }
+      if (staticSlide) {
+        // Có slide tĩnh khớp từ khóa -> trả nguyên bản (chữ người duyệt), không cho LLM chế thêm.
+        if (!staticSlide.layout_type) staticSlide.layout_type = 'split_image_right';
+        return NextResponse.json({ ...staticSlide, _source: 'static_no_rag', _forceStatic: !!staticSlide.forceStatic });
+      }
+      console.log(`[Slide] Skip (no RAG match, ambient=${!!ambient}): "${message.slice(0, 60)}"`);
+      return NextResponse.json({ skip: true, reason: 'RAG không khớp dữ liệu + không trúng từ khóa slide tĩnh' });
     }
     if (refine && !(staticSlide && staticSlide.forceStatic) && REFINE_GROQ_KEY) {
       try {
@@ -604,13 +622,6 @@ export async function POST(req: NextRequest) {
       } catch (e) {
         console.warn('[Slide] Refine nhanh lỗi mạng - rơi về đường hybrid', e);
       }
-    }
-
-    // Ambient + RAG rỗng + KHÔNG có slide tĩnh khớp → mơ hồ, bỏ qua.
-    // (reason trả về để DEBUG HUD trên /slide?debug=1 hiện được vì sao skip)
-    if (ambient && !hasChunks && !staticSlide) {
-      console.log(`[Slide] Ambient skip (no RAG match): "${message.slice(0, 60)}"`);
-      return NextResponse.json({ skip: true, reason: 'RAG không khớp dữ liệu + không trúng từ khóa slide tĩnh' });
     }
 
     const systemWithAmbient = ambient ? systemText + AMBIENT_RULE : systemText;
