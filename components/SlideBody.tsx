@@ -124,7 +124,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
 
   // Chỉ hiện CÂU TRẢ LỜI LLM (answer_text) - sếp chốt: bỏ hẳn points tĩnh trên
   // slide có ảnh. Chưa có/không có answer (Groq sập, câu ngoài đề) -> chỉ ảnh.
-  const BottomPoints = (_: { startDelay?: number }) => (
+  const BottomPoints = () => (
     data.answer_text ? (
       <div className="space-y-[1cqw]">
         <Line key={data.answer_text} delay={60}

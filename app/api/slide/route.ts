@@ -539,7 +539,7 @@ export async function POST(req: NextRequest) {
       if (!staticSlide.layout_type) staticSlide.layout_type = isDiagram ? 'split_image_right' : 'full_background';
       console.log(`[Slide] Ambient FAST static: "${message.slice(0, 50)}" -> "${staticSlide.title}"`);
       // _source: nhánh nào tạo slide - trang /thu-slide đọc để chẩn đoán.
-      // _forceStatic: chữ khóa cứng (số liệu) - client biết đường KHỎI gọi refine.
+      // _forceStatic: chữ khóa cứng (số liệu) - giờ chỉ mang tính chẩn đoán trên /thu-slide.
       return NextResponse.json({ ...staticSlide, _source: 'static_fast', _forceStatic: !!staticSlide.forceStatic });
     }
 

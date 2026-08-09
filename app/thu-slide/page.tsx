@@ -163,7 +163,7 @@ export default function ThuSlidePage() {
 
       // PHA 2 (giống /slide): slide tĩnh hiện xong thì gọi ngầm refine để LLM
       // viết câu trả lời bám câu hỏi, chèn lên caption (answer_text).
-      if (coSlide && (data as any)._source === 'static_fast' && !(data as any)._forceStatic) {
+      if (coSlide && (data as any)._source === 'static_fast') {
         fetch('/api/slide', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
