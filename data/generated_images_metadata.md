@@ -597,13 +597,6 @@ Chi tiết: wc master 3.
 
 ---
 
-## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_bep
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 bep, cosmo gen 2, bep.
-Chi tiết: bep.
-Đường dẫn hình ảnh: ![bep](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png)
-
----
-
 ## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_bep_tang-3_4-bep-1
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 bep, cosmo gen 2, bep, tang 3, 4 bep 1.
 Chi tiết: 4 bep 1.
@@ -772,13 +765,6 @@ Chi tiết: 2023 07 11 17 01 28 them nen.
 
 ---
 
-## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_gara
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 gara, cosmo gen 2, gara.
-Chi tiết: gara.
-Đường dẫn hình ảnh: ![gara](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png)
-
----
-
 ## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_garage_tang-1_1-gara-1
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 gara, cosmo gen 2, garage, tang 1, 1 gara 1.
 Chi tiết: 1 gara 1.
@@ -797,13 +783,6 @@ Chi tiết: 1 gara 2.
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2, opus ultra gach bong gio.
 Chi tiết: opus ultra gach bong gio.
 Đường dẫn hình ảnh: ![opus ultra gach bong gio](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/opus-ultra-gach-bong-gio.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_phong-khach
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 phong khach, cosmo gen 2, phong khach.
-Chi tiết: phong khach.
-Đường dẫn hình ảnh: ![phong khach](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png)
 
 ---
 
@@ -842,13 +821,6 @@ Chi tiết: 2 phong khach 6.
 
 ---
 
-## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_noi-that-ngu-master
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 phong ngu, cosmo gen 2, noi that ngu master.
-Chi tiết: noi that ngu master.
-Đường dẫn hình ảnh: ![noi that ngu master](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png)
-
----
-
 ## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_phong-ngu-2_tang-5_8-phong-ngu-2-1
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 phong ngu, cosmo gen 2, phong ngu 2, tang 5, 8 phong ngu 2 1.
 Chi tiết: 8 phong ngu 2 1.
@@ -874,20 +846,6 @@ Chi tiết: 9 phong ngu 3 1.
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 phong ngu, cosmo gen 2, phong ngu 3, tang 5, 9 phong ngu 3 2.
 Chi tiết: 9 phong ngu 3 2.
 Đường dẫn hình ảnh: ![9 phong ngu 3 2](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-3_tang-5_9-phong-ngu-3-2.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_phong-ngu-con-2
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 phong ngu, cosmo gen 2, phong ngu con 2.
-Chi tiết: phong ngu con 2.
-Đường dẫn hình ảnh: ![phong ngu con 2](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png)
-
----
-
-## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_phong-ngu-con-3
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 phong ngu, cosmo gen 2, phong ngu con 3.
-Chi tiết: phong ngu con 3.
-Đường dẫn hình ảnh: ![phong ngu con 3](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-3.png)
 
 ---
 
@@ -972,13 +930,6 @@ Chi tiết: 7 phong tam master 1.
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 wc, cosmo gen 2, phong tam master, tang 4, 7 phong tam master 2.
 Chi tiết: 7 phong tam master 2.
 Đường dẫn hình ảnh: ![7 phong tam master 2](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_phong-tam-master_tang-4_7-phong-tam-master-2.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · cosmo-gen-2_wc
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that cosmo gen 2 wc, cosmo gen 2, wc.
-Chi tiết: wc.
-Đường dẫn hình ảnh: ![wc](/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_wc.png)
 
 ---
 
@@ -1556,13 +1507,6 @@ Chi tiết: tong quan.
 
 ---
 
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_gara
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 gara, fusion gen 5, gara.
-Chi tiết: gara.
-Đường dẫn hình ảnh: ![gara](/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png)
-
----
-
 ## 🔖 [Ảnh Minh Họa] · fusion-gen-5_garage_tang-1_cong
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 gara, fusion gen 5, garage, tang 1, cong.
 Chi tiết: cong.
@@ -1581,13 +1525,6 @@ Chi tiết: gara 1.
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 gara, fusion gen 5, garage, tang 1, gara 2.
 Chi tiết: gara 2.
 Đường dẫn hình ảnh: ![gara 2](/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-2.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_phong-khach
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 phong khach, fusion gen 5, phong khach.
-Chi tiết: phong khach.
-Đường dẫn hình ảnh: ![phong khach](/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png)
 
 ---
 
@@ -1626,20 +1563,6 @@ Chi tiết: mat bang tang 1.
 
 ---
 
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_master-bedroom
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 phong ngu, fusion gen 5, master bedroom.
-Chi tiết: master bedroom.
-Đường dẫn hình ảnh: ![master bedroom](/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_phong-hoc
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 phong ngu, fusion gen 5, phong hoc.
-Chi tiết: phong hoc.
-Đường dẫn hình ảnh: ![phong hoc](/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png)
-
----
-
 ## 🔖 [Ảnh Minh Họa] · fusion-gen-5_phong-hoc_tang-5_phong-hoc
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 phong ngu, fusion gen 5, phong hoc, tang 5, phong hoc.
 Chi tiết: phong hoc.
@@ -1651,13 +1574,6 @@ Chi tiết: phong hoc.
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 phong ngu, fusion gen 5, phong ngu 2, tang 5, phong ngu con.
 Chi tiết: phong ngu con.
 Đường dẫn hình ảnh: ![phong ngu con](/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-2_tang-5_phong-ngu-con.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_phong-ngu-con
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that fusion gen 5 phong ngu, fusion gen 5, phong ngu con.
-Chi tiết: phong ngu con.
-Đường dẫn hình ảnh: ![phong ngu con](/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png)
 
 ---
 
