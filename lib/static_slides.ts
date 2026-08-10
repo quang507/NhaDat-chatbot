@@ -563,7 +563,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Phòng học & Góc làm việc',
       points: ['Fusion bố trí phòng học riêng cho con', 'Yên tĩnh, tách khỏi khu sinh hoạt chung', 'Đủ sáng tự nhiên từ giếng trời'],
       speech_text: 'Mẫu Fusion có hẳn phòng học riêng cho con - yên tĩnh và đủ sáng tự nhiên.',
-      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png`],
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc_tang-5_phong-hoc.jpg`],
     },
   },
   {
@@ -572,7 +572,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: '4 phòng ngủ - 3 thế hệ',
       points: ['Fusion Gen 5: 4 phòng ngủ trọn vẹn', 'Ông bà tầng thấp - bố mẹ master - con tầng trên', 'Cosmo: master + 2 phòng con + phòng ông bà'],
       speech_text: 'Mẫu Fusion có bốn phòng ngủ cho ba thế hệ - ông bà ở tầng thấp, bố mẹ phòng master, các con tầng trên.',
-      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png`, `${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png`],
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg`, `${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-2_tang-5_phong-ngu-con.jpg`],
       forceStatic: true,
     },
   },
@@ -707,7 +707,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Thang máy trong nhà',
       points: ['Thang máy tiêu chuẩn ở Cosmo, Fusion, Opus', 'Lên thẳng sân thượng - tiện cho ông bà', 'Thang kính lấy sáng, không tối tù'],
       speech_text: 'Nhà có thang máy lên thẳng sân thượng - ông bà lớn tuổi đi lại cực kỳ nhẹ nhàng.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png`, `${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`],
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg`, `${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`],
     },
   },
   {
@@ -743,7 +743,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Giếng trời & Ánh sáng',
       points: ['Giếng trời xuyên suốt các tầng', 'Phòng nào cũng có ánh sáng tự nhiên', 'Kết hợp gạch bông gió đón gió chéo'],
       speech_text: 'Giếng trời xuyên suốt giúp phòng nào cũng có ánh sáng tự nhiên - nhà phố mà không hề tối.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`, `${IMG}/noi_that/cosmo_gen_2/cosmo-gen-2_mat-cat.jpg`],
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`, `${IMG}/noi_that/cosmo_gen_2/cosmo-gen-2_mat-cat.jpg`],
     },
   },
 
@@ -763,7 +763,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Tổ ấm cho gia đình trẻ',
       points: ['Phòng con thiết kế sẵn, đón sáng giếng trời', 'Sân chơi trẻ em ngay trong compound', 'An ninh khép kín - con chạy chơi thoải mái'],
       speech_text: 'Với gia đình trẻ, phòng con đón sáng tự nhiên và sân chơi ngay trong khu - bé chạy chơi bố mẹ vẫn an tâm.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png`, `${IMG}/tien_ich/san_choi_tre_em/tien-ich-5.jpg`],
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-2_tang-5_8-phong-ngu-2-1.jpg`, `${IMG}/tien_ich/san_choi_tre_em/tien-ich-5.jpg`],
     },
   },
   {
@@ -781,7 +781,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Làm việc tại nhà',
       points: ['Fusion có phòng học/làm việc riêng', 'Opus tách hẳn tầng văn phòng', 'Yên tĩnh compound - họp online thoải mái'],
       speech_text: 'Làm việc tại nhà rất thoải mái: Fusion có phòng riêng, Opus tách hẳn tầng văn phòng, compound lại yên tĩnh.',
-      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png`, `${IMG}/noi_that/opus/van phong/opus_tang-1.jpg`],
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc_tang-5_phong-hoc.jpg`, `${IMG}/noi_that/opus/van phong/opus_tang-1.jpg`],
     },
   },
   {
@@ -828,7 +828,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Vật liệu & Hoàn thiện',
       points: ['Mặt bếp đá thạch anh, tủ gỗ cao cấp', 'Thiết bị vệ sinh thương hiệu tuyển chọn', 'Chi tiết hoàn thiện chuẩn theo gói bàn giao'],
       speech_text: 'Vật liệu hoàn thiện đều tuyển chọn cao cấp - từ mặt bếp đá thạch anh đến thiết bị vệ sinh chính hãng.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`, `${IMG}/noi_that/cosmo_gen_2/wc/cosmo-gen-2_wc.png`],
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg`, `${IMG}/noi_that/cosmo_gen_2/wc/cosmo-gen-2_phong-tam-master_tang-4_7-phong-tam-master-1.jpg`],
     },
   },
   {
@@ -837,7 +837,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Thiết kế lệch tầng Fusion Gen 5',
       points: ['Lệch tầng tạo chiều cao thị giác độc đáo', 'Phòng khách mở thông - ngập sáng tự nhiên', 'Bếp đảo kết nối trực tiếp phòng sinh hoạt'],
       speech_text: 'Fusion Gen 5 nổi bật với thiết kế lệch tầng - phòng khách và bếp thông nhau tạo không gian cực kỳ thoáng đãng và hiện đại.',
-      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png`, `${IMG}/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png`],
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg`, `${IMG}/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png`],
     },
   },
   {
@@ -846,7 +846,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Nội thất Cashmere - Cosmo Gen 2',
       points: ['Gói nội thất cao cấp tùy chọn cho Cosmo', 'Vật liệu Cashmere - gỗ tự nhiên, đá thạch anh', 'Bàn giao hoàn thiện cao - dọn vào ở ngay'],
       speech_text: 'Gói nội thất Cashmere là lựa chọn cao cấp cho mẫu Cosmo Gen 2, sử dụng gỗ tự nhiên và đá thạch anh - vào ở ngay không cần sửa gì thêm.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`, `${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`, `${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png`],
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`, `${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg`, `${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg`],
     },
   },
   {
@@ -855,7 +855,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Bếp đảo & Quầy bar',
       points: ['Bếp đảo đa năng như quầy bar tại gia', 'Nấu nướng - trò chuyện - không quay lưng với khách', 'View thiên nhiên ngay từ phòng ăn'],
       speech_text: 'Bếp đảo đa năng như quầy bar - vừa nấu vừa trò chuyện, không còn quay lưng với cả nhà.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`, `${IMG}/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png`],
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg`, `${IMG}/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png`],
     },
   },
   {
@@ -864,7 +864,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Khu giặt sấy tiện lợi',
       points: ['Giặt sấy bố trí ngay khu bếp - gọn việc nhà', 'Sân thượng phơi đồ nắng gió tự nhiên', 'Động tuyến việc nhà tối ưu từng bước chân'],
       speech_text: 'Khu giặt sấy đặt ngay tầng bếp, phơi đồ trên sân thượng - động tuyến việc nhà cực gọn.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`],
+      image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg`],
     },
   },
   {
@@ -873,7 +873,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Garage cho xe lớn',
       points: ['Garage đỗ vừa bán tải, SUV 7 chỗ', 'Thêm chỗ xe máy cho cả nhà', 'Cửa cuốn tự động, thông gió tốt'],
       speech_text: 'Garage trong nhà đỗ vừa cả xe bán tải lẫn SUV bảy chỗ, kèm chỗ để xe máy cho cả nhà.',
-      image_urls: [`${IMG}/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png`, `${IMG}/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png`],
+      image_urls: [`${IMG}/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg`, `${IMG}/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg`],
     },
   },
   {
@@ -1147,7 +1147,7 @@ export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides',
   bep: {
     keywords: ['bếp', 'nhà ăn', 'nấu ăn', 'phòng ăn', 'bàn ăn'],
     variants: {
-      cosmo_gen_2: { title: 'Phòng bếp Cosmo', points: ['Hệ tủ bếp hiện đại, tối ưu', 'Mặt bếp đá thạch anh cao cấp', 'Không gian bàn ăn ấm cúng'], speech_text: 'Khu vực bếp và bàn ăn của căn nhà Cosmo được thiết kế ấm cúng, trang bị hệ tủ bếp hiện đại.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png`] },
+      cosmo_gen_2: { title: 'Phòng bếp Cosmo', points: ['Hệ tủ bếp hiện đại, tối ưu', 'Mặt bếp đá thạch anh cao cấp', 'Không gian bàn ăn ấm cúng'], speech_text: 'Khu vực bếp và bàn ăn của căn nhà Cosmo được thiết kế ấm cúng, trang bị hệ tủ bếp hiện đại.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg`] },
       fusion_gen_5: { title: 'Phòng bếp Fusion', points: ['Bố trí bếp đảo hiện đại', 'Thiết kế mở kết nối phòng khách', 'Trang bị thiết bị bếp cao cấp'], speech_text: 'Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình.', image_urls: [`${IMG}/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png`] },
       opus: { title: 'Phòng bếp Opus', points: ['Khu vực bếp nấu biệt lập', 'Bố trí bàn ăn sang trọng', 'Kết nối ban công thoáng mát'], speech_text: 'Không gian bếp của mẫu nhà Opus sang trọng, thoáng đãng nhờ kết nối trực tiếp với ban công ngoài trời.', image_urls: [`${IMG}/noi_that/opus/bep/opus_bep.jpg`] },
       nyah: { title: "Phòng bếp Ny'ah", points: ['Thiết kế bếp hiện đại, tối ưu không gian', 'Kết nối không gian ăn uống gia đình', 'Trang bị tủ bếp và thiết bị cao cấp'], speech_text: "Các mẫu nhà Ny'ah Phú Định đều được trang bị khu vực bếp hiện đại, tối ưu không gian nấu ăn và sinh hoạt gia đình.", imageSpace: 'bep' },
@@ -1156,8 +1156,8 @@ export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides',
   gara: {
     keywords: ['gara', 'xe hơi', 'đỗ xe', 'ô tô', 'đậu xe', 'xe ô tô'],
     variants: {
-      cosmo_gen_2: { title: 'Gara Ô tô Cosmo', points: ['Sức chứa lớn cho ô tô và xe máy', 'Tích hợp lối đi thang máy kính', 'Hệ thống thông gió hiện đại'], speech_text: 'Mẫu nhà Cosmo thiết kế gara rộng rãi với sức chứa ô tô lớn, kết nối trực tiếp đến thang máy kính lên các tầng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png`] },
-      fusion_gen_5: { title: 'Gara Ô tô Fusion', points: ['Thiết kế gara đỗ xe bán tải rộng', 'Lối vào nhà thông thoáng', 'Bố trí hộp kỹ thuật âm tường'], speech_text: 'Gara mẫu nhà Fusion được tối ưu không gian, đỗ vừa xe bán tải lớn và có thiết kế thông thoáng.', image_urls: [`${IMG}/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png`] },
+      cosmo_gen_2: { title: 'Gara Ô tô Cosmo', points: ['Sức chứa lớn cho ô tô và xe máy', 'Tích hợp lối đi thang máy kính', 'Hệ thống thông gió hiện đại'], speech_text: 'Mẫu nhà Cosmo thiết kế gara rộng rãi với sức chứa ô tô lớn, kết nối trực tiếp đến thang máy kính lên các tầng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg`] },
+      fusion_gen_5: { title: 'Gara Ô tô Fusion', points: ['Thiết kế gara đỗ xe bán tải rộng', 'Lối vào nhà thông thoáng', 'Bố trí hộp kỹ thuật âm tường'], speech_text: 'Gara mẫu nhà Fusion được tối ưu không gian, đỗ vừa xe bán tải lớn và có thiết kế thông thoáng.', image_urls: [`${IMG}/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg`] },
       opus: { title: 'Gara Ô tô Opus', points: ['Gara đỗ xe hơi thoải mái', 'Cửa cuốn tự động an toàn', 'Bố trí tủ giày và tủ dụng cụ'], speech_text: 'Mẫu nhà thương mại Opus sở hữu gara ô tô riêng biệt tại tầng trệt, kết nối thuận tiện lên khu vực kinh doanh.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
       nyah: { title: "Gara Ô tô Ny'ah", points: ['100% căn hộ có gara ô tô riêng', 'Thiết kế thông thoáng, cửa cuốn tự động', 'Kết nối thang máy lên các tầng'], speech_text: "Toàn bộ căn nhà tại Ny'ah Phú Định đều được thiết kế gara ô tô riêng biệt ngay tầng trệt, thuận tiện cho sinh hoạt hàng ngày.", imageSpace: 'gara' },
     },
@@ -1165,8 +1165,8 @@ export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides',
   phong_khach: {
     keywords: ['phòng khách', 'sofa', 'tiếp khách', 'sinh hoạt chung'],
     variants: {
-      cosmo_gen_2: { title: 'Phòng khách Cosmo', points: ['Thiết kế kính tràn rộng mở', 'Trần cao thông thoáng', 'Nội thất sofa hiện đại'], speech_text: 'Phòng khách Cosmo Gen 2 ngập tràn ánh sáng tự nhiên nhờ hệ kính lớn và trần cao thoáng đãng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`] },
-      fusion_gen_5: { title: 'Phòng khách Fusion', points: ['Không gian sinh hoạt rộng lớn', 'Thiết kế lệch tầng độc đáo', 'Tối ưu góc nhìn ra sân vườn'], speech_text: 'Phòng khách mẫu nhà Fusion mang phong cách hiện đại với thiết kế lệch tầng tạo không gian rộng mở.', image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png`] },
+      cosmo_gen_2: { title: 'Phòng khách Cosmo', points: ['Thiết kế kính tràn rộng mở', 'Trần cao thông thoáng', 'Nội thất sofa hiện đại'], speech_text: 'Phòng khách Cosmo Gen 2 ngập tràn ánh sáng tự nhiên nhờ hệ kính lớn và trần cao thoáng đãng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`] },
+      fusion_gen_5: { title: 'Phòng khách Fusion', points: ['Không gian sinh hoạt rộng lớn', 'Thiết kế lệch tầng độc đáo', 'Tối ưu góc nhìn ra sân vườn'], speech_text: 'Phòng khách mẫu nhà Fusion mang phong cách hiện đại với thiết kế lệch tầng tạo không gian rộng mở.', image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg`] },
       opus: { title: 'Phòng khách Opus', points: ['Sảnh đón tiếp khách sang trọng', 'Tông màu gỗ ấm áp, lịch lãm', 'Bố trí ánh sáng gián tiếp tinh tế'], speech_text: 'Không gian phòng khách Opus lịch lãm với gỗ tự nhiên, thiết kế lý tưởng để tiếp các đối tác kinh doanh.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
       nyah: { title: "Phòng khách Ny'ah", points: ['Thiết kế không gian mở, ngập sáng tự nhiên', 'Nội thất hiện đại theo từng phong cách', 'Linh hoạt bố trí phù hợp gia đình'], speech_text: "Phòng khách các mẫu nhà Ny'ah được thiết kế rộng rãi, thoáng đãng, tận dụng tối đa ánh sáng tự nhiên.", imageSpace: 'phong_khach' },
     },
@@ -1174,8 +1174,8 @@ export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides',
   phong_ngu: {
     keywords: ['phòng ngủ', 'giường', 'ngủ con', 'ngủ master', 'phòng ngủ chính'],
     variants: {
-      cosmo_gen_2: { title: 'Phòng ngủ Master Cosmo', points: ['Phòng ngủ master rộng lớn', 'Bố trí giường king-size thoải mái', 'Hệ tủ quần áo kính sang trọng'], speech_text: 'Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png`] },
-      fusion_gen_5: { title: 'Phòng ngủ Master Fusion', points: ['Thiết kế ấm cúng, sang trọng', 'Tích hợp phòng thay đồ riêng', 'Cửa sổ hướng công viên nội khu'], speech_text: 'Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.', image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png`] },
+      cosmo_gen_2: { title: 'Phòng ngủ Master Cosmo', points: ['Phòng ngủ master rộng lớn', 'Bố trí giường king-size thoải mái', 'Hệ tủ quần áo kính sang trọng'], speech_text: 'Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg`] },
+      fusion_gen_5: { title: 'Phòng ngủ Master Fusion', points: ['Thiết kế ấm cúng, sang trọng', 'Tích hợp phòng thay đồ riêng', 'Cửa sổ hướng công viên nội khu'], speech_text: 'Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.', image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg`] },
       opus: { title: 'Phòng ngủ Master Opus', points: ['Không gian nghỉ ngơi đẳng cấp', 'Ban công đón gió tự nhiên', 'Thiết kế chuẩn khách sạn 5 sao'], speech_text: 'Phòng ngủ master của mẫu nhà Opus mang phong cách resort đẳng cấp với ban công rộng đón gió tự nhiên.', image_urls: [`${IMG}/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg`] },
       nyah: { title: "Phòng ngủ Ny'ah", points: ['Phòng ngủ master rộng với WC riêng', 'Đầy đủ phòng ngủ cho cả gia đình', 'Thiết kế tối ưu ánh sáng và thông gió'], speech_text: "Các mẫu nhà Ny'ah Phú Định đều thiết kế phòng ngủ master riêng biệt cùng các phòng ngủ con tiện nghi, phù hợp cho gia đình nhiều thế hệ.", imageSpace: 'phong_ngu' },
     },
@@ -1202,13 +1202,13 @@ export const TOPIC_SLIDES: TopicSlidesMap = fromJSON<TopicSlidesMap>('topic_slid
 export const MODEL_INTRO_KEYWORDS = fromJSON<string[]>('model_intro_keywords', 3) || ['mẫu nhà', 'thiết kế nhà', 'kiến trúc nhà'];
 type ModelIntroMap = Record<'cosmo_gen_2' | 'fusion_gen_5' | 'opus', { title: string; points: string[]; speech_text: string; introImages: string[] }>;
 export const MODEL_INTRO: ModelIntroMap = fromJSON<ModelIntroMap>('model_intro', 3) || {
-  cosmo_gen_2: { title: 'Mẫu nhà Cosmo Gen 2', points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'], speech_text: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.', introImages: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`] },
-  fusion_gen_5: { title: 'Mẫu nhà Fusion Gen 5', points: ['Thiết kế lệch tầng phá cách', 'Không gian bếp đảo rộng mở', 'Tối ưu ánh sáng và gió tự nhiên'], speech_text: 'Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.', introImages: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png`] },
+  cosmo_gen_2: { title: 'Mẫu nhà Cosmo Gen 2', points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'], speech_text: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.', introImages: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`] },
+  fusion_gen_5: { title: 'Mẫu nhà Fusion Gen 5', points: ['Thiết kế lệch tầng phá cách', 'Không gian bếp đảo rộng mở', 'Tối ưu ánh sáng và gió tự nhiên'], speech_text: 'Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.', introImages: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg`] },
   opus: { title: 'Mẫu nhà Opus', points: ['Phù hợp vừa ở vừa kinh doanh', 'Thiết kế 6 tầng bề thế', 'Mặt tiền thương mại đắt giá'], speech_text: 'Mẫu nhà thương mại Opus sở hữu thiết kế sáu tầng bề thế, tối ưu cho nhu cầu vừa ở vừa làm văn phòng hoặc kinh doanh.', introImages: [`${IMG}/noi_that/opus/opus_tinh-nang-tang-1.jpg`] },
 };
 export const MODEL_INTRO_NYAH: RoomVariant = fromJSON<RoomVariant>('model_intro_nyah', 1) || {
   title: "3 Mẫu nhà Ny'ah",
   points: ['Cosmo Gen 2 - thang máy kính, gara rộng', 'Fusion Gen 5 - thiết kế lệch tầng phá cách', 'Opus - 6 tầng vừa ở vừa kinh doanh'],
   speech_text: "Ny'ah Phú Định cung cấp ba mẫu nhà đặc sắc: Cosmo Gen 2, Fusion Gen 5 và Opus, mỗi mẫu có phong cách riêng phù hợp với từng nhu cầu gia đình.",
-  image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png`, `${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png`, `${IMG}/noi_that/opus/opus_tong-quan.jpg`],
+  image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`, `${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg`, `${IMG}/noi_that/opus/opus_tong-quan.jpg`],
 };
