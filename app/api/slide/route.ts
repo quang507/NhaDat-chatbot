@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimited } from '@/lib/ratelimit';
 import { readFile } from 'fs/promises';
 import { existsSync, readdirSync } from 'fs';
 import path from 'path';
@@ -333,6 +334,7 @@ function parseSlide(text: string | null): Record<string, unknown> {
 const AMBIENT_RULE = `\n\nCHẾ ĐỘ NGHE NGẦM: Đây là hội thoại đang diễn ra; hãy tạo slide bám sát chủ đề vừa nghe từ phần dữ liệu bên dưới. "speech_text" phải CỰC KỲ NGẮN GỌN (1-2 câu, ~15 giây đọc), đi thẳng trọng tâm, không chào hỏi dài dòng.`;
 
 export async function POST(req: NextRequest) {
+  if (rateLimited(req, 'slide', 120)) return NextResponse.json({ error: 'Quá nhiều yêu cầu, thử lại sau ít phút.' }, { status: 429 });
   try {
     // refine=true: PHA 2 của cơ chế "hiện nhanh rồi làm mượt" - client đã có
     // slide tĩnh (pha 1, ~0ms), gọi lại để LLM viết CHỮ bám đúng câu khách hỏi

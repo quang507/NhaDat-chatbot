@@ -1,10 +1,12 @@
 import { NextRequest } from 'next/server';
+import { rateLimited } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30; // Max duration for Vercel functions
 
 export async function GET(req: NextRequest) {
+  if (rateLimited(req, 'tts', 120)) return new Response('Quá nhiều yêu cầu', { status: 429 });
   try {
     // Force ws library to use pure JS implementation and avoid bufferutil native compilation errors in Next.js
     process.env.WS_NO_BUFFER_UTIL = '1';
