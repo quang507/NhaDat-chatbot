@@ -33,3 +33,4 @@ cohere_key.txt
 
 # temp artifact cua rebuild_rag_background.js
 old_index.json
+.reindex_local.js
