@@ -57,8 +57,10 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   // trùng key và ta render thừa một lớp ảnh chồng lên chính nó.
   // CHỈ 1 ẢNH/SLIDE (08/2026 - sếp ưu tiên CHÍNH XÁC): lấy đúng ảnh ĐẦU TIÊN
   // (ảnh khớp nhất theo thứ tự catalog/LLM xếp), bỏ hẳn xoay nhiều ảnh -
-  // xoay dễ trôi sang ảnh lạc đề trong lúc khách đang đọc.
-  const imgs = Array.from(new Set((data.image_urls || []).filter(Boolean))).slice(0, 1);
+  // 08/2026 v2: cho NHIỀU ảnh cùng chủ đề (tối đa 6) - ảnh chính + dải
+  // thumbnail bên dưới; bấm thumbnail để DỪNG ở ảnh đó; phím 4/6 chuyển
+  // trái/phải, phím 5 dừng/chạy (hợp remote thuyết trình).
+  const imgs = Array.from(new Set((data.image_urls || []).filter(Boolean))).slice(0, 6);
   const points = (data.points || []).filter(Boolean);
   const hasImg = imgs.length > 0;
   const isMapImg = (src: string) => src.includes('vi_tri') || src.includes('18_phut');
@@ -85,15 +87,55 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     return () => ro.disconnect();
   }, []);
   const imgsKey = imgs.join('|');
+  // paused = khách đã bấm thumbnail hoặc phím 5 -> giữ nguyên ảnh đang xem.
+  const [paused, setPaused] = useState(false);
   useEffect(() => {
     setImgIdx(0);
+    setPaused(false);
     if (imgs.length <= 1) return;
     const t = setInterval(() => setImgIdx(i => (i + 1) % imgs.length), IMAGE_ROTATE_MS);
     return () => clearInterval(t);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imgsKey, replayKey]);
+  // Dừng xoay khi paused (giữ interval đơn giản: skip khi paused)
+  const pausedRef = React.useRef(paused); pausedRef.current = paused;
+  useEffect(() => {
+    if (imgs.length <= 1) return;
+    const t = setInterval(() => { if (!pausedRef.current) setImgIdx(i => (i + 1) % imgs.length); }, IMAGE_ROTATE_MS);
+    return () => clearInterval(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imgsKey]);
+  // Phím 4 = ảnh trước, 6 = ảnh sau (tự dừng để khách xem), 5 = dừng/chạy lại.
+  useEffect(() => {
+    if (imgs.length <= 1) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === '4') { setPaused(true); setImgIdx(i => (i - 1 + imgs.length) % imgs.length); }
+      else if (e.key === '6') { setPaused(true); setImgIdx(i => (i + 1) % imgs.length); }
+      else if (e.key === '5') { setPaused(p => !p); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imgsKey]);
 
   const cur = imgs[Math.min(imgIdx, Math.max(imgs.length - 1, 0))];
+
+  // Dải thumbnail kiểu pagination dưới ảnh - bấm để dừng lại ở ảnh đó.
+  const ThumbStrip = () => (
+    imgs.length > 1 ? (
+      <div className="shrink-0 flex justify-center gap-[1cqw] py-[0.8cqw] bg-black/30">
+        {imgs.map((src, i) => (
+          <button key={src} onClick={() => { setPaused(true); setImgIdx(i); }}
+            className={`overflow-hidden rounded-[0.5cqw] border-2 transition-all ${
+              i === imgIdx ? 'border-lime-300 opacity-100' : 'border-transparent opacity-50 hover:opacity-80'
+            }`}
+            style={{ width: '9cqw', height: '6cqw', minWidth: 48, minHeight: 32 }}>
+            <img src={src} alt="" className="w-full h-full object-cover" />
+          </button>
+        ))}
+      </div>
+    ) : null
+  );
 
   const QrChip = () => (
     <a
@@ -181,6 +223,9 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
             </div>
           </div>
 
+          {imgs.length > 1 && (
+            <div className="absolute bottom-0 inset-x-0"><ThumbStrip /></div>
+          )}
           {isMapImg(cur) && <QrChip />}
         </div>
       </div>
@@ -239,6 +284,8 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
               ))}
               {isMapImg(cur) && <QrChip />}
             </figure>
+
+            <ThumbStrip />
 
             {/* Caption: dải riêng NGAY DƯỚI ảnh - CHỈ câu trả lời LLM (sếp chốt:
                 bỏ points tĩnh; không có answer thì ảnh full, không caption). */}

@@ -481,13 +481,13 @@ export async function POST(req: NextRequest) {
       const FALLBACK_IMGS: Record<string, string[]> = {
         cosmo_gen_2: [
           '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png',
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg',
         ],
         fusion_gen_5: [
           '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png',
-          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png',
+          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg',
+          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg',
         ],
         opus: [
           '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
@@ -892,7 +892,7 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = model ? getImagesForSpace(model, 'bep') : getGeneralImagesForSpace('bep');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg'];
           } else if (model === 'fusion_gen_5') {
             parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png'];
           } else if (model === 'opus') {
@@ -904,9 +904,9 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = model ? getImagesForSpace(model, 'gara') : getGeneralImagesForSpace('gara');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg'];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg'];
           } else if (model === 'opus') {
             parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'];
           }
@@ -916,14 +916,14 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = getImagesForSpace(model, 'khac');
         if (parsed.image_urls.length === 0) {
           if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc_tang-5_phong-hoc.jpg'];
           } else if (model === 'opus') {
             parsed.image_urls = [
               '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg',
               '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1-2.jpg'
             ];
           } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'];
           }
         }
         parsed.layout_type = 'split_image_right';
@@ -931,9 +931,9 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = model ? getImagesForSpace(model, 'phong_khach') : getGeneralImagesForSpace('phong_khach');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg'];
           } else if (model === 'opus') {
             parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'];
           }
@@ -953,9 +953,9 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = getImagesForSpace(model, 'phong_ngu', 'master');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg'];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg'];
           } else {
             parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg'];
           }
@@ -969,11 +969,11 @@ export async function POST(req: NextRequest) {
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-3.png'
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-2_tang-5_8-phong-ngu-2-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-3_tang-5_9-phong-ngu-3-1.jpg'
             ];
           } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-2_tang-5_phong-ngu-con.jpg'];
           } else {
             parsed.image_urls = [
               '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-1.jpg',
@@ -987,14 +987,14 @@ export async function POST(req: NextRequest) {
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-3.png'
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-2_tang-5_8-phong-ngu-2-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-3_tang-5_9-phong-ngu-3-1.jpg'
             ];
           } else if (model === 'fusion_gen_5') {
             parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png',
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png'
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg',
+              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-2_tang-5_phong-ngu-con.jpg'
             ];
           } else if (model === 'opus') {
             parsed.image_urls = [
@@ -1009,7 +1009,7 @@ export async function POST(req: NextRequest) {
         parsed.image_urls = model ? getImagesForSpace(model, 'wc') : getGeneralImagesForSpace('wc');
         if (parsed.image_urls.length === 0) {
           if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_wc.png'];
+            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_phong-tam-master_tang-4_7-phong-tam-master-1.jpg'];
           } else if (model === 'fusion_gen_5') {
             parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg'];
           } else if (model === 'opus') {
@@ -1019,11 +1019,11 @@ export async function POST(req: NextRequest) {
         parsed.layout_type = 'split_image_right';
       } else if (category === 'thang_may') {
         if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png'];
+          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg'];
         } else {
           parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png'
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg',
+            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'
           ];
         }
         parsed.layout_type = 'split_image_right';
