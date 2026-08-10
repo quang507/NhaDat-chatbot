@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimited } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
+  if (rateLimited(req, 'stt', 120)) return NextResponse.json({ error: 'Quá nhiều yêu cầu, thử lại sau ít phút.' }, { status: 429 });
   const DEEPGRAM_API_KEY = process.env.DEEPGRAM_API_KEY || '';
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
   const GROQ_API_KEY = process.env.GROQ_API_KEY || '';

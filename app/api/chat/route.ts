@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimited } from '@/lib/ratelimit';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { DEFAULT_PERSONA } from '@/lib/admin';
@@ -146,6 +147,7 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
 }
 
 export async function POST(req: NextRequest) {
+  if (rateLimited(req, 'chat', 60)) return NextResponse.json({ error: 'Quá nhiều yêu cầu, thử lại sau ít phút.' }, { status: 429 });
   try {
     // 1) Bảo mật CORS & Handshake Token để chống spam API từ cURL/scripts bên ngoài
     const origin = req.headers.get('origin') || req.headers.get('referer') || '';
