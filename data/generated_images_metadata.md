@@ -5,7 +5,6 @@ Tài liệu này chứa thông tin và đường dẫn đến các hình ảnh d
 ## 🔖 [Ảnh Minh Họa] · an-ninh_camera
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh an ninh, an ninh, camera.
 Chi tiết: camera.
-Mô tả nội dung (AI nhìn ảnh thật): Hình ảnh đồ họa giới thiệu hạng mục camera an ninh giám sát toàn khu của dự án Ny'ah Phú Định trên nền đen chữ trắng. Đây là ảnh minh họa giữ chỗ cho dự án với nhãn "ẢNH MINH HỌA" màu xanh lá phía dưới.
 Đường dẫn hình ảnh: ![camera](/images/01_NyAh-PhuDinh/an_ninh/an-ninh_camera.jpg)
 
 ---
@@ -13,7 +12,6 @@ Mô tả nội dung (AI nhìn ảnh thật): Hình ảnh đồ họa giới thi�
 ## 🔖 [Ảnh Minh Họa] · an-ninh_chot-bao-ve
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh an ninh, an ninh, chot bao ve.
 Chi tiết: chot bao ve.
-Mô tả nội dung (AI nhìn ảnh thật): Ảnh đồ họa thông báo về chốt bảo vệ của dự án Ny'ah Phú Định với chức năng bảo vệ trực và kiểm soát ra vào. Đây là ảnh minh họa giữ chỗ chưa có hình ảnh thực tế.
 Đường dẫn hình ảnh: ![chot bao ve](/images/01_NyAh-PhuDinh/an_ninh/an-ninh_chot-bao-ve.jpg)
 
 ---
@@ -21,7 +19,6 @@ Mô tả nội dung (AI nhìn ảnh thật): Ảnh đồ họa thông báo về 
 ## 🔖 [Ảnh Minh Họa] · logo_nha-dat-1
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh chu dau tu nha dat, logo, nha dat 1.
 Chi tiết: nha dat 1.
-Mô tả nội dung (AI nhìn ảnh thật): Logo chính thức của chủ đầu tư Nhã Đạt với dòng chữ tên công ty màu xanh lá bên cạnh biểu tượng chữ "nd" màu trắng nổi bật trên nền ô vuông màu đỏ gạch.
 Đường dẫn hình ảnh: ![nha dat 1](/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/logo_nha-dat-1.jpg)
 
 ---
@@ -29,7 +26,6 @@ Mô tả nội dung (AI nhìn ảnh thật): Logo chính thức của chủ đ�
 ## 🔖 [Ảnh Minh Họa] · logo_nha-dat-1
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh chu dau tu nha dat, logo, nha dat 1.
 Chi tiết: nha dat 1.
-Mô tả nội dung (AI nhìn ảnh thật): Logo thương hiệu "nd" với thiết kế tối giản gồm hai chữ cái màu xanh ngọc bích kết hợp điểm nhấn là họa tiết hình tam giác màu đen phía trên chữ "d".
 Đường dẫn hình ảnh: ![nha dat 1](/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/logo_nha-dat-1.png)
 
 ---
@@ -37,7 +33,6 @@ Mô tả nội dung (AI nhìn ảnh thật): Logo thương hiệu "nd" với thi
 ## 🔖 [Ảnh Minh Họa] · logo_nha-dat-2
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh chu dau tu nha dat, logo, nha dat 2.
 Chi tiết: nha dat 2.
-Mô tả nội dung (AI nhìn ảnh thật): Logo thương hiệu của chủ đầu tư Nhã Đạt với hai chữ cái "nd" màu trắng cách điệu, kết hợp điểm nhấn hình tam giác màu cam nổi bật trên nền xanh đen.
 Đường dẫn hình ảnh: ![nha dat 2](/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/logo_nha-dat-2.png)
 
 ---
@@ -45,7 +40,6 @@ Mô tả nội dung (AI nhìn ảnh thật): Logo thương hiệu của chủ đ
 ## 🔖 [Ảnh Minh Họa] · nha-dat-tieu-chi-1
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh chu dau tu nha dat, nha dat tieu chi 1.
 Chi tiết: nha dat tieu chi 1.
-Mô tả nội dung (AI nhìn ảnh thật): Ảnh giới thiệu tiêu chí của chủ đầu tư Nhã Đạt ghi lại khoảnh khắc gia đình bốn người hạnh phúc quây quần vui đùa bên nhau trong không gian sống ngập tràn ánh sáng. Bức ảnh đi kèm thông điệp hướng đến việc xây dựng không chỉ những ngôi nhà đẹp mà còn mang lại cuộc sống hạnh phúc trọn vẹn.
 Đường dẫn hình ảnh: ![nha dat tieu chi 1](/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/nha-dat-tieu-chi-1.jpg)
 
 ---
@@ -2210,76 +2204,6 @@ Chi tiết: 5v5a3970 png.
 Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, 5v5a3981 png.
 Chi tiết: 5v5a3981 png.
 Đường dẫn hình ảnh: ![5v5a3981 png](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/5v5a3981-png.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_1
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, 1.
-Chi tiết: 1.
-Đường dẫn hình ảnh: ![1](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_1.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_2
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, 2.
-Chi tiết: 2.
-Đường dẫn hình ảnh: ![2](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_2.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_3
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, 3.
-Chi tiết: 3.
-Đường dẫn hình ảnh: ![3](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_3.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_4
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, 4.
-Chi tiết: 4.
-Đường dẫn hình ảnh: ![4](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_4.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_5
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, 5.
-Chi tiết: 5.
-Đường dẫn hình ảnh: ![5](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_5.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_5v5a3952-png
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, 5v5a3952 png.
-Chi tiết: 5v5a3952 png.
-Đường dẫn hình ảnh: ![5v5a3952 png](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_5v5a3952-png.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_5v5a3970-png
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, 5v5a3970 png.
-Chi tiết: 5v5a3970 png.
-Đường dẫn hình ảnh: ![5v5a3970 png](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_5v5a3970-png.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_5v5a3981-png
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, 5v5a3981 png.
-Chi tiết: 5v5a3981 png.
-Đường dẫn hình ảnh: ![5v5a3981 png](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_5v5a3981-png.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_generated-image-march-25-2026-10-18am
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, generated image march 25 2026 10 18am.
-Chi tiết: generated image march 25 2026 10 18am.
-Đường dẫn hình ảnh: ![generated image march 25 2026 10 18am](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_generated-image-march-25-2026-10-18am.jpg)
-
----
-
-## 🔖 [Ảnh Minh Họa] · fusion-gen-5_thang-xoan_thang-xoan
-Hình ảnh minh họa, ảnh chụp, bản vẽ hoặc phối cảnh thực tế liên quan đến: 01 NyAh PhuDinh noi that thang xoan, fusion gen 5, thang xoan, thang xoan.
-Chi tiết: thang xoan.
-Đường dẫn hình ảnh: ![thang xoan](/images/01_NyAh-PhuDinh/noi_that/thang_xoan/fusion-gen-5_thang-xoan_thang-xoan.jpg)
 
 ---
 
