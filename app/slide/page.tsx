@@ -387,8 +387,9 @@ export default function SlideBotPage() {
           if (!ref || ref.skip || !ref.answer_text) return;
           // Khách đã sang slide khác trong lúc chờ -> bỏ, không đè.
           if (slideKeyRef.current !== myKey) return;
-          dbg(`✨ Refine về sau ${((Date.now() - t0) / 1000).toFixed(1)}s - chèn câu trả lời lên slide`);
-          setSlide(s => (s ? { ...s, answer_text: ref.answer_text } : s));
+          dbg(`✨ Refine về sau ${((Date.now() - t0) / 1000).toFixed(1)}s - chèn câu trả lời lên slide${ref.image_url ? ' + SỬA ẢNH' : ''}`);
+          // LLM phát hiện ảnh tĩnh sai chủ đề -> thay bằng ảnh đúng (server đã kiểm tra file tồn tại).
+          setSlide(s => (s ? { ...s, answer_text: ref.answer_text, ...(ref.image_url ? { image_urls: [ref.image_url] } : {}) } : s));
         });
       }
 
