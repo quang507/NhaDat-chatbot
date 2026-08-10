@@ -595,7 +595,13 @@ export async function POST(req: NextRequest) {
     // hỏi vặn kiểu "không phải ... à?" giờ có câu xác nhận đúng/sai thẳng.
     if (refine && REFINE_GROQ_KEY) {
       try {
-        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "..."} - MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu câu hỏi KHÔNG liên quan dự án/bất động sản (chuyện phiếm, thời sự, chủ đề ngoài lề) hoặc không có thông tin: {"answer": ""} - im lặng tốt hơn trả lời lạc đề.';
+        // Cho LLM SỬA ẢNH nếu slide tĩnh bắt nhầm chủ đề (câu hỏi lắt léo trúng
+        // nhầm từ khóa): kèm ảnh đang hiện vào prompt, LLM trả thêm trường
+        // "image" CHỈ KHI ảnh hiện tại sai rõ ràng. Server kiểm tra file tồn
+        // tại trước khi cho client thay - LLM không thể chỉ ra ảnh ma.
+        const curImg = (staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '';
+        const imgCtx = curImg ? `\nSLIDE ĐANG HIỆN: tiêu đề "${staticSlide.title || ''}", ảnh "${curImg}". Nếu ảnh này SAI CHỦ ĐỀ so với câu khách hỏi, chọn ĐÚNG 1 đường dẫn ảnh khớp hơn từ phần dữ liệu (bắt đầu bằng "/images/") điền vào trường "image"; nếu ảnh đã đúng chủ đề hoặc không chắc, để "image" là chuỗi rỗng - THAY SAI CÒN TỆ HƠN GIỮ NGUYÊN.` : '';
+        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "...", "image": ""} - "answer" là MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu câu hỏi KHÔNG liên quan dự án/bất động sản (chuyện phiếm, thời sự, chủ đề ngoài lề) hoặc không có thông tin: {"answer": ""} - im lặng tốt hơn trả lời lạc đề.' + imgCtx;
         const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${REFINE_GROQ_KEY}` },
@@ -616,7 +622,17 @@ export async function POST(req: NextRequest) {
               if (ANSWER_CACHE.size > 500) ANSWER_CACHE.clear(); // chặn phình bộ nhớ
               ANSWER_CACHE.set(refineCacheKey, { ans: ans.slice(0, 220), at: Date.now() });
             }
-            return NextResponse.json({ answer_text: ans.slice(0, 220), _source: 'static_llm_text' });
+            // Ảnh sửa lại (nếu LLM đề xuất): chỉ chấp nhận khi file THẬT SỰ tồn tại
+            // trong public/images và khác ảnh đang hiện.
+            let fixImg = '';
+            const rawImg = typeof j.image === 'string' ? j.image.trim() : '';
+            if (rawImg && rawImg.startsWith('/images/') && rawImg !== ((staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '')) {
+              try {
+                const { existsSync } = await import('fs');
+                if (existsSync(path.join(process.cwd(), 'public', decodeURIComponent(rawImg)))) fixImg = rawImg;
+              } catch {}
+            }
+            return NextResponse.json({ answer_text: ans.slice(0, 220), ...(fixImg ? { image_url: fixImg } : {}), _source: 'static_llm_text' });
           }
           // LLM nói không có thông tin -> đừng chèn gì, giữ nguyên slide tĩnh.
           return NextResponse.json({ skip: true, reason: 'refine_no_info' });
