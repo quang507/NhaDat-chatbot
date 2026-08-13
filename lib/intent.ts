@@ -334,11 +334,14 @@ export function classifyAmbientIntent(text: string): AmbientIntent {
   return { shouldGenerate: true, reason: 'has_project_topic', confidence, topic, detail, score: total, hits };
 }
 
-// ── Chống nhảy slide/ảnh liên tục - DÙNG CHUNG cho app/voice và app/slide ────
-// Giữ 1 chủ đề tối thiểu ngần này trước khi đổi sang chủ đề khác. Cùng chủ đề thì
-// giữ nguyên slide/ảnh đang hiện (không timeout, không đổi) cho tới khi khách đổi
-// chủ đề thật - khớp yêu cầu "mỗi chủ đề hiện ổn định, đừng nhảy liên tục".
-export const SLIDE_MIN_DISPLAY_MS = 10000;
+// ── Cổng đổi slide - DÙNG CHUNG cho app/voice và app/slide ───────────────────
+// Từng có luật "giữ chủ đề tối thiểu 10s mới cho đổi", nhưng topic quá thô
+// (bếp / phòng ngủ / gara đều là 'unit') nên luật đó chặn nhầm cả khi khách đổi
+// phòng thật -> đã gỡ. Cổng giờ chỉ dựa vào intent: câu đủ tín hiệu là cho gọi
+// API. Việc CHỐNG GIẬT màn hình nằm ở tầng render (app/slide/page.tsx: server
+// trả về đúng slide đang hiện -> cập nhật tại chỗ, không remount). Giữ nguyên
+// chữ ký (prev/now) để voice/slide không phải đổi call-site nếu cần luật theo
+// thời gian quay lại.
 
 export interface SlideDisplayState {
   topic: IntentTopic | null;

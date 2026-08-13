@@ -101,6 +101,8 @@ export default function SlideBotPage() {
           speech_text: 'Từ dự án chỉ mười tám phút là vào tới trung tâm.',
           highlight_number: '18 phút',
           image_urls: [],
+          // demo answer_text trên layout chữ - đây cũng là dạng slide "trả lời nhanh"
+          answer_text: 'Dạ đúng rồi anh, từ dự án theo Võ Văn Kiệt vào Quận 1 chỉ khoảng 18 phút thôi ạ.',
         },
         // demo=4: ảnh DỌC - mặt bằng cấu trúc (portrait 3:4)
         '4': {
@@ -119,7 +121,8 @@ export default function SlideBotPage() {
           image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'],
         },
       };
-      setSlideKey(k => k + 1);
+      slideKeyRef.current += 1;
+      setSlideKey(slideKeyRef.current);
       setSlide(samples[demo] || samples['1']);
     }
   }, []);
@@ -133,6 +136,9 @@ export default function SlideBotPage() {
   // Quyết định đổi/giữ slide dùng chung shouldRefreshSlide() (lib/intent.ts) với /voice,
   // để 2 nơi không lệch logic.
   const lastSlideRef = useRef<{ topic: IntentTopic | null; detail?: string; at: number }>({ topic: null, at: 0 });
+  // Câu vừa xử lý xong - STT hay bắn lại NGUYÊN VĂN cùng một câu khi restart
+  // engine; không chặn thì mỗi lần lặp là một vòng API + chớp "Đang suy nghĩ".
+  const lastQueryRef = useRef<{ text: string; at: number }>({ text: '', at: 0 });
   const isGeneratingRef = useRef(false);
 
   const slideRef = useRef<SlideData | null>(null);
@@ -177,6 +183,7 @@ export default function SlideBotPage() {
     isListeningLoopActive,
   } = useVoiceAgent({
     onSpeechResult: (text) => {
+      armIdleReset(); // khách còn nói là còn giữ màn - hết 5' im lặng mới về màn chờ
       if (handleVoiceCommands(text)) return;
       handleAmbientSpeech(text);
     },
@@ -242,6 +249,12 @@ export default function SlideBotPage() {
     }
     const query = bufferRef.current.trim();
     if (!query) { backToListening(); return; }
+    const now = Date.now();
+    if (query === lastQueryRef.current.text && now - lastQueryRef.current.at < 8000) {
+      dbg('🔁 Bỏ qua câu lặp y hệt trong 8s');
+      backToListening();
+      return;
+    }
     dbg(`🎙 Nghe: "${query.slice(0, 60)}"`);
 
     let intent = classifyAmbientIntent(query);
@@ -262,7 +275,6 @@ export default function SlideBotPage() {
       dbg(`✅ Intent OK - topic: ${intent.topic}, lý do: ${intent.reason}`);
     }
 
-    const now = Date.now();
     if (!shouldRefreshSlide(intent, lastSlideRef.current, now)) {
       dbg('⏱ Giữ slide cũ (chưa đủ thời gian đổi)');
       backToListening();
@@ -271,6 +283,7 @@ export default function SlideBotPage() {
 
     // BAT DUOC CHU DE -> hien "Nguoi ta dang noi ve [chu de]" + cau hoi that.
     lastSlideRef.current = { topic: intent.topic || null, detail: intent.detail, at: now };
+    lastQueryRef.current = { text: query, at: now };
     setTopicLabel(TOPIC_LABELS[intent.topic || 'general'] || TOPIC_LABELS.general);
     setHeardText(query);
     setTranscript(query);
@@ -288,6 +301,28 @@ export default function SlideBotPage() {
   // Gom hỏi + tiêu đề slide đã chiếu -> 1 tin Telegram tổng hợp mỗi lượt khách.
   const recorderRef = useRef(createSessionRecorder('slide'));
   useEffect(() => recorderRef.current.bindUnload(), []);
+
+  // KHÁCH RỜI ĐI -> VỀ MÀN CHỜ: im lặng đủ SLIDE_SESSION_IDLE_MS thì chốt sổ
+  // phiên + trả màn hình về attract screen. Không có nó, slide cuối của khách
+  // trước đứng vĩnh viễn trên màn showroom; khách mới bước tới thấy câu chuyện
+  // dở dang của người lạ thay vì màn chào. Hẹn giờ nạp lại mỗi lần mic nghe
+  // được BẤT KỲ câu nào (kể cả câu bị intent bỏ qua - khách còn đứng nói là
+  // chưa reset).
+  const idleResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const armIdleReset = () => {
+    if (idleResetRef.current) clearTimeout(idleResetRef.current);
+    idleResetRef.current = setTimeout(() => {
+      dbg('🌙 Im lặng 5 phút - chốt sổ phiên, về màn chờ đón khách mới');
+      recorderRef.current.flush();
+      recentRef.current = [];
+      lastSlideRef.current = { topic: null, at: 0 };
+      lastQueryRef.current = { text: '', at: 0 };
+      setSlide(null);
+      setTopicLabel('');
+      setHeardText('');
+    }, SLIDE_SESSION_IDLE_MS);
+  };
+  useEffect(() => () => { if (idleResetRef.current) clearTimeout(idleResetRef.current); }, []);
 
   const fetchSlideData = async (text: string, ambient = false) => {
     // Cập nhật session TRƯỚC khi gọi API: quá hạn -> khách mới, xoá ngữ cảnh.
@@ -327,7 +362,10 @@ export default function SlideBotPage() {
       refinePromise.then(ref => {
         if (pha1Xong || !ref || ref.skip || !ref.answer_text) return;
         dbg('⚡ Câu trả lời nhanh về trước slide - hiện tạm');
-        setSlideKey(k => k + 1);
+        // Bump key qua ref TRƯỚC khi setState: các callback async sau đó (refine
+        // patch) so key qua slideKeyRef nên ref phải đúng NGAY, không đợi effect.
+        slideKeyRef.current += 1;
+        setSlideKey(slideKeyRef.current);
         setSlide({
           layout_type: 'text_only',
           title: "Ny'ah Phú Định",
@@ -373,16 +411,36 @@ export default function SlideBotPage() {
 
       if (!data.layout_type) data.layout_type = 'split_image_right';
       recorderRef.current.push(text, `[slide] ${data.title}`);
-      setBrokenImages({});
-      setSlideKey(k => k + 1);
-      setSlide(data);
+
+      // CHỐNG GIẬT: server trả về ĐÚNG slide đang hiện (cùng title + cùng bộ ảnh
+      // - khách hỏi thêm trong cùng chủ đề) -> cập nhật caption TẠI CHỖ, không
+      // remount. Remount là cả màn chạy lại animation vào + ảnh reset về tấm 1.
+      const prevS = slideRef.current;
+      const imgsOf = (s: SlideData | null) =>
+        (s?.image_urls?.length ? s.image_urls : s?.image_url ? [s.image_url] : []).join('|');
+      const sameSlide = !!prevS && prevS.title === data.title && imgsOf(prevS) === imgsOf(data);
+      if (sameSlide) {
+        dbg('♻️ Trùng slide đang hiện - cập nhật tại chỗ, không chạy lại animation');
+        setSlide(s => (s ? {
+          ...s,
+          ...(data.answer_text ? { answer_text: data.answer_text } : {}),
+          speech_text: data.speech_text || s.speech_text,
+        } : data));
+      } else {
+        setBrokenImages({});
+        // Bump key qua ref TRƯỚC setState để refine patch bên dưới so key chính
+        // xác ngay cả khi React chưa kịp re-render (myKey đọc từ ref).
+        slideKeyRef.current += 1;
+        setSlideKey(slideKeyRef.current);
+        setSlide(data);
+      }
 
       // PHA 2 "đỡ ngu mà vẫn nhanh": slide tĩnh đã hiện (~0ms), gọi ngầm refine
       // để LLM viết câu trả lời bám ĐÚNG câu khách hỏi rồi chèn lên caption
       // (answer_text) - text tĩnh tự thu nhỏ tụt xuống. forceStatic cũng chèn
       // (số liệu tĩnh giữ nguyên, chỉ thêm câu xác nhận bám câu hỏi).
       if ((data as any)._source === 'static_fast') {
-        const myKey = slideKeyRef.current + 1; // key vừa set ở trên
+        const myKey = slideKeyRef.current; // key hiệu lực của slide vừa hiển thị
         refinePromise.then(ref => {
           if (!ref || ref.skip || !ref.answer_text) return;
           // Khách đã sang slide khác trong lúc chờ -> bỏ, không đè.
@@ -399,6 +457,9 @@ export default function SlideBotPage() {
     } catch (e: any) {
       const msg = e?.message || String(e);
       dbg(`🔴 LỖI sau ${((Date.now() - t0) / 1000).toFixed(1)}s: ${msg}`);
+      // Lỗi -> xoá dấu "câu vừa xử lý" để khách/sale NHẮC LẠI nguyên văn là chạy
+      // ngay, không bị cổng chặn-câu-lặp 8s giữ lại.
+      lastQueryRef.current = { text: '', at: 0 };
       // Hien loi that len thanh transcript (thay vi im lang gia vo nghe tiep)
       setTranscript(`⚠️ Lỗi tạo slide: ${msg.slice(0, 90)} - vẫn đang nghe…`);
       if (ambient || isListeningLoopActive.current) {
@@ -454,7 +515,8 @@ export default function SlideBotPage() {
     const imgs: string[] = [];
     if (s.image_urls && Array.isArray(s.image_urls)) imgs.push(...s.image_urls.filter(Boolean));
     else if (s.image_url) imgs.push(s.image_url);
-    return imgs.filter(img => !brokenImages[img]).slice(0, 3);
+    // Trần 6 khớp với SlideBody (dải thumbnail + phím 4/5/6 thiết kế cho tối đa 6).
+    return imgs.filter(img => !brokenImages[img]).slice(0, 6);
   };
 
   useEffect(() => {
@@ -515,7 +577,7 @@ export default function SlideBotPage() {
     }
 
     // Dung CHUNG <SlideBody> voi trang demo -> bo cuc/anh/chu y het nhau.
-    // collectImages da loc anh 404 + gioi han 3. imgOrient = huong that (da do runtime).
+    // collectImages da loc anh 404 + gioi han 6. imgOrient = huong that (da do runtime).
     const cleanData = { ...slide, image_urls: collectImages(slide) };
     return (
       <SlideBody

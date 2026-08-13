@@ -89,22 +89,18 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   const imgsKey = imgs.join('|');
   // paused = khách đã bấm thumbnail hoặc phím 5 -> giữ nguyên ảnh đang xem.
   const [paused, setPaused] = useState(false);
+  // MỘT interval duy nhất vừa xoay vừa tôn trọng paused. Tách xoay ra effect
+  // riêng sẽ tạo 2 interval chồng nhau: ảnh chạy gần gấp đôi tốc độ và bấm
+  // thumbnail/phím 5 không dừng được nữa.
+  const pausedRef = React.useRef(paused); pausedRef.current = paused;
   useEffect(() => {
     setImgIdx(0);
     setPaused(false);
     if (imgs.length <= 1) return;
-    const t = setInterval(() => setImgIdx(i => (i + 1) % imgs.length), IMAGE_ROTATE_MS);
-    return () => clearInterval(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imgsKey, replayKey]);
-  // Dừng xoay khi paused (giữ interval đơn giản: skip khi paused)
-  const pausedRef = React.useRef(paused); pausedRef.current = paused;
-  useEffect(() => {
-    if (imgs.length <= 1) return;
     const t = setInterval(() => { if (!pausedRef.current) setImgIdx(i => (i + 1) % imgs.length); }, IMAGE_ROTATE_MS);
     return () => clearInterval(t);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imgsKey]);
+  }, [imgsKey, replayKey]);
   // Phím 4 = ảnh trước, 6 = ảnh sau (tự dừng để khách xem), 5 = dừng/chạy lại.
   useEffect(() => {
     if (imgs.length <= 1) return;
@@ -334,6 +330,14 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
           {data.highlight_number && !data.title.toLowerCase().includes(data.highlight_number.toLowerCase()) && (
             <Line delay={340} className="font-black leading-none text-transparent text-[clamp(34px,11cqw,150px)]">
               <span style={{ WebkitTextStroke: '0.55cqw #A8D94A' }}>{data.highlight_number}</span>
+            </Line>
+          )}
+          {/* Câu trả lời LLM bám câu khách hỏi - slide "trả lời nhanh" (pha 2 về
+              trước pha 1) chỉ có mỗi trường này, không render là màn trống trơn. */}
+          {data.answer_text && (
+            <Line key={data.answer_text} delay={400}
+              className="text-white font-semibold leading-snug text-[clamp(15px,3cqw,42px)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] max-w-[72cqw]">
+              {data.answer_text}
             </Line>
           )}
           {points.length > 0 && (
