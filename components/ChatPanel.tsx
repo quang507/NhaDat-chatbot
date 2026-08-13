@@ -14,7 +14,7 @@ interface Config {
   zalo: string;
 }
 
-function renderMarkdown(text: string) {
+function renderMarkdown(text: string, large = false) {
   const escaped = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -23,7 +23,8 @@ function renderMarkdown(text: string) {
   let html = escaped;
 
   // 1. Render markdown images: ![alt](url) (supports relative paths /images/... or full URLs)
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded-xl my-2 border border-gray-200 shadow-sm max-h-[250px] object-cover" />');
+  // large = chế độ full trang, cho ảnh cao hơn vì không còn bị khung 500px bó lại
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, `<img src="$2" alt="$1" class="max-w-full h-auto rounded-xl my-2 border border-gray-200 shadow-sm ${large ? 'max-h-[340px]' : 'max-h-[250px]'} object-cover" />`);
 
   // 2. Render normal links: [text](url). Ảnh ![..](..) đã được thay ở bước 1 nên không cần lookbehind.
   // (Tránh lookbehind (?<!) vì Safari/iOS ≤ 16.3 ném lỗi -> crash widget.)
@@ -64,17 +65,34 @@ interface ChatPanelProps {
   // thay vì điều hướng ngay trong iframe (iframe nhỏ 360x600 không đủ chỗ hiển thị
   // trang /voice, /slide full-screen; điều hướng tại chỗ sẽ "kẹt" widget ở đó).
   embedded?: boolean;
+  // true khi chat hiển thị là MỘT TRANG trọn màn hình (trang chủ "/") - đồng bộ
+  // trải nghiệm với /voice, /slide: bỏ bo góc/viền/đổ bóng của khung widget,
+  // canh giữa cột hội thoại max-w-3xl, chữ và nút lớn hơn.
+  fullPage?: boolean;
 }
 
-// Component chat dùng chung cho cả ChatWidget (nút nổi trên trang chính) và
-// trang /embed (nhúng qua iframe vào WordPress) - tránh 2 bản logic lệch nhau.
-export default function ChatPanel({ embedded = false }: ChatPanelProps) {
+// Component chat dùng chung cho trang chủ "/" (full trang) và trang /embed
+// (nhúng qua iframe vào WordPress) - tránh 2 bản logic lệch nhau.
+export default function ChatPanel({ embedded = false, fullPage = false }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);   // hiện 3 chấm chờ
   const [streaming, setStreaming] = useState(false); // khóa nút send khi chờ API
   const [cfg, setCfg] = useState<Config>({ suggestions: [], phone: '', zalo: '' });
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Trang chủ "/" vẫn có thể bị website khác nhúng qua iframe (plugin WordPress
+  // bản cũ trỏ thẳng về "/" thay vì /embed). Phát hiện lúc chạy để 🎧/📊 mở tab
+  // mới như embedded, không điều hướng kẹt trong iframe nhỏ.
+  const [inIframe, setInIframe] = useState(false);
+  useEffect(() => {
+    try {
+      setInIframe(window.self !== window.top);
+    } catch {
+      // Truy cập window.top bị chặn cross-origin => chắc chắn đang trong iframe
+      setInIframe(true);
+    }
+  }, []);
 
   useEffect(() => {
     fetch('/api/config').then(r => r.json()).then(setCfg).catch(() => {});
@@ -111,7 +129,7 @@ export default function ChatPanel({ embedded = false }: ChatPanelProps) {
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-chat-handshake': 'npd-mktg-handshake'
         },
@@ -196,114 +214,134 @@ export default function ChatPanel({ embedded = false }: ChatPanelProps) {
   }
 
   const showContact = (cfg.phone || cfg.zalo) && messages.length >= 2;
-  // Trong iframe nhúng: mở /voice, /slide ở tab mới để không điều hướng mất khung chat nhỏ.
-  const linkTarget = embedded ? '_blank' : undefined;
+  // Trong iframe (trang /embed hoặc "/" bị nhúng): mở /voice, /slide ở tab mới
+  // để không điều hướng mất khung chat nhỏ.
+  const linkTarget = embedded || inIframe ? '_blank' : undefined;
+
+  // Full trang: nội dung canh giữa thành cột hội thoại (kiểu ChatGPT), widget/embed giữ nguyên
+  const center = fullPage ? 'w-full max-w-3xl mx-auto' : '';
+  const headerBtn = fullPage
+    ? 'text-xs font-medium bg-white/20 hover:bg-white/30 rounded-full h-9 px-3 flex items-center gap-1.5 transition'
+    : 'text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center';
 
   return (
-    <div className="w-full h-full flex flex-col rounded-2xl shadow-2xl bg-white border border-gray-200 overflow-hidden">
+    <div className={`w-full h-full flex flex-col bg-white overflow-hidden ${fullPage ? '' : 'rounded-2xl shadow-2xl border border-gray-200'}`}>
       {/* Header */}
-      <div className="bg-blue-600 text-white px-4 py-3 flex items-center gap-1.5">
-        <span className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0"><img src="/logo.svg" alt="Nhã Đạt AI" className="w-[80%] h-[80%] object-contain" /></span>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm truncate">Nhã Đạt AI</p>
-          <p className="text-xs opacity-80 truncate">NyAh Phú Định · Villa NyAh</p>
+      <div className={`bg-blue-600 text-white ${fullPage ? 'px-4 sm:px-6 py-3 shadow-md relative z-10' : 'px-4 py-3'}`}>
+        <div className={`flex items-center ${fullPage ? `gap-2 ${center}` : 'gap-1.5'}`}>
+          <span className={`rounded-lg bg-white flex items-center justify-center flex-shrink-0 ${fullPage ? 'w-9 h-9' : 'w-8 h-8'}`}>
+            <img src="/logo.svg" alt="Nhã Đạt AI" className="w-[80%] h-[80%] object-contain" />
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className={`font-semibold truncate ${fullPage ? 'text-base leading-tight' : 'text-sm'}`}>Nhã Đạt AI</p>
+            <p className="text-xs opacity-80 truncate">NyAh Phú Định · Villa NyAh</p>
+          </div>
+          <Link href="/voice" target={linkTarget} className={headerBtn} title="Đàm thoại giọng nói">
+            🎧{fullPage && <span className="hidden sm:inline">Giọng nói</span>}
+          </Link>
+          <Link href="/slide" target={linkTarget} className={headerBtn} title="Trình chiếu slide">
+            📊{fullPage && <span className="hidden sm:inline">Slide</span>}
+          </Link>
+          {cfg.phone && (
+            <a href={`tel:${cfg.phone}`} className={headerBtn} title="Gọi tư vấn">
+              📞{fullPage && <span className="hidden sm:inline">Gọi</span>}
+            </a>
+          )}
         </div>
-        <Link href="/voice" target={linkTarget} className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Đàm thoại giọng nói">
-          🎧
-        </Link>
-        <Link href="/slide" target={linkTarget} className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Trình chiếu slide">
-          📊
-        </Link>
-        {cfg.phone && (
-          <a href={`tel:${cfg.phone}`} className="text-xs bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center" title="Gọi tư vấn">📞</a>
-        )}
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
-        {messages.length === 0 && (
-          <div className="text-center text-gray-500 text-sm mt-4">
-            <img src="/logo.svg" alt="Nhã Đạt AI" className="w-20 h-20 object-contain mx-auto mb-3" />
-            <p className="mb-3">Xin chào anh/chị! Em là trợ lý của <strong>nhadat.company</strong>, sẵn sàng tư vấn về dự án <strong>NyAh Phú Định</strong> và <strong>Villa NyAh</strong> ạ.</p>
-            {cfg.suggestions.length > 0 && (
-              <div className="space-y-2 text-left">
-                {cfg.suggestions.map((s, i) => (
-                  <button
-                    key={i}
-                    onClick={() => send(s)}
-                    className="w-full text-left text-sm bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-blue-400 hover:bg-blue-50 transition"
-                  >
-                    💬 {s}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-        {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm whitespace-pre-wrap ${
-                m.role === 'user'
-                  ? 'bg-blue-600 text-white rounded-br-sm'
-                  : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm shadow-sm'
-              }`}
-            >
-              {m.role === 'assistant' ? (
-                <span dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }} />
-              ) : (
-                m.content
+      <div className="flex-1 overflow-y-auto bg-gray-50">
+        <div className={`p-4 space-y-3 ${fullPage ? `sm:px-6 sm:py-6 ${center}` : ''}`}>
+          {messages.length === 0 && (
+            <div className={`text-center text-gray-500 ${fullPage ? 'text-sm sm:text-base mt-6 sm:mt-14' : 'text-sm mt-4'}`}>
+              <img src="/logo.svg" alt="Nhã Đạt AI" className={`object-contain mx-auto mb-3 ${fullPage ? 'w-24 h-24 sm:w-28 sm:h-28' : 'w-20 h-20'}`} />
+              {fullPage && <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Nhã Đạt AI</h1>}
+              <p className={fullPage ? 'mb-5 max-w-xl mx-auto' : 'mb-3'}>Xin chào anh/chị! Em là trợ lý của <strong>nhadat.company</strong>, sẵn sàng tư vấn về dự án <strong>NyAh Phú Định</strong> và <strong>Villa NyAh</strong> ạ.</p>
+              {cfg.suggestions.length > 0 && (
+                <div className={fullPage ? 'grid grid-cols-1 sm:grid-cols-2 gap-2 text-left' : 'space-y-2 text-left'}>
+                  {cfg.suggestions.map((s, i) => (
+                    <button
+                      key={i}
+                      onClick={() => send(s)}
+                      className={`w-full text-left text-sm bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-blue-400 hover:bg-blue-50 transition ${fullPage ? 'sm:px-4 sm:py-3' : ''}`}
+                    >
+                      💬 {s}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
-          </div>
-        ))}
-        {loading && messages[messages.length - 1]?.role === 'user' && (
-          <div className="flex justify-start">
-            <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-2 shadow-sm">
-              <span className="inline-flex gap-1">
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-              </span>
+          )}
+          {messages.map((m, i) => (
+            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div
+                className={`max-w-[80%] rounded-2xl px-4 py-2 whitespace-pre-wrap ${fullPage ? 'text-sm sm:text-base' : 'text-sm'} ${
+                  m.role === 'user'
+                    ? 'bg-blue-600 text-white rounded-br-sm'
+                    : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm shadow-sm'
+                }`}
+              >
+                {m.role === 'assistant' ? (
+                  <span dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content, fullPage) }} />
+                ) : (
+                  m.content
+                )}
+              </div>
             </div>
-          </div>
-        )}
-        <div ref={bottomRef} />
+          ))}
+          {loading && messages[messages.length - 1]?.role === 'user' && (
+            <div className="flex justify-start">
+              <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-2 shadow-sm">
+                <span className="inline-flex gap-1">
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </span>
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
       </div>
 
       {/* Liên hệ nhanh */}
       {showContact && (
-        <div className="flex gap-2 px-3 py-2 bg-white border-t border-gray-100">
-          {cfg.phone && (
-            <a href={`tel:${cfg.phone}`} className="flex-1 text-center text-xs font-medium bg-green-600 text-white rounded-lg py-2 hover:bg-green-700">
-              📞 Gọi tư vấn
-            </a>
-          )}
-          {cfg.zalo && (
-            <a href={cfg.zalo} target="_blank" rel="noreferrer" className="flex-1 text-center text-xs font-medium bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600">
-              💬 Chat Zalo
-            </a>
-          )}
+        <div className="bg-white border-t border-gray-100">
+          <div className={`flex gap-2 px-3 py-2 ${fullPage ? `sm:px-6 ${center}` : ''}`}>
+            {cfg.phone && (
+              <a href={`tel:${cfg.phone}`} className="flex-1 text-center text-xs font-medium bg-green-600 text-white rounded-lg py-2 hover:bg-green-700">
+                📞 Gọi tư vấn
+              </a>
+            )}
+            {cfg.zalo && (
+              <a href={cfg.zalo} target="_blank" rel="noreferrer" className="flex-1 text-center text-xs font-medium bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600">
+                💬 Chat Zalo
+              </a>
+            )}
+          </div>
         </div>
       )}
 
       {/* Input */}
-      <div className="p-3 bg-white border-t border-gray-200 flex gap-2">
-        <textarea
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKey}
-          placeholder="Nhập câu hỏi..."
-          rows={1}
-          className="flex-1 resize-none rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          onClick={() => send(input)}
-          disabled={streaming || !input.trim()}
-          className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex-shrink-0 self-end"
-        >
-          ➤
-        </button>
+      <div className="bg-white border-t border-gray-200">
+        <div className={`p-3 flex gap-2 ${fullPage ? `sm:px-6 sm:py-4 ${center}` : ''}`}>
+          <textarea
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKey}
+            placeholder="Nhập câu hỏi..."
+            rows={1}
+            className={`flex-1 resize-none rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${fullPage ? 'text-base sm:px-4 sm:py-2.5' : 'text-sm'}`}
+          />
+          <button
+            onClick={() => send(input)}
+            disabled={streaming || !input.trim()}
+            className={`rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex-shrink-0 self-end ${fullPage ? 'w-11 h-11' : 'w-9 h-9'}`}
+          >
+            ➤
+          </button>
+        </div>
       </div>
     </div>
   );
