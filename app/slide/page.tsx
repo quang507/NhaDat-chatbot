@@ -174,7 +174,6 @@ export default function SlideBotPage() {
     state,
     transcript,
     errorMsg,
-    rmsVolume,
     setTranscript,
     setState,
     startListening,
@@ -601,8 +600,10 @@ export default function SlideBotPage() {
            dấu mũ trên Ấ/Ề) khi leading < 1 - margin âm bù lại nên khoảng cách giữ nguyên. */
         .line-mask { overflow: hidden; padding: 0.25em 0 0.2em; margin: -0.25em 0 -0.2em; }
         .line-in {
+          /* KHÔNG đặt will-change thường trực: mỗi dòng chữ một GPU layer vĩnh viễn
+             là phí VRAM của SoC TV. Animation transform/opacity được Chrome tự
+             composite trong lúc chạy - không cần gợi ý thêm. */
           animation: lineUp .7s cubic-bezier(.22,1,.36,1) both, glowFade 1.15s ease-out both;
-          will-change: transform, opacity;
         }
         @keyframes lineUp {
           0% { transform: translateY(140%); opacity: 0; }
@@ -613,15 +614,26 @@ export default function SlideBotPage() {
           0% { text-shadow: 0 0 16px rgba(255,255,255,.95), 0 4px 28px rgba(46,158,91,.45); }
           100% { text-shadow: 0 0 0 rgba(255,255,255,0), 0 0 0 rgba(46,158,91,0); }
         }
-        .img-card { animation: imgIn .85s cubic-bezier(.22,1,.36,1) both; will-change: transform, opacity; }
+        .img-card { animation: imgIn .85s cubic-bezier(.22,1,.36,1) both; }
         @keyframes imgIn {
           0% { opacity: 0; transform: translateY(26px) scale(.965); }
           100% { opacity: 1; transform: translateY(0) scale(1); }
         }
         .marquee-track { animation: marquee 26s linear infinite; }
         @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        @keyframes wave { 0%,100% { height: 30%; } 50% { height: 100%; } }
-        .animate-sound-wave { animation: wave .9s ease-in-out infinite; }
+        /* Sóng nghe: scaleY thay vì height - animate height là reflow mỗi frame,
+           chạy vô hạn suốt phiên. scaleY chỉ chạm compositor. Chiều cao tĩnh của
+           mỗi thanh (inline style) trở thành biên độ tối đa. */
+        @keyframes wave { 0%,100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+        .animate-sound-wave { animation: wave .9s ease-in-out infinite; transform-origin: center bottom; }
+        /* Vòng sáng mic - đọc --mic-rms do useVoiceAgent ghi thẳng DOM (không qua React).
+           transition ngắn để mượt giữa các tick rAF. */
+        .mic-pulse {
+          transform: scale(calc(1 + min(var(--mic-rms, 0) * 5, 2)));
+          transition: transform 75ms linear;
+          will-change: transform;
+        }
+        .mic-pulse-loud { opacity: min(calc(var(--mic-rms, 0) * 25), 1); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .animate-fade-in { animation: fadeIn .4s ease-out both; }
         @keyframes scaleUp { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -667,7 +679,10 @@ export default function SlideBotPage() {
         <div className="absolute bottom-[13%] -left-10 w-[12vw] h-[12vw] rounded-full border-2 border-[#2E9E5B]/15" />
       </div>
 
-      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-all duration-300 ${slide ? 'h-0 overflow-hidden opacity-0 pointer-events-none !p-0' : ''}`}>
+      {/* transition-opacity thay transition-all: animate height/padding là reflow
+          từng frame; giờ chỉ fade opacity (compositor), còn thu gọn chiều cao xảy
+          ra tức thời 1 lần - đằng nào cũng nằm dưới lớp slide đang phủ. */}
+      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-opacity duration-300 ${slide ? 'h-0 overflow-hidden opacity-0 pointer-events-none !p-0' : ''}`}>
         <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl overflow-hidden bg-white shadow-md border border-black/5 flex items-center justify-center shrink-0">
             <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
@@ -748,15 +763,19 @@ export default function SlideBotPage() {
 
         <div className="relative">
           {state !== 'idle' && (
-            <div
-              className="absolute inset-0 rounded-full transition-transform duration-75 pointer-events-none z-0"
-              style={{ transform: 'scale(' + (1 + Math.min(rmsVolume * 5, 2.0)) + ')', backgroundColor: rmsVolume > 0.01 ? 'rgba(232, 184, 75, 0.25)' : 'rgba(46,158,91,0.18)', willChange: 'transform' }}
-            />
+            /* Vòng sáng mic chạy HOÀN TOÀN bằng CSS var --mic-rms (useVoiceAgent ghi
+               thẳng DOM trong rAF) - không còn re-render React 60fps theo âm lượng.
+               2 lớp: nền xanh + lớp hổ phách hiện dần khi nói to (opacity thay cho
+               đổi backgroundColor theo ngưỡng). */
+            <div aria-hidden className="mic-pulse absolute inset-0 rounded-full pointer-events-none z-0">
+              <div className="absolute inset-0 rounded-full" style={{ backgroundColor: 'rgba(46,158,91,0.18)' }} />
+              <div className="mic-pulse-loud absolute inset-0 rounded-full" style={{ backgroundColor: 'rgba(232,184,75,0.25)' }} />
+            </div>
           )}
           <button
             onClick={toggleMic}
             aria-label={state !== 'idle' ? 'Tắt micro' : 'Bật micro'}
-            className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-xl transition-all duration-300 relative z-10 ${
+            className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-xl transition-colors duration-300 relative z-10 ${
               state !== 'idle'
                 ? 'bg-black/60 backdrop-blur hover:bg-black/75 text-white/90'
                 : 'bg-[#2E9E5B] hover:bg-[#0E5A34] shadow-[#2E9E5B]/30 text-white'

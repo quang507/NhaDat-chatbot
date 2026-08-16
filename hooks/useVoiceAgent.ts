@@ -35,7 +35,17 @@ export function useVoiceAgent({
   const [transcript, setTranscript] = useState('');
   const [response, setResponse] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [rmsVolume, setRmsVolume] = useState<number>(0);
+  // RMS mic KHÔNG đi qua React state: setState trong vòng rAF của VAD là
+  // re-render cả trang 60 lần/giây suốt lúc mic bật (nguồn giật số 1 trên TV).
+  // Thay bằng ghi CSS variable --mic-rms; UI (vòng sáng mic, aurora) đọc var
+  // này bằng CSS thuần -> compositor lo, React đứng ngoài.
+  const rmsRef = useRef(0);
+  const setRmsVar = useCallback((rms: number) => {
+    rmsRef.current = rms;
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--mic-rms', rms.toFixed(4));
+    }
+  }, []);
 
   const recognitionRef = useRef<any>(null);
   const audioQueueRef = useRef<{ text: string; url: string; audio: HTMLAudioElement }[]>([]);
@@ -98,8 +108,8 @@ export function useVoiceAgent({
     if (vadRafRef.current != null) { cancelAnimationFrame(vadRafRef.current); vadRafRef.current = null; }
     if (mediaStreamRef.current) { try { mediaStreamRef.current.getTracks().forEach(t => t.stop()); } catch (e) {} mediaStreamRef.current = null; }
     if (audioCtxRef.current) { try { audioCtxRef.current.close(); } catch (e) {} audioCtxRef.current = null; }
-    setRmsVolume(0);
-  }, []);
+    setRmsVar(0);
+  }, [setRmsVar]);
 
   // Chỉ khởi động lại recognition, KHÔNG đụng vào audio/hàng đợi TTS/state.
   // Dùng cho onend + watchdog để mic sống liên tục kể cả khi đang 'processing'
@@ -200,7 +210,7 @@ export function useVoiceAgent({
         let sum = 0;
         for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
         const rms = Math.sqrt(sum / data.length);
-        setRmsVolume(rms);
+        setRmsVar(rms);
         
         if (chatStateRef.current === 'speaking' && Date.now() - speakStartRef.current > SPEAK_GRACE_MS) {
           if (rms > VAD_THRESHOLD) loudFrames++; else loudFrames = Math.max(0, loudFrames - 1);
@@ -238,7 +248,7 @@ export function useVoiceAgent({
         setState('error');
       }
     }
-  }, [bargeIn, startGeminiRecorder, setState]);
+  }, [bargeIn, startGeminiRecorder, setState, setRmsVar]);
 
   const stopAllVoiceActivities = useCallback(() => {
     isListeningLoopActive.current = false;
@@ -541,7 +551,6 @@ export function useVoiceAgent({
     transcript,
     response,
     errorMsg,
-    rmsVolume,
     setTranscript,
     setResponse,
     setState,

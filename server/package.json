@@ -1,0 +1,12 @@
+{
+  "name": "nhadat-slide-server",
+  "private": true,
+  "type": "module",
+  "description": "Server LAN cho showroom (Bun + ElysiaJS): serve API slide/transcribe/tts + ảnh tĩnh + bản build static cho TV 75\" dọc",
+  "scripts": {
+    "start": "bun index.ts"
+  },
+  "dependencies": {
+    "elysia": "^1.4.0"
+  }
+}
