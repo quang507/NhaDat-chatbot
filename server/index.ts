@@ -30,6 +30,13 @@ const { POST: slidePost } = await import('../app/api/slide/route');
 const { POST: transcribePost } = await import('../app/api/transcribe/route');
 const { GET: ttsGet } = await import('../app/api/tts/route');
 const { POST: logSessionPost } = await import('../app/api/log-session/route');
+const { runSlidePipeline } = await import('./slide-pipeline');
+const { parseMsg, RESUME_SEQ } = await import('../lib/ws-protocol');
+type TvToServer = import('../lib/ws-protocol').TvToServer;
+type CompanionToServer = import('../lib/ws-protocol').CompanionToServer;
+type ServerToTv = import('../lib/ws-protocol').ServerToTv;
+type ServerToCompanion = import('../lib/ws-protocol').ServerToCompanion;
+type SlideData = import('../lib/slide-types').SlideData;
 
 const PORT = Number(process.env.PORT || 3080);
 const PUBLIC_DIR = path.join(ROOT, 'public');
@@ -85,7 +92,82 @@ Chưa có bản build giao diện TV (<code>out/</code>). Build bằng <code>nex
 
 const startedAt = Date.now();
 
+// ── WEBSOCKET EVENT BUS (B2 - tech-spec §5.3) ──────────────────────────────
+// Một showroom = một "phòng": mọi TV nhận cùng luồng slide, mọi Companion
+// (điện thoại Sale) điều khiển cùng các TV. WS chỉ chở event JSON - ảnh vẫn
+// đi đường HTTP tĩnh có cache.
+const tvs = new Set<any>();
+const companions = new Set<any>();
+// Slide hiện hành - TV (re)connect là nhận lại ngay (resume, seq = RESUME_SEQ).
+let lastSlide: SlideData | null = null;
+let lastSlideSeq = 0;
+
+const sendTo = (ws: any, msg: unknown) => { try { ws.send(JSON.stringify(msg)); } catch {} };
+const broadcastTvs = (msg: ServerToTv) => { for (const ws of tvs) sendTo(ws, msg); };
+const broadcastCompanions = (msg: ServerToCompanion) => { for (const ws of companions) sendTo(ws, msg); };
+// Elysia có thể đã parse JSON sẵn hoặc đưa chuỗi thô - nhận cả hai.
+const asMsg = <T,>(m: unknown): T | null =>
+  (m && typeof m === 'object' && 't' in (m as any)) ? (m as T) : parseMsg<T>(m as any);
+
+const emitPipeline = (msg: ServerToTv) => {
+  // Ghi sổ slide hiện hành để resume; refine chèn vào bản đã lưu.
+  if (msg.t === 'SLIDE_READY' && !msg.interim) { lastSlide = msg.data; lastSlideSeq = msg.seq; }
+  if (msg.t === 'REFINE_READY' && lastSlide && msg.seq === lastSlideSeq) lastSlide = { ...lastSlide, ...msg.patch };
+  broadcastTvs(msg);
+};
+
 const app = new Elysia()
+  // ── WS event bus: MỘT endpoint /ws duy nhất, phân vai qua *_HELLO ─────
+  // (2 route .ws riêng /ws/tv + /ws/companion từng bị router nuốt vào
+  // catch-all GET chập chờn -> upgrade trả HTTP thường. Một route + vai
+  // trong message đầu tiên thì không còn chỗ cho nhầm route.)
+  .ws('/ws', {
+    // Heartbeat client 10s giữ kết nối sống; client chết không FIN (rút điện,
+    // treo) bị dọn sau idleTimeout -> không tích tụ socket ma trong tvs/companions.
+    idleTimeout: 60,
+    open(ws) {
+      console.log('[ws] Kết nối mới - chờ HELLO phân vai');
+    },
+    close(ws) {
+      const wasTv = tvs.delete(ws);
+      companions.delete(ws);
+      if (wasTv) broadcastCompanions({ t: 'TV_COUNT', count: tvs.size });
+    },
+    message(ws, raw) {
+      const msg = asMsg<TvToServer | CompanionToServer>(raw);
+      if (!msg) return;
+      switch (msg.t) {
+        case 'PING': sendTo(ws, { t: 'PONG' }); break;
+
+        case 'TV_HELLO':
+          tvs.add(ws);
+          console.log(`[ws] TV nối (${tvs.size} TV)`);
+          if (lastSlide) sendTo(ws, { t: 'SLIDE_READY', seq: RESUME_SEQ, data: lastSlide } satisfies ServerToTv);
+          broadcastCompanions({ t: 'TV_COUNT', count: tvs.size });
+          break;
+        case 'SPEECH':
+          console.log(`[ws] SPEECH #${msg.seq}: "${msg.text.slice(0, 60)}"`);
+          void runSlidePipeline(msg.seq, msg.text, msg.recent || [], emitPipeline);
+          break;
+        case 'TV_STATE':
+          broadcastCompanions({ t: 'TV_STATE', state: msg.state, slideId: msg.slideId, title: msg.title });
+          break;
+
+        case 'COMPANION_HELLO':
+          companions.add(ws);
+          console.log(`[ws] Companion nối (${companions.size})`);
+          sendTo(ws, { t: 'TV_COUNT', count: tvs.size } satisfies ServerToCompanion);
+          break;
+        case 'SALE_CMD':
+          if (msg.cmd === 'CLEAR') { lastSlide = null; } // TV reconnect không resume slide đã xoá
+          broadcastTvs({ t: 'SALE_CMD', cmd: msg.cmd, arg: msg.arg });
+          break;
+        case 'OVERRIDE_QUERY':
+          broadcastTvs({ t: 'OVERRIDE_QUERY', text: msg.text });
+          break;
+      }
+    },
+  })
   // API — tái dùng handler của Next
   .post('/api/slide', ({ request }) => callNext(slidePost as unknown as NextHandler, request))
   .post('/api/transcribe', ({ request }) => callNext(transcribePost as unknown as NextHandler, request))

@@ -1,525 +1,265 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+// ============================================================================
+// /slide - MÀN TRÌNH CHIẾU TV SHOWROOM (sau tái cấu trúc P1)
+//
+// Trang này giờ chỉ là TẦNG CHIẾU: toàn bộ trạng thái nghiệp vụ (nghe/tạo
+// slide/đóng băng/phiên khách/chống race pha 2) nằm trong presentation machine
+// (lib/presentation-machine.ts); việc lấy slide nằm trong transport
+// (lib/slide-transport.ts - HTTP 2 pha hoặc WebSocket server showroom).
+//
+//   ?debug=1   HUD chẩn đoán
+//   ?demo=1..5 nạp slide mẫu không cần mic
+//   ?ws=1      dùng WS same-origin (khi server showroom serve app - B3)
+//   ?ws=ws://ip:3080  dùng WS server LAN chỉ định (B2)
+// ============================================================================
+
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { splitCleanSentences } from '@/lib/speech';
-import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
-import { matchStaticSlide } from '@/lib/static_slides';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
-import { SlideBody } from '@/components/SlideBody';
+import { usePresentationMachine } from '@/hooks/usePresentationMachine';
+import { MachineEffect, SESSION_IDLE_MS } from '@/lib/presentation-machine';
+import { pickTransport, SlideTransport, TransportEvent } from '@/lib/slide-transport';
+import { RESUME_SEQ, SaleCmd } from '@/lib/ws-protocol';
+import type { SlideData } from '@/lib/slide-types';
+import { SlideStage } from '@/components/SlideStage';
+import { AttractScreen } from '@/components/AttractScreen';
+import { DebugHud } from '@/components/DebugHud';
 import { createSessionRecorder } from '@/lib/session-digest';
 
-type SlideData = {
-  layout_type?: 'split_image_right' | 'split_image_left' | 'full_background' | 'dark_minimal' | 'text_only';
-  title: string;
-  points: string[];
-  highlight_number?: string;
-  speech_text: string;
-  answer_text?: string; // câu trả lời LLM chèn pha 2 (refine)
-  image_url?: string;
-  image_urls?: string[];
-  maps_url?: string;
-  skip?: boolean;
+// Slide mẫu cho ?demo=N - xem/chỉnh giao diện + chụp test không cần mic.
+const DEMO_SLIDES: Record<string, SlideData> = {
+  '1': {
+    layout_type: 'split_image_right',
+    title: 'Vị trí dự án',
+    points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'],
+    speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút.",
+    image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'],
+    maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
+    answer_text: 'Dạ từ dự án ra chợ Bình Điền chỉ khoảng 5 phút chạy xe, rất tiện đi chợ đầu mối sớm anh ạ.',
+  },
+  '2': {
+    layout_type: 'full_background',
+    title: 'Mẫu nhà Cosmo Gen 2',
+    points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'],
+    speech_text: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng.',
+    image_urls: [
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg',
+      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg',
+    ],
+  },
+  '3': {
+    layout_type: 'text_only',
+    title: 'Chỉ 18 phút đến Quận 1',
+    points: ['Kết nối thẳng đại lộ Võ Văn Kiệt', 'Tránh kẹt xe giờ cao điểm'],
+    speech_text: 'Từ dự án chỉ mười tám phút là vào tới trung tâm.',
+    highlight_number: '18 phút',
+    image_urls: [],
+    answer_text: 'Dạ đúng rồi anh, từ dự án theo Võ Văn Kiệt vào Quận 1 chỉ khoảng 18 phút thôi ạ.',
+  },
+  '4': {
+    layout_type: 'split_image_right',
+    title: 'Mặt bằng Cosmo Gen 2',
+    points: ['Cấu trúc 5 tầng + sân thượng', 'Thang máy kính thông suốt từ gara', 'Linh hoạt bố trí theo nhu cầu gia đình'],
+    speech_text: 'Mặt bằng Cosmo Gen 2 bố trí hợp lý từng tầng, tối ưu công năng sinh hoạt.',
+    image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg'],
+  },
+  '5': {
+    layout_type: 'split_image_right',
+    title: 'Phòng khách Cosmo Gen 2',
+    points: ['Trần cao 3.5m, không gian mở thoáng', 'Cửa kính lùa đón ánh sáng tự nhiên', 'Nội thất Cashmere cao cấp tùy chọn'],
+    speech_text: 'Phòng khách được thiết kế với trần cao và hệ cửa kính lùa, tạo cảm giác thông thoáng và sang trọng.',
+    image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'],
+  },
 };
 
-// Nhan chu de than thien - hien "Nguoi ta dang noi ve [nhan]" khi bat duoc topic.
-const TOPIC_LABELS: Record<string, string> = {
-  price: 'Giá & Thanh toán',
-  location: 'Vị trí & Đường đi',
-  unit: 'Không gian & Công năng',
-  legal: 'Pháp lý & Tiến độ',
-  amenity: 'Tiện ích',
-  design: 'Thiết kế & Nội thất',
-  general: "Dự án Ny'ah Phú Định",
-};
-
-// Ảnh cho màn chờ (attract screen) - xoay chậm 7s/tấm khi chưa có slide.
-const IDLE_PHOTOS = [
-  "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-1.jpg",
-  "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-4.jpg",
-  "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-7.jpg",
+// Ảnh warm-up màn chờ + chủ đề hay gặp (P2 sẽ thay bằng prefetch theo hội thoại).
+const WARMUP_IMAGES = [
+  '/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg',
+  '/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg',
   '/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png',
-  "/images/01_NyAh-PhuDinh/ny'ah-phu-dinh-tong-quan-10.jpg",
+  '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg',
+  '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg',
+  '/images/01_NyAh-PhuDinh/mat_bang/opus_cau-truc-1-2-3.jpg',
+  '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
+  '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
+  '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
 ];
 
 export default function SlideBotPage() {
-  const [slide, setSlide] = useState<SlideData | null>(null);
-  // Chỉ số ảnh màn chờ - chỉ chạy khi CHƯA có slide.
-  const [idleIdx, setIdleIdx] = useState(0);
-  useEffect(() => {
-    if (slide) return;
-    const t = setInterval(() => setIdleIdx(i => (i + 1) % IDLE_PHOTOS.length), 7000);
-    return () => clearInterval(t);
-  }, [slide]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
+  const [imgOrient, setImgOrient] = useState<Record<string, 'landscape' | 'portrait'>>({});
 
-  const [slideKey, setSlideKey] = useState(0);
-  // Ref soi key hiện tại cho callback refine (pha 2) - tránh đè slide đã đổi.
-  const slideKeyRef = useRef(0);
-  useEffect(() => { slideKeyRef.current = slideKey; }, [slideKey]);
-  // Chu de bat duoc tu giong noi khach - '' = chua bat, dang lang nghe.
-  const [topicLabel, setTopicLabel] = useState('');
-  const [heardText, setHeardText] = useState('');
-
-  // ===== DEBUG HUD: mo trang voi /slide?debug=1 de xem trang thai + loi truc tiep =====
+  // ── DEBUG HUD (?debug=1) ─────────────────────────────────────────────────
   const [debugOn, setDebugOn] = useState(false);
   const [debugLog, setDebugLog] = useState<string[]>([]);
-  useEffect(() => {
-    const qs = new URLSearchParams(window.location.search);
-    setDebugOn(qs.has('debug'));
-    // ?demo=1|2|3 -> tu nap slide mau KHONG can mic (xem/chinh giao dien + chup test)
-    // 1 = split (ban do + QR), 2 = full_background (3 anh), 3 = text_only
-    const demo = qs.get('demo');
-    if (demo) {
-      const samples: Record<string, SlideData> = {
-        '1': {
-          layout_type: 'split_image_right',
-          title: 'Vị trí dự án',
-          points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'],
-          speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút.",
-          image_urls: ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'],
-          maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A',
-          // demo pha 2 refine: câu trả lời LLM chèn trên, points tĩnh nhỏ lại
-          answer_text: 'Dạ từ dự án ra chợ Bình Điền chỉ khoảng 5 phút chạy xe, rất tiện đi chợ đầu mối sớm anh ạ.',
-        },
-        '2': {
-          layout_type: 'full_background',
-          title: 'Mẫu nhà Cosmo Gen 2',
-          points: ['Diện tích sử dụng tối ưu hóa', 'Thang máy kính từ gara tầng trệt', 'Thiết kế trần cao thoáng đãng'],
-          speech_text: 'Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng.',
-          image_urls: [
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg',
-          ],
-        },
-        '3': {
-          layout_type: 'text_only',
-          title: 'Chỉ 18 phút đến Quận 1',
-          points: ['Kết nối thẳng đại lộ Võ Văn Kiệt', 'Tránh kẹt xe giờ cao điểm'],
-          speech_text: 'Từ dự án chỉ mười tám phút là vào tới trung tâm.',
-          highlight_number: '18 phút',
-          image_urls: [],
-          // demo answer_text trên layout chữ - đây cũng là dạng slide "trả lời nhanh"
-          answer_text: 'Dạ đúng rồi anh, từ dự án theo Võ Văn Kiệt vào Quận 1 chỉ khoảng 18 phút thôi ạ.',
-        },
-        // demo=4: ảnh DỌC - mặt bằng cấu trúc (portrait 3:4)
-        '4': {
-          layout_type: 'split_image_right',
-          title: 'Mặt bằng Cosmo Gen 2',
-          points: ['Cấu trúc 5 tầng + sân thượng', 'Thang máy kính thông suốt từ gara', 'Linh hoạt bố trí theo nhu cầu gia đình'],
-          speech_text: 'Mặt bằng Cosmo Gen 2 bố trí hợp lý từng tầng, tối ưu công năng sinh hoạt.',
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg'],
-        },
-        // demo=5: 1 ảnh dọc nội thất (portrait 4:5)
-        '5': {
-          layout_type: 'split_image_right',
-          title: 'Phòng khách Cosmo Gen 2',
-          points: ['Trần cao 3.5m, không gian mở thoáng', 'Cửa kính lùa đón ánh sáng tự nhiên', 'Nội thất Cashmere cao cấp tùy chọn'],
-          speech_text: 'Phòng khách được thiết kế với trần cao và hệ cửa kính lùa, tạo cảm giác thông thoáng và sang trọng.',
-          image_urls: ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'],
-        },
-      };
-      slideKeyRef.current += 1;
-      setSlideKey(slideKeyRef.current);
-      setSlide(samples[demo] || samples['1']);
-    }
-  }, []);
-  const dbg = (msg: string) => {
+  const dbg = useCallback((msg: string) => {
     console.log('[SlideDebug]', msg);
     const t = new Date().toLocaleTimeString('vi-VN', { hour12: false });
     setDebugLog(prev => [`${t}  ${msg}`, ...prev].slice(0, 14));
-  };
+  }, []);
 
-  const bufferRef = useRef('');
-  // Quyết định đổi/giữ slide dùng chung shouldRefreshSlide() (lib/intent.ts) với /voice,
-  // để 2 nơi không lệch logic.
-  const lastSlideRef = useRef<{ topic: IntentTopic | null; detail?: string; at: number }>({ topic: null, at: 0 });
-  // Câu vừa xử lý xong - STT hay bắn lại NGUYÊN VĂN cùng một câu khi restart
-  // engine; không chặn thì mỗi lần lặp là một vòng API + chớp "Đang suy nghĩ".
-  const lastQueryRef = useRef<{ text: string; at: number }>({ text: '', at: 0 });
-  const isGeneratingRef = useRef(false);
-
-  const slideRef = useRef<SlideData | null>(null);
-  const brokenImagesRef = useRef<Record<string, boolean>>({});
-  const mainRef = useRef<HTMLElement | null>(null);
-
-  // CHỐT AN TOÀN RENDER: nội dung slide vào màn bằng CSS animation (line-in/img-card,
-  // fill-mode both -> frame 0 là TÀNG HÌNH). Nếu trình duyệt không chạy animation
-  // (extension chặn, chế độ tiết kiệm pin, forced reduced-motion...) thì chữ + ảnh
-  // kẹt ở frame 0 vĩnh viễn -> "slide: CÓ" mà màn hình trắng. Sau 1.5s kiểm tra:
-  // chữ vẫn tàng hình -> ép hiện toàn bộ + ghi log để biết máy đó bị chặn animation.
-  useEffect(() => {
-    if (!slide) return;
-    const t = setTimeout(() => {
-      const el = mainRef.current?.querySelector('.line-in') as HTMLElement | null;
-      if (!el) { dbg('📐 Render check: không thấy .line-in trong DOM!'); return; }
-      const cs = getComputedStyle(el);
-      const rect = el.getBoundingClientRect();
-      dbg(`📐 Render: op=${cs.opacity}, anim=${cs.animationName.split(',')[0]}/${cs.animationPlayState.split(',')[0]}, y=${Math.round(rect.top)}, h=${Math.round(rect.height)}`);
-      if (parseFloat(cs.opacity) < 0.5) {
-        mainRef.current?.classList.add('anim-failsafe');
-        dbg('🩹 Animation bị chặn - ép hiện nội dung ngay');
-      }
-    }, 1500);
-    return () => clearTimeout(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slide, slideKey]);
-  
-  useEffect(() => { slideRef.current = slide; }, [slide]);
-  useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
-
+  // ── VOICE (audio layer - P2 sẽ chuyển vào worker) ────────────────────────
   const {
-    state,
-    transcript,
-    errorMsg,
-    setTranscript,
-    setState,
-    startListening,
-    stopAllVoiceActivities,
-    toggleMic,
+    state, transcript, errorMsg,
+    setTranscript, setState, startListening, stopAllVoiceActivities, toggleMic,
     isListeningLoopActive,
   } = useVoiceAgent({
     onSpeechResult: (text) => {
-      armIdleReset(); // khách còn nói là còn giữ màn - hết 5' im lặng mới về màn chờ
       if (handleVoiceCommands(text)) return;
-      handleAmbientSpeech(text);
+      sendRef.current({ type: 'SPEECH', text, now: Date.now() });
     },
-    onDebug: (m) => dbg(m),
+    onDebug: dbg,
   });
 
-  // Dung han -> xoa chu de dang hien.
-  useEffect(() => { if (state === 'idle') { setTopicLabel(''); setHeardText(''); } }, [state]);
+  // ── TRANSPORT (HTTP 2 pha hoặc WS server showroom) ───────────────────────
+  const transportRef = useRef<SlideTransport | null>(null);
+  const [transportKind, setTransportKind] = useState('http');
+
+  // ── SESSION RECORDER (tổng hợp phiên -> Telegram) ────────────────────────
+  const recorderRef = useRef(createSessionRecorder('slide'));
+  useEffect(() => recorderRef.current.bindUnload(), []);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── EFFECT EXECUTOR: machine ra lệnh, page thực thi ──────────────────────
+  const runEffect = useCallback((eff: MachineEffect) => {
+    switch (eff.type) {
+      case 'START_QUERY':
+        setState('processing');
+        setTranscript(eff.text);
+        dbg(`📡 Truy vấn #${eff.seq} qua ${transportRef.current?.kind || '?'}…`);
+        transportRef.current?.query(eff.seq, eff.text, eff.recent);
+        break;
+      case 'START_LISTENING':
+        if (isListeningLoopActive.current) {
+          setState('listening');
+          setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
+          startListening();
+        }
+        break;
+      case 'STOP_VOICE':
+        stopAllVoiceActivities();
+        break;
+      case 'FLUSH_SESSION':
+        recorderRef.current.flush();
+        break;
+      case 'RECORD_SHOWN':
+        recorderRef.current.push(eff.query, `[slide] ${eff.title}`);
+        break;
+      case 'ARM_IDLE_TIMER':
+        if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+        idleTimerRef.current = setTimeout(() => sendRef.current({ type: 'SESSION_TIMEOUT' }), SESSION_IDLE_MS);
+        break;
+      case 'DEBUG':
+        dbg(eff.message);
+        break;
+    }
+  }, [dbg, setState, setTranscript, startListening, stopAllVoiceActivities, isListeningLoopActive]);
+
+  const { ctx, send } = usePresentationMachine(runEffect);
+  const sendRef = useRef(send);
+  useEffect(() => { sendRef.current = send; }, [send]);
+  useEffect(() => () => { if (idleTimerRef.current) clearTimeout(idleTimerRef.current); }, []);
+
+  // ── TRANSPORT EVENT -> MACHINE EVENT ─────────────────────────────────────
+  const onTransportEvent = useCallback((ev: TransportEvent) => {
+    switch (ev.t) {
+      case 'SLIDE_READY': sendRef.current({ type: 'SLIDE_READY', seq: ev.seq, data: ev.data, interim: ev.interim }); break;
+      case 'SLIDE_SKIP': sendRef.current({ type: 'SLIDE_SKIP', seq: ev.seq, reason: ev.reason }); break;
+      case 'QUERY_FAILED': sendRef.current({ type: 'QUERY_FAILED', seq: ev.seq, error: ev.error }); break;
+      case 'REFINE_READY': sendRef.current({ type: 'REFINE_READY', seq: ev.seq, patch: ev.patch }); break;
+      case 'PREFETCH':
+        // Server báo trước ảnh sắp cần -> nạp cache ngay khi khách còn đang nói.
+        ev.urls.forEach(src => { const im = new window.Image(); im.src = src; });
+        dbg(`⬇️ Prefetch ${ev.urls.length} ảnh theo hội thoại`);
+        break;
+      case 'SALE_CMD': handleSaleCmd(ev.cmd, ev.arg); break;
+      case 'OVERRIDE_QUERY':
+        dbg(`✏️ Sale bẻ lái truy vấn: "${ev.text}"`);
+        sendRef.current({ type: 'SALE_OVERRIDE_QUERY', text: ev.text, now: Date.now() });
+        break;
+      case 'WS_STATUS': dbg(`🔌 WS: ${ev.status}`); break;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dbg]);
+
+  // Lệnh từ Companion của Sale (qua WS). PREV/NEXT/TOGGLE điều khiển ảnh bằng
+  // phím ảo 4/5/6 - SlideBody đã nghe window keydown cho remote thuyết trình,
+  // Companion đi cùng một cửa để không có 2 đường điều khiển ảnh song song.
+  const handleSaleCmd = (cmd: SaleCmd, arg?: number | string) => {
+    dbg(`🎛 Sale: ${cmd}${arg !== undefined ? ` (${arg})` : ''}`);
+    switch (cmd) {
+      case 'FREEZE': sendRef.current({ type: 'SALE_FREEZE' }); break;
+      case 'RESUME': sendRef.current({ type: 'SALE_RESUME' }); break;
+      case 'CLEAR': sendRef.current({ type: 'SALE_CLEAR' }); break;
+      case 'PREV_IMAGE': window.dispatchEvent(new KeyboardEvent('keydown', { key: '4' })); break;
+      case 'NEXT_IMAGE': window.dispatchEvent(new KeyboardEvent('keydown', { key: '6' })); break;
+      case 'TOGGLE_ROTATE': window.dispatchEvent(new KeyboardEvent('keydown', { key: '5' })); break;
+      case 'PICK_IMAGE': break; // dành cho thumbnail strip ở SaleConsole (P3)
+    }
+  };
+
+  // Khởi tạo transport + demo mode (client-only).
+  useEffect(() => {
+    const qs = new URLSearchParams(window.location.search);
+    setDebugOn(qs.has('debug'));
+    const tp = pickTransport(window.location.search, onTransportEvent, dbg);
+    transportRef.current = tp;
+    setTransportKind(tp.kind);
+    const demo = qs.get('demo');
+    if (demo) sendRef.current({ type: 'SLIDE_READY', seq: RESUME_SEQ, data: DEMO_SLIDES[demo] || DEMO_SLIDES['1'] });
+    return () => tp.dispose();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // TV báo trạng thái cho Companion (chỉ có tác dụng ở WS).
+  useEffect(() => {
+    transportRef.current?.sendState(ctx.state, ctx.slideId, ctx.slide?.title);
+  }, [ctx.state, ctx.slideId, ctx.slide?.title]);
+
+  // Mic chết hẳn (quyền bị chặn / trình duyệt không hỗ trợ) -> machine biết để
+  // vào chế độ điều khiển tay.
+  useEffect(() => {
+    if (state === 'error' && errorMsg) sendRef.current({ type: 'MIC_FATAL', message: errorMsg });
+  }, [state, errorMsg]);
+
+  // ── LỆNH GIỌNG NÓI ZOOM ẢNH (UI thuần - không qua machine) ───────────────
+  const slideRef = useRef<SlideData | null>(null);
+  const brokenImagesRef = useRef<Record<string, boolean>>({});
+  useEffect(() => { slideRef.current = ctx.slide; }, [ctx.slide]);
+  useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
 
   const handleVoiceCommands = (text: string): boolean => {
     const clean = text.toLowerCase().trim();
-    const zoomInKeywords = ['phóng to', 'phóng lớn', 'xem ảnh to', 'zoom to', 'zoom lên', 'mở to'];
-    if (zoomInKeywords.some(kw => clean.includes(kw))) {
-      const images: string[] = [];
-      if (slideRef.current?.image_urls && Array.isArray(slideRef.current.image_urls)) {
-        images.push(...slideRef.current.image_urls.filter(img => img && !brokenImagesRef.current[img]));
-      } else if (slideRef.current?.image_url && !brokenImagesRef.current[slideRef.current.image_url]) {
-        images.push(slideRef.current.image_url);
-      }
-      if (images.length > 0) {
-        setSelectedImage(images[0]);
-        if (isListeningLoopActive.current) {
-           setState('listening');
-           startListening();
-        } else {
-           setState('idle');
-        }
-        return true;
-      }
+    const zoomIn = ['phóng to', 'phóng lớn', 'xem ảnh to', 'zoom to', 'zoom lên', 'mở to'];
+    const zoomOut = ['thu nhỏ', 'đóng ảnh', 'đóng hình', 'thoát ảnh', 'quay lại', 'tắt ảnh'];
+    const resume = () => {
+      if (isListeningLoopActive.current) { setState('listening'); startListening(); }
+      else setState('idle');
+    };
+    if (zoomIn.some(kw => clean.includes(kw))) {
+      const s = slideRef.current;
+      const images = (s?.image_urls?.length ? s.image_urls : s?.image_url ? [s.image_url] : [])
+        .filter(img => img && !brokenImagesRef.current[img]);
+      if (images.length > 0) { setSelectedImage(images[0]); resume(); return true; }
     }
-    const zoomOutKeywords = ['thu nhỏ', 'đóng ảnh', 'đóng hình', 'thoát ảnh', 'quay lại', 'tắt ảnh'];
-    if (zoomOutKeywords.some(kw => clean.includes(kw))) {
-      setSelectedImage(null);
-      if (isListeningLoopActive.current) {
-         setState('listening');
-         startListening();
-      } else {
-         setState('idle');
-      }
-      return true;
-    }
+    if (zoomOut.some(kw => clean.includes(kw))) { setSelectedImage(null); resume(); return true; }
     return false;
   };
 
-  const handleAmbientSpeech = (text: string) => {
-    bufferRef.current = text;
-    maybeGenerateAmbient();
-  };
-
-  // Ve trang thai "dang lang nghe" (chua bat duoc chu de nao).
-  const backToListening = () => {
-    setTopicLabel('');
-    setHeardText('');
-    setState('listening');
-    setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
-    startListening();
-  };
-
-  const maybeGenerateAmbient = () => {
-    if (!isListeningLoopActive.current || isGeneratingRef.current) {
-      dbg(isGeneratingRef.current ? '⏳ Đang tạo slide, bỏ qua câu mới' : '⏸ Loop nghe đã tắt');
-      return;
-    }
-    const query = bufferRef.current.trim();
-    if (!query) { backToListening(); return; }
-    const now = Date.now();
-    if (query === lastQueryRef.current.text && now - lastQueryRef.current.at < 8000) {
-      dbg('🔁 Bỏ qua câu lặp y hệt trong 8s');
-      backToListening();
-      return;
-    }
-    dbg(`🎙 Nghe: "${query.slice(0, 60)}"`);
-
-    let intent = classifyAmbientIntent(query);
-    if (!intent.shouldGenerate) {
-      // Intent chấm điểm yếu NHƯNG câu khớp catalog slide tĩnh (lib/static_slides.ts
-      // - cùng nguồn với server) -> vẫn cho qua. Sửa vụ "tiến độ đến đâu rồi" bị
-      // weak_signal chặn oan dù server có sẵn slide tiến độ.
-      const catalogHit = matchStaticSlide(query, 'combo') || matchStaticSlide(query, 'general');
-      if (catalogHit) {
-        dbg(`📚 Catalog khớp "${catalogHit.title}" - cho qua dù intent ${intent.reason}`);
-        intent = { ...intent, shouldGenerate: true, topic: intent.topic || 'general', reason: 'has_project_topic' };
-      } else {
-        dbg(`🚫 Intent BỎ QUA - lý do: ${intent.reason}, topic: ${intent.topic || '-'}`);
-        backToListening();
-        return;
-      }
-    } else {
-      dbg(`✅ Intent OK - topic: ${intent.topic}, lý do: ${intent.reason}`);
-    }
-
-    if (!shouldRefreshSlide(intent, lastSlideRef.current, now)) {
-      dbg('⏱ Giữ slide cũ (chưa đủ thời gian đổi)');
-      backToListening();
-      return;
-    }
-
-    // BAT DUOC CHU DE -> hien "Nguoi ta dang noi ve [chu de]" + cau hoi that.
-    lastSlideRef.current = { topic: intent.topic || null, detail: intent.detail, at: now };
-    lastQueryRef.current = { text: query, at: now };
-    setTopicLabel(TOPIC_LABELS[intent.topic || 'general'] || TOPIC_LABELS.general);
-    setHeardText(query);
-    setTranscript(query);
-    fetchSlideData(query, true);
-  };
-
-  // ── SESSION LƯỢT KHÁCH ────────────────────────────────────────────────────
-  // Nhớ tối đa 3 câu gần nhất của CÙNG một khách để server hiểu "căn đó",
-  // "cho xem bếp" (sau khi nói chuyện Cosmo -> bếp Cosmo). Khách im lặng quá
-  // SLIDE_SESSION_IDLE_MS -> coi là KHÁCH MỚI, xoá ngữ cảnh cũ để câu chuyện
-  // của khách trước không lây sang khách sau.
-  const SLIDE_SESSION_IDLE_MS = 5 * 60 * 1000;
-  const recentRef = useRef<string[]>([]);
-  const lastUtteranceAtRef = useRef(0);
-  // Gom hỏi + tiêu đề slide đã chiếu -> 1 tin Telegram tổng hợp mỗi lượt khách.
-  const recorderRef = useRef(createSessionRecorder('slide'));
-  useEffect(() => recorderRef.current.bindUnload(), []);
-
-  // KHÁCH RỜI ĐI -> VỀ MÀN CHỜ: im lặng đủ SLIDE_SESSION_IDLE_MS thì chốt sổ
-  // phiên + trả màn hình về attract screen. Không có nó, slide cuối của khách
-  // trước đứng vĩnh viễn trên màn showroom; khách mới bước tới thấy câu chuyện
-  // dở dang của người lạ thay vì màn chào. Hẹn giờ nạp lại mỗi lần mic nghe
-  // được BẤT KỲ câu nào (kể cả câu bị intent bỏ qua - khách còn đứng nói là
-  // chưa reset).
-  const idleResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const armIdleReset = () => {
-    if (idleResetRef.current) clearTimeout(idleResetRef.current);
-    idleResetRef.current = setTimeout(() => {
-      dbg('🌙 Im lặng 5 phút - chốt sổ phiên, về màn chờ đón khách mới');
-      recorderRef.current.flush();
-      recentRef.current = [];
-      lastSlideRef.current = { topic: null, at: 0 };
-      lastQueryRef.current = { text: '', at: 0 };
-      setSlide(null);
-      setTopicLabel('');
-      setHeardText('');
-    }, SLIDE_SESSION_IDLE_MS);
-  };
-  useEffect(() => () => { if (idleResetRef.current) clearTimeout(idleResetRef.current); }, []);
-
-  const fetchSlideData = async (text: string, ambient = false) => {
-    // Cập nhật session TRƯỚC khi gọi API: quá hạn -> khách mới, xoá ngữ cảnh.
-    const nowTs = Date.now();
-    if (nowTs - lastUtteranceAtRef.current > SLIDE_SESSION_IDLE_MS) {
-      if (recentRef.current.length) {
-        dbg('👤 Khách mới (im lặng >5 phút) - gửi tổng hợp phiên cũ + xoá ngữ cảnh');
-        recorderRef.current.flush(); // chốt sổ phiên khách trước
-      }
-      recentRef.current = [];
-    }
-    const recentForCall = [...recentRef.current];
-    // Giữ 10 câu gần nhất - một lượt tư vấn thật dài cỡ chục câu hỏi.
-    recentRef.current = [...recentRef.current, text].slice(-10);
-    lastUtteranceAtRef.current = nowTs;
-
-    const t0 = Date.now();
-    try {
-      isGeneratingRef.current = true;
-      setState('processing');
-      dbg(`📡 Gọi /api/slide (ambient=${ambient})…`);
-
-      // PHA 2 bắn SONG SONG với pha 1 (không chờ pha 1 về mới gọi) - tiết kiệm
-      // trọn một vòng mạng. Kết quả chỉ được dùng nếu pha 1 ra static_fast
-      // không khóa cứng; các trường hợp khác thì bỏ (tốn 1 call 8b rẻ tiền).
-      const refinePromise = fetch('/api/slide', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, ambient, refine: true, context: { recent: recentForCall } }),
-      }).then(r => (r.ok ? r.json() : null)).catch(() => null);
-
-      // HIỆN TẠM: câu trả lời nhanh (~1s) thường về TRƯỚC slide đầy đủ (2-3s)
-      // với câu không trúng keyword. Có nó trước thì hiện ngay trên nền chữ -
-      // slide đầy đủ (có ảnh) về sau sẽ thay thế. Khách không phải nhìn màn
-      // hình đứng yên 3 giây.
-      let pha1Xong = false;
-      refinePromise.then(ref => {
-        if (pha1Xong || !ref || ref.skip || !ref.answer_text) return;
-        dbg('⚡ Câu trả lời nhanh về trước slide - hiện tạm');
-        // Bump key qua ref TRƯỚC khi setState: các callback async sau đó (refine
-        // patch) so key qua slideKeyRef nên ref phải đúng NGAY, không đợi effect.
-        slideKeyRef.current += 1;
-        setSlideKey(slideKeyRef.current);
-        setSlide({
-          layout_type: 'text_only',
-          title: "Ny'ah Phú Định",
-          points: [],
-          speech_text: ref.answer_text,
-          answer_text: ref.answer_text,
-        } as SlideData);
-      });
-
-      const res = await fetch('/api/slide', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        // Gửi cờ ambient để server áp CỔNG TIN CẬY (chỉ tạo slide khi RAG đủ điểm hoặc khớp
-        // slide tĩnh; câu mơ hồ -> skip). Trước đây bỏ cờ này vì server skip quá gắt + mất ảnh,
-        // nhưng đã sửa: bỏ luật ép LLM skip (AMBIENT_RULE) nên chủ đề thật luôn có ảnh, chỉ câu
-        // mơ hồ/nghe nhầm mới bị bỏ. Kết hợp cổng intent client (scoring) -> 2 lớp lọc slide sai.
-        body: JSON.stringify({ message: text, ambient, context: { recent: recentForCall } })
-      });
-
-      if (!res.ok) {
-        const body = await res.text().catch(() => '');
-        throw new Error(`API ${res.status}: ${body.slice(0, 120) || res.statusText}`);
-      }
-      const data: SlideData = await res.json();
-      pha1Xong = true; // slide đầy đủ đã về - interim (nếu có) sẽ bị thay
-      const secs = ((Date.now() - t0) / 1000).toFixed(1);
-
-      if (data.skip || !data.speech_text || !data.title || data.title === 'Lỗi hiển thị' || data.title.includes('Lỗi hiển thị')) {
-        dbg(`⚪ Server SKIP sau ${secs}s - ${(data as any).reason || `title="${data.title || ''}"`}`);
-        if (ambient) {
-          setTranscript('🎧 Đang nghe ngầm… (chưa có chủ đề rõ ràng)');
-          setState('listening');
-          startListening();
-        } else {
-          setTranscript('Không tìm thấy thông tin phù hợp trong dữ liệu dự án.');
-          setState('idle');
-        }
-        return;
-      }
-
-      const nImgs = (data.image_urls?.length ?? (data.image_url ? 1 : 0));
-      dbg(`🖼 Slide OK sau ${secs}s - "${data.title}", ${nImgs} ảnh, layout: ${data.layout_type || 'mặc định'}`);
-
-      if (!data.layout_type) data.layout_type = 'split_image_right';
-      recorderRef.current.push(text, `[slide] ${data.title}`);
-
-      // CHỐNG GIẬT: server trả về ĐÚNG slide đang hiện (cùng title + cùng bộ ảnh
-      // - khách hỏi thêm trong cùng chủ đề) -> cập nhật caption TẠI CHỖ, không
-      // remount. Remount là cả màn chạy lại animation vào + ảnh reset về tấm 1.
-      const prevS = slideRef.current;
-      const imgsOf = (s: SlideData | null) =>
-        (s?.image_urls?.length ? s.image_urls : s?.image_url ? [s.image_url] : []).join('|');
-      const sameSlide = !!prevS && prevS.title === data.title && imgsOf(prevS) === imgsOf(data);
-      if (sameSlide) {
-        dbg('♻️ Trùng slide đang hiện - cập nhật tại chỗ, không chạy lại animation');
-        setSlide(s => (s ? {
-          ...s,
-          ...(data.answer_text ? { answer_text: data.answer_text } : {}),
-          speech_text: data.speech_text || s.speech_text,
-        } : data));
-      } else {
-        setBrokenImages({});
-        // Bump key qua ref TRƯỚC setState để refine patch bên dưới so key chính
-        // xác ngay cả khi React chưa kịp re-render (myKey đọc từ ref).
-        slideKeyRef.current += 1;
-        setSlideKey(slideKeyRef.current);
-        setSlide(data);
-      }
-
-      // PHA 2 "đỡ ngu mà vẫn nhanh": slide tĩnh đã hiện (~0ms), gọi ngầm refine
-      // để LLM viết câu trả lời bám ĐÚNG câu khách hỏi rồi chèn lên caption
-      // (answer_text) - text tĩnh tự thu nhỏ tụt xuống. forceStatic cũng chèn
-      // (số liệu tĩnh giữ nguyên, chỉ thêm câu xác nhận bám câu hỏi).
-      if ((data as any)._source === 'static_fast') {
-        const myKey = slideKeyRef.current; // key hiệu lực của slide vừa hiển thị
-        refinePromise.then(ref => {
-          if (!ref || ref.skip || !ref.answer_text) return;
-          // Khách đã sang slide khác trong lúc chờ -> bỏ, không đè.
-          if (slideKeyRef.current !== myKey) return;
-          dbg(`✨ Refine về sau ${((Date.now() - t0) / 1000).toFixed(1)}s - chèn câu trả lời lên slide${ref.image_url ? ' + SỬA ẢNH' : ''}`);
-          // LLM phát hiện ảnh tĩnh sai chủ đề -> thay bằng ảnh đúng (server đã kiểm tra file tồn tại).
-          setSlide(s => (s ? { ...s, answer_text: ref.answer_text, ...(ref.image_url ? { image_urls: [ref.image_url] } : {}) } : s));
-        });
-      }
-
-      setState('listening');
-      setTranscript("🎙️ Ny'ah đang lắng nghe bạn...");
-      startListening();
-    } catch (e: any) {
-      const msg = e?.message || String(e);
-      dbg(`🔴 LỖI sau ${((Date.now() - t0) / 1000).toFixed(1)}s: ${msg}`);
-      // Lỗi -> xoá dấu "câu vừa xử lý" để khách/sale NHẮC LẠI nguyên văn là chạy
-      // ngay, không bị cổng chặn-câu-lặp 8s giữ lại.
-      lastQueryRef.current = { text: '', at: 0 };
-      // Hien loi that len thanh transcript (thay vi im lang gia vo nghe tiep)
-      setTranscript(`⚠️ Lỗi tạo slide: ${msg.slice(0, 90)} - vẫn đang nghe…`);
-      if (ambient || isListeningLoopActive.current) {
-        setState('listening');
-        startListening();
-      } else {
-        setState('idle');
-      }
-    } finally {
-      isGeneratingRef.current = false;
-    }
-  };
-
-  // Preload images
-  useEffect(() => {
-    const staticImages = [
-      '/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg',
-      '/images/01_NyAh-PhuDinh/vi_tri/duong_di/vi_tri.jpg',
-      '/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg',
-      '/images/01_NyAh-PhuDinh/mat_bang/opus_cau-truc-1-2-3.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/opus/wc/opus_wc.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-2_tang-5_8-phong-ngu-2-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_phong-tam-master_tang-4_7-phong-tam-master-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc_tang-5_phong-hoc.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-2_tang-5_phong-ngu-con.jpg',
-      '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png',
-    ];
-    staticImages.forEach(src => {
-      const img = new window.Image();
-      img.src = src;
-    });
-  }, []);
-
-  const [imgOrient, setImgOrient] = useState<Record<string, 'landscape' | 'portrait'>>({});
-
+  // ── ẢNH: đo hướng thật + lọc ảnh hỏng (UI concern, giữ ở page) ───────────
   const collectImages = (s: SlideData | null): string[] => {
     if (!s) return [];
     const imgs: string[] = [];
     if (s.image_urls && Array.isArray(s.image_urls)) imgs.push(...s.image_urls.filter(Boolean));
     else if (s.image_url) imgs.push(s.image_url);
-    // Trần 6 khớp với SlideBody (dải thumbnail + phím 4/5/6 thiết kế cho tối đa 6).
     return imgs.filter(img => !brokenImages[img]).slice(0, 6);
   };
 
   useEffect(() => {
-    const imgs = collectImages(slide);
+    const imgs = collectImages(ctx.slide);
     imgs.forEach(src => {
       if (imgOrient[src]) return;
       const im = new window.Image();
@@ -528,66 +268,38 @@ export default function SlideBotPage() {
       im.src = src;
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slide, brokenImages]);
+  }, [ctx.slide, brokenImages]);
 
+  // Warm-up cache ảnh chủ đề hay gặp.
+  useEffect(() => {
+    WARMUP_IMAGES.forEach(src => { const img = new window.Image(); img.src = src; });
+  }, []);
 
-  const Line = ({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) => (
-    <span className="line-mask block">
-      <span className={`line-in block ${className}`} style={{ animationDelay: `${delay}ms` }}>{children}</span>
-    </span>
-  );
+  // CHỐT AN TOÀN RENDER: trình duyệt không chạy animation -> ép hiện nội dung.
+  const mainRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!ctx.slide) return;
+    const t = setTimeout(() => {
+      const el = mainRef.current?.querySelector('.line-in') as HTMLElement | null;
+      if (!el) return;
+      const cs = getComputedStyle(el);
+      if (parseFloat(cs.opacity) < 0.5) {
+        mainRef.current?.classList.add('anim-failsafe');
+        dbg('🩹 Animation bị chặn - ép hiện nội dung ngay');
+      }
+    }, 1500);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctx.slideId]);
 
-  const renderSlideBody = () => {
-    if (!slide) {
-      // MÀN CHỜ = ATTRACT SCREEN: slideshow ảnh dự án làm tối chạy chậm phía
-      // sau thay cho nền kem trống - showroom phải khoe nhà ngay cả lúc nghỉ.
-      return (
-        <div className="flex-1 relative overflow-hidden flex flex-col items-center justify-center text-center gap-[2.5vh] px-[5vw]">
-          <div aria-hidden className="absolute inset-0">
-            {IDLE_PHOTOS.map((src, i) => (
-              <img
-                key={src} src={src} alt=""
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ease-out ${
-                  i === idleIdx ? 'opacity-100 animate-ken-burns' : 'opacity-0'
-                }`}
-              />
-            ))}
-            <div className="absolute inset-0 bg-black/55" />
-          </div>
-          <div className="relative z-10">
-            <Line delay={100}>
-              <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 backdrop-blur text-white/90 font-bold tracking-[0.2em] uppercase text-[clamp(11px,1.2vw,17px)]">
-                Smart Showroom · Nhã Đạt
-              </span>
-            </Line>
-            {/* Khong dung tracking-tight o day: tracking tinh theo em, o co chu toi 190px
-                no co moi cap chu lai ~5px - qua nhieu voi chu hoa dam co dau tieng Viet,
-                lam dau (mu, moc, nang) bi de len chu ben canh. */}
-            <h1 className="uppercase font-black leading-[1.5] tracking-[0.05em] mt-[2vh]">
-              <Line delay={240} className="text-[#A8D94A] text-[clamp(44px,9vw,150px)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)]">Ny&apos;ah</Line>
-              <Line delay={400} className="text-white text-[clamp(52px,11vw,190px)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)]">Phú Định</Line>
-            </h1>
-            <Line delay={580} className="text-white/80 text-[clamp(15px,2vw,28px)] max-w-[78%] mx-auto leading-relaxed mt-[2vh]">
-              Chạm nút micro - slide sẽ tự hiện theo câu chuyện của bạn.
-            </Line>
-          </div>
-        </div>
-      );
-    }
-
-    // Dung CHUNG <SlideBody> voi trang demo -> bo cuc/anh/chu y het nhau.
-    // collectImages da loc anh 404 + gioi han 6. imgOrient = huong that (da do runtime).
-    const cleanData = { ...slide, image_urls: collectImages(slide) };
-    return (
-      <SlideBody
-        data={cleanData}
-        orientOf={(s) => imgOrient[s] || 'landscape'}
-        onImageClick={setSelectedImage}
-        onImageError={(s) => setBrokenImages(prev => ({ ...prev, [s]: true }))}
-        replayKey={slideKey}
-      />
-    );
+  const onMicButton = () => {
+    const turningOn = !isListeningLoopActive.current;
+    toggleMic();
+    if (turningOn) sendRef.current({ type: 'MIC_ON' });
+    else { sendRef.current({ type: 'MIC_OFF' }); setTranscript('Đã dừng. Nhấn nút Micro để bắt đầu.'); }
   };
+
+  const cleanSlide = ctx.slide ? { ...ctx.slide, image_urls: collectImages(ctx.slide) } : null;
 
   return (
     <div
@@ -596,13 +308,10 @@ export default function SlideBotPage() {
     >
       <style dangerouslySetInnerHTML={{ __html: `
         .dots { background-image: radial-gradient(rgba(22,22,22,.28) 1.6px, transparent 1.6px); background-size: 16px 16px; }
-        /* Mặt nạ nới thêm trên/dưới để KHÔNG cắt dấu tiếng Việt (dấu nặng dưới Ị/Ụ,
-           dấu mũ trên Ấ/Ề) khi leading < 1 - margin âm bù lại nên khoảng cách giữ nguyên. */
+        /* Mặt nạ nới thêm trên/dưới để KHÔNG cắt dấu tiếng Việt khi leading < 1. */
         .line-mask { overflow: hidden; padding: 0.25em 0 0.2em; margin: -0.25em 0 -0.2em; }
         .line-in {
-          /* KHÔNG đặt will-change thường trực: mỗi dòng chữ một GPU layer vĩnh viễn
-             là phí VRAM của SoC TV. Animation transform/opacity được Chrome tự
-             composite trong lúc chạy - không cần gợi ý thêm. */
+          /* KHÔNG will-change thường trực - Chrome tự composite animation transform/opacity. */
           animation: lineUp .7s cubic-bezier(.22,1,.36,1) both, glowFade 1.15s ease-out both;
         }
         @keyframes lineUp {
@@ -621,13 +330,10 @@ export default function SlideBotPage() {
         }
         .marquee-track { animation: marquee 26s linear infinite; }
         @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        /* Sóng nghe: scaleY thay vì height - animate height là reflow mỗi frame,
-           chạy vô hạn suốt phiên. scaleY chỉ chạm compositor. Chiều cao tĩnh của
-           mỗi thanh (inline style) trở thành biên độ tối đa. */
+        /* Sóng nghe: scaleY thay height - height là reflow mỗi frame, chạy vô hạn. */
         @keyframes wave { 0%,100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
         .animate-sound-wave { animation: wave .9s ease-in-out infinite; transform-origin: center bottom; }
-        /* Vòng sáng mic - đọc --mic-rms do useVoiceAgent ghi thẳng DOM (không qua React).
-           transition ngắn để mượt giữa các tick rAF. */
+        /* Vòng sáng mic - đọc --mic-rms do useVoiceAgent ghi thẳng DOM (không qua React). */
         .mic-pulse {
           transform: scale(calc(1 + min(var(--mic-rms, 0) * 5, 2)));
           transition: transform 75ms linear;
@@ -638,10 +344,8 @@ export default function SlideBotPage() {
         .animate-fade-in { animation: fadeIn .4s ease-out both; }
         @keyframes scaleUp { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .animate-scale-up { animation: scaleUp .3s cubic-bezier(.22,1,.36,1) both; }
-        /* Doi noi dung o transcript (lang nghe <-> nguoi ta dang noi ve) truot len + hien dan */
         .transcript-swap { animation: swapIn .38s cubic-bezier(.22,1,.36,1) both; }
         @keyframes swapIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
-        /* Chot an toan: trinh duyet khong chay animation -> ep hien noi dung (JS gan class nay) */
         .anim-failsafe .line-in, .anim-failsafe .img-card {
           animation: none !important;
           opacity: 1 !important;
@@ -655,22 +359,15 @@ export default function SlideBotPage() {
         }
       ` }} />
 
-      {/* DEBUG HUD - chi hien khi mo /slide?debug=1 */}
       {debugOn && (
-        <div className="fixed top-2 left-2 z-[70] w-[420px] max-w-[92vw] rounded-xl bg-black/85 text-white p-3 font-mono text-[11px] leading-relaxed shadow-2xl">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="font-bold text-[#A8D94A]">🔧 DEBUG</span>
-            <span>
-              state: <b className="text-amber-300">{state}</b>
-              {' · '}slide: <b className="text-amber-300">{slide ? 'CÓ' : 'CHƯA'}</b>
-            </span>
-          </div>
-          {errorMsg && <div className="text-red-400 font-bold mb-1">⛔ {errorMsg}</div>}
-          <div className="max-h-[38vh] overflow-y-auto space-y-0.5">
-            {debugLog.length === 0 && <div className="text-white/50">Chưa có sự kiện - bấm mic và nói thử…</div>}
-            {debugLog.map((l, i) => <div key={i} className={i === 0 ? 'text-white' : 'text-white/60'}>{l}</div>)}
-          </div>
-        </div>
+        <DebugHud
+          state={state}
+          machineState={ctx.state}
+          hasSlide={!!ctx.slide}
+          transportKind={transportKind}
+          errorMsg={errorMsg}
+          log={debugLog}
+        />
       )}
 
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
@@ -679,16 +376,13 @@ export default function SlideBotPage() {
         <div className="absolute bottom-[13%] -left-10 w-[12vw] h-[12vw] rounded-full border-2 border-[#2E9E5B]/15" />
       </div>
 
-      {/* transition-opacity thay transition-all: animate height/padding là reflow
-          từng frame; giờ chỉ fade opacity (compositor), còn thu gọn chiều cao xảy
-          ra tức thời 1 lần - đằng nào cũng nằm dưới lớp slide đang phủ. */}
-      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-opacity duration-300 ${slide ? 'h-0 overflow-hidden opacity-0 pointer-events-none !p-0' : ''}`}>
+      {/* transition-opacity: chỉ fade, thu gọn chiều cao tức thời (tránh animate layout). */}
+      <header className={`relative z-10 px-[5vw] pt-[2vh] pb-[1vh] flex items-center justify-between shrink-0 transition-opacity duration-300 ${ctx.slide ? 'h-0 overflow-hidden opacity-0 pointer-events-none !p-0' : ''}`}>
         <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl overflow-hidden bg-white shadow-md border border-black/5 flex items-center justify-center shrink-0">
             <img src="/logo.svg" alt="Nhã Đạt" className="w-[82%] h-[82%] object-contain" />
           </span>
           <div>
-            {/* leading-none cat dau nang duoi ĐỊNH - dung leading-[1.2] de chua du dau */}
             <p className="font-black tracking-tight leading-[1.2] text-[clamp(15px,1.6vw,26px)]">NY&apos;AH PHÚ ĐỊNH</p>
             <p className="text-neutral-500 font-semibold tracking-[0.22em] uppercase mt-1 text-[clamp(9px,0.9vw,13px)]">A development by Nhã Đạt</p>
           </div>
@@ -701,14 +395,15 @@ export default function SlideBotPage() {
           }`}>
             {state === 'listening' && (
               <span className="flex items-end gap-0.5 h-3" aria-hidden>
-                <span className="w-0.5 bg-[#0E5A34] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
-                <span className="w-0.5 bg-[#0E5A34] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
-                <span className="w-0.5 bg-[#0E5A34] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+                <span className="w-0.5 h-full bg-[#0E5A34] rounded-full animate-sound-wave" style={{ animationDelay: '0ms' }} />
+                <span className="w-0.5 h-full bg-[#0E5A34] rounded-full animate-sound-wave" style={{ animationDelay: '150ms' }} />
+                <span className="w-0.5 h-full bg-[#0E5A34] rounded-full animate-sound-wave" style={{ animationDelay: '300ms' }} />
               </span>
             )}
             {state === 'idle' && 'Đang chờ'}
             {state === 'listening' && 'Đang nghe'}
             {state === 'processing' && 'Đang suy nghĩ…'}
+            {state === 'error' && 'Chế độ tay'}
           </div>
           <Link
             href="/voice"
@@ -729,23 +424,33 @@ export default function SlideBotPage() {
       </header>
 
       <main ref={mainRef} className="relative z-10 flex-1 min-h-0 flex flex-col">
-        {renderSlideBody()}
+        {cleanSlide ? (
+          <SlideStage
+            slideId={ctx.slideId}
+            slide={cleanSlide}
+            orientOf={(s) => imgOrient[s] || 'landscape'}
+            onImageClick={setSelectedImage}
+            onImageError={(s) => setBrokenImages(prev => ({ ...prev, [s]: true }))}
+          />
+        ) : (
+          <AttractScreen />
+        )}
       </main>
 
-      {/* Thanh trắng dưới đáy đã XÓA (08/2026) - lệch tông với slide tối.
-          Thay bằng chip nổi tối màu góc phải dưới: mic (bắt buộc giữ - trình
-          duyệt cần 1 chạm mới cho bật micro) + trạng thái nghe/xử lý/lỗi gọn. */}
+      {/* Chip trạng thái + mic nổi góc phải dưới */}
       <div className="absolute bottom-[2vh] right-[2vw] z-30 flex items-center gap-2.5">
         {errorMsg ? (
           <span className="max-w-[60vw] truncate px-4 py-2 rounded-full bg-black/70 backdrop-blur text-red-300 font-semibold text-[clamp(11px,1.2vw,16px)]">⚠️ {errorMsg}</span>
-        ) : topicLabel ? (
+        ) : ctx.state === 'frozen' ? (
+          <span className="px-4 py-2 rounded-full bg-black/60 backdrop-blur text-amber-200 font-bold text-[clamp(11px,1.2vw,16px)]">⏸ Đã đóng băng</span>
+        ) : ctx.topicLabel ? (
           <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 backdrop-blur text-white/85 text-[clamp(11px,1.2vw,16px)]">
             <span className="flex items-end gap-0.5 h-3.5" aria-hidden>
-              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
-              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
-              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+              <span className="w-0.5 h-full bg-[#A8D94A] rounded-full animate-sound-wave" style={{ animationDelay: '0ms' }} />
+              <span className="w-0.5 h-full bg-[#A8D94A] rounded-full animate-sound-wave" style={{ animationDelay: '150ms' }} />
+              <span className="w-0.5 h-full bg-[#A8D94A] rounded-full animate-sound-wave" style={{ animationDelay: '300ms' }} />
             </span>
-            <span className="font-bold text-[#A8D94A] whitespace-nowrap">{topicLabel}</span>
+            <span className="font-bold text-[#A8D94A] whitespace-nowrap">{ctx.topicLabel}</span>
           </span>
         ) : state === 'processing' ? (
           <span className="w-8 h-8 grid place-items-center rounded-full bg-black/60 backdrop-blur" aria-hidden>
@@ -754,26 +459,22 @@ export default function SlideBotPage() {
         ) : state === 'listening' ? (
           <span className="w-8 h-8 grid place-items-center rounded-full bg-black/60 backdrop-blur" aria-hidden>
             <span className="flex items-end gap-0.5 h-3.5">
-              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '40%', animationDelay: '0ms' }} />
-              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '100%', animationDelay: '150ms' }} />
-              <span className="w-0.5 bg-[#A8D94A] rounded-full animate-sound-wave" style={{ height: '60%', animationDelay: '300ms' }} />
+              <span className="w-0.5 h-full bg-[#A8D94A] rounded-full animate-sound-wave" style={{ animationDelay: '0ms' }} />
+              <span className="w-0.5 h-full bg-[#A8D94A] rounded-full animate-sound-wave" style={{ animationDelay: '150ms' }} />
+              <span className="w-0.5 h-full bg-[#A8D94A] rounded-full animate-sound-wave" style={{ animationDelay: '300ms' }} />
             </span>
           </span>
         ) : null}
 
         <div className="relative">
           {state !== 'idle' && (
-            /* Vòng sáng mic chạy HOÀN TOÀN bằng CSS var --mic-rms (useVoiceAgent ghi
-               thẳng DOM trong rAF) - không còn re-render React 60fps theo âm lượng.
-               2 lớp: nền xanh + lớp hổ phách hiện dần khi nói to (opacity thay cho
-               đổi backgroundColor theo ngưỡng). */
             <div aria-hidden className="mic-pulse absolute inset-0 rounded-full pointer-events-none z-0">
               <div className="absolute inset-0 rounded-full" style={{ backgroundColor: 'rgba(46,158,91,0.18)' }} />
               <div className="mic-pulse-loud absolute inset-0 rounded-full" style={{ backgroundColor: 'rgba(232,184,75,0.25)' }} />
             </div>
           )}
           <button
-            onClick={toggleMic}
+            onClick={onMicButton}
             aria-label={state !== 'idle' ? 'Tắt micro' : 'Bật micro'}
             className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-xl transition-colors duration-300 relative z-10 ${
               state !== 'idle'

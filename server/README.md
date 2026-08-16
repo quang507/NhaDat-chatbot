@@ -28,13 +28,28 @@ GROQ_API_KEY, DEEPGRAM_API_KEY…) — Bun tự nạp `.env` theo cwd.
 | `POST /api/log-session` | `app/api/log-session/route.ts` | tổng hợp phiên → Telegram |
 | `GET /images/*`, `/images_bg/*` | `public/` | cache 1 năm immutable |
 | `GET /healthz` | — | cho script giám sát/kiosk |
+| `WS /ws` | — | event bus B2 (một endpoint, phân vai qua `TV_HELLO`/`COMPANION_HELLO`) |
 | `GET /*` | `out/` rồi `public/` | bản static export (B3); chưa build thì trang giữ chỗ |
 
 CORS mở cho `/api/*` trong giai đoạn chuyển tiếp (app TV còn chạy từ origin khác).
 
+## WebSocket event bus (B2)
+
+Giao thức: `lib/ws-protocol.ts` (dùng chung TV + Companion + server). WS chỉ chở
+sự kiện JSON — ảnh vẫn đi HTTP tĩnh có cache; server gửi `PREFETCH` để TV nạp trước.
+
+- **TV** mở `/slide?ws=1` (server này serve app — B3) hoặc
+  `/slide?ws=ws://<ip-server>:3080` (app còn ở Vercel). Server orchestrate 2 pha
+  slide và đẩy `SLIDE_READY`/`REFINE_READY`; TV (re)connect nhận lại slide hiện
+  hành (resume, `seq = -1`).
+- **Companion** (điện thoại Sale) mở `/companion` (same-origin) hoặc
+  `/companion?server=ws://<ip-server>:3080`: ĐÓNG BĂNG / XOÁ SLIDE / chuyển ảnh
+  / chiếu nhanh chủ đề. Lệnh relay tới mọi TV trong showroom.
+- Heartbeat PING 10s, mất PONG 25s thì client tự reconnect (backoff 1→15s);
+  server `idleTimeout` 60s dọn socket chết không FIN.
+
 ## Bước kế tiếp (theo tech-spec)
 
-- **B2**: WS event bus `/ws/tv`, `/ws/companion` (protocol §5.3) + heartbeat/resume.
 - **B3**: `next.config.mjs` → `output: 'export'`, server này serve luôn app TV; kiosk hóa
   mini-PC (systemd + chromium `--kiosk`).
 - **B4**: streaming STT qua WS (Deepgram live).

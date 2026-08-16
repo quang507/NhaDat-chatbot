@@ -512,38 +512,37 @@ Nguyên tắc chia phase: **P0 dập lửa FPS ngay trên code hiện tại** (k
 ship được trong tuần), P1 tái cấu trúc nền móng, P2 tách luồng, P3 layout 3 vùng + UX
 mới, P4 chốt chất lượng. Mỗi mục ghi rõ file đích và tiêu chí nghiệm thu (DoD).
 
-### P0 — Dập lửa hiệu năng (1–2 ngày, không đổi API/UX)
+### P0 — Dập lửa hiệu năng (1–2 ngày, không đổi API/UX) — ✅ ĐÃ LÀM (PR #125)
 
-- [ ] **P0.1** Bỏ `setRmsVolume` khỏi vòng rAF (`hooks/useVoiceAgent.ts:203`): RMS ghi vào
-  `rmsRef` + 1 rAF ghi CSS var `--mic-rms`; mic pulse (`app/slide/page.tsx:750-754`) và
-  sóng nghe đổi sang CSS `calc(var(--mic-rms))`. *DoD: React DevTools Profiler không còn
-  commit nào do rmsVolume khi mic bật; main-thread render trong lúc nghe ≈ 0.*
-- [ ] **P0.2** `transition-all` → `transition-opacity` (`components/SlideBody.tsx:269` + grep toàn repo).
-- [ ] **P0.3** `@keyframes wave` đổi `height` → `transform: scaleY` (`app/slide/page.tsx:623`).
-- [ ] **P0.4** Gỡ `will-change` thường trực khỏi `.line-in`/`.img-card` (`page.tsx:605,616`);
-  gắn/gỡ theo vòng đời animation.
-- [ ] **P0.5** Sinh nền blur tĩnh `*_bg.webp` (script sharp) thay `blur-[3px]` runtime
-  (`SlideBody.tsx:180`); tối thiểu: hạ nguồn nền xuống biến thể 480 px trước khi có script.
+- [x] **P0.1** Bỏ `setRmsVolume` khỏi vòng rAF: RMS ghi CSS var `--mic-rms`; mic pulse +
+  sóng nghe chạy thuần CSS. Hết re-render React 60fps khi mic bật.
+- [x] **P0.2** `transition-all` → `transition-opacity`/`[opacity,transform]`/`colors`.
+- [x] **P0.3** `@keyframes wave` đổi `height` → `transform: scaleY`.
+- [x] **P0.4** Gỡ `will-change` thường trực khỏi `.line-in`/`.img-card`.
+- [x] **P0.5** Nền blur tĩnh `scripts/gen-blur-bg.mjs` → `/public/images_bg` (prebuild +
+  buildCommand Vercel), fallback CSS filter khi thiếu file.
 - [ ] **P0.6** Đo baseline TRƯỚC/SAU trên TV thật: DevTools remote → Performance trace 60 s
   kịch bản "khách hỏi 5 câu liên tiếp". Lưu số vào PR: % dropped frames, longest task,
   tổng thời gian style/layout. *DoD: dropped frames < 5%, không long task > 120 ms.*
+  ⚠️ Làm tại showroom - cần TV thật.
 
-### P1 — State Machine & mổ god-component (3–5 ngày)
+### P1 — State Machine & mổ god-component (3–5 ngày) — ✅ ĐÃ LÀM
 
-- [ ] **P1.1** Tạo `lib/presentation-machine.ts` (FSM thuần TS, không React) theo §3.1:
-  states `idle / listening / querying / displaying(+refining) / frozen / degraded`,
-  đủ bảng event + guard (dedupe 8s, slideId cho refine, mic health).
-- [ ] **P1.2** Unit test FSM (vitest): chuỗi race thực tế — refine về sau khi slide đã đổi,
-  SPEECH trùng trong 8 s, lỗi pha 1 nhưng pha 2 đã hiện interim, FREEZE giữa `querying`.
-- [ ] **P1.3** Chuyển orchestration fetch pha 1/pha 2 (`page.tsx:327-474`) vào service của
-  machine; huỷ theo state-exit. Xoá: `isGeneratingRef`, `pha1Xong`, `lastQueryRef`,
-  `slideKeyRef`, `lastSlideRef` khỏi component.
-- [ ] **P1.4** Tách `page.tsx` thành: `PresentationShell` (grid 3 vùng), `HeroStage`,
-  `FocusCanvas` (bọc SlideBody), `SaleConsole`, `DebugHud`. Trang còn ≤ ~100 dòng.
-  *DoD: `app/slide/page.tsx` không còn `useRef` nào mang nghĩa trạng thái nghiệp vụ.*
-- [ ] **P1.5** Chuyển cảnh slide kiểu 2 lớp cross-fade (§3.3.2), bỏ `key={replayKey}`;
-  xoá luôn nhánh vá `sameSlide` (`page.tsx:415-436`) — FSM + diff slideId thay thế.
-  *DoD: trace lúc chuyển slide không có Recalc Style > 16 ms, ảnh không decode lại.*
+- [x] **P1.1** `lib/presentation-machine.ts` (FSM thuần TS): states `idle / listening /
+  querying / frozen / mic_error`, slide là context; guard dedupe 8s, seq cho refine,
+  same-slide patch, phiên khách 5 phút.
+- [x] **P1.2** Unit test FSM (`bun test`, 14 test): refine về sau khi slide đã đổi, SPEECH
+  trùng 8s, interim trước slide đầy đủ, FREEZE giữa querying, CLEAR vô hiệu truy vấn
+  đang bay, QUERY_FAILED xoá dấu câu lặp, resume seq=-1.
+- [x] **P1.3** Orchestration 2 pha chuyển vào `lib/slide-transport.ts` (HttpTransport);
+  đã xoá `isGeneratingRef`, `pha1Xong`, `lastQueryRef`, `slideKeyRef`, `lastSlideRef`
+  khỏi component.
+- [x] **P1.4** (một phần) Tách `AttractScreen`, `DebugHud`, `SlideStage` khỏi page; page
+  không còn ref trạng thái nghiệp vụ. Grid 3 vùng + `HeroStage`/`SaleConsole` trên TV
+  thuộc P3 (chưa làm).
+- [x] **P1.5** `components/SlideStage.tsx`: chuyển cảnh 2 lớp cross-fade, lớp cũ giữ DOM
+  fade-out rồi mới unmount; nhánh vá `sameSlide` chuyển vào machine (isSameSlide →
+  patch tại chỗ, không đổi slideId).
 
 ### P2 — Tách luồng âm thanh & prefetch (3–5 ngày)
 
@@ -744,18 +743,22 @@ Di trú 3 bước, mỗi bước chạy được độc lập:
 
 ### Checklist bổ sung (Phase B — song song được với P3)
 
-- [ ] **B1.1** Khởi tạo `server/` Bun + ElysiaJS; port `lib/{rag,intent,static_slides,units,speech}`
-  (TS thuần) + route `/api/slide`, `/api/transcribe`, `/api/tts` tương thích hiện tại.
-  *DoD: TV trỏ LAN chạy đủ kịch bản 5 câu hỏi; p50 `/api/slide` (phần non-LLM) < 30 ms.*
-- [ ] **B1.2** Serve `public/images` + manifest (P2.4) từ Bun kèm `Cache-Control: immutable`;
-  đồng bộ data/index từ repo theo đợt (script pull, không sửa tay trên box).
-- [ ] **B2.1** `shared/ws-protocol.ts` + WS `/ws/tv`, `/ws/companion` (Elysia pub/sub);
-  heartbeat 10 s, reconnect backoff, resume theo `slideId`. *DoD: rút wifi 20 s giữa
-  buổi pitch → TV giữ nguyên slide, nối lại không nháy màn.*
-- [ ] **B2.2** FSM TV nhận slide qua WS (bỏ fetch pha 1/pha 2 phía client — server tự
-  orchestrate 2 pha và đẩy 2 event); `PREFETCH` hint → prefetch worker.
-- [ ] **B2.3** Companion page tối giản cho Sale (FREEZE/CLEAR/PICK/override từ khoá) trên
-  cùng bus WS. *DoD: lệnh từ điện thoại phản ánh lên TV < 150 ms.*
+- [x] **B1.1** `server/` Bun + ElysiaJS - tái dùng nguyên khối route handler Next
+  (slide/transcribe/tts/log-session), không copy logic. *Đo thật: `/api/slide`
+  static_fast ~14 ms LAN (DoD < 30 ms).*
+- [x] **B1.2** (một phần) Serve `public/images` + `/images_bg` kèm `Cache-Control:
+  immutable`. Manifest (P2.4) + script đồng bộ data theo đợt: chưa làm.
+- [x] **B2.1** `lib/ws-protocol.ts` + WS `/ws` (MỘT endpoint, phân vai qua HELLO);
+  heartbeat 10 s, PONG timeout 25 s, reconnect backoff 1→15 s, server idleTimeout 60 s,
+  resume slide hiện hành khi TV (re)connect (đã e2e test). *DoD rút wifi 20 s giữa
+  buổi pitch: kiểm chứng lại tại showroom.*
+- [x] **B2.2** TV nhận slide qua WS (`?ws=1` / `?ws=ws://…` - server orchestrate 2 pha
+  trong `server/slide-pipeline.ts`, đẩy interim/SLIDE_READY/REFINE_READY); `PREFETCH`
+  hint từ catalog tĩnh → TV nạp ảnh trước. Mặc định không có `?ws` vẫn là HTTP như cũ
+  (Vercel không đổi hành vi).
+- [x] **B2.3** `/companion` cho Sale: ĐÓNG BĂNG/XOÁ SLIDE (Fitts - 2 nút to), chuyển ảnh
+  ⏮⏯⏭, chiếu nhanh chủ đề + gõ tự do (OVERRIDE_QUERY bỏ qua cổng intent). *DoD < 150 ms:
+  đo tại showroom.*
 - [ ] **B3.1** `next.config.mjs` → `output: 'export'`; gỡ phụ thuộc API route trong app TV;
   Bun serve bản export. Vercel giữ `/admin` + crawl/reindex.
 - [ ] **B3.2** Kiosk hoá mini-PC + TV: systemd cho server, chromium kiosk autostart,
