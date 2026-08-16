@@ -603,3 +603,163 @@ mới, P4 chốt chất lượng. Mỗi mục ghi rõ file đích và tiêu chí
 | Ảnh slide mới | 0 network + 0 decode tại thời điểm hiển thị (≥80% lượt) | debug HUD counter |
 | Trạng thái nghiệp vụ | 100% chuyển trạng thái đi qua FSM, 0 cờ ref nghiệp vụ trong component | code review + unit test |
 | Chữ khách đọc | ≥ 47 px, contrast ≥ 4.5:1 | audit script sẵn có (skill `audit`) |
+
+---
+
+## PHẦN 5 — KIẾN TRÚC HỆ THỐNG: FRONTEND TĨNH TRÊN TV + BACKEND BUN (WEBSOCKET)
+
+> Định hướng đã chốt: **frontend chạy trên TV là bản tĩnh (HTML/JS thuần hoặc Next.js
+> static)**, **backend chạy Bun (ElysiaJS/Hono) làm WebSocket server** đẩy dữ liệu RAG
+> và ảnh lên TV. Phần này đánh giá, chốt phương án cụ thể và vạch đường di trú từ
+> kiến trúc hiện tại (Next.js API routes trên Vercel).
+>
+> **Phạm vi:** kiến trúc này áp dụng **riêng cho luồng slide TV** (`/slide` + pipeline
+> `/api/slide`, `/api/transcribe`, `/api/tts` phục vụ TV). Phần **chatbot** (`/`,
+> `/voice`, `/embed`, `/api/chat`) đã ổn định — giữ nguyên trên kiến trúc hiện tại
+> (Next.js + Vercel), không nằm trong đợt tái cấu trúc này.
+
+### 5.1. Frontend: Next.js static export — chọn; HTML thuần — chưa cần
+
+Nói thẳng một sự thật kỹ thuật trước: **60 FPS không đến từ việc bỏ framework.** Mọi
+nguồn giật đã chẩn đoán ở §0 (re-render theo RMS, remount cây slide, blur 4K runtime)
+là lỗi tầng ứng dụng — viết lại bằng HTML/JS thuần mà giữ nguyên các pattern đó thì vẫn
+giật; ngược lại Next.js đã sửa P0–P2 thì thừa sức 60 FPS vì **trong lúc animation chạy,
+React không được phép render gì cả** (đó chính là ràng buộc thiết kế ở §3.1–§3.3).
+
+So sánh cho bối cảnh TV showroom:
+
+| Tiêu chí | Next.js `output: 'export'` (static) | HTML/JS thuần (vanilla/Lit) |
+|----------|--------------------------------------|------------------------------|
+| FPS trần | 60 FPS (sau P0–P2) — render path lúc animation là compositor-only, React đứng ngoài | 60 FPS — như nhau |
+| Chi phí chuyển đổi | ~0: trang `/slide` đã là `'use client'`, export ra static asset | Viết lại toàn bộ UI + tự quản DOM |
+| Giữ được FSM/kiến trúc §3 | Nguyên vẹn | FSM giữ được (thuần TS) nhưng mất tầng chiếu state→UI |
+| Rủi ro tái phát "logic chồng chéo" | Thấp — component + FSM ép cấu trúc | **Cao** — thao tác DOM tay là chính con đường đã dẫn đến bệnh cũ |
+| Cold start trên TV | Static assets cache local → tải 1 lần | Như nhau |
+
+**Chốt:** dùng **Next.js static export** cho app TV: `output: 'export'`, toàn bộ trang
+TV là asset tĩnh do chính server Bun serve (§5.3), TV mở kiosk URL LAN. Chỉ xuống
+HTML thuần nếu sau P0–P2 đo trên TV thật vẫn hụt frame (chưa có dấu hiệu nào cho thấy
+sẽ cần — và nếu cần thì bước trung gian đúng là Preact/Solid, không phải vanilla).
+Điều kiện đi kèm static export: mọi API route hiện tại phải rời khỏi Next → đúng việc
+backend Bun đảm nhận.
+
+### 5.2. Backend: Bun + ElysiaJS — chọn; Hono là phương án dự phòng đa-runtime
+
+Điểm quyết định không phải benchmark framework mà là **chỗ chạy**: Vercel serverless
+**không giữ được WebSocket bền** — đã chọn WS push thì bắt buộc có process sống lâu,
+tức một **mini-PC đặt tại showroom** (hoặc VPS). Khi đã chạy Bun trên máy mình thì:
+
+| | ElysiaJS | Hono |
+|---|----------|------|
+| WS trên Bun | Native (`Bun.serve` ws), schema-typed, publish/subscribe theo topic có sẵn | Qua helper `upgradeWebSocket`, mỏng hơn |
+| Type-safety client↔server | Eden treaty — type suy ra tận client TV | RPC client tốt nhưng WS không nằm trong RPC |
+| Chạy được nơi khác (Vercel/CF) | Không phải mục tiêu của Elysia | Đa-runtime thật sự |
+| Phù hợp bài toán này | **Chọn** — server LAN sống lâu, WS là trung tâm | Chọn nếu sau này muốn tách phần HTTP thuần lên cloud |
+
+**Chốt:** `server/` chạy **Bun + ElysiaJS** trên mini-PC showroom. Các module nghiệp vụ
+hiện tại (`lib/rag.ts`, `lib/intent.ts`, `lib/static_slides.ts`, `lib/units.ts`…) là
+TS thuần không dính Next runtime → port gần như nguyên khối. Mini-PC vẫn cần internet
+cho LLM/STT API, nhưng mọi asset ảnh + logic slide nằm LAN → độ trễ nội bộ ~1 ms và
+wifi khách đông không ảnh hưởng đường TV↔server.
+
+### 5.3. Giao thức: WS chở SỰ KIỆN (JSON), ảnh đi đường HTTP tĩnh
+
+Một hiệu chỉnh quan trọng so với mô tả "WebSocket truyền ảnh": **không đẩy bytes ảnh
+qua WS.** Ảnh đi WS binary là mất HTTP cache của trình duyệt, mất Range/priority, tự
+tay viết lại cơ chế cache và làm nghẽn chính kênh điều khiển đúng lúc cần đẩy slide.
+Đúng vai: **WS chở sự kiện JSON (slide data, prefetch hint, điều khiển); ảnh là static
+file do Bun serve, TV prefetch qua HTTP như §3.4** — worker prefetch giữ nguyên, chỉ
+đổi nguồn hint từ "tự đoán sau intent" thành "server chủ động báo".
+
+Đây cũng là chỗ kiến trúc WS **khớp thẳng vào FSM §3.1**: message WS chính là event
+của machine, không cần tầng dịch:
+
+```ts
+// shared/ws-protocol.ts — dùng chung server + TV + companion (Eden type-safe)
+type ServerToTv =
+  | { t: 'SLIDE_READY';  slideId: number; data: SlideData }      // pha 1
+  | { t: 'REFINE_READY'; slideId: number; patch: Partial<SlideData> } // pha 2
+  | { t: 'PREFETCH';     urls: string[] }   // server biết trước ảnh nào sắp cần
+  | { t: 'SALE_CMD';     cmd: 'FREEZE'|'RESUME'|'CLEAR'|'PICK_IMAGE'; arg?: number } // từ companion
+  | { t: 'HEALTH';       rag: 'ok'|'degraded'; stt: 'ok'|'down' };
+
+type TvToServer =
+  | { t: 'SPEECH';   text: string }          // hoặc audio chunk — xem 5.4
+  | { t: 'TV_STATE'; state: string; slideId: number }  // để companion soi
+  | { t: 'PONG' };
+```
+
+Bắt buộc có ngay từ ngày đầu (wifi/mạng showroom không tha ai): heartbeat ping/pong
+10 s, auto-reconnect backoff (1s→2s→4s, tối đa 15 s), **resume theo `slideId`** khi nối
+lại (server giữ slide hiện hành, TV nối lại là vẽ đúng màn đang dở, không nháy về
+attract), và fallback SSE + POST nếu WS bị chặn. Mất WS lâu quá 30 s → FSM vào
+`degraded` (§2.2): giữ slide, aurora hổ phách, Sale vẫn điều khiển tay được vì catalog
+static + ảnh đã cache local.
+
+Bonus lớn nhất của WS server: **Companion app cho Sale (§2.2) thành gần như miễn phí**
+— điện thoại Sale mở một trang nhỏ, gửi đúng bộ `SALE_CMD` vào cùng bus; TV chỉ là một
+subscriber. Không thêm logic mới nào ngoài một topic pub/sub trong Elysia.
+
+### 5.4. Âm thanh qua WS: cơ hội cắt 1–2 giây độ trễ STT
+
+Hiện tại mỗi câu nói là một vòng: thu xong cả câu → dựng Blob → POST `/api/transcribe`
+→ chờ (`useVoiceAgent.ts:364-402`). Có WS bền rồi thì nâng cấp tự nhiên là **stream
+chunk opus 250 ms qua WS ngay khi đang nói**; server bơm thẳng vào STT streaming
+(Deepgram live — đường Deepgram đã có trong `/api/transcribe`), server tự endpointing
+và bắn về `SPEECH{text}` sớm hơn phương án cũ 1–2 s. Kiến trúc worker §3.2 không đổi:
+STT worker trên TV chỉ đổi "đóng Blob + POST" thành "forward chunk vào WS". Đây là
+bước riêng (B4) — làm sau khi WS event bus chạy ổn, không gộp vào đợt đầu.
+
+### 5.5. Topology triển khai & đường di trú
+
+```mermaid
+flowchart LR
+    subgraph Showroom["Showroom (LAN)"]
+        TV["TV 75'' — kiosk browser<br/>Next static export (P0–P3)<br/>FSM + workers"]
+        PHONE["Điện thoại Sale<br/>Companion (SALE_CMD)"]
+        BOX["Mini-PC — Bun + ElysiaJS<br/>• serve static app + /images<br/>• WS /ws/tv, /ws/companion<br/>• pipeline slide: intent→RAG→layout<br/>• STT/TTS proxy"]
+        TV <-->|"WS: events JSON"| BOX
+        TV -->|"HTTP: ảnh tĩnh (cache)"| BOX
+        PHONE <-->|WS| BOX
+    end
+    BOX -->|HTTPS| LLM["LLM / STT / TTS APIs<br/>(Groq · Gemini · Deepgram)"]
+    ADMIN["Vercel (giữ lại)<br/>/admin, crawl, reindex"] -.->|"đồng bộ index/data theo đợt"| BOX
+```
+
+Di trú 3 bước, mỗi bước chạy được độc lập:
+
+1. **B1 — Dựng `server/` (Bun + Elysia) phục vụ đọc:** port `lib/rag`, `lib/intent`,
+   `lib/static_slides` + endpoint `/api/slide` tương thích 1-1; serve `public/images`
+   + bản build static. TV chuyển URL sang LAN. *Chưa có WS — đo baseline độ trễ so
+   với Vercel.* (Trang `/admin` và pipeline crawl/reindex **giữ trên Vercel** — không
+   port vội; server showroom chỉ cần đọc `index.json`/data đồng bộ theo đợt.)
+2. **B2 — WS event bus:** protocol §5.3, heartbeat/reconnect/resume, FSM trên TV nhận
+   `SLIDE_READY`/`REFINE_READY` qua WS thay vì fetch; `PREFETCH` hint nối vào prefetch
+   worker (P2.5). Companion page cho Sale dùng chung bus.
+3. **B3 — Static export + kiosk:** `output: 'export'`, Bun serve toàn bộ; TV autostart
+   kiosk (systemd + chromium `--kiosk --autoplay-policy=no-user-gesture-required`,
+   tắt screensaver); script health-check tự restart server, log ra file + Telegram
+   (kênh Telegram đã có sẵn trong repo).
+4. **B4 (sau khi B2 ổn) — Streaming STT qua WS** như §5.4.
+
+### Checklist bổ sung (Phase B — song song được với P3)
+
+- [ ] **B1.1** Khởi tạo `server/` Bun + ElysiaJS; port `lib/{rag,intent,static_slides,units,speech}`
+  (TS thuần) + route `/api/slide`, `/api/transcribe`, `/api/tts` tương thích hiện tại.
+  *DoD: TV trỏ LAN chạy đủ kịch bản 5 câu hỏi; p50 `/api/slide` (phần non-LLM) < 30 ms.*
+- [ ] **B1.2** Serve `public/images` + manifest (P2.4) từ Bun kèm `Cache-Control: immutable`;
+  đồng bộ data/index từ repo theo đợt (script pull, không sửa tay trên box).
+- [ ] **B2.1** `shared/ws-protocol.ts` + WS `/ws/tv`, `/ws/companion` (Elysia pub/sub);
+  heartbeat 10 s, reconnect backoff, resume theo `slideId`. *DoD: rút wifi 20 s giữa
+  buổi pitch → TV giữ nguyên slide, nối lại không nháy màn.*
+- [ ] **B2.2** FSM TV nhận slide qua WS (bỏ fetch pha 1/pha 2 phía client — server tự
+  orchestrate 2 pha và đẩy 2 event); `PREFETCH` hint → prefetch worker.
+- [ ] **B2.3** Companion page tối giản cho Sale (FREEZE/CLEAR/PICK/override từ khoá) trên
+  cùng bus WS. *DoD: lệnh từ điện thoại phản ánh lên TV < 150 ms.*
+- [ ] **B3.1** `next.config.mjs` → `output: 'export'`; gỡ phụ thuộc API route trong app TV;
+  Bun serve bản export. Vercel giữ `/admin` + crawl/reindex.
+- [ ] **B3.2** Kiosk hoá mini-PC + TV: systemd cho server, chromium kiosk autostart,
+  health-check + auto-restart, log Telegram. *DoD: cúp điện bật lại → toàn hệ tự lên
+  đúng màn attract trong < 60 s, không cần người.*
+- [ ] **B4.1** Streaming STT: TV forward chunk opus qua WS, server nối Deepgram live,
+  endpointing phía server. *DoD: độ trễ nói-xong→slide giảm ≥ 1 s so với B1 baseline.*
