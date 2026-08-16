@@ -19,6 +19,11 @@ import React, { useEffect, useState } from 'react';
 // Thời gian hiển thị mỗi ảnh trước khi chuyển sang ảnh kế (ms)
 const IMAGE_ROTATE_MS = 2500;
 
+// Biến thể nền đã blur+tối sẵn của một ảnh (scripts/gen-blur-bg.mjs sinh lúc
+// build): /images/a/b.jpg -> /images_bg/a/b.jpg.webp (giữ nguyên path + đuôi
+// gốc để không đụng độ giữa x.jpg và x.png cùng tên).
+const bgUrlFor = (src: string) => src.replace(/^\/images\//, '/images_bg/') + '.webp';
+
 export interface SlideBodyData {
   layout_type?: string;
   title: string;
@@ -89,6 +94,8 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
   const imgsKey = imgs.join('|');
   // paused = khách đã bấm thumbnail hoặc phím 5 -> giữ nguyên ảnh đang xem.
   const [paused, setPaused] = useState(false);
+  // Ảnh nền tĩnh (/images_bg) 404 -> fallback CSS filter trên ảnh gốc.
+  const [brokenBg, setBrokenBg] = useState<Record<string, boolean>>({});
   // MỘT interval duy nhất vừa xoay vừa tôn trọng paused. Tách xoay ra effect
   // riêng sẽ tạo 2 interval chồng nhau: ảnh chạy gần gấp đôi tốc độ và bấm
   // thumbnail/phím 5 không dừng được nữa.
@@ -122,7 +129,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
       <div className="shrink-0 flex justify-center gap-[1cqw] py-[0.8cqw] bg-black/30">
         {imgs.map((src, i) => (
           <button key={src} onClick={() => { setPaused(true); setImgIdx(i); }}
-            className={`overflow-hidden rounded-[0.5cqw] border-2 transition-all ${
+            className={`overflow-hidden rounded-[0.5cqw] border-2 transition-opacity ${
               i === imgIdx ? 'border-lime-300 opacity-100' : 'border-transparent opacity-50 hover:opacity-80'
             }`}
             style={{ width: '9cqw', height: '6cqw', minWidth: 48, minHeight: 32 }}>
@@ -173,11 +180,18 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     ) : null
   );
 
-  // Nền mờ phía sau: chính ảnh đang hiện blur + tối phủ toàn khung.
+  // Nền mờ phía sau: BIẾN THỂ TĨNH đã blur+tối sẵn (scripts/gen-blur-bg.mjs sinh
+  // vào /images_bg lúc build). filter: blur trên ảnh 4K là paint rất đắt với SoC
+  // TV - chạy mỗi frame khi có animation đè lên. Ảnh 480px nướng sẵn hiệu ứng thì
+  // chi phí gần bằng 0. Chưa có biến thể (dev chưa chạy script) -> fallback về
+  // CSS filter như cũ, không vỡ giao diện.
   const BlurBackdrop = ({ src }: { src: string }) => (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
-      {/* PDF sếp duyệt: nền là ảnh phóng to LÀM TỐI (gần như không blur) */}
-      <img src={src} alt="" className="w-full h-full object-cover scale-110 blur-[3px] brightness-[0.26] saturate-[0.8] transition-opacity duration-1000" />
+      {brokenBg[src] ? (
+        <img src={src} alt="" className="w-full h-full object-cover scale-110 blur-[3px] brightness-[0.26] saturate-[0.8]" />
+      ) : (
+        <img src={bgUrlFor(src)} alt="" onError={() => setBrokenBg(prev => ({ ...prev, [src]: true }))} className="w-full h-full object-cover" />
+      )}
       <div className="absolute inset-0 bg-black/35" />
     </div>
   );
@@ -266,7 +280,7 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
               {imgs.map((src, i) => (
                 <img
                   key={src} src={src} alt=""
-                  className={`absolute inset-0 w-full h-full ${framePortrait ? 'object-cover' : 'object-contain'} transition-all duration-[800ms] ease-out ${
+                  className={`absolute inset-0 w-full h-full ${framePortrait ? 'object-cover' : 'object-contain'} transition-[opacity,transform] duration-[800ms] ease-out ${
                     i === imgIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02] pointer-events-none'
                   }`}
                   onLoad={e => {
@@ -308,7 +322,11 @@ export function SlideBody({ data, orientOf, onImageClick, onImageError, replayKe
     <div style={{ containerType: 'inline-size' }} className="w-full h-full">
       <div key={replayKey} className="relative w-full h-full overflow-hidden bg-[#0C0F0D]">
         <div aria-hidden className="absolute inset-0 overflow-hidden">
-          <img src={FALLBACK_BG} alt="" className="w-full h-full object-cover brightness-[0.22] saturate-[0.8]" />
+          {brokenBg[FALLBACK_BG] ? (
+            <img src={FALLBACK_BG} alt="" className="w-full h-full object-cover brightness-[0.22] saturate-[0.8]" />
+          ) : (
+            <img src={bgUrlFor(FALLBACK_BG)} alt="" onError={() => setBrokenBg(prev => ({ ...prev, [FALLBACK_BG]: true }))} className="w-full h-full object-cover" />
+          )}
           <div className="absolute inset-0 bg-black/30" />
         </div>
 

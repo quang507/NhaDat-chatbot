@@ -2,6 +2,10 @@
 /node_modules
 /.pnp
 .pnp.js
+/server/node_modules
+
+# ảnh nền blur sinh tự động lúc build (scripts/gen-blur-bg.mjs) - không commit
+/public/images_bg/
 
 # next
 /.next/
