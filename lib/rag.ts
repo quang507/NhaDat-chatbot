@@ -173,8 +173,24 @@ async function embedBatch(
   return out;
 }
 
+// Cache vector câu hỏi trong RAM lambda: khách trong showroom/web hỏi lặp lại
+// cùng câu rất nhiều -> tiết kiệm 1 vòng gọi Gemini Embedding (~200-500ms) mỗi
+// lần lặp. Giới hạn 300 entry, xoá kiểu FIFO cho khỏi phình bộ nhớ.
+const EMBED_CACHE = new Map<string, number[]>();
+const EMBED_CACHE_MAX = 300;
+
 export async function embedQuery(text: string, forceDim?: number): Promise<number[]> {
+  const key = `${forceDim || 0}:${text.trim().toLowerCase()}`;
+  const hit = EMBED_CACHE.get(key);
+  if (hit) return hit;
   const [v] = await embedBatch([text], 'RETRIEVAL_QUERY', forceDim);
+  if (v?.length) {
+    if (EMBED_CACHE.size >= EMBED_CACHE_MAX) {
+      const first = EMBED_CACHE.keys().next().value;
+      if (first !== undefined) EMBED_CACHE.delete(first);
+    }
+    EMBED_CACHE.set(key, v);
+  }
   return v || [];
 }
 

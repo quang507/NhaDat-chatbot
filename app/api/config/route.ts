@@ -8,7 +8,11 @@ export const revalidate = 60;
 export async function GET() {
   try {
     const cfg = await getConfig();
-    return NextResponse.json(cfg);
+    // Cache tại CDN edge 5 phút (SWR 1h): widget nào load cũng gọi endpoint này,
+    // để edge trả thay vì đánh thức lambda -> ~0ms cho hầu hết lượt mở widget.
+    return NextResponse.json(cfg, {
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600' },
+    });
   } catch {
     return NextResponse.json({ suggestions: [], phone: '', zalo: '' });
   }
