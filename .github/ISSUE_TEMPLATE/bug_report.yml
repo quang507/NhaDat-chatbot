@@ -1,0 +1,55 @@
+name: 🐞 Báo lỗi (Bug report)
+description: Ghi nhận lỗi của chatbot / slide / voice / companion
+title: "[Bug] "
+labels: ["bug", "triage"]
+body:
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Xảy ra ở đâu?
+      options:
+        - Chat web (/)
+        - Widget nhúng WordPress (/embed)
+        - Live Slide TV (/slide)
+        - Giọng nói (/voice)
+        - Companion Sale (/companion)
+        - Trang admin (/admin)
+        - API / backend
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Mức độ
+      options:
+        - "P0 - Sập / sai dữ liệu giá-pháp lý / lộ thông tin"
+        - "P1 - Tính năng chính không dùng được"
+        - "P2 - Sai/khó chịu nhưng có đường vòng"
+        - "P3 - Nhỏ (chính tả, lệch UI...)"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Các bước tái hiện
+      placeholder: |
+        1. Mở trang...
+        2. Gõ/nói câu "..."
+        3. Thấy...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Kỳ vọng đúng là gì?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Bằng chứng (ảnh chụp, câu bot trả lời, log HUD ?debug=1)
+  - type: input
+    id: env
+    attributes:
+      label: Trình duyệt / thiết bị
+      placeholder: "Chrome 130 / iPhone 15 / TV 75 inch showroom"

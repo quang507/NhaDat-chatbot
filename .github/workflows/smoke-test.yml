@@ -2,6 +2,8 @@ name: Smoke Test Production
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'   # 8h sáng VN hằng ngày
 
 jobs:
   smoke:
@@ -26,7 +28,8 @@ jobs:
             body=$(jq -n --arg m "$q" '{message: $m, history: []}')
             start=$(date +%s)
             http=$(curl -s -o /tmp/resp.txt -w '%{http_code}' --max-time 90 \
-              -X POST "$BASE/api/chat" -H 'Content-Type: application/json' -d "$body")
+              -X POST "$BASE/api/chat" -H 'Content-Type: application/json' \
+              -H 'x-chat-handshake: npd-mktg-handshake' -d "$body")
             dur=$(( $(date +%s) - start ))
             head -c 400 /tmp/resp.txt; echo ""
             if [ "$http" != "200" ] || grep -q '"friendly"\|"error"' /tmp/resp.txt || [ ! -s /tmp/resp.txt ]; then

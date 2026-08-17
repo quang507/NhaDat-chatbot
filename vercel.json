@@ -1,5 +1,8 @@
 {
   "framework": "nextjs",
   "buildCommand": "node scripts/gen-blur-bg.mjs && next build",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "regions": [
+    "sin1"
+  ]
 }

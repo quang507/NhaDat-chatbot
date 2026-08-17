@@ -1,0 +1,37 @@
+{
+  "_readme": "Dữ liệu kiểm thử dùng chung cho harness + kiểm thử tay. Nhóm theo mục đích. Kịch bản đầy đủ 200 câu: docs/200_KICH_BAN_CAU_HOI.md",
+  "stt_normalize": [
+    { "input": "cho xem cân số 5 đi", "expected": "cho xem căn số 5 đi" },
+    { "input": "lộ số 3 giá bao nhiêu", "expected": "lô số 3 giá bao nhiêu" },
+    { "input": "cần số bảy", "expected": "căn số bảy" },
+    { "input": "phố đêm ở đâu", "expected": "phú định ở đâu" },
+    { "input": "cô gái của cô t mô", "expected": "cosmo gen 2" }
+  ],
+  "intent_gate": [
+    { "input": "giá bán căn này bao nhiêu vậy em", "shouldGenerate": true, "topic": "price" },
+    { "input": "anh đánh giá cao chỗ này", "shouldGenerate": false, "note": "biên từ: 'giá' trong 'đánh giá' không được khớp" },
+    { "input": "cho anh hỏi vị trí dự án phú định ở đâu", "shouldGenerate": true, "topic": "location" },
+    { "input": "dạ vâng em cảm ơn anh nhiều", "shouldGenerate": false, "note": "câu xã giao" },
+    { "input": "so với mizuki thì sao", "shouldGenerate": false, "note": "đối thủ cạnh tranh -> chặn" }
+  ],
+  "chat_quality": [
+    { "q": "Dự án Ny'ah Phú Định ở đâu?", "must_contain_any": ["Trương Đình Hội", "Quận 8", "Phú Định"], "must_not_contain": ["tôi không biết"] },
+    { "q": "diện tích và mặt tiền căn số 9", "must_contain_any": ["m²", "m2"], "note": "phải lấy từ bảng tra cứu, không bịa" },
+    { "q": "còn căn nào chưa bán không, giá bao nhiêu?", "must_contain_any": ["Lô", "#", "tỷ"], "note": "danh sách căn còn trống" },
+    { "q": "pháp lý dự án đầy đủ chưa?", "must_contain_any": ["sổ hồng", "pháp lý", "giấy phép"] },
+    { "q": "từ sân bay Tân Sơn Nhất tới dự án bao xa?", "must_contain_any": ["km", "phút"], "note": "số liệu từ Google Maps, không được bịa" }
+  ],
+  "security": [
+    { "case": "chat thiếu x-chat-handshake", "expect": "HTTP 403" },
+    { "case": "log-session thiếu token trong body", "expect": "HTTP 403" },
+    { "case": "log-session gọi > 6 lần/phút cùng IP", "expect": "HTTP 429" },
+    { "case": "chat markdown ảnh chứa payload ![x](u\" onerror=\"alert(1))", "expect": "hiển thị dạng text, KHÔNG chạy script (đã escape dấu nháy)" },
+    { "case": "khách gõ tin nhắn chứa <b> và số điện thoại", "expect": "Telegram vẫn nhận được tin báo lead (đã escape HTML)" }
+  ],
+  "slide_two_phase": [
+    { "q": "cho khách xem vị trí dự án", "expect_source": "static_fast", "expect_ms_under": 3000 },
+    { "q": "mở slide mẫu nhà cosmo gen 2", "expect_source": "static_fast" },
+    { "q": "tầng 2 mẫu cosmo có gì", "expect": "slide công năng tầng, KHÔNG bịa số liệu" },
+    { "q": "dạ vâng em cảm ơn", "expect": "skip" }
+  ]
+}
