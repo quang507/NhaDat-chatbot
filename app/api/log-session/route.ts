@@ -5,13 +5,21 @@
 // (navigator.sendBeacon - vì beacon không đặt được header tùy chỉnh nên token
 // xác thực nằm trong BODY, không phải header như /api/chat).
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimited } from '@/lib/ratelimit';
 import { sendSessionDigest, type SessionPair } from '@/lib/logs';
 
 export const runtime = 'nodejs';
 
-const TOKEN = 'npd-mktg-handshake'; // khớp x-chat-handshake của /api/chat
+// khớp x-chat-handshake của /api/chat (token nằm trong bundle client nên chỉ
+// chặn được bot ngu ngơ - lớp chặn thật là rate limit bên dưới)
+const TOKEN = process.env.CHAT_HANDSHAKE_TOKEN || 'npd-mktg-handshake';
 
 export async function POST(req: NextRequest) {
+  // Mỗi request hợp lệ = 1 tin Telegram + 1 commit GitHub -> phải rate-limit
+  // chặt (1 khách thật chỉ chốt sổ vài lần/phiên).
+  if (rateLimited(req, 'log-session', 6)) {
+    return NextResponse.json({ error: 'Quá nhiều yêu cầu' }, { status: 429 });
+  }
   try {
     const body = await req.json();
     if (body?.token !== TOKEN) {

@@ -193,10 +193,12 @@ const vnWord = (core: string) =>
 
 const VN_SPEECH_FIXES: [RegExp, string][] = [
   // Khắc phục lỗi nghe nhầm từ chỉ căn/lô (STT hay nghe nhầm "căn" -> "cân", "cần", "con", v.v.)
-  [vnWord('c(?:ân|cần|cống|con|cám|cầu|cảnh|cạn)\\s*(?:số\\s*)?(\\d+)'), 'căn số $1'],
-  [vnWord('l(?:ô|lộ|lồ|lông)\\s*(?:số\\s*)?(\\d+)'), 'lô số $1'],
-  [vnWord('c(?:ân|cần|cống|con|cám|cầu|cảnh|cạn)\\s*(?:số\\s*)?((?:một|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười))'), 'căn số $1'],
-  [vnWord('l(?:ô|lộ|lồ|lông)\\s*(?:số\\s*)?((?:một|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười))'), 'lô số $1'],
+  // (chữ cái đầu đã tách ra ngoài nhóm - KHÔNG lặp lại trong alternative,
+  //  vd "cần" phải viết "ần" vì đã có "c" đứng trước)
+  [vnWord('c(?:ân|ần|ống|on|ám|ầu|ảnh|ạn)\\s*(?:số\\s*)?(\\d+)'), 'căn số $1'],
+  [vnWord('l(?:ô|ộ|ồ|ông)\\s*(?:số\\s*)?(\\d+)'), 'lô số $1'],
+  [vnWord('c(?:ân|ần|ống|on|ám|ầu|ảnh|ạn)\\s*(?:số\\s*)?((?:một|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười))'), 'căn số $1'],
+  [vnWord('l(?:ô|ộ|ồ|ông)\\s*(?:số\\s*)?((?:một|hai|ba|bốn|tư|năm|lăm|sáu|bảy|tám|chín|mười))'), 'lô số $1'],
   // Tên dự án Ny'ah Phú Định
   [vnWord('ph[ốôuú]\\s*(?:đêm|định|đỉnh|đính|dinh|đin)'), 'phú định'],
   [vnWord("ny[\\s']*ah|ni\\s*a|nia|niah"), "ny'ah"],
@@ -318,7 +320,13 @@ function applyFuzzyNames(text: string): string {
 export function normalizeVietnameseSpeech(text: string): string {
   if (!text) return '';
   let clean = ' ' + text.toLowerCase() + ' ';
-  for (const [re, to] of VN_SPEECH_FIXES) clean = clean.replace(re, (_m, b) => b + to);
+  // LƯU Ý: replacement là HÀM nên `$1` trong chuỗi thay thế KHÔNG được tự nội
+  // suy - phải tự thay bằng nhóm bắt thứ 2 (nhóm 1 của vnWord là ký tự biên).
+  // Với regex chỉ có 1 nhóm, tham số sau b là offset (number) -> bỏ qua.
+  for (const [re, to] of VN_SPEECH_FIXES) {
+    clean = clean.replace(re, (_m, b, g2) =>
+      b + (typeof g2 === 'string' ? to.replace('$1', g2) : to));
+  }
   clean = applyFuzzyNames(clean);   // lop 2: fuzzy bat bien the moi chua co trong bang
   return clean.trim();
 }

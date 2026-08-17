@@ -1,7 +1,7 @@
 // Tiện ích cho trang admin: kiểm tra mật khẩu + đọc/ghi file trên GitHub (data.md, persona.md)
 
-const OWNER = process.env.GITHUB_OWNER || 'quang507';
-const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
+import { GH_OWNER as OWNER, GH_REPO as REPO, ghHeaders } from '@/lib/github';
+
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
 
 // Văn phong mặc định của bot (kiểu NotebookLM: thân thiện, dẫn nguồn, trung thực)
@@ -24,19 +24,28 @@ CÁCH TRÌNH BÀY:
 - Độ dài vừa phải: đủ ý nhưng không lan man. Khách cần thêm thì mới mở rộng.
 - Khi hợp lý, kết bằng một gợi ý nhẹ: hỏi thêm nhu cầu hoặc mời để lại liên hệ để được tư vấn chuyên sâu hơn.`;
 
+// Persona dùng chung cho /api/chat và /api/slide - cache 5 phút để bản sửa
+// persona.md qua trang /admin có hiệu lực ĐỀU ở cả hai route (trước đây slide
+// cache vĩnh viễn còn chat cache 5 phút -> hai route trả lời lệch văn phong).
+let personaCache: { text: string; at: number } | null = null;
+
+export async function getPersona(): Promise<string> {
+  if (personaCache && Date.now() - personaCache.at < 5 * 60 * 1000) return personaCache.text;
+  let persona = '';
+  try {
+    const { readFile } = await import('fs/promises');
+    const path = await import('path');
+    persona = (await readFile(path.join(process.cwd(), 'persona.md'), 'utf-8')).trim();
+  } catch {}
+  const text = persona || DEFAULT_PERSONA;
+  personaCache = { text, at: Date.now() };
+  return text;
+}
+
 export function checkAuth(req: Request): boolean {
   const pass = req.headers.get('x-admin-pass') || '';
   const expected = process.env.ADMIN_PASSWORD || '';
   return !!expected && pass === expected;
-}
-
-function ghHeaders() {
-  const token = process.env.GITHUB_TOKEN || '';
-  return {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github+json',
-    'Content-Type': 'application/json',
-  };
 }
 
 // Đọc 1 file trên GitHub -> { content, sha }. File không tồn tại -> content rỗng, sha null.

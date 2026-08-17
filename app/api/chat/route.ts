@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { rateLimited } from '@/lib/ratelimit';
 import { readFile } from 'fs/promises';
 import path from 'path';
-import { DEFAULT_PERSONA } from '@/lib/admin';
+import { getPersona } from '@/lib/admin';
 import { writeLog, extractPhone } from '@/lib/logs';
 import { loadIndex, retrieve } from '@/lib/rag';
 import { detectRouteIntent, getDrivingRoute, routeSummaryToPrompt } from '@/lib/maps';
-import { detectUnit, unitContext, getGeneralUnsoldContext } from '@/lib/units';
+import { detectUnit, unitContext, getGeneralUnsoldContext, isGeneralUnsoldQuery } from '@/lib/units';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -26,38 +26,12 @@ QUY TẮC KỸ THUẬT BỔ SUNG:
 - ĐƯỜNG ĐI: Nếu có "DỮ LIỆU TUYẾN ĐƯỜNG THỰC TẾ" → dùng ĐÚNG số km/phút đó. Nếu không có → KHÔNG bịa con số, chỉ mô tả hướng đi chung và mời mở Google Maps.
 - LINK/URL: KHÔNG đưa link Google Photos/Drive vào câu trả lời. Thay bằng: "Anh/chị liên hệ tư vấn viên để nhận chi tiết ạ." Ngoại lệ: link Maps trong DỮ LIỆU TUYẾN ĐƯỜNG được phép.`;
 
-let personaCache: { text: string; at: number } | null = null;
-
-// ---------- Rate Limiter (in-memory, per IP, 8 req/phút) ----------
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 20; // max 20 request/phút/IP (đủ cho power user, chặn được spam bot)
-const RATE_WINDOW = 60 * 1000; // 1 phút (ms)
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
-    return true; // OK
-  }
-  entry.count++;
-  if (entry.count > RATE_LIMIT) return false; // vượt giới hạn
-  return true;
-}
-
 async function readRepoFile(name: string): Promise<string> {
   try {
     return await readFile(path.join(process.cwd(), name), 'utf-8');
   } catch {
     return '';
   }
-}
-
-async function getPersona(): Promise<string> {
-  if (personaCache && Date.now() - personaCache.at < 5 * 60 * 1000) return personaCache.text;
-  const persona = (await readRepoFile('persona.md')).trim() || DEFAULT_PERSONA;
-  personaCache = { text: persona, at: Date.now() };
-  return persona;
 }
 
 // Build system prompt nhỏ gọn: persona + chỉ các đoạn liên quan tới câu hỏi
@@ -103,14 +77,8 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
       const { facts, modelKeywords } = unitContext(unit);
       unitContextStr = `\n\n=== ${facts} ===`;
       ragQuery = `${message} ${modelKeywords}`; // kéo thêm datasheet/tính năng đúng mẫu nhà
-    } else {
-      const qLower = message.toLowerCase();
-      const isGeneralUnsold = /(chưa\s*bán|còn\s*trống|rổ\s*hàng|bảng\s*giá|giá\s*bán|giá\s*cả|còn\s*căn|còn\s*lô|còn\s*hàng)/i.test(qLower) || 
-                              (/(căn|lô)\s*nào/i.test(qLower) && /giá/i.test(qLower)) ||
-                              /giá\s*(bao\s*nhiêu|thế\s*nào|mấy)/i.test(qLower);
-      if (isGeneralUnsold) {
-        unitContextStr = `\n\n${getGeneralUnsoldContext()}`;
-      }
+    } else if (isGeneralUnsoldQuery(message)) {
+      unitContextStr = `\n\n${getGeneralUnsoldContext()}`;
     }
   } catch (e) {
     console.warn('Unit lookup failed:', e);
@@ -147,7 +115,15 @@ async function buildPrompt(message: string, profile?: string): Promise<{ text: s
 }
 
 export async function POST(req: NextRequest) {
-  if (rateLimited(req, 'chat', 60)) return NextResponse.json({ error: 'Quá nhiều yêu cầu, thử lại sau ít phút.' }, { status: 429 });
+  // MỘT bộ rate-limit duy nhất (lib/ratelimit, 20 req/phút/IP - đủ cho power
+  // user, chặn spam bot). Trước đây route này có thêm một bộ đếm cục bộ thứ
+  // hai chồng lên với ngưỡng khác -> khó hiểu, khó chỉnh.
+  if (rateLimited(req, 'chat', 20)) {
+    return NextResponse.json(
+      { error: 'Too Many Requests', friendly: '⚠️ Bạn gửi quá nhiều tin nhắn, vui lòng đợi 1 phút rồi thử lại nhé 🙏' },
+      { status: 429 }
+    );
+  }
   try {
     // 1) Bảo mật CORS & Handshake Token để chống spam API từ cURL/scripts bên ngoài
     const origin = req.headers.get('origin') || req.headers.get('referer') || '';
@@ -161,26 +137,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Forbidden: Invalid security token.' }, { status: 403 });
     }
 
-    // 1b) Rate Limiting: 8 req/phút/IP (chỉ áp dụng trên production)
-    if (isProd) {
-      const clientIp =
-        req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-        req.headers.get('x-real-ip') ||
-        'unknown';
-      if (!checkRateLimit(clientIp)) {
-        return NextResponse.json(
-          { error: 'Too Many Requests', friendly: '⚠️ Bạn gửi quá nhiều tin nhắn, vui lòng đợi 1 phút rồi thử lại nhé 🙏' },
-          { status: 429 }
-        );
-      }
-    }
-
-    // Nếu chạy trên production, kiểm tra xem request có xuất phát từ tên miền được phép không
+    // Nếu chạy trên production, kiểm tra xem request có xuất phát từ tên miền được phép không.
+    // So khớp CHÍNH XÁC hoặc subdomain (endsWith '.domain') - KHÔNG dùng includes
+    // hai chiều: "nhadat.company.attacker.com" chứa domain cho phép vẫn lọt.
     if (isProd && allowedOrigin && origin) {
       try {
         const allowedDomains = allowedOrigin.split(',').map(d => d.trim().toLowerCase());
         const requestDomain = new URL(origin).hostname.toLowerCase();
-        const isAllowed = allowedDomains.some(d => requestDomain.includes(d) || d.includes(requestDomain));
+        const isAllowed = allowedDomains.some(d => requestDomain === d || requestDomain.endsWith('.' + d));
         if (!isAllowed) {
           return NextResponse.json({ error: 'Forbidden: Requester not allowed.' }, { status: 403 });
         }

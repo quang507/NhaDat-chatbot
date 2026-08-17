@@ -61,6 +61,13 @@ export interface MachineCtx {
   /** Ghi chú lỗi gần nhất - chỉ hiện cho Sale/debug, không chen vào màn khách. */
   errorNote: string;
   micFatal: string;
+  /**
+   * Trạng thái cần QUAY VỀ sau khi truy vấn xong. Bình thường là 'listening',
+   * nhưng SALE_OVERRIDE_QUERY từ idle/frozen/mic_error phải quay về đúng trạng
+   * thái đó - không được "trôi" sang listening (mic thực tế đang tắt, Companion
+   * sẽ hiện "Đang nghe" sai, và trạng thái frozen bị mất).
+   */
+  returnState: 'listening' | 'idle' | 'frozen' | 'mic_error';
 }
 
 export type MachineEvent =
@@ -107,6 +114,7 @@ export function initialCtx(): MachineCtx {
     heardText: '',
     errorNote: '',
     micFatal: '',
+    returnState: 'listening',
   };
 }
 
@@ -136,6 +144,11 @@ function handleSpeech(ctx: MachineCtx, text: string, now: number, force: boolean
   if (ctx.state === 'idle' || ctx.state === 'frozen' || ctx.state === 'mic_error') {
     // Mic tắt/đóng băng: câu nói (nếu có lọt vào) không sinh truy vấn.
     if (!force) return keep(ctx, effects);
+    // Sale bẻ lái từ trạng thái không-nghe: sau khi slide về phải QUAY VỀ đúng
+    // trạng thái này (không tự bật nghe).
+    ctx = { ...ctx, returnState: ctx.state };
+  } else {
+    ctx = { ...ctx, returnState: 'listening' };
   }
 
   if (!force) {
@@ -245,33 +258,25 @@ export function transition(ctx: MachineCtx, ev: MachineEvent): TransitionResult 
       }
       // Đang frozen (Sale đóng băng giữa chừng) thì hiện slide nhưng KHÔNG bật nghe lại.
       if (ctx.state === 'querying') {
-        next = { ...next, state: 'listening' };
-        effects.push({ type: 'START_LISTENING' });
+        next = { ...next, state: ctx.returnState };
+        if (ctx.returnState === 'listening') effects.push({ type: 'START_LISTENING' });
       }
       return keep(next, effects);
     }
 
     case 'SLIDE_SKIP': {
       if (ev.seq !== ctx.querySeq || ctx.state !== 'querying') return keep(ctx);
-      return keep(
-        { ...ctx, state: 'listening', topicLabel: '', heardText: '' },
-        [
-          { type: 'DEBUG', message: `⚪ Server SKIP - ${ev.reason || 'không đủ dữ liệu'}` },
-          { type: 'START_LISTENING' },
-        ],
-      );
+      const fx: MachineEffect[] = [{ type: 'DEBUG', message: `⚪ Server SKIP - ${ev.reason || 'không đủ dữ liệu'}` }];
+      if (ctx.returnState === 'listening') fx.push({ type: 'START_LISTENING' });
+      return keep({ ...ctx, state: ctx.returnState, topicLabel: '', heardText: '' }, fx);
     }
 
     case 'QUERY_FAILED': {
       if (ev.seq !== ctx.querySeq || ctx.state !== 'querying') return keep(ctx);
       // Xoá dấu "câu vừa xử lý" để khách/Sale NHẮC LẠI nguyên văn là chạy ngay.
-      return keep(
-        { ...ctx, state: 'listening', lastQuery: { text: '', at: 0 }, errorNote: ev.error },
-        [
-          { type: 'DEBUG', message: `🔴 Lỗi tạo slide: ${ev.error.slice(0, 120)}` },
-          { type: 'START_LISTENING' },
-        ],
-      );
+      const fx: MachineEffect[] = [{ type: 'DEBUG', message: `🔴 Lỗi tạo slide: ${ev.error.slice(0, 120)}` }];
+      if (ctx.returnState === 'listening') fx.push({ type: 'START_LISTENING' });
+      return keep({ ...ctx, state: ctx.returnState, lastQuery: { text: '', at: 0 }, errorNote: ev.error }, fx);
     }
 
     case 'REFINE_READY': {
@@ -291,8 +296,15 @@ export function transition(ctx: MachineCtx, ev: MachineEvent): TransitionResult 
     }
 
     case 'SALE_RESUME': {
-      if (ctx.state !== 'frozen') return keep(ctx);
-      return keep({ ...ctx, state: 'listening' }, [{ type: 'START_LISTENING' }, { type: 'DEBUG', message: '▶️ Sale mở lại' }]);
+      // Cho phép RESUME cả khi đang querying-từ-frozen (returnState='frozen'):
+      // Sale bẻ lái xong bấm mở lại thì slide về sẽ quay về listening.
+      if (ctx.state === 'frozen') {
+        return keep({ ...ctx, state: 'listening', returnState: 'listening' }, [{ type: 'START_LISTENING' }, { type: 'DEBUG', message: '▶️ Sale mở lại' }]);
+      }
+      if (ctx.state === 'querying' && ctx.returnState === 'frozen') {
+        return keep({ ...ctx, returnState: 'listening' }, [{ type: 'DEBUG', message: '▶️ Sale mở lại (đang truy vấn)' }]);
+      }
+      return keep(ctx);
     }
 
     case 'SALE_CLEAR': {

@@ -1,19 +1,10 @@
 // Ghi log lead + lịch sử chat vào nhánh riêng "chatbot-logs" trên GitHub
 // (Vercel chỉ deploy từ main nên ghi vào nhánh này KHÔNG trigger deploy lại)
 
-const OWNER = process.env.GITHUB_OWNER || 'quang507';
-const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
+import { GH_API as API, ghHeaders } from '@/lib/github';
+
 const SRC_BRANCH = process.env.GITHUB_BRANCH || 'main';
 const LOG_BRANCH = 'chatbot-logs';
-const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
-
-function ghHeaders() {
-  return {
-    Authorization: `Bearer ${process.env.GITHUB_TOKEN || ''}`,
-    Accept: 'application/vnd.github+json',
-    'Content-Type': 'application/json',
-  };
-}
 
 let branchReady = false;
 let branchChecking: Promise<boolean> | null = null;
@@ -73,12 +64,15 @@ export async function writeLog(dir: 'chats' | 'leads', obj: Record<string, unkno
 
   if (dir === 'leads' && typeof obj.phone === 'string') {
     // Lead có SĐT → gửi thông báo nổi bật
-    const phone = obj.phone;
-    const msg = obj.message || '';
+    // phone/msg là INPUT NGƯỜI DÙNG - phải escape trước khi nhét vào parse_mode
+    // HTML, nếu không khách gõ ký tự "<" là Telegram từ chối parse và tin báo
+    // lead nóng bị mất im lặng.
+    const phone = esc(obj.phone);
+    const msg = esc(String(obj.message || ''));
     const telegramText = `<b>🔥 CÓ LEAD MỚI TỪ CHATBOT!</b>\n\n` +
       `📞 <b>Số điện thoại:</b> <code>${phone}</code>\n` +
       `💬 <b>Tin nhắn khách gửi:</b>\n<i>"${msg}"</i>\n\n` +
-      `📅 <b>Thời gian:</b> ${time}`;
+      `📅 <b>Thời gian:</b> ${esc(String(time))}`;
     sendTelegramMessage(telegramText).catch(console.error);
   }
   // Tin chat thường KHÔNG bắn Telegram từng tin nữa - dội thông báo mà khó đọc
