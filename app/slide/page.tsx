@@ -18,6 +18,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useVoiceAgent } from '@/hooks/useVoiceAgent';
 import { usePresentationMachine } from '@/hooks/usePresentationMachine';
+import { useSlideImageProbe } from '@/hooks/useSlideImageProbe';
 import { MachineEffect, SESSION_IDLE_MS } from '@/lib/presentation-machine';
 import { pickTransport, SlideTransport, TransportEvent } from '@/lib/slide-transport';
 import { RESUME_SEQ, SaleCmd } from '@/lib/ws-protocol';
@@ -89,11 +90,11 @@ const WARMUP_IMAGES = [
 
 export default function SlideBotPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
-  const [imgOrient, setImgOrient] = useState<Record<string, 'landscape' | 'portrait'>>({});
+  // Đo hướng + lọc ảnh hỏng (hook dùng chung với /thu-slide)
 
   // ── DEBUG HUD (?debug=1) ─────────────────────────────────────────────────
   const [debugOn, setDebugOn] = useState(false);
+  const [wsStatus, setWsStatus] = useState<string>('connected');
   const [debugLog, setDebugLog] = useState<string[]>([]);
   const dbg = useCallback((msg: string) => {
     console.log('[SlideDebug]', msg);
@@ -159,6 +160,7 @@ export default function SlideBotPage() {
   }, [dbg, setState, setTranscript, startListening, stopAllVoiceActivities, isListeningLoopActive]);
 
   const { ctx, send } = usePresentationMachine(runEffect);
+  const { imgOrient, brokenImages, setBrokenImages, collectImages } = useSlideImageProbe(ctx.slide, 6);
   const sendRef = useRef(send);
   useEffect(() => { sendRef.current = send; }, [send]);
   useEffect(() => () => { if (idleTimerRef.current) clearTimeout(idleTimerRef.current); }, []);
@@ -180,7 +182,12 @@ export default function SlideBotPage() {
         dbg(`✏️ Sale bẻ lái truy vấn: "${ev.text}"`);
         sendRef.current({ type: 'SALE_OVERRIDE_QUERY', text: ev.text, now: Date.now() });
         break;
-      case 'WS_STATUS': dbg(`🔌 WS: ${ev.status}`); break;
+      case 'WS_STATUS':
+        dbg(`🔌 WS: ${ev.status}`);
+        // Hiện chỉ báo cho người vận hành khi TV mất server (trước đây chỉ vào
+        // debug HUD - showroom đứt kết nối mà không ai biết vì sao slide câm).
+        setWsStatus(ev.status);
+        break;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dbg]);
@@ -229,6 +236,13 @@ export default function SlideBotPage() {
   const slideRef = useRef<SlideData | null>(null);
   const brokenImagesRef = useRef<Record<string, boolean>>({});
   useEffect(() => { slideRef.current = ctx.slide; }, [ctx.slide]);
+  // Esc đóng overlay ảnh phóng to (a11y cơ bản cho màn có bàn phím/remote).
+  useEffect(() => {
+    if (!selectedImage) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelectedImage(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedImage]);
   useEffect(() => { brokenImagesRef.current = brokenImages; }, [brokenImages]);
 
   const handleVoiceCommands = (text: string): boolean => {
@@ -249,26 +263,6 @@ export default function SlideBotPage() {
     return false;
   };
 
-  // ── ẢNH: đo hướng thật + lọc ảnh hỏng (UI concern, giữ ở page) ───────────
-  const collectImages = (s: SlideData | null): string[] => {
-    if (!s) return [];
-    const imgs: string[] = [];
-    if (s.image_urls && Array.isArray(s.image_urls)) imgs.push(...s.image_urls.filter(Boolean));
-    else if (s.image_url) imgs.push(s.image_url);
-    return imgs.filter(img => !brokenImages[img]).slice(0, 6);
-  };
-
-  useEffect(() => {
-    const imgs = collectImages(ctx.slide);
-    imgs.forEach(src => {
-      if (imgOrient[src]) return;
-      const im = new window.Image();
-      im.onload = () => setImgOrient(prev => (prev[src] ? prev : { ...prev, [src]: im.naturalWidth >= im.naturalHeight ? 'landscape' : 'portrait' }));
-      im.onerror = () => setBrokenImages(prev => ({ ...prev, [src]: true }));
-      im.src = src;
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ctx.slide, brokenImages]);
 
   // Warm-up cache ảnh chủ đề hay gặp.
   useEffect(() => {
@@ -304,7 +298,7 @@ export default function SlideBotPage() {
   return (
     <div
       className="h-screen max-h-screen overflow-hidden flex flex-col relative text-[#161616] bg-[#F5F3EC]"
-      style={{ fontFamily: "'Be Vietnam Pro', 'Inter', 'Google Sans', system-ui, sans-serif" }}
+      style={{ fontFamily: "var(--font-display, 'Inter', 'Google Sans', system-ui, sans-serif)" }}
     >
       <style dangerouslySetInnerHTML={{ __html: `
         .dots { background-image: radial-gradient(rgba(22,22,22,.28) 1.6px, transparent 1.6px); background-size: 16px 16px; }
@@ -439,8 +433,16 @@ export default function SlideBotPage() {
 
       {/* Chip trạng thái + mic nổi góc phải dưới */}
       <div className="absolute bottom-[2vh] right-[2vw] z-30 flex items-center gap-2.5">
+        {wsStatus === 'reconnecting' && (
+          <span className="px-4 py-2 rounded-full bg-black/70 backdrop-blur text-amber-300 font-semibold text-[clamp(11px,1.2vw,16px)]">🔌 Mất kết nối server - đang kết nối lại…</span>
+        )}
+        {!errorMsg && ctx.errorNote && (
+          <span className="max-w-[40vw] truncate px-4 py-2 rounded-full bg-black/70 backdrop-blur text-orange-300 font-semibold text-[clamp(11px,1.2vw,16px)]">⚠️ Lỗi tạo slide - nhắc lại câu hỏi để thử lại</span>
+        )}
         {errorMsg ? (
           <span className="max-w-[60vw] truncate px-4 py-2 rounded-full bg-black/70 backdrop-blur text-red-300 font-semibold text-[clamp(11px,1.2vw,16px)]">⚠️ {errorMsg}</span>
+        ) : ctx.state === 'mic_error' ? (
+          <span className="max-w-[60vw] truncate px-4 py-2 rounded-full bg-black/70 backdrop-blur text-red-300 font-semibold text-[clamp(11px,1.2vw,16px)]">🎙️ {ctx.micFatal || 'Mic lỗi'} - dùng Companion để điều khiển</span>
         ) : ctx.state === 'frozen' ? (
           <span className="px-4 py-2 rounded-full bg-black/60 backdrop-blur text-amber-200 font-bold text-[clamp(11px,1.2vw,16px)]">⏸ Đã đóng băng</span>
         ) : ctx.topicLabel ? (
@@ -495,6 +497,7 @@ export default function SlideBotPage() {
           <button
             className="absolute top-6 right-6 text-white/70 hover:text-white text-4xl transition-colors font-light"
             onClick={() => setSelectedImage(null)}
+            aria-label="Đóng ảnh phóng to"
           >
             &times;
           </button>

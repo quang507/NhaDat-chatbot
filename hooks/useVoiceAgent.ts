@@ -194,6 +194,13 @@ export function useVoiceAgent({
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
       });
+      // Trong lúc chờ popup xin quyền, người dùng có thể đã tắt mic/rời trang
+      // (teardownVAD chạy trước khi promise resolve) -> stream về sau phải
+      // stop ngay, nếu không mic bị giữ ngầm.
+      if (!isListeningLoopActive.current) {
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
       mediaStreamRef.current = stream;
       const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
       const ctx: AudioContext = new Ctx();
@@ -434,8 +441,13 @@ export function useVoiceAgent({
   useEffect(() => {
     if (typeof window === 'undefined') return;
     // Chế độ Gemini KHÔNG dùng Web Speech - thu âm qua MediaRecorder (setupVAD) rồi
-    // gửi /api/transcribe. Bỏ qua toàn bộ phần khởi tạo recognition ở đây.
-    if (sttEngine === 'gemini') return;
+    // gửi /api/transcribe. Bỏ qua phần khởi tạo recognition, nhưng VẪN PHẢI trả
+    // cleanup: rời trang khi mic đang bật mà không dọn thì MediaStream không
+    // stop() (đèn mic sáng mãi), AudioContext không đóng, vòng VAD chạy tiếp
+    // và còn setState sau unmount.
+    if (sttEngine === 'gemini') {
+      return () => { stopAllVoiceActivities(); };
+    }
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setErrorMsg('Trình duyệt không hỗ trợ Web Speech API.');
@@ -455,9 +467,9 @@ export function useVoiceAgent({
     } catch (e) {}
 
     const rec = new SpeechRecognition();
-    // NGHE LIEN TUC: continuous=false khien mic TAT sau moi cau -> phai restart ->
-    // khoang "diec" 120ms+latency Chrome moi lan -> noi dung luc do la MAT TIENG
-    // ("lau lau noi khong nghe"). continuous=true giu mic mo suot, gan nhu het diec.
+    // continuous=false: mic TAT sau moi cau -> co khoang "diec" ~120ms+latency
+    // khi restart; duoc watchdog 1.2s + onend tu restart va (bu lai) it bi treo
+    // session recognition hon continuous=true tren Chrome.
     rec.continuous = false;
     rec.interimResults = true;
     rec.lang = 'vi-VN';
@@ -501,6 +513,12 @@ export function useVoiceAgent({
           sttBlockedWarnedRef.current = true;
           setErrorMsg('Trình duyệt này đang chặn nhận diện giọng nói (Brave/Firefox không hỗ trợ). Hãy mở bằng Chrome hoặc Edge.');
           dbg('⛔ STT bị trình duyệt chặn - cần Chrome/Edge');
+          // Phải chuyển state sang 'error' + dừng loop: /slide chỉ kích hoạt chế
+          // độ điều khiển tay (MIC_FATAL) khi state==='error', và nếu không dừng
+          // thì watchdog cứ 1.2s lại restart recognition fail vô hạn.
+          // (stopAllVoiceActivities set 'idle' ở cuối nên phải gọi TRƯỚC setState('error'))
+          stopAllVoiceActivities();
+          setState('error');
         }
       } else if (event.error === 'not-allowed') {
         dbg('⛔ Quyền micro bị chặn');

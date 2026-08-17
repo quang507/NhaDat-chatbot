@@ -13,10 +13,8 @@
 // ============================================================================
 
 import type { SlideData } from '@/lib/slide-types';
-import {
-  ServerToTv, TvToServer, SaleCmd, parseMsg,
-  WS_PING_MS, WS_PONG_TIMEOUT_MS, WS_BACKOFF_MS,
-} from '@/lib/ws-protocol';
+import { TvToServer, SaleCmd } from '@/lib/ws-protocol';
+import { createReconnectingWs } from '@/lib/ws-client';
 
 export type TransportEvent =
   | { t: 'SLIDE_READY'; seq: number; data: SlideData; interim?: boolean }
@@ -26,7 +24,7 @@ export type TransportEvent =
   | { t: 'PREFETCH'; urls: string[] }
   | { t: 'SALE_CMD'; cmd: SaleCmd; arg?: number | string }
   | { t: 'OVERRIDE_QUERY'; text: string }
-  | { t: 'WS_STATUS'; status: 'connected' | 'reconnecting' | 'offline' };
+  | { t: 'WS_STATUS'; status: 'connected' | 'reconnecting' };
 
 export interface SlideTransport {
   readonly kind: 'http' | 'ws';
@@ -113,76 +111,28 @@ export function createHttpTransport(onEvent: OnEvent, onDebug: OnDebug = () => {
 
 // ── WS: server showroom orchestrate, client chỉ nghe event ──────────────────
 export function createWsTransport(url: string, onEvent: OnEvent, onDebug: OnDebug = () => {}): SlideTransport {
-  let ws: WebSocket | null = null;
   let disposed = false;
-  let backoffIdx = 0;
-  let pingTimer: ReturnType<typeof setInterval> | null = null;
-  let lastPongAt = Date.now();
   const emit: OnEvent = ev => { if (!disposed) onEvent(ev); };
 
-  const send = (msg: TvToServer) => {
-    if (ws && ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify(msg)); return true; }
-    return false;
-  };
-
-  const connect = () => {
-    if (disposed) return;
-    try { ws = new WebSocket(url); } catch (e) {
-      onDebug(`🔴 WS không mở được: ${e}`);
-      scheduleReconnect();
-      return;
-    }
-    ws.onopen = () => {
-      backoffIdx = 0;
-      lastPongAt = Date.now();
-      send({ t: 'TV_HELLO' });
-      emit({ t: 'WS_STATUS', status: 'connected' });
-      onDebug(`🔌 WS nối ${url}`);
-      if (pingTimer) clearInterval(pingTimer);
-      pingTimer = setInterval(() => {
-        if (Date.now() - lastPongAt > WS_PONG_TIMEOUT_MS) {
-          onDebug('💔 WS mất PONG - nối lại');
-          try { ws?.close(); } catch {}
-          return;
-        }
-        send({ t: 'PING' });
-      }, WS_PING_MS);
-    };
-    ws.onmessage = e => {
-      const msg = parseMsg<ServerToTv>(e.data);
-      if (!msg) return;
-      if (msg.t === 'PONG') { lastPongAt = Date.now(); return; }
-      // Server nói cùng ngôn ngữ event với machine -> chuyển thẳng.
-      emit(msg as TransportEvent);
-    };
-    ws.onclose = () => {
-      if (pingTimer) { clearInterval(pingTimer); pingTimer = null; }
-      if (!disposed) { emit({ t: 'WS_STATUS', status: 'reconnecting' }); scheduleReconnect(); }
-    };
-    ws.onerror = () => { try { ws?.close(); } catch {} };
-  };
-
-  const scheduleReconnect = () => {
-    const delay = WS_BACKOFF_MS[Math.min(backoffIdx++, WS_BACKOFF_MS.length - 1)];
-    setTimeout(() => connect(), delay);
-  };
-
-  connect();
+  const conn = createReconnectingWs({
+    url,
+    hello: { t: 'TV_HELLO' } satisfies TvToServer,
+    // Server nói cùng ngôn ngữ event với machine -> chuyển thẳng.
+    onMessage: msg => emit(msg as unknown as TransportEvent),
+    onStatus: status => { if (status !== 'connecting') emit({ t: 'WS_STATUS', status }); },
+    onDebug,
+  });
 
   return {
     kind: 'ws',
     query: (seq, text, recent) => {
-      if (!send({ t: 'SPEECH', seq, text, recent })) {
+      if (!conn.send({ t: 'SPEECH', seq, text, recent } satisfies TvToServer)) {
         // WS đứt giữa chừng: trả lỗi ngay để machine quay về nghe, không treo querying.
         emit({ t: 'QUERY_FAILED', seq, error: 'Mất kết nối server showroom' });
       }
     },
-    sendState: (state, slideId, title) => { send({ t: 'TV_STATE', state, slideId, title }); },
-    dispose: () => {
-      disposed = true;
-      if (pingTimer) clearInterval(pingTimer);
-      try { ws?.close(); } catch {}
-    },
+    sendState: (state, slideId, title) => { conn.send({ t: 'TV_STATE', state, slideId, title } satisfies TvToServer); },
+    dispose: () => { disposed = true; conn.dispose(); },
   };
 }
 

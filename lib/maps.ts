@@ -62,6 +62,9 @@ export async function getDrivingRoute(
   try {
     const res = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
       method: 'POST',
+      // Nằm trên đường nóng của buildPrompt - Google chậm thì bỏ qua route
+      // context sau 5s thay vì bắt khách chờ đến sát maxDuration.
+      signal: AbortSignal.timeout(5000),
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': MAPS_API_KEY,

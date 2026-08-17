@@ -6,11 +6,10 @@ import { existsSync, statSync } from 'fs';
 import path from 'path';
 import os from 'os';
 
-const OWNER = process.env.GITHUB_OWNER || 'quang507';
-const REPO = process.env.GITHUB_REPO || 'NhaDat-chatbot';
+import { GH_OWNER as OWNER, GH_REPO as REPO, GH_API as API, ghHeaders } from '@/lib/github';
+
 const INDEX_BRANCH = 'chatbot-logs'; // dùng chung nhánh log (không trigger Vercel deploy)
 const INDEX_PATH = 'index.json';
-const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 // PHẢI khớp model dùng để build index (sync_and_reindex.js + crawl-save-index).
@@ -28,14 +27,6 @@ export interface Chunk {
 export interface Index {
   chunks: Chunk[];
   builtAt: string;
-}
-
-function ghHeaders() {
-  return {
-    Authorization: `Bearer ${process.env.GITHUB_TOKEN || ''}`,
-    Accept: 'application/vnd.github+json',
-    'Content-Type': 'application/json',
-  };
 }
 
 // ---------- Chia nhỏ văn bản ----------
@@ -275,21 +266,23 @@ const TMP_CACHE_PATH = path.join(os.tmpdir(), 'rag_index.json');
 export async function loadIndex(): Promise<Index | null> {
   const now = Date.now();
 
-  // 0) Cache RAM còn hạn -> trả ngay (0ms). PHẢI đứng trước bước đọc file local:
-  //    thứ tự cũ đọc + JSON.parse 14MB index.json ở MỌI request (~100-200ms/lần)
-  //    dù RAM đã có sẵn.
-  if (memIndex && now - memIndexAt < 5 * 60 * 1000) {
-    if (memIndex.chunks?.[0]?.vec?.length) {
-      return memIndex;
-    } else {
-      memIndex = null;
-      memIndexAt = 0;
+  // 0) RAM đã có index hợp lệ -> LUÔN trả bản RAM (stale-while-revalidate).
+  //    Hết hạn 5 phút thì chỉ kích revalidate ngầm chứ KHÔNG quay lại đọc bản
+  //    index.json đóng gói theo deploy - thứ tự cũ cứ 5 phút lại ghi đè RAM
+  //    bằng bản cũ lúc deploy, che mất bản reindex mới qua /admin ("flip-flop").
+  if (memIndex?.chunks?.[0]?.vec?.length) {
+    if (now - memIndexAt >= 5 * 60 * 1000) {
+      memIndexAt = now; // đánh dấu để không spam revalidate mỗi request
+      revalidateIndexInBackground();
     }
+    return memIndex;
   }
+  memIndex = null;
+  memIndexAt = 0;
 
-  // 1) index.json ĐÓNG GÓI THEO DEPLOY (commit trong repo, khai báo
-  //    outputFileTracingIncludes) -> cold start đọc local ~100ms thay vì tải
-  //    14MB từ GitHub (1-3s). Vẫn revalidate ngầm từ GitHub để bản reindex
+  // 1) COLD START: index.json ĐÓNG GÓI THEO DEPLOY (commit trong repo, khai báo
+  //    outputFileTracingIncludes) -> đọc local ~100ms thay vì tải
+  //    14MB từ GitHub (1-3s). Revalidate ngầm từ GitHub để bản reindex
   //    mới qua trang /admin không bị bản đóng gói che mất.
   try {
     const localPath = path.join(process.cwd(), 'index.json');
@@ -353,19 +346,23 @@ async function fetchAndCacheIndex(): Promise<Index | null> {
       }
 
       const index = JSON.parse(json) as Index;
-      
-      // Cache vào RAM
-      memIndex = index;
-      memIndexAt = Date.now();
-      
-      // Cache vào /tmp
-      try {
-        await writeFile(TMP_CACHE_PATH, json, 'utf-8');
-      } catch (err) {
-        console.warn('[RAG] Không thể lưu cache vào /tmp:', err);
+
+      // Chỉ ghi đè RAM khi bản tải về KHÔNG CŨ HƠN bản đang có (so builtAt) -
+      // nhánh GitHub có thể tụt hậu so với index.json đóng gói trong deploy mới.
+      const newAt = Date.parse(index?.builtAt || '') || 0;
+      const curAt = Date.parse(memIndex?.builtAt || '') || 0;
+      if (index?.chunks?.length && newAt >= curAt) {
+        memIndex = index;
+        memIndexAt = Date.now();
+        // Cache vào /tmp
+        try {
+          await writeFile(TMP_CACHE_PATH, json, 'utf-8');
+        } catch (err) {
+          console.warn('[RAG] Không thể lưu cache vào /tmp:', err);
+        }
       }
-      
-      return index;
+
+      return memIndex;
     } catch (err) {
       console.error('[RAG] Lỗi khi tải chỉ mục từ GitHub:', err);
       return null;
@@ -383,6 +380,36 @@ function revalidateIndexInBackground() {
   fetchAndCacheIndex().catch(err => {
     console.warn('[RAG] Revalidate index ngầm lỗi:', err);
   });
+}
+
+// ---------- Lọc chunk dùng được, MEMOIZE theo index ----------
+// isJunkChunk (5 regex) + lọc Villa Ny'ah (7 includes) trên hàng nghìn chunk
+// từng chạy lại ở MỌI request dù index bất biến -> tính 1 lần cho mỗi bản index.
+let filteredCache: { src: Index; chunks: Chunk[] } | null = null;
+
+function getRetrievableChunks(index: Index): Chunk[] {
+  if (filteredCache?.src === index) return filteredCache.chunks;
+
+  // Lọc rác cho index đã build từ trước (index cũ vẫn còn chunk rác vì lúc đó
+  // buildIndex chưa lọc). Nhờ vậy không phải build lại index mới thấy tác dụng.
+  const sachChunks = index.chunks.filter(c => !isJunkChunk(c.text));
+
+  // Lọc bỏ toàn bộ dữ liệu thuộc dự án Villa Ny'ah
+  const chunks = sachChunks.filter(c => {
+    const text = c.text.toLowerCase();
+    const file = (c.file || '').toLowerCase();
+
+    const isVillaNyah = text.includes("villa ny'ah") || text.includes("villa ny’ah") || text.includes("villa nyah") || text.includes("cầu tràm") || text.includes("cần giuộc");
+    const isPhuDinh = text.includes("phú định") || text.includes("phu dinh") || text.includes("cosmo") || text.includes("fusion") || text.includes("opus");
+
+    if (isVillaNyah && !isPhuDinh) return false;
+    if (file.includes('villa-nyah') || file.includes('villa_nyah') || file.includes('cau_tram') || file.includes('cau-tram')) return false;
+
+    return true;
+  });
+
+  filteredCache = { src: index, chunks };
+  return chunks;
 }
 
 function dot(a: number[], b: number[]): number {
@@ -464,23 +491,7 @@ export async function retrieve(query: string, index: Index, k = 20, minScore = 0
 
   const keywords = extractKeywords(query);
 
-  // Lọc rác cho index đã build từ trước (index cũ vẫn còn chunk rác vì lúc đó
-  // buildIndex chưa lọc). Nhờ vậy không phải build lại index mới thấy tác dụng.
-  const sachChunks = index.chunks.filter(c => !isJunkChunk(c.text));
-
-  // Lọc bỏ toàn bộ dữ liệu thuộc dự án Villa Ny'ah
-  const phuDinhChunks = sachChunks.filter(c => {
-    const text = c.text.toLowerCase();
-    const file = (c.file || '').toLowerCase();
-    
-    const isVillaNyah = text.includes("villa ny'ah") || text.includes("villa ny’ah") || text.includes("villa nyah") || text.includes("cầu tràm") || text.includes("cần giuộc");
-    const isPhuDinh = text.includes("phú định") || text.includes("phu dinh") || text.includes("cosmo") || text.includes("fusion") || text.includes("opus");
-    
-    if (isVillaNyah && !isPhuDinh) return false;
-    if (file.includes('villa-nyah') || file.includes('villa_nyah') || file.includes('cau_tram') || file.includes('cau-tram')) return false;
-    
-    return true;
-  });
+  const phuDinhChunks = getRetrievableChunks(index);
 
   const scored = phuDinhChunks.map(c => {
     let score = 0;

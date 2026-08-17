@@ -165,6 +165,16 @@ ${PRICES[n] ? `- Bảng giá độc quyền T3/2026 (RH v12): ${PRICES[n]}\n` : 
   return { facts, modelKeywords };
 }
 
+// Câu hỏi CHUNG về rổ hàng/bảng giá (không chỉ đích danh 1 căn) -> nhét danh
+// sách căn còn trống. Dùng chung cho /api/chat và /api/slide (trước đây mỗi
+// route copy một bản 3 regex y hệt).
+export function isGeneralUnsoldQuery(message: string): boolean {
+  const q = message.toLowerCase();
+  return /(chưa\s*bán|còn\s*trống|rổ\s*hàng|bảng\s*giá|giá\s*bán|giá\s*cả|còn\s*căn|còn\s*lô|còn\s*hàng)/i.test(q) ||
+    (/(căn|lô)\s*nào/i.test(q) && /giá/i.test(q)) ||
+    /giá\s*(bao\s*nhiêu|thế\s*nào|mấy)/i.test(q);
+}
+
 export function getGeneralUnsoldContext(): string {
   const unsoldList = Array.from(UNSOLD).sort((a, b) => a - b);
   let str = "=== DANH SÁCH CÁC CĂN/LÔ CÒN TRỐNG (CHƯA BÁN) & GIÁ BÁN TỪNG CĂN ===\n";

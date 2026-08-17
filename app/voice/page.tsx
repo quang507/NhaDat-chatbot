@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { splitSentences, normalizeVietnameseSpeech } from '@/lib/speech';
+import { splitSentences } from '@/lib/speech';
 import { classifyAmbientIntent, shouldRefreshSlide, IntentTopic } from '@/lib/intent';
 import {
   createConversationState,
@@ -26,6 +26,61 @@ interface LogItem {
   message: string;
 }
 
+// Quả cầu giọng nói (ripple + nút 5 trạng thái) - dùng ở CẢ HAI layout
+// (image-focus và default/text-focus). Trước đây là 2 khối JSX copy y hệt ~50
+// dòng, sửa một bên rất dễ quên bên kia.
+function VoiceOrb({ state, onOrbClick }: { state: string; onOrbClick: () => void }) {
+  return (
+    <>
+      {state === 'listening' && (
+        <>
+          <div className="absolute w-48 h-48 rounded-full border border-blue-500/30 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out' }} />
+          <div className="absolute w-48 h-48 rounded-full border border-sky-400/20 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out 0.6s' }} />
+        </>
+      )}
+      {state === 'speaking' && (
+        <>
+          <div className="absolute w-48 h-48 rounded-full border border-emerald-500/30 pointer-events-none" style={{ animation: 'ripple 1.5s infinite ease-out' }} />
+        </>
+      )}
+
+      <button
+        onClick={onOrbClick}
+        className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative overflow-hidden focus:outline-none shadow-2xl
+          ${state === 'idle' ? 'bg-gradient-to-tr from-blue-900/80 to-sky-800/80 border border-blue-500/30 animate-pulse-orb' : ''}
+          ${state === 'listening' ? 'bg-gradient-to-tr from-blue-600 to-sky-400 scale-105 border border-sky-300 shadow-sky-500/20 animate-pulse-orb' : ''}
+          ${state === 'processing' ? 'bg-gradient-to-tr from-indigo-800/80 to-purple-800/80 border border-purple-500/30' : ''}
+          ${state === 'speaking' ? 'bg-gradient-to-tr from-emerald-600 to-cyan-400 scale-105 border border-emerald-300 shadow-emerald-500/20 animate-pulse-orb' : ''}
+          ${state === 'error' ? 'bg-gradient-to-tr from-red-950 to-red-800 border border-red-500/40' : ''}
+        `}
+      >
+        <div className="absolute inset-2 rounded-full bg-black/10 backdrop-blur-[2px] flex items-center justify-center">
+          {state === 'idle' && (
+            <span className="text-neutral-400 text-sm font-medium tracking-wide">Chạm để nói</span>
+          )}
+          {state === 'listening' && (
+            <span className="text-white text-sm font-bold tracking-wide animate-pulse">🎙️ Đang nghe...</span>
+          )}
+          {state === 'processing' && (
+            <div className="w-12 h-12 rounded-full border-4 border-purple-500/20 border-t-purple-400 animate-spin-orb" />
+          )}
+          {state === 'speaking' && (
+            <div className="flex gap-1.5 items-end justify-center h-6">
+              <span className="w-1 bg-white h-4 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
+              <span className="w-1 bg-white h-6 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
+              <span className="w-1 bg-white h-3 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+              <span className="w-1 bg-white h-5 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+            </div>
+          )}
+          {state === 'error' && (
+            <span className="text-red-300 text-sm font-medium">Lỗi kết nối</span>
+          )}
+        </div>
+      </button>
+    </>
+  );
+}
+
 export default function VoicePage() {
   // Background images state
   const [backgroundImages, setBackgroundImages] = useState<string[]>([]);
@@ -35,6 +90,18 @@ export default function VoicePage() {
   const [logs, setLogs] = useState<LogItem[]>([]);
   const [showDebug, setShowDebug] = useState(false);
   const [logFilter, setLogFilter] = useState<'ALL' | 'SPEECH' | 'API' | 'ERROR'>('ALL');
+  const [copied, setCopied] = useState(false);
+  // Guard unmount: handleUserSpeech là async dài (stream chat) - rời trang giữa
+  // chừng thì không setState nữa, và timer retry phải được dọn.
+  const mountedRef = useRef(true);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    };
+  }, []);
   
   const chatHistoryRef = useRef<Message[]>([]);
 
@@ -89,9 +156,10 @@ export default function VoicePage() {
   } = useVoiceAgent({
     voiceOn: true,
     onSpeechResult: (text) => {
-      const normalized = normalizeVietnameseSpeech(text);
-      addLog('SPEECH', `Nhận diện kết quả (Raw): "${text}" -> (Chuẩn hóa): "${normalized}"`);
-      handleUserSpeech(normalized);
+      // useVoiceAgent đã normalizeVietnameseSpeech trước khi bắn callback -
+      // không chuẩn hóa lại lần hai.
+      addLog('SPEECH', `Nhận diện kết quả: "${text}"`);
+      handleUserSpeech(text);
     },
     onStateChange: (newState) => {
       addLog('INFO', `Chuyển trạng thái: -> ${newState}`);
@@ -109,6 +177,7 @@ export default function VoicePage() {
 
   // Handle sending speech to Vercel API and stream response
   const handleUserSpeech = async (speechText: string) => {
+    if (!mountedRef.current) return;
     addLog('API', `Bắt đầu gửi văn bản nhận diện: "${speechText}"`);
     setResponse('Đang suy nghĩ...');
     const startTime = Date.now();
@@ -151,6 +220,7 @@ export default function VoicePage() {
           })
           .then(res => res.json())
           .then(data => {
+            if (!mountedRef.current) return; // đã rời trang - không setState nữa
             if (reqId !== slideReqIdRef.current) return; // đã có câu hỏi mới hơn, bỏ kết quả cũ này
             let imgs: string[] = [];
             if (data.image_urls && Array.isArray(data.image_urls)) {
@@ -202,6 +272,7 @@ export default function VoicePage() {
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
+        if (!mountedRef.current) { try { reader.cancel(); } catch {} return; } // rời trang giữa stream
         if (done) {
           addLog('API', `Đọc xong luồng dữ liệu. Thời gian: ${((Date.now() - startTime) / 1000).toFixed(2)} giây`);
           recorderRef.current.answerLast(accumulatedText);
@@ -244,8 +315,9 @@ export default function VoicePage() {
       
       if (isListeningLoopActive.current) {
         addLog('INFO', 'Tự động thử lắng nghe lại sau 3 giây...');
-        setTimeout(() => {
-           if (isListeningLoopActive.current) startListening();
+        if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = setTimeout(() => {
+           if (mountedRef.current && isListeningLoopActive.current) startListening();
         }, 3000);
       }
     }
@@ -413,51 +485,7 @@ export default function VoicePage() {
           </div>
 
           <div className="pointer-events-auto flex items-center justify-center shrink-0 scale-75 md:scale-90 transition-transform">
-            {state === 'listening' && (
-              <>
-                <div className="absolute w-48 h-48 rounded-full border border-blue-500/30 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out' }} />
-                <div className="absolute w-48 h-48 rounded-full border border-sky-400/20 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out 0.6s' }} />
-              </>
-            )}
-            {state === 'speaking' && (
-              <>
-                <div className="absolute w-48 h-48 rounded-full border border-emerald-500/30 pointer-events-none" style={{ animation: 'ripple 1.5s infinite ease-out' }} />
-              </>
-            )}
-
-            <button
-              onClick={onOrbClick}
-              className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative overflow-hidden focus:outline-none shadow-2xl
-                ${state === 'idle' ? 'bg-gradient-to-tr from-blue-900/80 to-sky-800/80 border border-blue-500/30 animate-pulse-orb' : ''}
-                ${state === 'listening' ? 'bg-gradient-to-tr from-blue-600 to-sky-400 scale-105 border border-sky-300 shadow-sky-500/20 animate-pulse-orb' : ''}
-                ${state === 'processing' ? 'bg-gradient-to-tr from-indigo-800/80 to-purple-800/80 border border-purple-500/30' : ''}
-                ${state === 'speaking' ? 'bg-gradient-to-tr from-emerald-600 to-cyan-400 scale-105 border border-emerald-300 shadow-emerald-500/20 animate-pulse-orb' : ''}
-                ${state === 'error' ? 'bg-gradient-to-tr from-red-950 to-red-800 border border-red-500/40' : ''}
-              `}
-            >
-              <div className="absolute inset-2 rounded-full bg-black/10 backdrop-blur-[2px] flex items-center justify-center">
-                {state === 'idle' && (
-                  <span className="text-neutral-400 text-sm font-medium tracking-wide">Chạm để nói</span>
-                )}
-                {state === 'listening' && (
-                  <span className="text-white text-sm font-bold tracking-wide animate-pulse">🎙️ Đang nghe...</span>
-                )}
-                {state === 'processing' && (
-                  <div className="w-12 h-12 rounded-full border-4 border-purple-500/20 border-t-purple-400 animate-spin-orb" />
-                )}
-                {state === 'speaking' && (
-                  <div className="flex gap-1.5 items-end justify-center h-6">
-                    <span className="w-1 bg-white h-4 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
-                    <span className="w-1 bg-white h-6 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
-                    <span className="w-1 bg-white h-3 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                    <span className="w-1 bg-white h-5 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
-                  </div>
-                )}
-                {state === 'error' && (
-                  <span className="text-red-300 text-sm font-medium">Lỗi kết nối</span>
-                )}
-              </div>
-            </button>
+            <VoiceOrb state={state} onOrbClick={onOrbClick} />
           </div>
         </div>
       ) : (
@@ -500,51 +528,7 @@ export default function VoicePage() {
               ${layoutMode === 'text-focus' ? 'bottom-28 left-1/2 -translate-x-1/2 scale-75' : ''}
             `}
           >
-            {state === 'listening' && (
-              <>
-                <div className="absolute w-48 h-48 rounded-full border border-blue-500/30 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out' }} />
-                <div className="absolute w-48 h-48 rounded-full border border-sky-400/20 pointer-events-none" style={{ animation: 'ripple 2s infinite ease-out 0.6s' }} />
-              </>
-            )}
-            {state === 'speaking' && (
-              <>
-                <div className="absolute w-48 h-48 rounded-full border border-emerald-500/30 pointer-events-none" style={{ animation: 'ripple 1.5s infinite ease-out' }} />
-              </>
-            )}
-  
-            <button
-              onClick={onOrbClick}
-              className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative overflow-hidden focus:outline-none shadow-2xl
-                ${state === 'idle' ? 'bg-gradient-to-tr from-blue-900/80 to-sky-800/80 border border-blue-500/30 animate-pulse-orb' : ''}
-                ${state === 'listening' ? 'bg-gradient-to-tr from-blue-600 to-sky-400 scale-105 border border-sky-300 shadow-sky-500/20 animate-pulse-orb' : ''}
-                ${state === 'processing' ? 'bg-gradient-to-tr from-indigo-800/80 to-purple-800/80 border border-purple-500/30' : ''}
-                ${state === 'speaking' ? 'bg-gradient-to-tr from-emerald-600 to-cyan-400 scale-105 border border-emerald-300 shadow-emerald-500/20 animate-pulse-orb' : ''}
-                ${state === 'error' ? 'bg-gradient-to-tr from-red-950 to-red-800 border border-red-500/40' : ''}
-              `}
-            >
-              <div className="absolute inset-2 rounded-full bg-black/10 backdrop-blur-[2px] flex items-center justify-center">
-                {state === 'idle' && (
-                  <span className="text-neutral-400 text-sm font-medium tracking-wide">Chạm để nói</span>
-                )}
-                {state === 'listening' && (
-                  <span className="text-white text-sm font-bold tracking-wide animate-pulse">🎙️ Đang nghe...</span>
-                )}
-                {state === 'processing' && (
-                  <div className="w-12 h-12 rounded-full border-4 border-purple-500/20 border-t-purple-400 animate-spin-orb" />
-                )}
-                {state === 'speaking' && (
-                  <div className="flex gap-1.5 items-end justify-center h-6">
-                    <span className="w-1 bg-white h-4 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
-                    <span className="w-1 bg-white h-6 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
-                    <span className="w-1 bg-white h-3 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                    <span className="w-1 bg-white h-5 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
-                  </div>
-                )}
-                {state === 'error' && (
-                  <span className="text-red-300 text-sm font-medium">Lỗi kết nối</span>
-                )}
-              </div>
-            </button>
+            <VoiceOrb state={state} onOrbClick={onOrbClick} />
           </div>
         </div>
       )}
@@ -633,13 +617,14 @@ export default function VoicePage() {
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => {
-                  const txt = logs.map(l => `[${l.type}] ${l.time} - ${l.message}`).join('\\n');
-                  navigator.clipboard.writeText(txt);
-                  alert('Đã sao chép toàn bộ log!');
+                  const txt = logs.map(l => `[${l.type}] ${l.time} - ${l.message}`).join('\n');
+                  navigator.clipboard?.writeText(txt)
+                    .then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); })
+                    .catch(() => addLog('ERROR', 'Không sao chép được log (clipboard bị chặn)'));
                 }}
                 className="text-[10px] bg-neutral-800 hover:bg-neutral-700 text-neutral-200 px-2 py-1 rounded transition"
               >
-                Sao chép
+                {copied ? '✓ Đã chép' : 'Sao chép'}
               </button>
               <button
                 onClick={() => setLogs([])}

@@ -3,10 +3,10 @@ import { rateLimited } from '@/lib/ratelimit';
 import { readFile } from 'fs/promises';
 import { existsSync, readdirSync } from 'fs';
 import path from 'path';
-import { DEFAULT_PERSONA } from '@/lib/admin';
+import { getPersona } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
-import { detectUnit, unitContext, imageFamily, getGeneralUnsoldContext } from '@/lib/units';
-import { hasProjectKeyword, isCompetitor, COMPETITORS, detectModel, kwHit } from '@/lib/intent';
+import { detectUnit, unitContext, imageFamily, getGeneralUnsoldContext, isGeneralUnsoldQuery } from '@/lib/units';
+import { hasProjectKeyword, isCompetitor, COMPETITORS, detectModel, kwHit, rmDia } from '@/lib/intent';
 import {
   matchStaticSlide,
   ROOM_SLIDES, TOPIC_SLIDES, MODEL_INTRO, MODEL_INTRO_NYAH, MODEL_INTRO_KEYWORDS,
@@ -25,11 +25,6 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
-// Chọn thư mục ảnh theo họ mẫu nhà của 1 căn (1 nguồn: lib/units). Chỉ có 3 bộ ảnh.
-// office->opus, cashmere/signature->cosmo (tạm) - xử lý trong imageFamily().
-function imageModelForUnit(n: number): 'opus' | 'fusion_gen_5' | 'cosmo_gen_2' {
-  return imageFamily(n);
-}
 // Công năng từng tầng THẬT (theo datasheet + data.md). Dùng cho slide tĩnh khi khách
 // hỏi "tầng X" - tránh để LLM bịa số liệu. Cosmo/Fusion là nhà ở đa thế hệ (tầng 2 = ông bà),
 // Opus là nhà phố thương mại (tầng dưới kinh doanh/văn phòng).
@@ -232,13 +227,7 @@ async function readRepoFile(name: string): Promise<string> {
   try { return await readFile(path.join(process.cwd(), name), 'utf-8'); } catch { return ''; }
 }
 
-let cachedPersona: string | null = null;
-async function getPersona(): Promise<string> {
-  if (cachedPersona) return cachedPersona;
-  const p = (await readRepoFile('persona.md')).trim() || DEFAULT_PERSONA;
-  cachedPersona = p;
-  return p;
-}
+// getPersona dùng chung từ @/lib/admin (cache 5 phút, đồng bộ với /api/chat)
 
 async function buildPrompt(message: string, ambient = false, recentText = ''): Promise<{ prompt: string; hasChunks: boolean }> {
   const persona = await getPersona();
@@ -254,14 +243,8 @@ async function buildPrompt(message: string, ambient = false, recentText = ''): P
       const { facts, modelKeywords } = unitContext(unit);
       unitFacts = `\n\n=== ${facts} ===`;
       ragQuery = `${message} ${modelKeywords}`;
-    } else {
-      const qLower = message.toLowerCase();
-      const isGeneralUnsold = /(chưa\s*bán|còn\s*trống|rổ\s*hàng|bảng\s*giá|giá\s*bán|giá\s*cả|còn\s*căn|còn\s*lô|còn\s*hàng)/i.test(qLower) || 
-                              (/(căn|lô)\s*nào/i.test(qLower) && /giá/i.test(qLower)) ||
-                              /giá\s*(bao\s*nhiêu|thế\s*nào|mấy)/i.test(qLower);
-      if (isGeneralUnsold) {
-        unitFacts = `\n\n${getGeneralUnsoldContext()}`;
-      }
+    } else if (isGeneralUnsoldQuery(message)) {
+      unitFacts = `\n\n${getGeneralUnsoldContext()}`;
     }
   } catch (e) { console.warn('Slide unit lookup failed:', e); }
 
@@ -355,9 +338,7 @@ export async function POST(req: NextRequest) {
 
     // --- BỘ ĐỆM SLIDE TĨNH: Trả slide ngay lập tức trong 0.1ms nếu khớp từ khóa trực tiếp, bypass AI hoàn toàn ---
     const cleanMsg = message.toLowerCase();
-    // Hàm bỏ dấu tiếng Việt để so khớp cả khi STT trả về không dấu
-    const removeDiacritics = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
-    const noD = removeDiacritics(cleanMsg); // bản không dấu
+    const noD = rmDia(cleanMsg); // bản không dấu (rmDia dùng chung từ lib/intent)
     // Hàm kiểm tra: khớp nếu có dấu HOẶC không dấu
     // So khớp CÓ BIÊN TỪ (kwHit trong lib/intent.ts) - includes() trần từng làm
     // "cho anh hỏi" nhảy slide chợ (chợ->cho) và "đánh giá cao" nhảy bảng giá.
@@ -373,7 +354,7 @@ export async function POST(req: NextRequest) {
     let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null = detectModel(cleanMsg) || null;
     if (!model) {
       const unitNo = detectUnit(message);
-      if (unitNo) model = imageModelForUnit(unitNo);
+      if (unitNo) model = imageFamily(unitNo);
     }
     // hasExplicitModel = khách nhắc mẫu/căn TRONG CHÍNH CÂU NÀY. Phải chốt
     // TRƯỚC khi suy model từ ngữ cảnh - model ngữ cảnh chỉ để CHỌN BIẾN THỂ
@@ -387,7 +368,7 @@ export async function POST(req: NextRequest) {
       model = detectModel(recentText.toLowerCase()) || null;
       if (!model) {
         const prevUnit = detectUnit(recentText);
-        if (prevUnit) model = imageModelForUnit(prevUnit);
+        if (prevUnit) model = imageFamily(prevUnit);
       }
     }
 
@@ -630,7 +611,6 @@ export async function POST(req: NextRequest) {
             const rawImg = typeof j.image === 'string' ? j.image.trim() : '';
             if (rawImg && rawImg.startsWith('/images/') && rawImg !== ((staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '')) {
               try {
-                const { existsSync } = await import('fs');
                 if (existsSync(path.join(process.cwd(), 'public', decodeURIComponent(rawImg)))) fixImg = rawImg;
               } catch {}
             }
@@ -806,7 +786,7 @@ export async function POST(req: NextRequest) {
       } else {
         // Suy ra mẫu nhà theo SỐ CĂN khách hỏi
         const unitNo = detectUnit(message);
-        if (unitNo) model = imageModelForUnit(unitNo);
+        if (unitNo) model = imageFamily(unitNo);
       }
 
       // 2. Tìm danh mục hình ảnh (ưu tiên theo câu hỏi của khách trước để tránh bị lẫn lộn do text cũ)
@@ -1082,7 +1062,9 @@ export async function POST(req: NextRequest) {
         ];
         parsed.layout_type = 'split_image_right';
       } else if (category === 'phap_ly') {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'];
+        // Dùng ảnh của chủ đề pháp lý (cùng ảnh slide tĩnh TOPIC_SLIDES.phap_ly) -
+        // trước đây gán nhầm ảnh bản đồ "18 phút đến Quận 1" sai chủ đề.
+        parsed.image_urls = ['/images/01_NyAh-PhuDinh/phap_ly/logo_nyahphudinh_210531_f-02.png'];
         parsed.layout_type = 'split_image_right';
       } else {
         // Hỏi chung hoặc không khớp danh mục -> ưu tiên ảnh ROOT (tổng quan, mặt tiền, tính năng tầng...)

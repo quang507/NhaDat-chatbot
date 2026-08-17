@@ -98,7 +98,7 @@ export const TOPIC_KEYWORDS: Record<IntentTopic, string[]> = {
     'bao nhiêu phòng', 'mấy phòng', 'phòng nào', 'tầng nào', 'mấy lầu',
     'phòng ăn', 'phòng sinh hoạt', 'nhà bếp', 'bếp như thế nào', 'bếp ra sao',
     // Tính năng đặc trưng mẫu nhà
-    'lệch tầng', 'thông tầng', 'khí tươi', 'sân trong', 'hầm rượu',
+    'lệch tầng', 'khí tươi', 'sân trong', 'hầm rượu',
     'văn phòng tại nhà', 'kinh doanh tầng trệt', 'thương mại',
   ],
 
@@ -190,14 +190,18 @@ export const ALL_PROJECT_KEYWORDS: string[] = [
   ...TOPIC_KEYWORDS.design,
 ];
 
+// Dùng kwHit (biên từ) thay includes() trần - chính là luật khối comment phía
+// trên đặt ra ("giá" không được khớp giữa "đánh giá cao").
 export function hasProjectKeyword(text: string): boolean {
   const lower = text.toLowerCase();
-  return ALL_PROJECT_KEYWORDS.some(kw => lower.includes(kw));
+  const noD = rmDia(lower);
+  return ALL_PROJECT_KEYWORDS.some(kw => kwHit(lower, noD, kw));
 }
 
 export function isCompetitor(text: string): boolean {
   const lower = text.toLowerCase();
-  return COMPETITORS.some(kw => lower.includes(kw));
+  const noD = rmDia(lower);
+  return COMPETITORS.some(kw => kwHit(lower, noD, kw));
 }
 
 // ── Chấm điểm tín hiệu (chống false-positive từ 1 từ phổ thông) ───────────────
@@ -249,11 +253,13 @@ function scoreTopics(clean: string): { total: number; strong: number; topic?: In
   const topicOrder: IntentTopic[] = ['unit', 'price', 'location', 'legal', 'design', 'amenity', 'general'];
   const perTopic = new Map<IntentTopic, number>();
   const hits: string[] = [];
+  const cleanNoD = rmDia(clean);
   let total = 0;
   let strong = 0;
   for (const topic of topicOrder) {
     for (const kw of TOPIC_KEYWORDS[topic]) {
-      if (clean.includes(kw)) {
+      // kwHit (biên từ) thay includes() trần - "giá" không khớp giữa "đánh giá"
+      if (kwHit(clean, cleanNoD, kw)) {
         const w = weightOf(topic, kw);
         perTopic.set(topic, (perTopic.get(topic) || 0) + w);
         total += w;

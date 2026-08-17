@@ -21,6 +21,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { SlideBody } from '@/components/SlideBody';
+import { useSlideImageProbe } from '@/hooks/useSlideImageProbe';
 
 const LIME = '#A8D94A'; // xanh brand dùng cho nhấn - khớp SlideBody
 
@@ -77,32 +78,11 @@ export default function ThuSlidePage() {
   const [cauCuoi, setCauCuoi] = useState('');
   const [replayKey, setReplayKey] = useState(0);
   const [lichSu, setLichSu] = useState<{ q: string; title: string; ok: boolean }[]>([]);
-  const [imgOrient, setImgOrient] = useState<Record<string, 'landscape' | 'portrait'>>({});
-  const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
+  const { imgOrient, brokenImages, setBrokenImages, collectImages } = useSlideImageProbe(slide, 3);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
-  // Đo hướng ảnh thật để SlideBody xử lý giống trang /slide.
-  useEffect(() => {
-    const imgs = collectImages(slide);
-    imgs.forEach(src => {
-      if (imgOrient[src]) return;
-      const im = new window.Image();
-      im.onload = () => setImgOrient(p => (p[src] ? p : { ...p, [src]: im.naturalWidth >= im.naturalHeight ? 'landscape' : 'portrait' }));
-      im.onerror = () => setBrokenImages(p => ({ ...p, [src]: true }));
-      im.src = src;
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slide]);
-
-  function collectImages(s: SlideData | null): string[] {
-    if (!s) return [];
-    const out: string[] = [];
-    if (Array.isArray(s.image_urls)) out.push(...s.image_urls.filter(Boolean));
-    else if (s.image_url) out.push(s.image_url);
-    return out.filter(u => !brokenImages[u]).slice(0, 3);
-  }
 
   // Thử tải một ảnh, có hạn giờ. Không có hạn giờ thì một URL treo (server im
   // lặng, không trả cả onload lẫn onerror) sẽ làm Promise.all chờ mãi và nút
@@ -196,7 +176,7 @@ export default function ThuSlidePage() {
   return (
     <div
       className="min-h-screen bg-[#0b0c12] text-white"
-      style={{ fontFamily: "'Be Vietnam Pro', 'Inter', system-ui, sans-serif" }}
+      style={{ fontFamily: "var(--font-display, 'Inter', system-ui, sans-serif)" }}
     >
       {/* ── Thanh trên ──────────────────────────────────────────────────── */}
       <header className="border-b border-white/10 px-5 py-3 flex items-center gap-4 flex-wrap">

@@ -15,10 +15,15 @@ interface Config {
 }
 
 function renderMarkdown(text: string, large = false) {
+  // Escape cả dấu nháy: nội dung là output LLM (có thể bị prompt-injection qua
+  // dữ liệu RAG/crawl) và sẽ được chèn vào attribute src/href bên dưới - thiếu
+  // escape `"` là thoát được attribute -> XSS (vd ![x](u" onerror="...)).
   const escaped = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
   let html = escaped;
 
@@ -116,6 +121,18 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
     setStreaming(true); // khóa nút send ngay
     setLoading(true);   // hiện 3 chấm chờ
 
+    // Chỉ số cố định của slot trả lời cho LƯỢT NÀY: history + tin user vừa gửi.
+    // Không dùng copy[copy.length-1] vì stream còn chạy mà khách gửi câu mới
+    // thì "tin cuối" đã là tin khác -> stream cũ đè mất tin mới.
+    const assistantIdx = history.length + 1;
+    const writeAssistant = (content: string) =>
+      setMessages(prev => {
+        const copy = [...prev];
+        if (copy[assistantIdx]?.role === 'assistant') copy[assistantIdx] = { role: 'assistant', content };
+        return copy;
+      });
+    let acc = '';
+
     // Bắn SONG SONG /api/slide (ambient=true -> nhánh slide tĩnh ~0ms, không
     // tốn LLM) để lấy ảnh dự án đính kèm câu trả lời - cùng cơ chế /voice dùng.
     // Câu không khớp chủ đề thì slide trả skip -> không đính gì.
@@ -151,7 +168,6 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
       setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let acc = '';
       let firstChunk = true;
 
       // eslint-disable-next-line no-constant-condition
@@ -165,18 +181,10 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
           setStreaming(false);
           setLoading(false);
         }
-        setMessages(prev => {
-          const copy = [...prev];
-          copy[copy.length - 1] = { role: 'assistant', content: acc };
-          return copy;
-        });
+        writeAssistant(acc);
       }
       if (!acc) {
-        setMessages(prev => {
-          const copy = [...prev];
-          copy[copy.length - 1] = { role: 'assistant', content: 'Không có phản hồi, vui lòng thử lại.' };
-          return copy;
-        });
+        writeAssistant('Không có phản hồi, vui lòng thử lại.');
       } else {
         recorderRef.current.answerLast(acc);
         // Trả lời xong -> đính ảnh dự án nếu câu hỏi khớp chủ đề có ảnh.
@@ -191,15 +199,17 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
         if (imgs.length) {
           const md = '\n\n' + imgs.map(u => `![${slide!.title || 'Ảnh dự án'}](${u})`).join('\n');
           acc += md;
-          setMessages(prev => {
-            const copy = [...prev];
-            copy[copy.length - 1] = { role: 'assistant', content: acc };
-            return copy;
-          });
+          writeAssistant(acc);
         }
       }
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Không thể kết nối, vui lòng thử lại.' }]);
+      // Đứt mạng giữa chừng: nếu đã stream được một phần thì đánh dấu tin bị cắt
+      // ngay trên tin đó thay vì thêm một tin lỗi rời rạc.
+      if (acc) {
+        writeAssistant(acc + '\n\n⚠️ Kết nối bị gián đoạn, câu trả lời có thể chưa đầy đủ.');
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content: 'Không thể kết nối, vui lòng thử lại.' }]);
+      }
     } finally {
       setStreaming(false);
       setLoading(false);
@@ -331,12 +341,14 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKey}
             placeholder="Nhập câu hỏi..."
+            aria-label="Nhập câu hỏi"
             rows={1}
             className={`flex-1 resize-none rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${fullPage ? 'text-base sm:px-4 sm:py-2.5' : 'text-sm'}`}
           />
           <button
             onClick={() => send(input)}
             disabled={streaming || !input.trim()}
+            aria-label="Gửi câu hỏi"
             className={`rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex-shrink-0 self-end ${fullPage ? 'w-11 h-11' : 'w-9 h-9'}`}
           >
             ➤
