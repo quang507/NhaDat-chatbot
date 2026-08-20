@@ -589,7 +589,8 @@ export async function POST(req: NextRequest) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${REFINE_GROQ_KEY}` },
           body: JSON.stringify({
-            model: 'llama-3.1-8b-instant',
+            // Groq đã khai tử llama-3.1-8b-instant -> gpt-oss-20b là model nhanh hiện tại
+            model: process.env.GROQ_MODEL_FAST || 'openai/gpt-oss-20b',
             messages: [{ role: 'system', content: sys }, { role: 'user', content: message }],
             temperature: 0.3,
             max_tokens: 150,
@@ -636,7 +637,10 @@ export async function POST(req: NextRequest) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
           body: JSON.stringify({
-            model: ambient ? 'llama-3.1-8b-instant' : 'llama-3.3-70b-versatile',
+            // Model Llama cũ bị Groq trả 404 model_not_found -> thay bằng dòng gpt-oss
+            model: ambient
+              ? (process.env.GROQ_MODEL_FAST || 'openai/gpt-oss-20b')
+              : (process.env.GROQ_MODEL || 'openai/gpt-oss-120b'),
             messages: [
               { role: 'system', content: systemWithAmbient },
               { role: 'user', content: message },

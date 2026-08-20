@@ -315,8 +315,9 @@ export async function POST(req: NextRequest) {
               'Authorization': `Bearer ${GROQ_API_KEY}`,
             },
             body: JSON.stringify({
-              // Cho phép đổi model qua env khi Groq khai tử model cũ, khỏi phải sửa code
-              model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+              // Groq đã khai tử các model Llama chat (llama-3.3-70b trả 404 model_not_found)
+              // -> mặc định dùng gpt-oss-120b (production tier hiện tại), đổi được qua env.
+              model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
               messages,
               temperature: 0.7,
               max_tokens: 4096,
