@@ -225,26 +225,39 @@ export async function POST(req: NextRequest) {
           const encoder = new TextEncoder();
           let full = '';
           let buffer = '';
+          let closed = false;
+
+          // Gemini đôi lúc gửi xong chunk cuối mà KHÔNG đóng kết nối SSE -> chờ
+          // reader.read() done là function treo tới maxDuration (log "Task timed
+          // out after 60 seconds" dù khách đã nhận đủ chữ). Chunk cuối luôn mang
+          // finishReason -> chủ động đóng ngay khi thấy nó, không chờ transport.
+          const finalize = (controller: ReadableStreamDefaultController) => {
+            if (closed) return;
+            closed = true;
+            try { controller.close(); } catch {}
+            const time = new Date().toISOString();
+            writeLog('chats', { time, question: message, answer: full }).catch(console.error);
+            const phone = extractPhone(message);
+            if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
+          };
 
           const stream = new ReadableStream({
             async pull(controller) {
               const { done, value } = await reader.read();
               if (done) {
-                controller.close();
-                const time = new Date().toISOString();
-                writeLog('chats', { time, question: message, answer: full }).catch(console.error);
-                const phone = extractPhone(message);
-                if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
+                finalize(controller);
                 return;
               }
               buffer += decoder.decode(value, { stream: true });
               const lines = buffer.split('\n');
               buffer = lines.pop() || '';
+              let generationEnded = false;
               for (const line of lines) {
                 const t = line.trim();
                 if (!t.startsWith('data:')) continue;
                 const payload = t.slice(5).trim();
-                if (!payload || payload === '[DONE]') continue;
+                if (!payload) continue;
+                if (payload === '[DONE]') { generationEnded = true; continue; }
                 try {
                   const json = JSON.parse(payload);
                   const piece = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -252,9 +265,14 @@ export async function POST(req: NextRequest) {
                     full += piece;
                     controller.enqueue(encoder.encode(piece));
                   }
+                  if (json.candidates?.[0]?.finishReason) generationEnded = true;
                 } catch {
                   // Mảnh JSON chưa trọn vẹn
                 }
+              }
+              if (generationEnded) {
+                finalize(controller);
+                reader.cancel().catch(() => {});
               }
             },
             cancel() {
@@ -331,26 +349,37 @@ export async function POST(req: NextRequest) {
             const encoder = new TextEncoder();
             let full = '';
             let buffer = '';
+            let closed = false;
+
+            // Cùng lý do với Gemini ở trên: đóng chủ động khi thấy tín hiệu hết
+            // sinh chữ ([DONE]/finish_reason), không chờ transport đóng kết nối.
+            const finalize = (controller: ReadableStreamDefaultController) => {
+              if (closed) return;
+              closed = true;
+              try { controller.close(); } catch {}
+              const time = new Date().toISOString();
+              writeLog('chats', { time, question: message, answer: full }).catch(console.error);
+              const phone = extractPhone(message);
+              if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
+            };
 
             const stream = new ReadableStream({
               async pull(controller) {
                 const { done, value } = await reader.read();
                 if (done) {
-                  controller.close();
-                  const time = new Date().toISOString();
-                  writeLog('chats', { time, question: message, answer: full }).catch(console.error);
-                  const phone = extractPhone(message);
-                  if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
+                  finalize(controller);
                   return;
                 }
                 buffer += decoder.decode(value, { stream: true });
                 const lines = buffer.split('\n');
                 buffer = lines.pop() || '';
+                let generationEnded = false;
                 for (const line of lines) {
                   const t = line.trim();
                   if (!t.startsWith('data:')) continue;
                   const payload = t.slice(5).trim();
-                  if (!payload || payload === '[DONE]') continue;
+                  if (!payload) continue;
+                  if (payload === '[DONE]') { generationEnded = true; continue; }
                   try {
                     const json = JSON.parse(payload);
                     const piece = json.choices?.[0]?.delta?.content || '';
@@ -358,9 +387,14 @@ export async function POST(req: NextRequest) {
                       full += piece;
                       controller.enqueue(encoder.encode(piece));
                     }
+                    if (json.choices?.[0]?.finish_reason) generationEnded = true;
                   } catch {
                     // Mảnh JSON chưa trọn vẹn
                   }
+                }
+                if (generationEnded) {
+                  finalize(controller);
+                  reader.cancel().catch(() => {});
                 }
               },
               cancel() {
