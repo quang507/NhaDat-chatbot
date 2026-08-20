@@ -256,54 +256,56 @@ export async function POST(req: NextRequest) {
             }
           };
 
+          // Vòng đọc CHỦ ĐỘNG trong start() thay vì pull(): trên Vercel, consumer
+          // có thể ngừng gọi pull() khi đã có dữ liệu đệm -> mọi logic đóng stream
+          // đặt trong pull (kể cả idle-timer) không bao giờ chạy nữa và function
+          // treo tới maxDuration. start() do chính mình điều khiển từ đầu tới cuối.
+          const t0 = Date.now();
           const stream = new ReadableStream({
-            async pull(controller) {
-              // Chốt an toàn: đã có chữ mà Gemini im lặng quá 8s -> coi như xong,
-              // tự đóng thay vì chờ socket (có khi không bao giờ đóng) tới 60s.
-              let idleTimer: ReturnType<typeof setTimeout> | undefined;
-              const idle = new Promise<null>(res => { idleTimer = setTimeout(() => res(null), full ? 8000 : 25000); });
-              const result = await Promise.race([reader.read(), idle]);
-              clearTimeout(idleTimer);
-              if (!result) {
-                finalize(controller);
-                reader.cancel().catch(() => {});
-                return;
-              }
-              const { done, value } = result;
-              if (done) {
-                finalize(controller);
-                return;
-              }
-              buffer += decoder.decode(value, { stream: true });
-              const lines = buffer.split('\n');
-              buffer = lines.pop() || '';
-              let generationEnded = false;
-              for (const line of lines) {
-                const t = line.trim();
-                if (!t.startsWith('data:')) continue;
-                const payload = t.slice(5).trim();
-                if (!payload) continue;
-                if (handlePayload(payload, controller)) generationEnded = true;
-              }
-              // Sự kiện cuối có thể tới KHÔNG kèm newline -> kẹt lại trong buffer
-              // và finishReason không bao giờ được đọc. Thử parse phần đuôi: JSON
-              // trọn vẹn thì xử lý luôn, chưa trọn thì giữ chờ chunk sau.
-              const tail = buffer.trim();
-              if (tail.startsWith('data:')) {
-                const payload = tail.slice(5).trim();
-                if (payload === '[DONE]') { generationEnded = true; buffer = ''; }
-                else if (payload) {
-                  try {
-                    JSON.parse(payload);
+            async start(controller) {
+              let endReason = 'transport_done';
+              try {
+                while (true) {
+                  // Chốt an toàn: đã có chữ mà Gemini im lặng quá 8s -> coi như xong
+                  let idleTimer: ReturnType<typeof setTimeout> | undefined;
+                  const idle = new Promise<null>(res => { idleTimer = setTimeout(() => res(null), full ? 8000 : 25000); });
+                  const result = await Promise.race([reader.read(), idle]);
+                  clearTimeout(idleTimer);
+                  if (!result) { endReason = 'idle_timeout'; break; }
+                  if (result.done) break;
+                  buffer += decoder.decode(result.value, { stream: true });
+                  const lines = buffer.split('\n');
+                  buffer = lines.pop() || '';
+                  let generationEnded = false;
+                  for (const line of lines) {
+                    const t = line.trim();
+                    if (!t.startsWith('data:')) continue;
+                    const payload = t.slice(5).trim();
+                    if (!payload) continue;
                     if (handlePayload(payload, controller)) generationEnded = true;
-                    buffer = '';
-                  } catch { /* chưa trọn vẹn */ }
+                  }
+                  // Sự kiện cuối có thể tới KHÔNG kèm newline -> kẹt trong buffer:
+                  // parse phần đuôi nếu đã là JSON trọn vẹn, chưa trọn thì chờ thêm.
+                  const tail = buffer.trim();
+                  if (tail.startsWith('data:')) {
+                    const payload = tail.slice(5).trim();
+                    if (payload === '[DONE]') { generationEnded = true; buffer = ''; }
+                    else if (payload) {
+                      try {
+                        JSON.parse(payload);
+                        if (handlePayload(payload, controller)) generationEnded = true;
+                        buffer = '';
+                      } catch { /* chưa trọn vẹn */ }
+                    }
+                  }
+                  if (generationEnded) { endReason = 'finish_reason'; break; }
                 }
+              } catch (e) {
+                endReason = `read_error:${e}`;
               }
-              if (generationEnded) {
-                finalize(controller);
-                reader.cancel().catch(() => {});
-              }
+              console.log(`[chat-stream] gemini end=${endReason} elapsed=${Date.now() - t0}ms len=${full.length}`);
+              finalize(controller);
+              reader.cancel().catch(() => {});
             },
             cancel() {
               reader.cancel();
@@ -334,6 +336,7 @@ export async function POST(req: NextRequest) {
 
     // 2) Fallback: Groq (miễn phí, dùng khi Gemini hết quota)
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
+    if (!GROQ_API_KEY) console.warn('[chat] GROQ_API_KEY trống trong env - Gemini lỗi là khách nhận "hệ thống đang bận" ngay, không có lưới đỡ');
 
     if (GROQ_API_KEY) {
       // Groq TPM limit rất thấp (12000 token/phút free tier). systemText hiện build cho Gemini
@@ -408,50 +411,50 @@ export async function POST(req: NextRequest) {
               }
             };
 
+            // Vòng đọc chủ động trong start() - cùng lý do với nhánh Gemini ở trên
+            const t0 = Date.now();
             const stream = new ReadableStream({
-              async pull(controller) {
-                // Chốt an toàn giống nhánh Gemini: có chữ mà im lặng 8s là tự đóng
-                let idleTimer: ReturnType<typeof setTimeout> | undefined;
-                const idle = new Promise<null>(res => { idleTimer = setTimeout(() => res(null), full ? 8000 : 25000); });
-                const result = await Promise.race([reader.read(), idle]);
-                clearTimeout(idleTimer);
-                if (!result) {
-                  finalize(controller);
-                  reader.cancel().catch(() => {});
-                  return;
-                }
-                const { done, value } = result;
-                if (done) {
-                  finalize(controller);
-                  return;
-                }
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n');
-                buffer = lines.pop() || '';
-                let generationEnded = false;
-                for (const line of lines) {
-                  const t = line.trim();
-                  if (!t.startsWith('data:')) continue;
-                  const payload = t.slice(5).trim();
-                  if (!payload) continue;
-                  if (handlePayload(payload, controller)) generationEnded = true;
-                }
-                const tail = buffer.trim();
-                if (tail.startsWith('data:')) {
-                  const payload = tail.slice(5).trim();
-                  if (payload === '[DONE]') { generationEnded = true; buffer = ''; }
-                  else if (payload) {
-                    try {
-                      JSON.parse(payload);
+              async start(controller) {
+                let endReason = 'transport_done';
+                try {
+                  while (true) {
+                    let idleTimer: ReturnType<typeof setTimeout> | undefined;
+                    const idle = new Promise<null>(res => { idleTimer = setTimeout(() => res(null), full ? 8000 : 25000); });
+                    const result = await Promise.race([reader.read(), idle]);
+                    clearTimeout(idleTimer);
+                    if (!result) { endReason = 'idle_timeout'; break; }
+                    if (result.done) break;
+                    buffer += decoder.decode(result.value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+                    let generationEnded = false;
+                    for (const line of lines) {
+                      const t = line.trim();
+                      if (!t.startsWith('data:')) continue;
+                      const payload = t.slice(5).trim();
+                      if (!payload) continue;
                       if (handlePayload(payload, controller)) generationEnded = true;
-                      buffer = '';
-                    } catch { /* chưa trọn vẹn */ }
+                    }
+                    const tail = buffer.trim();
+                    if (tail.startsWith('data:')) {
+                      const payload = tail.slice(5).trim();
+                      if (payload === '[DONE]') { generationEnded = true; buffer = ''; }
+                      else if (payload) {
+                        try {
+                          JSON.parse(payload);
+                          if (handlePayload(payload, controller)) generationEnded = true;
+                          buffer = '';
+                        } catch { /* chưa trọn vẹn */ }
+                      }
+                    }
+                    if (generationEnded) { endReason = 'finish_reason'; break; }
                   }
+                } catch (e) {
+                  endReason = `read_error:${e}`;
                 }
-                if (generationEnded) {
-                  finalize(controller);
-                  reader.cancel().catch(() => {});
-                }
+                console.log(`[chat-stream] groq end=${endReason} elapsed=${Date.now() - t0}ms len=${full.length}`);
+                finalize(controller);
+                reader.cancel().catch(() => {});
               },
               cancel() {
                 reader.cancel();
