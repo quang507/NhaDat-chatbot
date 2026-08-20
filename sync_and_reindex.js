@@ -3,7 +3,13 @@ const path = require('path');
 const { execSync } = require('child_process');
 const crypto = require('crypto');
 
-const DEFAULT_ONEDRIVE = path.join(process.env.USERPROFILE || 'C:\\Users\\Default', 'OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide');
+// Thư mục OneDrive từng được đổi tên ("ChatBot, LiveSlide" -> "7 - ChatBot, LiveSlide")
+// -> thử lần lượt các tên đã biết, lấy cái đầu tiên tồn tại thật trên máy.
+const ONEDRIVE_CANDIDATES = [
+  'OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\7 - ChatBot, LiveSlide',
+  'OneDrive - Nha Dat Co Ltd\\Team Mktg - NPD mktg\\mktg - private\\03_Content\\ChatBot, LiveSlide',
+].map(p => path.join(process.env.USERPROFILE || 'C:\\Users\\Default', p));
+const DEFAULT_ONEDRIVE = ONEDRIVE_CANDIDATES.find(p => fs.existsSync(p)) || ONEDRIVE_CANDIDATES[0];
 const ONEDRIVE_DIR = process.env.CHATBOT_UPLOAD_DIR || path.join(DEFAULT_ONEDRIVE, 'ChatBotData_Upload');
 const ONEDRIVE_IMAGES_DIR_GLOBAL = process.env.CHATBOT_IMAGES_DIR || path.join(DEFAULT_ONEDRIVE, 'ChatBotImages_Upload');
 const LOCAL_DATA_DIR = path.join(__dirname, 'data');

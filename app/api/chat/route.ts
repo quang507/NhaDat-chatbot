@@ -241,9 +241,35 @@ export async function POST(req: NextRequest) {
             if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
           };
 
+          const handlePayload = (payload: string, controller: ReadableStreamDefaultController): boolean => {
+            if (payload === '[DONE]') return true;
+            try {
+              const json = JSON.parse(payload);
+              const piece = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+              if (piece) {
+                full += piece;
+                controller.enqueue(encoder.encode(piece));
+              }
+              return Boolean(json.candidates?.[0]?.finishReason);
+            } catch {
+              return false; // Mảnh JSON chưa trọn vẹn
+            }
+          };
+
           const stream = new ReadableStream({
             async pull(controller) {
-              const { done, value } = await reader.read();
+              // Chốt an toàn: đã có chữ mà Gemini im lặng quá 8s -> coi như xong,
+              // tự đóng thay vì chờ socket (có khi không bao giờ đóng) tới 60s.
+              let idleTimer: ReturnType<typeof setTimeout> | undefined;
+              const idle = new Promise<null>(res => { idleTimer = setTimeout(() => res(null), full ? 8000 : 25000); });
+              const result = await Promise.race([reader.read(), idle]);
+              clearTimeout(idleTimer);
+              if (!result) {
+                finalize(controller);
+                reader.cancel().catch(() => {});
+                return;
+              }
+              const { done, value } = result;
               if (done) {
                 finalize(controller);
                 return;
@@ -257,17 +283,21 @@ export async function POST(req: NextRequest) {
                 if (!t.startsWith('data:')) continue;
                 const payload = t.slice(5).trim();
                 if (!payload) continue;
-                if (payload === '[DONE]') { generationEnded = true; continue; }
-                try {
-                  const json = JSON.parse(payload);
-                  const piece = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                  if (piece) {
-                    full += piece;
-                    controller.enqueue(encoder.encode(piece));
-                  }
-                  if (json.candidates?.[0]?.finishReason) generationEnded = true;
-                } catch {
-                  // Mảnh JSON chưa trọn vẹn
+                if (handlePayload(payload, controller)) generationEnded = true;
+              }
+              // Sự kiện cuối có thể tới KHÔNG kèm newline -> kẹt lại trong buffer
+              // và finishReason không bao giờ được đọc. Thử parse phần đuôi: JSON
+              // trọn vẹn thì xử lý luôn, chưa trọn thì giữ chờ chunk sau.
+              const tail = buffer.trim();
+              if (tail.startsWith('data:')) {
+                const payload = tail.slice(5).trim();
+                if (payload === '[DONE]') { generationEnded = true; buffer = ''; }
+                else if (payload) {
+                  try {
+                    JSON.parse(payload);
+                    if (handlePayload(payload, controller)) generationEnded = true;
+                    buffer = '';
+                  } catch { /* chưa trọn vẹn */ }
                 }
               }
               if (generationEnded) {
@@ -363,9 +393,34 @@ export async function POST(req: NextRequest) {
               if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
             };
 
+            const handlePayload = (payload: string, controller: ReadableStreamDefaultController): boolean => {
+              if (payload === '[DONE]') return true;
+              try {
+                const json = JSON.parse(payload);
+                const piece = json.choices?.[0]?.delta?.content || '';
+                if (piece) {
+                  full += piece;
+                  controller.enqueue(encoder.encode(piece));
+                }
+                return Boolean(json.choices?.[0]?.finish_reason);
+              } catch {
+                return false; // Mảnh JSON chưa trọn vẹn
+              }
+            };
+
             const stream = new ReadableStream({
               async pull(controller) {
-                const { done, value } = await reader.read();
+                // Chốt an toàn giống nhánh Gemini: có chữ mà im lặng 8s là tự đóng
+                let idleTimer: ReturnType<typeof setTimeout> | undefined;
+                const idle = new Promise<null>(res => { idleTimer = setTimeout(() => res(null), full ? 8000 : 25000); });
+                const result = await Promise.race([reader.read(), idle]);
+                clearTimeout(idleTimer);
+                if (!result) {
+                  finalize(controller);
+                  reader.cancel().catch(() => {});
+                  return;
+                }
+                const { done, value } = result;
                 if (done) {
                   finalize(controller);
                   return;
@@ -379,17 +434,18 @@ export async function POST(req: NextRequest) {
                   if (!t.startsWith('data:')) continue;
                   const payload = t.slice(5).trim();
                   if (!payload) continue;
-                  if (payload === '[DONE]') { generationEnded = true; continue; }
-                  try {
-                    const json = JSON.parse(payload);
-                    const piece = json.choices?.[0]?.delta?.content || '';
-                    if (piece) {
-                      full += piece;
-                      controller.enqueue(encoder.encode(piece));
-                    }
-                    if (json.choices?.[0]?.finish_reason) generationEnded = true;
-                  } catch {
-                    // Mảnh JSON chưa trọn vẹn
+                  if (handlePayload(payload, controller)) generationEnded = true;
+                }
+                const tail = buffer.trim();
+                if (tail.startsWith('data:')) {
+                  const payload = tail.slice(5).trim();
+                  if (payload === '[DONE]') { generationEnded = true; buffer = ''; }
+                  else if (payload) {
+                    try {
+                      JSON.parse(payload);
+                      if (handlePayload(payload, controller)) generationEnded = true;
+                      buffer = '';
+                    } catch { /* chưa trọn vẹn */ }
                   }
                 }
                 if (generationEnded) {
