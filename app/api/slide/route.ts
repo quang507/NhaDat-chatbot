@@ -703,12 +703,33 @@ export async function POST(req: NextRequest) {
           }
         },
       };
-      const geminiResponse = await fetch(`${BASE}/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reqBody),
-      });
-      if (!geminiResponse.ok) {
+      // Gemini hay trả 429/503 thoáng qua (kể cả tier trả phí) - retry 2 lần
+      // trước khi chịu thua, tránh đẩy lỗi 503 thẳng về màn hình slide.
+      let geminiResponse: Response | null = null;
+      const SLIDE_GEMINI_DELAYS = [1500, 3000];
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) await new Promise(r => setTimeout(r, SLIDE_GEMINI_DELAYS[attempt - 1]));
+        try {
+          geminiResponse = await fetch(`${BASE}/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reqBody),
+          });
+        } catch (e) {
+          console.warn(`Slide Gemini network error attempt ${attempt + 1}:`, e);
+          geminiResponse = null;
+          continue;
+        }
+        if (geminiResponse.ok) break;
+        const retryable = geminiResponse.status === 429 || geminiResponse.status >= 500;
+        if (!retryable) break;
+        if (attempt < 2) console.warn(`Slide Gemini lỗi tạm thời ${geminiResponse.status}, thử lại...`);
+      }
+      if (!geminiResponse) {
+        if (staticSlide) { rawText = '{}'; } else {
+          return NextResponse.json({ error: 'Có lỗi xảy ra, vui lòng thử lại.' }, { status: 502 });
+        }
+      } else if (!geminiResponse.ok) {
         const errText = await geminiResponse.text();
         console.error(`Slide Gemini lỗi ${geminiResponse.status}: ${errText}`);
         if (staticSlide) {

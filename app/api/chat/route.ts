@@ -188,23 +188,30 @@ export async function POST(req: NextRequest) {
       return new Response(stream, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache' } });
     }
 
-    // 1) Gemini trước (free tier: 500 lượt/ngày, 10 lượt/phút)
+    // 1) Gemini trước. Kể cả tier trả phí, Gemini vẫn thỉnh thoảng trả 429/503
+    // ("model overloaded") THOÁNG QUA - gọi lại sau vài giây là qua. Trước đây chỉ
+    // gọi đúng 1 lần rồi rơi xuống Groq, Groq cũng hỏng là khách thấy "hệ thống
+    // đang bận" -> phải retry Gemini trước khi bỏ cuộc.
     if (GEMINI_API_KEY) {
-      try {
-        const generationConfig: any = {
-          temperature: 0.7,
-          maxOutputTokens: 4096,
-        };
-        // thinkingConfig chỉ hợp lệ với model 2.5+ (model 2.0/1.5 sẽ trả lỗi 400 nếu gửi kèm)
-        if (MODEL.startsWith('gemini-2.5') || MODEL.startsWith('gemini-3')) {
-          generationConfig.thinkingConfig = { thinkingBudget: 0 };
-        }
+      const generationConfig: any = {
+        temperature: 0.7,
+        maxOutputTokens: 4096,
+      };
+      // thinkingConfig chỉ hợp lệ với model 2.5+ (model 2.0/1.5 sẽ trả lỗi 400 nếu gửi kèm)
+      if (MODEL.startsWith('gemini-2.5') || MODEL.startsWith('gemini-3')) {
+        generationConfig.thinkingConfig = { thinkingBudget: 0 };
+      }
 
-        const reqBody = {
-          contents,
-          system_instruction: { parts: [{ text: systemText }] },
-          generationConfig,
-        };
+      const reqBody = {
+        contents,
+        system_instruction: { parts: [{ text: systemText }] },
+        generationConfig,
+      };
+
+      const GEMINI_RETRY_DELAYS = [2000, 4000];
+      for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        if (attempt > 0) await new Promise(r => setTimeout(r, GEMINI_RETRY_DELAYS[attempt - 1]));
 
         const geminiResponse = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
           method: 'POST',
@@ -264,10 +271,16 @@ export async function POST(req: NextRequest) {
           });
         } else {
           const errText = await geminiResponse.text();
-          console.warn(`Gemini API error (status ${geminiResponse.status}): ${errText}. Falling back to Groq...`);
+          // 429/5xx = lỗi tạm thời (quota phút / overloaded) -> đáng retry.
+          // 400/403 = sai key/model/request -> retry vô ích, sang Groq luôn.
+          const retryable = geminiResponse.status === 429 || geminiResponse.status >= 500;
+          console.warn(`Gemini API error attempt ${attempt + 1} (status ${geminiResponse.status}): ${errText}${retryable && attempt < 2 ? '. Retrying...' : '. Falling back to Groq...'}`);
+          if (!retryable || attempt === 2) break;
         }
       } catch (err) {
-        console.warn('Gemini API network error. Falling back to Groq...', err);
+        console.warn(`Gemini API network error attempt ${attempt + 1}:`, err);
+        if (attempt === 2) break;
+      }
       }
     }
 
@@ -302,7 +315,8 @@ export async function POST(req: NextRequest) {
               'Authorization': `Bearer ${GROQ_API_KEY}`,
             },
             body: JSON.stringify({
-              model: 'llama-3.3-70b-versatile',
+              // Cho phép đổi model qua env khi Groq khai tử model cũ, khỏi phải sửa code
+              model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
               messages,
               temperature: 0.7,
               max_tokens: 4096,
