@@ -203,7 +203,9 @@ export async function POST(req: NextRequest) {
       // 3 lần 503 liên tiếp là khách ăn "hệ thống đang bận" dù tài khoản
       // Gemini còn tiền. Lưới đỡ thật sự: thử model Gemini DỰ PHÒNG (flash-lite
       // ít nghẽn hơn) trước khi bỏ cuộc - cùng key, không cần dịch vụ khác.
-      const FALLBACK_MODEL = process.env.GEMINI_MODEL_FALLBACK || 'gemini-2.5-flash-lite';
+      // gemini-2.5-flash-lite đã bị Google đóng với user mới (404 "no longer
+      // available to new users") -> mặc định phải là 3.5-flash-lite.
+      const FALLBACK_MODEL = process.env.GEMINI_MODEL_FALLBACK || 'gemini-3.5-flash-lite';
       const attemptPlan = FALLBACK_MODEL && FALLBACK_MODEL !== MODEL
         ? [
             { model: MODEL, delay: 0 },
