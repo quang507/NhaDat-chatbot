@@ -158,6 +158,10 @@ async function embedBatch(
       if (forceDim) body.outputDimensionality = forceDim;
       const res = await fetch(`${EMBED_BASE}/models/${EMBED_MODEL}:embedContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
+        // Nằm trên đường nóng của /api/chat - embedding treo là cả function chết
+        // 504 ở giây 60 mà khách chưa nhận được byte nào. Quá 8s thì bỏ, retrieve()
+        // đã có sẵn nhánh tìm kiếm từ khóa offline để đỡ.
+        signal: AbortSignal.timeout(8000),
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
@@ -253,7 +257,7 @@ export async function buildIndex(dataText: string): Promise<Index> {
 
 // ---------- Lưu / đọc chỉ mục trên GitHub (đọc qua blob API để không bị giới hạn 1MB) ----------
 async function getSha(path: string): Promise<string | null> {
-  const r = await fetch(`${API}/contents/${path}?ref=${INDEX_BRANCH}`, { headers: ghHeaders(), cache: 'no-store' });
+  const r = await fetch(`${API}/contents/${path}?ref=${INDEX_BRANCH}`, { headers: ghHeaders(), cache: 'no-store', signal: AbortSignal.timeout(8000) });
   if (!r.ok) return null;
   return (await r.json()).sha || null;
 }
@@ -306,11 +310,17 @@ export async function loadIndex(): Promise<Index | null> {
       const content = await readFile(localPath, 'utf-8');
       const index = JSON.parse(content) as Index;
       if (index && index.chunks && index.chunks.length > 0) {
+        console.log(`[RAG] Cold start: dùng index.json đóng gói theo deploy (${index.chunks.length} chunks).`);
         memIndex = index;
         memIndexAt = now;
         revalidateIndexInBackground();
         return memIndex;
       }
+    } else {
+      // Nếu dòng này xuất hiện trên Vercel nghĩa là outputFileTracingIncludes
+      // KHÔNG đóng gói index.json vào lambda -> mọi cold start phải tải 6MB+
+      // từ GitHub (chậm, dễ treo). Phải sửa cấu hình bundle chứ đừng chỉ đọc log.
+      console.warn('[RAG] index.json local KHÔNG tồn tại trong lambda - cold start phải tải từ GitHub.');
     }
   } catch (e) {
     console.warn('[RAG] Đọc index.json local thất bại:', e);
@@ -346,8 +356,12 @@ async function fetchAndCacheIndex(): Promise<Index | null> {
     try {
       console.log('[RAG] Bắt đầu tải chỉ mục từ GitHub Raw CDN...');
       const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${INDEX_BRANCH}/${INDEX_PATH}`;
-      const r = await fetch(rawUrl, { cache: 'no-store' });
-      
+      // Đường tải này từng nằm ĐỒNG BỘ trên request khách (cold start không có
+      // index local) và fetch không timeout -> GitHub treo là function chết 504
+      // ở giây 60, khách thấy "Không thể kết nối". Quá hạn thì throw để
+      // buildPrompt rơi xuống nhánh data.md, khách vẫn có câu trả lời.
+      const r = await fetch(rawUrl, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+
       let json = '';
       if (r.ok) {
         json = await r.text();
@@ -355,7 +369,7 @@ async function fetchAndCacheIndex(): Promise<Index | null> {
         console.warn(`[RAG] Tải từ GitHub Raw CDN lỗi (${r.status}), rơi vào phương thức API cũ...`);
         const sha = await getSha(INDEX_PATH);
         if (!sha) return null;
-        const apiRes = await fetch(`${API}/git/blobs/${sha}`, { headers: ghHeaders(), cache: 'no-store' });
+        const apiRes = await fetch(`${API}/git/blobs/${sha}`, { headers: ghHeaders(), cache: 'no-store', signal: AbortSignal.timeout(15000) });
         if (!apiRes.ok) return null;
         const blob = await apiRes.json();
         json = Buffer.from(blob.content || '', blob.encoding || 'base64').toString('utf-8');

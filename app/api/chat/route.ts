@@ -124,6 +124,11 @@ export async function POST(req: NextRequest) {
       { status: 429 }
     );
   }
+  // Ngân sách thời gian tổng: maxDuration=60s, Vercel giết function ở giây 60 là
+  // khách nhận 504 trắng ("Không thể kết nối"). Mọi nhánh bên dưới phải canh
+  // theo mốc này để LUÔN kịp trả về một response (dù chỉ là câu xin lỗi).
+  const reqT0 = Date.now();
+  const elapsed = () => Date.now() - reqT0;
   try {
     // 1) Bảo mật CORS & Handshake Token để chống spam API từ cURL/scripts bên ngoài
     const origin = req.headers.get('origin') || req.headers.get('referer') || '';
@@ -210,14 +215,23 @@ export async function POST(req: NextRequest) {
 
       const GEMINI_RETRY_DELAYS = [2000, 4000];
       for (let attempt = 0; attempt < 3; attempt++) {
+      // Quá 30s mà Gemini vẫn chưa xong -> ngừng retry, nhường thời gian còn lại
+      // cho Groq + response lỗi thân thiện, tránh bị giết trắng ở giây 60.
+      if (elapsed() > 30000) { console.warn(`[chat] Bỏ Gemini attempt ${attempt + 1}: đã dùng ${elapsed()}ms`); break; }
+      if (attempt > 0) await new Promise(r => setTimeout(r, GEMINI_RETRY_DELAYS[attempt - 1]));
+      // Timeout CHỜ HEADER: fetch không signal mà Gemini treo trước byte đầu là
+      // đứng luôn tới maxDuration. Timer được hủy ngay khi có response để không
+      // cắt nhầm stream body đang chạy (body đã có idle-timeout riêng bên dưới).
+      const headerAbort = new AbortController();
+      const headerTimer = setTimeout(() => headerAbort.abort(), 15000);
       try {
-        if (attempt > 0) await new Promise(r => setTimeout(r, GEMINI_RETRY_DELAYS[attempt - 1]));
-
         const geminiResponse = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(reqBody),
+          signal: headerAbort.signal,
         });
+        clearTimeout(headerTimer);
 
         if (geminiResponse.ok && geminiResponse.body) {
           const reader = geminiResponse.body.getReader();
@@ -328,6 +342,7 @@ export async function POST(req: NextRequest) {
           if (!retryable || attempt === 2) break;
         }
       } catch (err) {
+        clearTimeout(headerTimer);
         console.warn(`Gemini API network error attempt ${attempt + 1}:`, err);
         if (attempt === 2) break;
       }
@@ -356,15 +371,20 @@ export async function POST(req: NextRequest) {
 
       const GROQ_RETRY_DELAYS = [2000, 5000];
       for (let attempt = 0; attempt < 3; attempt++) {
+        // Chừa lại ~8s cuối cho response lỗi thân thiện - đừng để Vercel giết trắng.
+        if (elapsed() > 45000) { console.warn(`[chat] Bỏ Groq attempt ${attempt + 1}: đã dùng ${elapsed()}ms`); break; }
+        if (attempt > 0) await new Promise(r => setTimeout(r, GROQ_RETRY_DELAYS[attempt - 1]));
+        // Timeout chờ header - cùng lý do với nhánh Gemini ở trên.
+        const headerAbort = new AbortController();
+        const headerTimer = setTimeout(() => headerAbort.abort(), 10000);
         try {
-          if (attempt > 0) await new Promise(r => setTimeout(r, GROQ_RETRY_DELAYS[attempt - 1]));
-
           const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${GROQ_API_KEY}`,
             },
+            signal: headerAbort.signal,
             body: JSON.stringify({
               // Groq đã khai tử các model Llama chat (llama-3.3-70b trả 404 model_not_found)
               // -> mặc định dùng gpt-oss-120b (production tier hiện tại), đổi được qua env.
@@ -375,6 +395,7 @@ export async function POST(req: NextRequest) {
               stream: true,
             }),
           });
+          clearTimeout(headerTimer);
 
           if (groqResponse.ok && groqResponse.body) {
             const reader = groqResponse.body.getReader();
@@ -475,6 +496,7 @@ export async function POST(req: NextRequest) {
             if (!is429 || attempt === 2) break;
           }
         } catch (err) {
+          clearTimeout(headerTimer);
           console.warn(`Groq API network error attempt ${attempt + 1}:`, err);
           if (attempt === 2) break;
         }
