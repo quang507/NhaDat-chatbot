@@ -234,8 +234,11 @@ export async function POST(req: NextRequest) {
         temperature: 0.7,
         maxOutputTokens: 4096,
       };
-      // thinkingConfig chỉ hợp lệ với model 2.5+ (model 2.0/1.5 sẽ trả lỗi 400 nếu gửi kèm)
-      if (model.startsWith('gemini-2.5') || model.startsWith('gemini-3')) {
+      // thinkingConfig.thinkingBudget CHỈ hợp lệ với dòng 2.5. Dòng 1.5/2.0
+      // không nhận thinkingConfig, còn dòng 3.x đã BỎ thinkingBudget (đo đạc
+      // production: gemini-3.5-flash-lite trả 400 INVALID_ARGUMENT khi gửi kèm)
+      // -> model khác 2.5 thì để mặc định, không gửi thinkingConfig.
+      if (model.startsWith('gemini-2.5')) {
         generationConfig.thinkingConfig = { thinkingBudget: 0 };
       }
       const reqBody = {
