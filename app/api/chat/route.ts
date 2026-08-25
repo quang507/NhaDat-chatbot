@@ -198,34 +198,57 @@ export async function POST(req: NextRequest) {
     // gọi đúng 1 lần rồi rơi xuống Groq, Groq cũng hỏng là khách thấy "hệ thống
     // đang bận" -> phải retry Gemini trước khi bỏ cuộc.
     if (GEMINI_API_KEY) {
+      // Đo đạc production 25/08: model chính (gemini-flash-latest) trả 503
+      // "high demand" ở GẦN NHƯ MỌI lượt, và GROQ_API_KEY trống trong env ->
+      // 3 lần 503 liên tiếp là khách ăn "hệ thống đang bận" dù tài khoản
+      // Gemini còn tiền. Lưới đỡ thật sự: thử model Gemini DỰ PHÒNG (flash-lite
+      // ít nghẽn hơn) trước khi bỏ cuộc - cùng key, không cần dịch vụ khác.
+      const FALLBACK_MODEL = process.env.GEMINI_MODEL_FALLBACK || 'gemini-2.5-flash-lite';
+      const attemptPlan = FALLBACK_MODEL && FALLBACK_MODEL !== MODEL
+        ? [
+            { model: MODEL, delay: 0 },
+            { model: MODEL, delay: 2000 },
+            { model: FALLBACK_MODEL, delay: 1000 },
+            { model: FALLBACK_MODEL, delay: 3000 },
+          ]
+        : [
+            { model: MODEL, delay: 0 },
+            { model: MODEL, delay: 2000 },
+            { model: MODEL, delay: 4000 },
+          ];
+      // Model dính lỗi KHÔNG đáng retry (400/403: sai tên model, sai key) thì
+      // bỏ qua các lượt còn lại của đúng model đó, vẫn thử model kia.
+      let skipModel: string | null = null;
+
+      for (let attempt = 0; attempt < attemptPlan.length; attempt++) {
+      const { model, delay } = attemptPlan[attempt];
+      if (model === skipModel) continue;
+      // Quá 30s mà Gemini vẫn chưa xong -> ngừng retry, nhường thời gian còn lại
+      // cho Groq + response lỗi thân thiện, tránh bị giết trắng ở giây 60.
+      if (elapsed() > 30000) { console.warn(`[chat] Bỏ Gemini attempt ${attempt + 1}: đã dùng ${elapsed()}ms`); break; }
+      if (delay) await new Promise(r => setTimeout(r, delay));
+
       const generationConfig: any = {
         temperature: 0.7,
         maxOutputTokens: 4096,
       };
       // thinkingConfig chỉ hợp lệ với model 2.5+ (model 2.0/1.5 sẽ trả lỗi 400 nếu gửi kèm)
-      if (MODEL.startsWith('gemini-2.5') || MODEL.startsWith('gemini-3')) {
+      if (model.startsWith('gemini-2.5') || model.startsWith('gemini-3')) {
         generationConfig.thinkingConfig = { thinkingBudget: 0 };
       }
-
       const reqBody = {
         contents,
         system_instruction: { parts: [{ text: systemText }] },
         generationConfig,
       };
 
-      const GEMINI_RETRY_DELAYS = [2000, 4000];
-      for (let attempt = 0; attempt < 3; attempt++) {
-      // Quá 30s mà Gemini vẫn chưa xong -> ngừng retry, nhường thời gian còn lại
-      // cho Groq + response lỗi thân thiện, tránh bị giết trắng ở giây 60.
-      if (elapsed() > 30000) { console.warn(`[chat] Bỏ Gemini attempt ${attempt + 1}: đã dùng ${elapsed()}ms`); break; }
-      if (attempt > 0) await new Promise(r => setTimeout(r, GEMINI_RETRY_DELAYS[attempt - 1]));
       // Timeout CHỜ HEADER: fetch không signal mà Gemini treo trước byte đầu là
       // đứng luôn tới maxDuration. Timer được hủy ngay khi có response để không
       // cắt nhầm stream body đang chạy (body đã có idle-timeout riêng bên dưới).
       const headerAbort = new AbortController();
       const headerTimer = setTimeout(() => headerAbort.abort(), 15000);
       try {
-        const geminiResponse = await fetch(`${BASE}/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
+        const geminiResponse = await fetch(`${BASE}/models/${model}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(reqBody),
@@ -317,7 +340,7 @@ export async function POST(req: NextRequest) {
               } catch (e) {
                 endReason = `read_error:${e}`;
               }
-              console.log(`[chat-stream] gemini end=${endReason} elapsed=${Date.now() - t0}ms len=${full.length}`);
+              console.log(`[chat-stream] ${model} end=${endReason} elapsed=${Date.now() - t0}ms len=${full.length}`);
               finalize(controller);
               reader.cancel().catch(() => {});
             },
@@ -336,15 +359,15 @@ export async function POST(req: NextRequest) {
         } else {
           const errText = await geminiResponse.text();
           // 429/5xx = lỗi tạm thời (quota phút / overloaded) -> đáng retry.
-          // 400/403 = sai key/model/request -> retry vô ích, sang Groq luôn.
+          // 400/403 = sai key/model/request -> retry model này vô ích, nhưng
+          // model dự phòng vẫn đáng thử (vd sai tên model chính).
           const retryable = geminiResponse.status === 429 || geminiResponse.status >= 500;
-          console.warn(`Gemini API error attempt ${attempt + 1} (status ${geminiResponse.status}): ${errText}${retryable && attempt < 2 ? '. Retrying...' : '. Falling back to Groq...'}`);
-          if (!retryable || attempt === 2) break;
+          console.warn(`Gemini API error attempt ${attempt + 1} [${model}] (status ${geminiResponse.status}): ${errText}`);
+          if (!retryable) skipModel = model;
         }
       } catch (err) {
         clearTimeout(headerTimer);
-        console.warn(`Gemini API network error attempt ${attempt + 1}:`, err);
-        if (attempt === 2) break;
+        console.warn(`Gemini API network error attempt ${attempt + 1} [${model}]:`, err);
       }
       }
     }
