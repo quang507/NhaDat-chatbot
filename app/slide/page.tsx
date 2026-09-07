@@ -108,6 +108,13 @@ export default function SlideBotPage() {
     setTranscript, setState, startListening, stopAllVoiceActivities, toggleMic,
     isListeningLoopActive,
   } = useVoiceAgent({
+    // TV showroom nghe-only (trang này không đọc TTS) -> chọn đường STT server:
+    // thu từng câu bằng MediaRecorder + VAD rồi gửi /api/transcribe
+    // (Deepgram nova-2 kèm keyword boost tên riêng -> Gemini -> Groq Whisper).
+    // Web Speech API của trình duyệt nghe sai tên riêng dự án (Cosmo Gen 2,
+    // Fusion, Opus, Ny'ah, Codinachs...) và bị Brave/Firefox chặn thẳng.
+    // Đổi lại: mỗi câu trễ thêm ~1-2s - chấp nhận được vì TV không đối đáp.
+    sttEngine: 'gemini',
     onSpeechResult: (text) => {
       if (handleVoiceCommands(text)) return;
       sendRef.current({ type: 'SPEECH', text, now: Date.now() });
