@@ -23,30 +23,39 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // 1) DEEPGRAM NOVA-2 - Ưu tiên cao nhất, boost từ khóa qua param `keywords`
-    // (nova-3 chưa hỗ trợ tiếng Việt với keyterm prompting - nếu nâng cấp model
-    // thì phải đổi cả param: nova-3 dùng `keyterm`, không phải `keywords`)
+    // 1) DEEPGRAM NOVA-2 - Ưu tiên cao nhất, boost từ khóa qua param `keywords`.
+    // NÂNG CẤP KHẢ DĨ: Deepgram nova-3 dùng `keyterm` (KHÁC tên param) và keyterm
+    // CHẤP NHẬN CỤM NHIỀU TỪ - hợp với "Cosmo Gen 2", "Ny'ah Phú Định",
+    // "Trương Đình Hội" hơn hẳn `keywords` từ đơn bên dưới. Blog Deepgram 2026 nói
+    // nova-3 đã có tiếng Việt + keyterm, nhưng CHƯA kiểm chứng bằng call thật;
+    // đổi model mà nova-3 không nhận `language=vi` thì tầng này gãy, rớt xuống Gemini.
+    // -> Muốn đổi phải test bằng audio thật trước, đừng đổi mù.
     if (DEEPGRAM_API_KEY) {
       try {
-        // Ép từ khóa mạnh để nhận diện chính xác tên riêng
-        const rawKeywords = [
-          "Cosmo:2", "Cosmo Gen 2:3", "Fusion:2", "Fusion Gen 5:3", "Opus:2", 
-          "Cashmere:2", "Signature:2", "Ny'ah Phú Định:3", "Nhã Đạt:2", 
-          "Trương Đình Hội:2", "An Dương Vương:2", "Quận 8:2",
-          "Ngô Trần Công Luận:2", "Villa Ny'ah", "Villa Cầu Tràm", "Long An", "Mizuki",
-          "vị trí Ny'ah Phú Định:2", "Ny'ah ở đâu", "Ny'ah đường nào",
-          "6 tầng", "mặt tiền 5 mét", "ngang 5 mét", "ngang 4 mét", "nhà phố",
-          "bếp fullsize", "giặt sấy tại bếp", "bàn ăn nhanh", "phòng ăn riêng", "đảo bếp",
-          "gara ô tô", "sân thượng", "phòng ngủ master", "phòng khách", "thang máy", "giếng trời",
-          "sổ hồng", "bàn giao", "tiến độ", "thanh toán", "ban công", "mặt bằng", "mở slide",
-          "AirTop:2", "ByteLife:2", "gói Air:2", "gói Max:2", "Codinachs:2",
-          "triều cường", "ngập nước", "phí quản lý", "An Cường", "Xingfa"
+        // Boost tên riêng. RÀNG BUỘC CỦA DEEPGRAM `keywords` (developers.deepgram.com/docs/keywords):
+        //  • CHỈ nhận TỪ ĐƠN. Cụm nhiều từ KHÔNG được boost như một khối - Deepgram
+        //    tách ra boost từng từ rời, thường ra kết quả ngoài ý muốn.
+        //  • Chỉ gửi từ HIẾM / tên riêng model hay nghe sai; từ thông dụng thì vô ích.
+        //  • Tránh chuỗi số ("6 tầng", "Quận 8", "Gen 2").
+        //  • Càng nhiều keyword càng dễ ra output lạ -> giữ danh sách ngắn.
+        // Vì vậy bảng này CHỈ còn tên riêng một từ. Các cụm tiếng Việt thông dụng
+        // ("phòng khách", "sổ hồng", "gara ô tô", "mặt tiền"...) đã được
+        // normalizeVietnameseSpeech() trong lib/speech.ts nắn ở tầng sau - đó mới là
+        // chỗ sửa được cụm nhiều âm tiết, không phải ở đây.
+        const KEYWORDS = [
+          // Tên mẫu nhà / thương hiệu nước ngoài - nova-2 tiếng Việt nghe sai nhiều nhất
+          'Cosmo:3', 'Fusion:3', 'Opus:3', 'Cashmere:3', 'Signature:3',
+          'AirTop:3', 'ByteLife:3', 'Codinachs:3', 'Nyah:3',
+          'Xingfa:2', 'Mizuki:2',
+          // Âm tiết riêng của dự án/chủ đầu tư (bỏ các âm tiết thông dụng như
+          // "An", "Dương", "Trương", "Đình" - boost vào chỉ gây nhiễu)
+          'Nhã:2', 'Đạt:2', 'Định:2',
         ];
-        // Đảm bảo URL encode cho tiếng Việt và khoảng trắng
-        const keywords = rawKeywords.map(k => encodeURIComponent(k)).join('&keywords=');
 
-        const deepgramUrl = `https://api.deepgram.com/v1/listen?model=nova-2&language=vi&smart_format=true&keywords=${keywords}`;
-        
+        const qs = new URLSearchParams({ model: 'nova-2', language: 'vi', smart_format: 'true' });
+        for (const k of KEYWORDS) qs.append('keywords', k);
+        const deepgramUrl = `https://api.deepgram.com/v1/listen?${qs.toString()}`;
+
         const dgRes = await fetch(deepgramUrl, {
           method: 'POST',
           headers: {
