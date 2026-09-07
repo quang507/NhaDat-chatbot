@@ -400,6 +400,12 @@ export function useVoiceAgent({
       const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
       const data = await res.json().catch(() => ({} as any));
       const text = (data?.text || '').trim();
+      // Hạ cờ NGAY khi server trả lời xong, TRƯỚC khi gọi onSpeechResult.
+      // Cờ này chỉ có nghĩa "đang gửi câu trước lên server" - gửi xong là hết.
+      // Nếu để tận `finally`: trang xử lý onSpeechResult ĐỒNG BỘ (vd lệnh giọng
+      // "phóng to" -> resume() -> startListening()) sẽ gặp cờ còn bật ->
+      // startGeminiRecorder() thoát sớm -> mic câm vĩnh viễn.
+      transcribingRef.current = false;
       if (text) {
         dbg(`🎧 Gemini nghe: "${text}"`);
         const norm = normalizeVietnameseSpeech(text) || text;
@@ -446,7 +452,18 @@ export function useVoiceAgent({
     // stop() (đèn mic sáng mãi), AudioContext không đóng, vòng VAD chạy tiếp
     // và còn setState sau unmount.
     if (sttEngine === 'gemini') {
-      return () => { stopAllVoiceActivities(); };
+      // WATCHDOG (đối xứng với watchdog của nhánh browser bên dưới): đang
+      // 'listening' mà không có MediaRecorder nào chạy -> thu lại. TV showroom
+      // đứng không người trông, mic câm là hỏng cả phiên; mọi đường rơi (mr.stop
+      // lỗi, ondataavailable rỗng, startGeminiRecorder thoát sớm) đều được vét ở đây.
+      const wd = setInterval(() => {
+        if (!isListeningLoopActive.current) return;
+        if (chatStateRef.current !== 'listening') return;
+        if (transcribingRef.current) return;
+        const mr = mediaRecorderRef.current;
+        if (!mr || mr.state !== 'recording') startGeminiRecorder();
+      }, 1200);
+      return () => { clearInterval(wd); stopAllVoiceActivities(); };
     }
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -562,7 +579,7 @@ export function useVoiceAgent({
       clearInterval(watchdog);
       stopAllVoiceActivities();
     };
-  }, [setState, startListening, stopAllVoiceActivities, restartRecognitionOnly, dbg]);
+  }, [setState, startListening, stopAllVoiceActivities, restartRecognitionOnly, startGeminiRecorder, dbg]);
 
   return {
     state,
