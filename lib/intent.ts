@@ -248,6 +248,9 @@ function weightOf(topic: IntentTopic, kw: string): number {
   return GENERIC_KEYWORDS.has(kw) ? 1 : 2;
 }
 
+/** Trọng số từ khóa (2 = mạnh, tự đủ; 1 = yếu, cần từ thứ hai) - tab Sale dùng để tô đậm từ mạnh. */
+export const keywordWeight = weightOf;
+
 // Chấm điểm toàn bộ text: gom điểm theo topic, trả topic mạnh nhất + tổng điểm.
 function scoreTopics(clean: string): { total: number; strong: number; topic?: IntentTopic; hits: string[] } {
   const topicOrder: IntentTopic[] = ['unit', 'price', 'location', 'legal', 'design', 'amenity', 'general'];

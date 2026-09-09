@@ -26,6 +26,11 @@ Trợ lý AI cho dự án nhà phố **Ny'ah Phú Định** (Quận 8, TP.HCM) c
 ### 📱 Companion cho Sale (`/companion`)
 - Điều khiển từ điện thoại: đóng băng / xóa slide, chuyển ảnh, chiếu nhanh một chủ đề — lệnh relay tới mọi TV trong showroom qua WebSocket.
 
+### 🕵️ Tab Sale Monitor (`/sale`)
+- **Tab thứ hai** cho Sale, mở trong **cùng trình duyệt** với tab `/slide` (tab TV kéo sang màn khách): thấy TV **nghe được câu gì**, câu đó **qua cổng hay bị bỏ qua** (lý do, chủ đề, điểm, từ khóa trúng, slide tĩnh khớp), TV đang chiếu gì và từ nguồn nào (slide tĩnh / LLM).
+- Hai tab nói chuyện qua `BroadcastChannel` (`lib/sale-monitor.ts`) — không cần server showroom, chạy được trên Vercel. Tab TV không bị đè HUD như `?debug=1`.
+- **Từ khóa kích hoạt** theo từng chủ đề (đậm = một từ là đủ), **gợi ý chủ đề nói tiếp** (bấm là TV chiếu, tự ẩn slide đã chiếu), tra catalog slide tĩnh, đóng băng / xóa slide.
+
 ### 🖥️ Server showroom (LAN) — `server/`
 - Server **Bun + ElysiaJS** chạy trên mini-PC tại showroom, **tái dùng nguyên khối** các route handler Next.js (`app/api/*/route.ts`) — sửa một nơi, chạy cả Vercel lẫn LAN (slide tĩnh ~14ms trong LAN).
 - **WebSocket event bus** (`lib/ws-protocol.ts`) nối TV ↔ Companion ↔ server: đẩy `SLIDE_READY`/`REFINE_READY`, prefetch ảnh, heartbeat + auto-reconnect, resume slide khi TV kết nối lại.
@@ -57,6 +62,7 @@ app/
   embed/          # Bản nhúng iframe cho WordPress
   slide/          # Live Slide cho TV showroom
   companion/      # Điều khiển từ điện thoại Sale
+  sale/           # Tab Sale Monitor: soi TV nghe gì/hiểu gì + gợi ý nói tiếp
   voice/          # Hội thoại bằng giọng nói
   admin/          # Trang quản trị dữ liệu
   api/            # chat, slide, transcribe, tts, config, log-session, admin/*
