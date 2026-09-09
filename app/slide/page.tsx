@@ -8,7 +8,8 @@
 // (lib/presentation-machine.ts); việc lấy slide nằm trong transport
 // (lib/slide-transport.ts - HTTP 2 pha hoặc WebSocket server showroom).
 //
-//   ?debug=1   HUD chẩn đoán
+//   ?debug=1   HUD chẩn đoán (đè lên màn khách)
+//   /sale      tab thứ hai cho Sale soi TV (BroadcastChannel - cùng trình duyệt)
 //   ?demo=1..5 nạp slide mẫu không cần mic
 //   ?ws=1      dùng WS same-origin (khi server showroom serve app - B3)
 //   ?ws=ws://ip:3080  dùng WS server LAN chỉ định (B2)
@@ -27,6 +28,7 @@ import { SlideStage } from '@/components/SlideStage';
 import { AttractScreen } from '@/components/AttractScreen';
 import { DebugHud } from '@/components/DebugHud';
 import { createSessionRecorder } from '@/lib/session-digest';
+import { openMonitorBus, MonitorBus, MonitorToTv, TvSnapshot, TvToMonitor } from '@/lib/sale-monitor';
 
 // Slide mẫu cho ?demo=N - xem/chỉnh giao diện + chụp test không cần mic.
 const DEMO_SLIDES: Record<string, SlideData> = {
@@ -96,10 +98,17 @@ export default function SlideBotPage() {
   const [debugOn, setDebugOn] = useState(false);
   const [wsStatus, setWsStatus] = useState<string>('connected');
   const [debugLog, setDebugLog] = useState<string[]>([]);
+  // ── TAB SALE (/sale) - phát sự kiện qua BroadcastChannel, không đụng màn khách ──
+  const monitorRef = useRef<MonitorBus<TvToMonitor, MonitorToTv> | null>(null);
+  const snapshotRef = useRef<TvSnapshot | null>(null);
+  // Lệnh từ tab Sale đi cùng cửa với Companion - ref để effect khởi tạo (chạy
+  // 1 lần) luôn gọi bản handleSaleCmd mới nhất.
+  const saleCmdRef = useRef<(cmd: SaleCmd, arg?: number | string) => void>(() => {});
   const dbg = useCallback((msg: string) => {
     console.log('[SlideDebug]', msg);
     const t = new Date().toLocaleTimeString('vi-VN', { hour12: false });
     setDebugLog(prev => [`${t}  ${msg}`, ...prev].slice(0, 14));
+    monitorRef.current?.post({ t: 'LOG', line: msg, at: Date.now() });
   }, []);
 
   // ── VOICE (audio layer - P2 sẽ chuyển vào worker) ────────────────────────
@@ -116,6 +125,8 @@ export default function SlideBotPage() {
     // Đổi lại: mỗi câu trễ thêm ~1-2s - chấp nhận được vì TV không đối đáp.
     sttEngine: 'gemini',
     onSpeechResult: (text) => {
+      // Câu THÔ trước mọi cổng - tab Sale tự chạy lại intent/catalog để hiện lý do.
+      monitorRef.current?.post({ t: 'HEARD', text, at: Date.now() });
       if (handleVoiceCommands(text)) return;
       sendRef.current({ type: 'SPEECH', text, now: Date.now() });
     },
@@ -214,8 +225,9 @@ export default function SlideBotPage() {
       case 'PICK_IMAGE': break; // dành cho thumbnail strip ở SaleConsole (P3)
     }
   };
+  saleCmdRef.current = handleSaleCmd;
 
-  // Khởi tạo transport + demo mode (client-only).
+  // Khởi tạo transport + demo mode + kênh tab Sale (client-only).
   useEffect(() => {
     const qs = new URLSearchParams(window.location.search);
     setDebugOn(qs.has('debug'));
@@ -224,9 +236,48 @@ export default function SlideBotPage() {
     setTransportKind(tp.kind);
     const demo = qs.get('demo');
     if (demo) sendRef.current({ type: 'SLIDE_READY', seq: RESUME_SEQ, data: DEMO_SLIDES[demo] || DEMO_SLIDES['1'] });
-    return () => tp.dispose();
+
+    const bus = openMonitorBus<TvToMonitor, MonitorToTv>();
+    monitorRef.current = bus;
+    const unsub = bus?.subscribe(msg => {
+      switch (msg.t) {
+        case 'MONITOR_HELLO':
+          if (snapshotRef.current) bus.post({ t: 'SNAPSHOT', snap: snapshotRef.current });
+          break;
+        case 'OVERRIDE_QUERY':
+          dbg(`✏️ Tab Sale bẻ lái truy vấn: "${msg.text}"`);
+          sendRef.current({ type: 'SALE_OVERRIDE_QUERY', text: msg.text, now: Date.now() });
+          break;
+        case 'SALE_CMD':
+          saleCmdRef.current(msg.cmd, msg.arg);
+          break;
+      }
+    });
+    bus?.post({ t: 'TV_HELLO' });
+    return () => { tp.dispose(); unsub?.(); bus?.close(); monitorRef.current = null; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Ảnh chụp trạng thái TV cho tab Sale - gửi mỗi khi có gì đổi.
+  useEffect(() => {
+    const snap: TvSnapshot = {
+      audio: state,
+      machine: ctx.state,
+      transport: transportKind,
+      ws: wsStatus,
+      slideId: ctx.slideId,
+      slideTitle: ctx.slide?.title,
+      slideSource: ctx.slide?._source,
+      topicLabel: ctx.topicLabel,
+      heardText: ctx.heardText,
+      recent: ctx.recent,
+      errorMsg: errorMsg || undefined,
+      errorNote: ctx.errorNote || undefined,
+      at: Date.now(),
+    };
+    snapshotRef.current = snap;
+    monitorRef.current?.post({ t: 'SNAPSHOT', snap });
+  }, [state, ctx.state, ctx.slideId, ctx.slide, ctx.topicLabel, ctx.heardText, ctx.recent, ctx.errorNote, errorMsg, transportKind, wsStatus]);
 
   // TV báo trạng thái cho Companion (chỉ có tác dụng ở WS).
   useEffect(() => {
