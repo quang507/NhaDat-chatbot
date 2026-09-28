@@ -119,6 +119,16 @@ Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Pr
   -Settings $settings -Force | Out-Null
 Start-ScheduledTask -TaskName $TaskName
 
+# Khởi động lại mỗi ngày 4h sáng: log chỉ xoay vòng lúc server khởi động
+# (run-server.cmd), và giải phóng RAM rò rỉ nếu có.
+$restartCmd = "Stop-ScheduledTask -TaskName $TaskName; " +
+  "Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue | " +
+  "ForEach-Object { Stop-Process -Id `$_.OwningProcess -Force -ErrorAction SilentlyContinue }; " +
+  "Start-Sleep -Seconds 3; Start-ScheduledTask -TaskName $TaskName"
+$rAction = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -Command `"$restartCmd`""
+Register-ScheduledTask -TaskName "$TaskName-DailyRestart" -Action $rAction `
+  -Trigger (New-ScheduledTaskTrigger -Daily -At 4am) -Principal $principal -Force | Out-Null
+
 # --- 5. Nguồn điện + firewall ---------------------------------------------------
 Step 'Tắt sleep/hibernate khi cắm điện, mở firewall cổng cho mạng LAN'
 powercfg /change standby-timeout-ac 0 | Out-Null

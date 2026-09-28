@@ -4,13 +4,20 @@
 # Chỉ đổi key trong .env.local (không kéo code): thêm -NoPull.
 
 param(
-  [int]$Port = 3000,
+  [int]$Port = 0,
   [switch]$NoPull
 )
 
 $ErrorActionPreference = 'Stop'
 $TaskName = 'NhaDatChatbot'
 $Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+
+# Không truyền -Port -> lấy đúng cổng install.ps1 đã ghi vào Scheduled Task.
+if (-not $Port) {
+  $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+  if ($task -and $task.Actions[0].Arguments -match '"\s+(\d+)"?$') { $Port = [int]$Matches[1] } else { $Port = 3000 }
+}
+Write-Host "Cổng: $Port"
 
 function Run($exe, [string[]]$argList) {
   & $exe @argList
