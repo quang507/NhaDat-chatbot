@@ -2,8 +2,13 @@
   // Script nhúng chatbot NhaDat vào bất kỳ website nào (WordPress, HTML...)
   // Cách dùng: <script src="https://<domain-chatbot>/embed.js"></script>
   // ORIGIN lấy theo chính nơi tải script -> đổi host (Vercel / máy tự chạy) không phải sửa file.
-  var cur = document.currentScript && document.currentScript.src;
-  var ORIGIN = cur ? new URL(cur).origin : 'https://nha-dat-chatbot.vercel.app';
+  // Plugin tối ưu (WP Rocket...) có thể chép script về domain website -> khi đó
+  // origin script trùng trang chủ, không phải chatbot -> dùng mặc định.
+  var ORIGIN = 'https://nha-dat-chatbot.vercel.app';
+  try {
+    var cur = document.currentScript && new URL(document.currentScript.src).origin;
+    if (cur && cur !== location.origin) ORIGIN = cur;
+  } catch (e) {}
 
   var iframe = document.createElement('iframe');
   iframe.src = ORIGIN + '/embed';

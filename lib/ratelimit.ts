@@ -3,7 +3,11 @@
 const HITS = new Map<string, number[]>();
 
 export function rateLimited(req: Request, name: string, maxPerMin = 120): boolean {
-  const ip = (req.headers.get('x-forwarded-for') || 'unknown').split(',')[0].trim();
+  // Vercel ghi đè X-Forwarded-For -> tin được. Tự host sau Cloudflare Tunnel thì
+  // XFF giữ nguyên giá trị khách tự gửi (giả được), còn CF-Connecting-IP do
+  // Cloudflare ghi đè. Trên Vercel KHÔNG tin CF-Connecting-IP (khách tự đặt được).
+  const cfIp = process.env.VERCEL ? '' : req.headers.get('cf-connecting-ip');
+  const ip = (cfIp || (req.headers.get('x-forwarded-for') || 'unknown').split(',')[0]).trim();
   const key = `${name}:${ip}`;
   const now = Date.now();
   const arr = (HITS.get(key) || []).filter(t => now - t < 60_000);

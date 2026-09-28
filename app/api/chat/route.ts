@@ -386,7 +386,13 @@ export async function POST(req: NextRequest) {
     // khách ăn "hệ thống đang bận" liên tục vì Groq cũng trống key.
     if (ANTHROPIC_API_KEY && elapsed() < 40000) {
       try {
-        const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY, maxRetries: 1, timeout: 20000 });
+        // Canh ngân sách 60s: timeout SDK chỉ bọc lúc chờ header, không bọc stream,
+        // và retry sẽ nhân đôi thời gian -> tắt retry, tự đặt hạn cho event đầu.
+        const client = new Anthropic({
+          apiKey: ANTHROPIC_API_KEY,
+          maxRetries: 0,
+          timeout: Math.max(3000, Math.min(15000, 48000 - elapsed())),
+        });
         // API bắt buộc tin đầu là user -> bỏ các tin model đứng đầu history.
         const msgs = contents.map(c => ({
           role: (c.role === 'model' ? 'assistant' : 'user') as 'assistant' | 'user',
@@ -403,9 +409,23 @@ export async function POST(req: NextRequest) {
           betas: ['server-side-fallback-2026-07-01'],
           fallbacks: 'default',
         });
+        // Iterator của SDK nuốt lỗi tới lúc không có ai đang chờ next() (chỉ đánh
+        // dấu done) -> tự bắt lỗi để không log câu trả lời bị cụt là "done".
+        let streamErr: unknown = null;
+        claudeStream.on('error', e => { streamErr = e; });
         const it = claudeStream[Symbol.asyncIterator]();
+        // next() có hạn chờ: Claude im lặng quá hạn -> null (coi như treo).
+        const nextOrIdle = async (ms: number) => {
+          let timer: ReturnType<typeof setTimeout> | undefined;
+          const idle = new Promise<null>(res => { timer = setTimeout(() => res(null), ms); });
+          try { return await Promise.race([it.next(), idle]); } finally { clearTimeout(timer); }
+        };
         // Chờ event đầu tiên: lỗi key/quota ném ra ở đây -> còn rơi xuống Groq được.
-        const first = await it.next();
+        const first = await nextOrIdle(Math.max(1000, 50000 - elapsed()));
+        if (!first) {
+          claudeStream.abort();
+          throw new Error('Claude không trả event đầu trong hạn');
+        }
 
         const encoder = new TextEncoder();
         let full = '';
@@ -414,15 +434,18 @@ export async function POST(req: NextRequest) {
           async start(controller) {
             let endReason = 'done';
             try {
-              let r = first;
-              while (!r.done) {
+              let r: typeof first | null = first;
+              while (r && !r.done) {
                 const ev = r.value;
                 if (ev.type === 'content_block_delta' && ev.delta.type === 'text_delta') {
                   full += ev.delta.text;
                   controller.enqueue(encoder.encode(ev.delta.text));
                 }
-                r = await it.next();
+                // Cùng ngưỡng với Gemini/Groq: đã có chữ mà im 8s -> chốt.
+                r = await nextOrIdle(full ? 8000 : 25000);
               }
+              if (!r) { endReason = 'idle_timeout'; claudeStream.abort(); }
+              else if (streamErr) endReason = `stream_error:${streamErr}`;
             } catch (e) {
               endReason = `read_error:${e}`;
             }

@@ -42,10 +42,11 @@ Sau đó đổi URL chatbot trên website:
 | Đổi key | Sửa `.env.local` bằng Notepad → `powershell -ExecutionPolicy Bypass -File deploy\windows\update.ps1 -NoPull` |
 | Xem log | `Get-Content logs\server.log -Tail 50 -Wait` |
 | Dừng / chạy | `Stop-ScheduledTask NhaDatChatbot` / `Start-ScheduledTask NhaDatChatbot` |
-| Gỡ hẳn | `Unregister-ScheduledTask NhaDatChatbot -Confirm:$false` |
+| Gỡ hẳn | `Unregister-ScheduledTask NhaDatChatbot -Confirm:$false; Unregister-ScheduledTask NhaDatChatbot-DailyRestart -Confirm:$false` |
 
 ## Lưu ý
 
 - Máy mất điện / mất mạng là bot ngừng - nên có UPS, và bật "Restore on AC power loss" trong BIOS để máy tự bật lại.
+- Server tự khởi động lại lúc 4h sáng mỗi ngày (task `NhaDatChatbot-DailyRestart`) để xoay vòng log.
 - Script đã tắt sleep/hibernate khi cắm điện. Windows Update vẫn có thể restart máy - task tự chạy lại sau khi bật.
 - Log chat/lead vẫn ghi lên GitHub như trên Vercel (cần `GITHUB_TOKEN`).
