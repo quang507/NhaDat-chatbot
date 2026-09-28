@@ -1,7 +1,9 @@
 (function () {
   // Script nhúng chatbot NhaDat vào bất kỳ website nào (WordPress, HTML...)
-  // Cách dùng: <script src="https://nha-dat-chatbot.vercel.app/embed.js"></script>
-  var ORIGIN = 'https://nha-dat-chatbot.vercel.app';
+  // Cách dùng: <script src="https://<domain-chatbot>/embed.js"></script>
+  // ORIGIN lấy theo chính nơi tải script -> đổi host (Vercel / máy tự chạy) không phải sửa file.
+  var cur = document.currentScript && document.currentScript.src;
+  var ORIGIN = cur ? new URL(cur).origin : 'https://nha-dat-chatbot.vercel.app';
 
   var iframe = document.createElement('iframe');
   iframe.src = ORIGIN + '/embed';
