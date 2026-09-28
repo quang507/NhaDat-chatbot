@@ -1,0 +1,3 @@
+# cmd.exe goto/label co the loi voi file chi co LF
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
