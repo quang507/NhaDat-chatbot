@@ -21,6 +21,7 @@
     "index:pull": "node scripts/pull-index.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
     "@vercel/speed-insights": "^2.0.0",
     "adm-zip": "^0.5.17",
     "edge-tts-universal": "^1.4.0",
