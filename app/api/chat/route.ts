@@ -7,6 +7,7 @@ import { writeLog, extractPhone } from '@/lib/logs';
 import { loadIndex, retrieve } from '@/lib/rag';
 import { detectRouteIntent, getDrivingRoute, routeSummaryToPrompt } from '@/lib/maps';
 import { detectUnit, unitContext, getGeneralUnsoldContext, isGeneralUnsoldQuery } from '@/lib/units';
+import Anthropic from '@anthropic-ai/sdk';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -14,6 +15,8 @@ export const maxDuration = 60;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-opus-5';
 
 // SOURCE_RULE: chỉ giữ các quy tắc KỸ THUẬT ĐẶC THÙ không có trong persona.md
 // (bỏ: quy tắc giọng điệu, không bịa, không chào lặp - đã có trong persona)
@@ -160,8 +163,8 @@ export async function POST(req: NextRequest) {
 
     const { message, history, profile } = await req.json();
     if (!message) return NextResponse.json({ error: 'message is required' }, { status: 400 });
-    if (!GEMINI_API_KEY) {
-      return NextResponse.json({ error: 'GEMINI_API_KEY chưa được set trong Vercel Environment Variables' }, { status: 500 });
+    if (!GEMINI_API_KEY && !ANTHROPIC_API_KEY) {
+      return NextResponse.json({ error: 'GEMINI_API_KEY / ANTHROPIC_API_KEY chưa được set trong Vercel Environment Variables' }, { status: 500 });
     }
 
     const contents = [
@@ -368,6 +371,8 @@ export async function POST(req: NextRequest) {
           // model dự phòng vẫn đáng thử (vd sai tên model chính).
           const retryable = geminiResponse.status === 429 || geminiResponse.status >= 500;
           console.warn(`Gemini API error attempt ${attempt + 1} [${model}] (status ${geminiResponse.status}): ${errText}`);
+          // 402 = hết tiền prepay: cả tài khoản hỏng, model nào cũng 402 -> sang Claude ngay.
+          if (geminiResponse.status === 402) break;
           if (!retryable) skipModel = model;
         }
       } catch (err) {
@@ -377,7 +382,75 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2) Fallback: Groq (miễn phí, dùng khi Gemini hết quota)
+    // 2) Fallback: Claude (Anthropic). Gemini từng hết tiền prepay (402) ->
+    // khách ăn "hệ thống đang bận" liên tục vì Groq cũng trống key.
+    if (ANTHROPIC_API_KEY && elapsed() < 40000) {
+      try {
+        const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY, maxRetries: 1, timeout: 20000 });
+        // API bắt buộc tin đầu là user -> bỏ các tin model đứng đầu history.
+        const msgs = contents.map(c => ({
+          role: (c.role === 'model' ? 'assistant' : 'user') as 'assistant' | 'user',
+          content: c.parts[0].text,
+        }));
+        while (msgs.length && msgs[0].role !== 'user') msgs.shift();
+
+        const claudeStream = client.beta.messages.stream({
+          model: ANTHROPIC_MODEL,
+          max_tokens: 4096,
+          system: `${systemText}\n\nLatency-sensitive; begin your visible answer immediately.`,
+          messages: msgs,
+          output_config: { effort: 'low' },
+          betas: ['server-side-fallback-2026-07-01'],
+          fallbacks: 'default',
+        });
+        const it = claudeStream[Symbol.asyncIterator]();
+        // Chờ event đầu tiên: lỗi key/quota ném ra ở đây -> còn rơi xuống Groq được.
+        const first = await it.next();
+
+        const encoder = new TextEncoder();
+        let full = '';
+        const t0 = Date.now();
+        const stream = new ReadableStream({
+          async start(controller) {
+            let endReason = 'done';
+            try {
+              let r = first;
+              while (!r.done) {
+                const ev = r.value;
+                if (ev.type === 'content_block_delta' && ev.delta.type === 'text_delta') {
+                  full += ev.delta.text;
+                  controller.enqueue(encoder.encode(ev.delta.text));
+                }
+                r = await it.next();
+              }
+            } catch (e) {
+              endReason = `read_error:${e}`;
+            }
+            console.log(`[chat-stream] claude ${ANTHROPIC_MODEL} end=${endReason} elapsed=${Date.now() - t0}ms len=${full.length}`);
+            try { controller.close(); } catch {}
+            const time = new Date().toISOString();
+            writeLog('chats', { time, question: message, answer: full }).catch(console.error);
+            const phone = extractPhone(message);
+            if (phone) writeLog('leads', { time, phone, message }).catch(console.error);
+          },
+          cancel() {
+            claudeStream.abort();
+          },
+        });
+
+        return new Response(stream, {
+          headers: {
+            'Content-Type': 'text/event-stream; charset=utf-8',
+            'Cache-Control': 'no-cache',
+            'X-Accel-Buffering': 'no',
+          },
+        });
+      } catch (err) {
+        console.warn('Claude API error:', err);
+      }
+    }
+
+    // 3) Fallback: Groq (miễn phí, dùng khi Gemini hết quota)
     const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
     if (!GROQ_API_KEY) console.warn('[chat] GROQ_API_KEY trống trong env - Gemini lỗi là khách nhận "hệ thống đang bận" ngay, không có lưới đỡ');
 
@@ -531,7 +604,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Cả Gemini và Groq đều lỗi
+    // Gemini, Claude và Groq đều lỗi
     return NextResponse.json({
       friendly: '⚠️ Hệ thống đang bận, anh/chị vui lòng thử lại sau ít phút giúp em nhé 🙏'
     }, { status: 429 });

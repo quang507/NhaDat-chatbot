@@ -39,6 +39,8 @@ async function ensureBranch(): Promise<boolean> {
 export async function sendTelegramMessage(text: string): Promise<boolean> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
+  // Tạm TẮT thông báo Telegram. Bật lại: set TELEGRAM_ENABLED=1 trên Vercel.
+  if (process.env.TELEGRAM_ENABLED !== '1') return false;
   if (!token || !chatId) return false;
 
   try {
