@@ -6,6 +6,7 @@
     "dev": "next dev",
     "prebuild": "node scripts/gen-blur-bg.mjs",
     "images:bg": "node scripts/gen-blur-bg.mjs",
+    "images:index": "node scripts/build-image-index.mjs",
     "server": "bun server/index.ts",
     "build": "next build",
     "start": "next start",

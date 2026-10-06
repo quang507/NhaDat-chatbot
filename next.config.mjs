@@ -14,6 +14,7 @@ const nextConfig = {
       // dong, khong the trace tinh) -> Vercel khong tu dong dong goi vao ham serverless
       // -> existsSync tra false -> mang anh rong. Phai khai ro de bundle theo.
       '/api/slide': ['./public/images/**/*', './index.json'],
+      '/api/images': ['./image_index.json'],
     },
   },
 };
