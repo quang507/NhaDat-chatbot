@@ -40,6 +40,8 @@ const EXT = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const EMBED_MODEL = 'gemini-embedding-001';
 const DIM = 768;
 const API = 'https://generativelanguage.googleapis.com/v1beta';
+// gemini-flash-latest hay bị 503 khi quá tải -> có thể đổi: VISION_MODEL=gemini-flash-lite-latest
+const VISION_MODEL = process.env.VISION_MODEL || 'gemini-flash-latest';
 
 function loadKey() {
   if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
@@ -104,7 +106,7 @@ async function describe(full, rel) {
   // Gửi bản thu nhỏ 1024px: đủ để nhận diện nội dung, rẻ + nhanh hơn ảnh gốc.
   const b64 = (await sharp(full).rotate().resize({ width: 1024, height: 1024, fit: 'inside', withoutEnlargement: true })
     .jpeg({ quality: 80 }).toBuffer()).toString('base64');
-  const res = await fetch(`${API}/models/gemini-flash-latest:generateContent?key=${KEY}`, {
+  const res = await fetch(`${API}/models/${VISION_MODEL}:generateContent?key=${KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
