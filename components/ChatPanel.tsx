@@ -133,16 +133,6 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
       });
     let acc = '';
 
-    // Bắn SONG SONG /api/slide (ambient=true -> nhánh slide tĩnh ~0ms, không
-    // tốn LLM) để lấy ảnh dự án đính kèm câu trả lời - cùng cơ chế /voice dùng.
-    // Câu không khớp chủ đề thì slide trả skip -> không đính gì.
-    const slidePromise: Promise<{ skip?: boolean; title?: string; image_urls?: string[] } | null> =
-      fetch('/api/slide', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, ambient: true }),
-      }).then(r => (r.ok ? r.json() : null)).catch(() => null);
-
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -187,17 +177,22 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
         writeAssistant('Không có phản hồi, vui lòng thử lại.');
       } else {
         recorderRef.current.answerLast(acc);
-        // Trả lời xong -> đính ảnh dự án nếu câu hỏi khớp chủ đề có ảnh.
-        // Chờ tối đa 4s: slide tĩnh về ~0ms, chỉ nhánh LLM mới chậm - quá hạn
-        // thì thôi, không giữ khách.
-        const slide = await Promise.race([
-          slidePromise,
-          new Promise<null>(r => setTimeout(() => r(null), 4000)),
-        ]);
-        const imgs = slide && !slide.skip && Array.isArray(slide.image_urls)
-          ? Array.from(new Set(slide.image_urls)).slice(0, 2) : [];
+        // Trả lời xong -> đính ảnh dự án chọn theo NGỮ NGHĨA (câu hỏi + câu trả lời,
+        // /api/images). Không ảnh nào đủ ngưỡng thì không đính - ảnh sai chủ đề còn
+        // tệ hơn không có ảnh. Chờ tối đa 4s, quá hạn thì thôi, không giữ khách.
+        const within = <T,>(p: Promise<T>) => Promise.race([p, new Promise<null>(r => setTimeout(() => r(null), 4000))]);
+        const sem = await within(
+          fetch('/api/images', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: msg, answer: acc }),
+          }).then(r => (r.ok ? r.json() : null)).catch(() => null) as Promise<{ images?: { url: string }[] } | null>,
+        );
+        const picked = Array.isArray(sem?.images) ? sem!.images.map(i => i.url) : [];
+        const alt = 'Ảnh dự án';
+        const imgs = Array.from(new Set(picked)).slice(0, 3);
         if (imgs.length) {
-          const md = '\n\n' + imgs.map(u => `![${slide!.title || 'Ảnh dự án'}](${u})`).join('\n');
+          const md = '\n\n' + imgs.map(u => `![${alt}](${u})`).join('\n');
           acc += md;
           writeAssistant(acc);
         }

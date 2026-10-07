@@ -9,7 +9,9 @@
 //   2. Thêm entry mới với { keywords, slide } hoặc { keywords, allOf, slide }
 //   3. keywords: khớp BẤT KỲ từ nào (so khớp cả bản không dấu)
 //   4. allOf: PHẢI có đủ TẤT CẢ các từ (ưu tiên chạy trước nhánh generic)
-//   5. Ảnh: đường dẫn /images/... (phải tồn tại trong public/)
+//   5. Ảnh: đường dẫn /images/... (phải tồn tại trong public/). Chưa có ảnh đúng
+//      chủ đề thì để image_urls: [] -> route tự chọn ảnh theo ngữ nghĩa
+//      (lib/image-search.ts); KHÔNG dùng ảnh "minh họa giữ chỗ" hay ảnh gần đúng.
 //   6. Restart app, không cần rebuild
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -160,7 +162,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Pháp lý minh bạch',
       points: ['Diện tích đất theo GCN, diện tích sàn theo GPXD từng lô', 'Hồ sơ pháp lý rõ ràng, xem trực tiếp tại văn phòng', 'Chủ đầu tư trực tiếp đứng tên phát triển dự án'],
       speech_text: 'Pháp lý dự án minh bạch - từng lô có số liệu GCN và giấy phép xây dựng rõ ràng, anh chị có thể xem hồ sơ trực tiếp.',
-      image_urls: [`${IMG}/phap_ly/logo_nyahphudinh_210531_f-02.png`],
+      image_urls: [],
     },
   },
 
@@ -171,16 +173,16 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Bảng giá độc quyền',
       points: ['Giá gói Air từ 8,981 tỷ (lô Cosmo Gen 2 #42)', 'Lên gói Max "chìa khóa trao tay" chênh nhẹ theo căn', 'Bảng giá chi tiết từng lô: hỏi ngay tư vấn viên'],
       speech_text: 'Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.',
-      image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
+      image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`],
       forceStatic: true,
     },
   },
   {
     keywords: ['còn căn nào', 'còn hàng', 'rổ hàng', 'còn trống', 'căn nào còn', 'lô nào còn', 'còn bán'],
     slide: {
-      title: 'Rổ hàng T6/2026 - 7 lô cuối',
+      title: 'Rổ hàng T10/2026 - 7 lô cuối',
       points: ['Còn 7 lô: #01, #02, #03, #23, #24, #42, #50', 'Đủ dòng: Office, Cosmo, Cashmere, Opus', 'Giá gói Air từ 8,981 tỷ (lô #42), lô lớn nhất 16,57 tỷ'],
-      speech_text: 'Rổ hàng tháng 6 còn đúng 7 lô: lô 1, 2, 3, 23, 24, 42 và 50 - đủ các dòng Office, Cosmo, Cashmere và Opus.',
+      speech_text: 'Rổ hàng tháng 10 còn đúng 7 lô: lô 1, 2, 3, 23, 24, 42 và 50 - đủ các dòng Office, Cosmo, Cashmere và Opus.',
       image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`, `${IMG}/mat_bang/ban-do-phan-lo-dien-tich.jpg`],
       forceStatic: true,
     },
@@ -193,7 +195,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Lịch thanh toán theo đợt',
       points: ['Ký hợp đồng đặt cọc: 10%', 'Mỗi tháng 3% trong 7 tháng → đủ 31%', 'Bàn giao hoàn thiện Air: thêm 8% → 39%', 'Ký HĐMB công chứng: 61% còn lại → đủ 100%'],
       speech_text: 'Lịch thanh toán rất nhẹ: ký cọc mười phần trăm, mỗi tháng chỉ ba phần trăm trong bảy tháng, nhận bàn giao Air thêm tám phần trăm là ba mươi chín phần trăm - phần còn lại đóng khi ký hợp đồng mua bán công chứng.',
-      image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`],
+      image_urls: [],
       forceStatic: true,
     },
   },
@@ -402,7 +404,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Compound an ninh khép kín',
       points: ['Khu compound khép kín, kiểm soát ra vào', 'An ninh tuần tra, camera giám sát', 'Trẻ em chơi trong khu - bố mẹ an tâm'],
       speech_text: 'Đây là compound khép kín có kiểm soát ra vào và camera an ninh - trẻ em chơi trong khu bố mẹ hoàn toàn an tâm.',
-      image_urls: [`${IMG}/tien_ich/cong_vao/tien-ich-3.jpg`, `${IMG}/an_ninh/an-ninh_camera.jpg`, `${IMG}/tien_ich/cong_vao/tien-ich-4.jpg`],
+      image_urls: [`${IMG}/tien_ich/cong_vao/tien-ich-3.jpg`, `${IMG}/tien_ich/cong_vao/tien-ich-4.jpg`],
     },
   },
   {
@@ -707,7 +709,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Thang máy trong nhà',
       points: ['Thang máy tiêu chuẩn ở Cosmo, Fusion, Opus', 'Lên thẳng sân thượng - tiện cho ông bà', 'Thang kính lấy sáng, không tối tù'],
       speech_text: 'Nhà có thang máy lên thẳng sân thượng - ông bà lớn tuổi đi lại cực kỳ nhẹ nhàng.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg`, `${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`],
+      image_urls: [],
     },
   },
   {
@@ -743,7 +745,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Giếng trời & Ánh sáng',
       points: ['Giếng trời xuyên suốt các tầng', 'Phòng nào cũng có ánh sáng tự nhiên', 'Kết hợp gạch bông gió đón gió chéo'],
       speech_text: 'Giếng trời xuyên suốt giúp phòng nào cũng có ánh sáng tự nhiên - nhà phố mà không hề tối.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`, `${IMG}/noi_that/cosmo_gen_2/cosmo-gen-2_mat-cat.jpg`],
+      image_urls: [],
     },
   },
 
@@ -799,7 +801,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Ban công xanh',
       points: ['Ban công từng tầng đón gió tự nhiên', 'Chỗ đặt bồn cây - mảng xanh riêng mỗi phòng', 'Kết nối không gian trong nhà với bên ngoài'],
       speech_text: 'Mỗi tầng đều có ban công đón gió - đặt vài bồn cây là có mảng xanh riêng cho từng phòng.',
-      image_urls: [`${IMG}/noi_that/fusion_gen_5/fusion-gen-5_mat-tien.jpg`],
+      image_urls: [],
     },
   },
   {
@@ -864,7 +866,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Khu giặt sấy tiện lợi',
       points: ['Giặt sấy bố trí ngay khu bếp - gọn việc nhà', 'Sân thượng phơi đồ nắng gió tự nhiên', 'Động tuyến việc nhà tối ưu từng bước chân'],
       speech_text: 'Khu giặt sấy đặt ngay tầng bếp, phơi đồ trên sân thượng - động tuyến việc nhà cực gọn.',
-      image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg`],
+      image_urls: [],
     },
   },
   {
@@ -951,7 +953,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Gói Air vs Gói Max',
       points: ['Air: hoàn thiện đồng bộ + hệ khí tươi AirTop', 'Max: Air + tủ bếp An Cường + máy lạnh LG + ByteLife', 'Gói Max "chìa khóa trao tay": từ 1,6 - 1,9 tỷ/căn tùy mẫu'],
       speech_text: 'Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - trọn gói chìa khóa trao tay từ một tỷ sáu đến một tỷ chín tùy mẫu nhà.',
-      image_urls: [`${IMG}/noi_that/goi-air-vs-max_bang-so-sanh.jpg`, `${IMG}/noi_that/thiet_bi/tu-bep_an-cuong.jpg`, `${IMG}/noi_that/thiet_bi/may-lanh_lg.jpg`],
+      image_urls: [],
       forceStatic: true,
     },
   },
@@ -961,7 +963,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Gói Air vs Gói Max',
       points: ['Air: hoàn thiện đồng bộ + hệ khí tươi AirTop', 'Max: Air + tủ bếp An Cường + máy lạnh LG + ByteLife', 'Gói Max "chìa khóa trao tay": từ 1,6 - 1,9 tỷ/căn tùy mẫu'],
       speech_text: 'Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - trọn gói chìa khóa trao tay từ một tỷ sáu đến một tỷ chín tùy mẫu nhà.',
-      image_urls: [`${IMG}/noi_that/goi-air-vs-max_bang-so-sanh.jpg`, `${IMG}/noi_that/thiet_bi/tu-bep_an-cuong.jpg`, `${IMG}/noi_that/thiet_bi/may-lanh_lg.jpg`],
+      image_urls: [],
       forceStatic: true,
     },
   },
@@ -972,7 +974,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Kích thước cổng & cửa',
       points: ['Cổng chính và cửa phụ theo thiết kế từng mẫu', 'Cửa cuốn gara đỗ vừa SUV, bán tải', 'Số đo chính xác từng lô: xem datasheet cùng tư vấn viên'],
       speech_text: 'Kích thước cổng chính, cửa phụ và cửa cuốn theo thiết kế từng mẫu - tư vấn viên sẽ gửi anh chị datasheet số đo chính xác của đúng lô mình chọn.',
-      image_urls: [`${IMG}/thong_so/thong-so_cong-chinh.jpg`, `${IMG}/thong_so/thong-so_cua-phu.jpg`, `${IMG}/thong_so/cua-cuon.jpg`],
+      image_urls: [],
       forceStatic: true,
     },
   },
@@ -983,7 +985,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Thương hiệu vật liệu & thiết bị',
       points: ['Vật liệu hoàn thiện tuyển chọn từ thương hiệu uy tín', 'Khí tươi AirTop - Smart Home ByteLife', 'Danh mục brand chi tiết theo gói bàn giao'],
       speech_text: 'Vật liệu và thiết bị đều từ thương hiệu tuyển chọn - danh mục brand chi tiết theo từng gói bàn giao, tư vấn viên gửi anh chị bản đầy đủ.',
-      image_urls: [`${IMG}/thong_so/brand_vat-lieu-noi-that.jpg`, `${IMG}/thong_so/thang-may.jpg`, `${IMG}/noi_that/thiet_bi/thiet-bi-ve-sinh_inax.jpg`],
+      image_urls: [],
       forceStatic: true,
     },
   },
@@ -1005,7 +1007,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Mặt ngang các mẫu nhà',
       points: ['Mặt đứng bên hông từng mẫu Cosmo - Fusion - Opus', 'Thấy rõ chiều sâu nhà và phân tầng', 'Kết hợp mặt cắt để hình dung trọn khối nhà'],
       speech_text: 'Đây là mặt ngang bên hông của từng mẫu - nhìn rõ chiều sâu và cách phân tầng của căn nhà.',
-      image_urls: [`${IMG}/ngoai_that/cosmo-gen-2_mat-ngang.jpg`, `${IMG}/ngoai_that/fusion-gen-5_mat-ngang.jpg`, `${IMG}/ngoai_that/opus_mat-ngang.jpg`],
+      image_urls: [],
       forceStatic: true,
     },
   },
@@ -1060,7 +1062,7 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
       title: 'Giá chính thức từ chủ đầu tư',
       points: ['Tin rao trên mạng là của bên thứ 3 - thường cũ hoặc sai', 'Giá chính thức chỉ công bố qua Nhã Đạt và bảng giá từng đợt', 'Anh chị đối chiếu trực tiếp với tư vấn viên để chốt đúng số'],
       speech_text: 'Mấy tin trên mạng là của bên thứ ba, hay để giá cũ hoặc giá ảo để kéo khách - giá chính thức anh chị lấy trực tiếp từ Nhã Đạt theo bảng giá từng đợt cho chuẩn ạ.',
-      image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/chu_dau_tu/nha_dat/logo_nha-dat-1.png`],
+      image_urls: [`${IMG}/chu_dau_tu/nha_dat/logo_nha-dat-1.png`],
       forceStatic: true,
     },
   },
@@ -1126,8 +1128,8 @@ export function matchStaticSlide(message: string, phase: 'combo' | 'general'): C
 // BLOCK B - SLIDE PHÒNG THEO MẪU NHÀ + SLIDE CHỦ ĐỀ  (gộp từ app/api/slide/route.ts)
 // ───────────────────────────────────────────────────────────────────────────
 // Trước đây là ~330 dòng if/else hardcode trong route. Nay chỉ còn DỮ LIỆU ở đây;
-// route.ts vẫn lo NHẬN DIỆN mẫu nhà (số căn/biến thể STT) và LẤY ẢNH CHUNG theo
-// thư mục (getGeneralImagesForSpace) khi biến thể 'nyah' không có ảnh cố định.
+// route.ts vẫn lo NHẬN DIỆN mẫu nhà (số căn/biến thể STT) và CHỌN ẢNH THEO NGỮ
+// NGHĨA (lib/image-search.ts) khi biến thể 'nyah' không có ảnh cố định.
 // ═══════════════════════════════════════════════════════════════════════════
 
 export type RoomModel = 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | 'nyah';
@@ -1136,8 +1138,8 @@ export interface RoomVariant {
   title: string;
   points: string[];
   speech_text: string;
-  image_urls?: string[]; // ảnh cố định; bỏ trống -> route lấy ảnh chung theo imageSpace
-  imageSpace?: string;   // dùng cho biến thể 'nyah' (getGeneralImagesForSpace)
+  image_urls?: string[]; // ảnh cố định; bỏ trống -> route chọn ảnh theo ngữ nghĩa
+  imageSpace?: string;   // không còn dùng để chọn ảnh (giữ cho slides.json cũ)
 }
 export interface RoomEntry { keywords: string[]; variants: Record<RoomModel, RoomVariant>; }
 
@@ -1148,7 +1150,7 @@ export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides',
     keywords: ['bếp', 'nhà ăn', 'nấu ăn', 'phòng ăn', 'bàn ăn'],
     variants: {
       cosmo_gen_2: { title: 'Phòng bếp Cosmo', points: ['Hệ tủ bếp hiện đại, tối ưu', 'Mặt bếp đá thạch anh cao cấp', 'Không gian bàn ăn ấm cúng'], speech_text: 'Khu vực bếp và bàn ăn của căn nhà Cosmo được thiết kế ấm cúng, trang bị hệ tủ bếp hiện đại.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg`] },
-      fusion_gen_5: { title: 'Phòng bếp Fusion', points: ['Bố trí bếp đảo hiện đại', 'Thiết kế mở kết nối phòng khách', 'Trang bị thiết bị bếp cao cấp'], speech_text: 'Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình.', image_urls: [`${IMG}/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png`] },
+      fusion_gen_5: { title: 'Phòng bếp Fusion', points: ['Bố trí bếp đảo hiện đại', 'Thiết kế mở kết nối phòng khách', 'Trang bị thiết bị bếp cao cấp'], speech_text: 'Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình.' },
       opus: { title: 'Phòng bếp Opus', points: ['Khu vực bếp nấu biệt lập', 'Bố trí bàn ăn sang trọng', 'Kết nối ban công thoáng mát'], speech_text: 'Không gian bếp của mẫu nhà Opus sang trọng, thoáng đãng nhờ kết nối trực tiếp với ban công ngoài trời.', image_urls: [`${IMG}/noi_that/opus/bep/opus_bep.jpg`] },
       nyah: { title: "Phòng bếp Ny'ah", points: ['Thiết kế bếp hiện đại, tối ưu không gian', 'Kết nối không gian ăn uống gia đình', 'Trang bị tủ bếp và thiết bị cao cấp'], speech_text: "Các mẫu nhà Ny'ah Phú Định đều được trang bị khu vực bếp hiện đại, tối ưu không gian nấu ăn và sinh hoạt gia đình.", imageSpace: 'bep' },
     },
@@ -1158,7 +1160,7 @@ export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides',
     variants: {
       cosmo_gen_2: { title: 'Gara Ô tô Cosmo', points: ['Sức chứa lớn cho ô tô và xe máy', 'Tích hợp lối đi thang máy kính', 'Hệ thống thông gió hiện đại'], speech_text: 'Mẫu nhà Cosmo thiết kế gara rộng rãi với sức chứa ô tô lớn, kết nối trực tiếp đến thang máy kính lên các tầng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg`] },
       fusion_gen_5: { title: 'Gara Ô tô Fusion', points: ['Thiết kế gara đỗ xe bán tải rộng', 'Lối vào nhà thông thoáng', 'Bố trí hộp kỹ thuật âm tường'], speech_text: 'Gara mẫu nhà Fusion được tối ưu không gian, đỗ vừa xe bán tải lớn và có thiết kế thông thoáng.', image_urls: [`${IMG}/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg`] },
-      opus: { title: 'Gara Ô tô Opus', points: ['Gara đỗ xe hơi thoải mái', 'Cửa cuốn tự động an toàn', 'Bố trí tủ giày và tủ dụng cụ'], speech_text: 'Mẫu nhà thương mại Opus sở hữu gara ô tô riêng biệt tại tầng trệt, kết nối thuận tiện lên khu vực kinh doanh.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
+      opus: { title: 'Gara Ô tô Opus', points: ['Gara đỗ xe hơi thoải mái', 'Cửa cuốn tự động an toàn', 'Bố trí tủ giày và tủ dụng cụ'], speech_text: 'Mẫu nhà thương mại Opus sở hữu gara ô tô riêng biệt tại tầng trệt, kết nối thuận tiện lên khu vực kinh doanh.' },
       nyah: { title: "Gara Ô tô Ny'ah", points: ['100% căn hộ có gara ô tô riêng', 'Thiết kế thông thoáng, cửa cuốn tự động', 'Kết nối thang máy lên các tầng'], speech_text: "Toàn bộ căn nhà tại Ny'ah Phú Định đều được thiết kế gara ô tô riêng biệt ngay tầng trệt, thuận tiện cho sinh hoạt hàng ngày.", imageSpace: 'gara' },
     },
   },
@@ -1167,16 +1169,16 @@ export const ROOM_SLIDES: RoomSlidesMap = fromJSON<RoomSlidesMap>('room_slides',
     variants: {
       cosmo_gen_2: { title: 'Phòng khách Cosmo', points: ['Thiết kế kính tràn rộng mở', 'Trần cao thông thoáng', 'Nội thất sofa hiện đại'], speech_text: 'Phòng khách Cosmo Gen 2 ngập tràn ánh sáng tự nhiên nhờ hệ kính lớn và trần cao thoáng đãng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg`] },
       fusion_gen_5: { title: 'Phòng khách Fusion', points: ['Không gian sinh hoạt rộng lớn', 'Thiết kế lệch tầng độc đáo', 'Tối ưu góc nhìn ra sân vườn'], speech_text: 'Phòng khách mẫu nhà Fusion mang phong cách hiện đại với thiết kế lệch tầng tạo không gian rộng mở.', image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg`] },
-      opus: { title: 'Phòng khách Opus', points: ['Sảnh đón tiếp khách sang trọng', 'Tông màu gỗ ấm áp, lịch lãm', 'Bố trí ánh sáng gián tiếp tinh tế'], speech_text: 'Không gian phòng khách Opus lịch lãm với gỗ tự nhiên, thiết kế lý tưởng để tiếp các đối tác kinh doanh.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
+      opus: { title: 'Phòng khách Opus', points: ['Sảnh đón tiếp khách sang trọng', 'Tông màu gỗ ấm áp, lịch lãm', 'Bố trí ánh sáng gián tiếp tinh tế'], speech_text: 'Không gian phòng khách Opus lịch lãm với gỗ tự nhiên, thiết kế lý tưởng để tiếp các đối tác kinh doanh.' },
       nyah: { title: "Phòng khách Ny'ah", points: ['Thiết kế không gian mở, ngập sáng tự nhiên', 'Nội thất hiện đại theo từng phong cách', 'Linh hoạt bố trí phù hợp gia đình'], speech_text: "Phòng khách các mẫu nhà Ny'ah được thiết kế rộng rãi, thoáng đãng, tận dụng tối đa ánh sáng tự nhiên.", imageSpace: 'phong_khach' },
     },
   },
   phong_ngu: {
     keywords: ['phòng ngủ', 'giường', 'ngủ con', 'ngủ master', 'phòng ngủ chính'],
     variants: {
-      cosmo_gen_2: { title: 'Phòng ngủ Master Cosmo', points: ['Phòng ngủ master rộng lớn', 'Bố trí giường king-size thoải mái', 'Hệ tủ quần áo kính sang trọng'], speech_text: 'Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.', image_urls: [`${IMG}/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg`] },
-      fusion_gen_5: { title: 'Phòng ngủ Master Fusion', points: ['Thiết kế ấm cúng, sang trọng', 'Tích hợp phòng thay đồ riêng', 'Cửa sổ hướng công viên nội khu'], speech_text: 'Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.', image_urls: [`${IMG}/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg`] },
-      opus: { title: 'Phòng ngủ Master Opus', points: ['Không gian nghỉ ngơi đẳng cấp', 'Ban công đón gió tự nhiên', 'Thiết kế chuẩn khách sạn 5 sao'], speech_text: 'Phòng ngủ master của mẫu nhà Opus mang phong cách resort đẳng cấp với ban công rộng đón gió tự nhiên.', image_urls: [`${IMG}/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg`] },
+      cosmo_gen_2: { title: 'Phòng ngủ Master Cosmo', points: ['Phòng ngủ master rộng lớn', 'Bố trí giường king-size thoải mái', 'Hệ tủ quần áo kính sang trọng'], speech_text: 'Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.' },
+      fusion_gen_5: { title: 'Phòng ngủ Master Fusion', points: ['Thiết kế ấm cúng, sang trọng', 'Tích hợp phòng thay đồ riêng', 'Cửa sổ hướng công viên nội khu'], speech_text: 'Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.' },
+      opus: { title: 'Phòng ngủ Master Opus', points: ['Không gian nghỉ ngơi đẳng cấp', 'Ban công đón gió tự nhiên', 'Thiết kế chuẩn khách sạn 5 sao'], speech_text: 'Phòng ngủ master của mẫu nhà Opus mang phong cách resort đẳng cấp với ban công rộng đón gió tự nhiên.' },
       nyah: { title: "Phòng ngủ Ny'ah", points: ['Phòng ngủ master rộng với WC riêng', 'Đầy đủ phòng ngủ cho cả gia đình', 'Thiết kế tối ưu ánh sáng và thông gió'], speech_text: "Các mẫu nhà Ny'ah Phú Định đều thiết kế phòng ngủ master riêng biệt cùng các phòng ngủ con tiện nghi, phù hợp cho gia đình nhiều thế hệ.", imageSpace: 'phong_ngu' },
     },
   },
@@ -1191,9 +1193,9 @@ export const TOPIC_SLIDES: TopicSlidesMap = fromJSON<TopicSlidesMap>('topic_slid
   // "Địa chỉ & 2 cổng dự án" (có số nhà + độ rộng đường) không bao giờ được gọi.
   vi_tri: { keywords: ['vị trí', 'bản đồ', 'maps', 'đường đi', 'võ văn kiệt', 'quận 8', 'nguyễn văn linh'], title: 'Vị trí dự án', points: ['Mặt tiền Trương Đình Hội, Quận 8', 'Kết nối trực tiếp Đại lộ Võ Văn Kiệt', 'Chỉ mất 18 phút di chuyển đến Quận 1'], speech_text: "Dự án Ny'ah Phú Định tọa lạc ngay mặt tiền đường Trương Đình Hội, kết nối trực tiếp đến quận 1 chỉ trong 18 phút qua đại lộ Võ Văn Kiệt.", image_urls: [`${IMG}/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg`], maps_url: 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A' },
   tien_ich: { keywords: ['tiện ích', 'công viên', 'landmark coffee', 'sân chơi', 'tiện nghi', 'hồ bơi', 'bể bơi', 'sân thể thao', 'cầu lông', 'bóng rổ', 'khu vui chơi'], title: 'Hệ thống Tiện ích', points: ['Công viên cây xanh nội khu mát mẻ', 'Khu vui chơi trẻ em an toàn', 'Sân thể thao đa năng và Landmark Coffee'], speech_text: 'Dự án sở hữu khu công viên nội khu xanh mát, khu vui chơi cho trẻ em và các sân thể thao đa năng hiện đại.', image_urls: [`${IMG}/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png`] },
-  phap_ly: { keywords: ['pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu'], title: 'Pháp lý dự án', points: ['Sổ hồng riêng từng căn sở hữu lâu dài', 'Quyết định phê duyệt quy hoạch 1/500', 'Giấy phép xây dựng đầy đủ, minh bạch'], speech_text: 'Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.', image_urls: [`${IMG}/phap_ly/logo_nyahphudinh_210531_f-02.png`] },
+  phap_ly: { keywords: ['pháp lý', 'sổ hồng', 'phê duyệt', 'giấy phép', 'sở hữu'], title: 'Pháp lý dự án', points: ['Sổ hồng riêng từng căn sở hữu lâu dài', 'Quyết định phê duyệt quy hoạch 1/500', 'Giấy phép xây dựng đầy đủ, minh bạch'], speech_text: 'Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.', image_urls: [] },
   thanh_toan: { keywords: ['thanh toán', 'tiến độ thanh toán', 'lịch thanh toán', 'chiết khấu', 'chính sách'], title: 'Tiến độ Thanh toán', points: ['Lịch thanh toán linh hoạt theo tiến độ', 'Hỗ trợ vay ngân hàng lãi suất ưu đãi', 'Chiết khấu hấp dẫn khi thanh toán nhanh'], speech_text: 'Chính sách thanh toán linh hoạt kéo dài theo tiến độ xây dựng, kết hợp hỗ trợ tài chính từ ngân hàng liên kết.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat_doi-tac.jpg`] },
-  gia: { keywords: ['giá bán', 'giá bao nhiêu', 'giá nhiêu', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ', 'bảng giá', 'mức giá', 'tầm giá'], title: 'Bảng giá độc quyền', points: ['Giá gói Air từ 8,981 tỷ (lô Cosmo Gen 2 #42)', 'Lên gói Max "chìa khóa trao tay" chênh nhẹ theo căn', 'Bảng giá chi tiết từng lô: hỏi ngay tư vấn viên'], speech_text: 'Giá gói Air hiện từ tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.', image_urls: [`${IMG}/gia_ban/gia-ban_bang-gia-hien-tai.jpg`, `${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`] },
+  gia: { keywords: ['giá bán', 'giá bao nhiêu', 'giá nhiêu', 'bao nhiêu tiền', 'bao nhiêu tỷ', 'mấy tỷ', 'bảng giá', 'mức giá', 'tầm giá'], title: 'Bảng giá độc quyền', points: ['Giá gói Air từ 8,981 tỷ (lô Cosmo Gen 2 #42)', 'Lên gói Max "chìa khóa trao tay" chênh nhẹ theo căn', 'Bảng giá chi tiết từng lô: hỏi ngay tư vấn viên'], speech_text: 'Giá gói Air hiện từ tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.', image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`] },
   phoi_canh: { keywords: ['phối cảnh', 'cảnh quan', 'toàn cảnh', 'tổng thể', 'ngoại thất'], title: 'Kiến trúc Phối cảnh', points: ['Quy hoạch đồng bộ, hiện đại', 'Không gian xanh bao phủ rộng', 'Mặt ngoài kiến trúc tinh tế'], speech_text: 'Dự án được quy hoạch đồng bộ với hạ tầng ngầm, đường nội khu rộng rãi và thiết kế mặt ngoài sang trọng.', image_urls: [`${IMG}/noi_that/opus/opus_tong-quan.jpg`] },
   chu_dau_tu: { keywords: ['chủ đầu tư', 'nhã đạt', 'nhà phát triển', 'nhà đạt'], title: 'Nhà phát triển Nhã Đạt', points: ['Thương hiệu uy tín, chất lượng', 'Tập trung vào giá trị sống thực tế', 'Cam kết bàn giao hoàn thiện cao'], speech_text: 'Nhã Đạt là nhà phát triển bất động sản uy tín, luôn tập trung kiến tạo các sản phẩm nhà phố chất lượng vượt trội và pháp lý vững vàng.', image_urls: [`${IMG}/chu_dau_tu/nha_dat/nha-dat-tieu-chi-1.jpg`, `${IMG}/chu_dau_tu/nha_dat/nha-dat_du-an-1.jpg`] },
 };

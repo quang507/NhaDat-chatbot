@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimited } from '@/lib/ratelimit';
 import { readFile } from 'fs/promises';
-import { existsSync, readdirSync } from 'fs';
+import { existsSync } from 'fs';
 import path from 'path';
 import { getPersona } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
+import { searchImages, isImageOnTopic } from '@/lib/image-search';
 import { detectUnit, unitContext, imageFamily, getGeneralUnsoldContext, isGeneralUnsoldQuery } from '@/lib/units';
 import { hasProjectKeyword, isCompetitor, COMPETITORS, detectModel, kwHit, rmDia } from '@/lib/intent';
 import {
@@ -28,11 +29,11 @@ const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 // Công năng từng tầng THẬT (theo datasheet + data.md). Dùng cho slide tĩnh khi khách
 // hỏi "tầng X" - tránh để LLM bịa số liệu. Cosmo/Fusion là nhà ở đa thế hệ (tầng 2 = ông bà),
 // Opus là nhà phố thương mại (tầng dưới kinh doanh/văn phòng).
-type FloorInfo = { name: string; points: string[]; speech: string; img?: string };
+type FloorInfo = { name: string; points: string[]; speech: string };
 const FLOOR_FUNCTIONS: Record<'cosmo_gen_2' | 'fusion_gen_5' | 'opus', Record<number, FloorInfo>> = {
   cosmo_gen_2: {
     1: { name: 'Garage & Phòng khách', points: ['Garage ô tô trong nhà, cách âm cách nhiệt', 'Phòng khách thông tầng siêu sáng', 'Sảnh đón riêng trang trọng'], speech: 'Tầng trệt Cosmo gồm garage ô tô trong nhà và phòng khách thông tầng siêu sáng.' },
-    2: { name: 'Phòng ông bà', points: ['Tầng dành riêng cho ông bà', 'Phòng ngủ en-suite có sảnh riêng', 'Gần bếp và trệt, đi lại nhẹ nhàng'], speech: 'Tầng 2 mẫu Cosmo dành riêng cho ông bà, là phòng ngủ en-suite có sảnh riêng, gần bếp và tầng trệt nên đi lại rất nhẹ nhàng.', img: '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2-phong-ngu-ong-ba-1.png' },
+    2: { name: 'Phòng ông bà', points: ['Tầng dành riêng cho ông bà', 'Phòng ngủ en-suite có sảnh riêng', 'Gần bếp và trệt, đi lại nhẹ nhàng'], speech: 'Tầng 2 mẫu Cosmo dành riêng cho ông bà, là phòng ngủ en-suite có sảnh riêng, gần bếp và tầng trệt nên đi lại rất nhẹ nhàng.' },
     3: { name: 'Bếp, Bar & Phòng ăn', points: ['Bếp đảo đa năng như quầy bar', 'Phòng ăn có view thiên nhiên', 'Tiện lợi nhờ giặt sấy tại bếp'], speech: 'Tầng 3 là không gian bếp đảo đa năng kết hợp quầy bar và phòng ăn có view thiên nhiên.' },
     4: { name: 'Phòng ngủ Master', points: ['Phòng master chuẩn villa', 'Walk-in closet rộng', 'Phòng tắm 5 sao'], speech: 'Tầng 4 là phòng ngủ master đẳng cấp villa với walk-in closet và phòng tắm 5 sao.' },
     5: { name: 'Phòng ngủ con', points: ['Hai phòng ngủ cho con cái', 'Đón sáng từ giếng trời', 'Phòng tắm riêng tiện nghi'], speech: 'Tầng 5 gồm hai phòng ngủ cho con cái, đón sáng tự nhiên từ giếng trời.' },
@@ -57,112 +58,35 @@ const FLOOR_FUNCTIONS: Record<'cosmo_gen_2' | 'fusion_gen_5' | 'opus', Record<nu
 // Phân biệt rõ: Cosmo/Fusion (nhà ở đa thế hệ) vs Opus (nhà phố thương mại).
 const FLOOR_GENERAL: Record<number, FloorInfo> = {
   1: { name: 'Tầng trệt', points: ['Cosmo & Fusion: garage và phòng khách', 'Opus: mặt bằng kinh doanh, showroom', 'Mặt tiền thoáng, lối vào riêng'], speech: 'Tầng trệt: với Cosmo và Fusion là garage và phòng khách; với nhà phố Opus là mặt bằng kinh doanh hoặc showroom.' },
-  2: { name: 'Tầng 2', points: ['Cosmo & Fusion: phòng ngủ ông bà', 'Opus: phòng kinh doanh, văn phòng', 'Bố trí theo nhu cầu từng mẫu'], speech: 'Tầng 2 thì tùy mẫu nhà: với Cosmo và Fusion là phòng dành cho ông bà; còn với nhà phố Opus thì là phòng để kinh doanh hoặc làm văn phòng.', img: '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2-phong-ngu-ong-ba-1.png' },
+  2: { name: 'Tầng 2', points: ['Cosmo & Fusion: phòng ngủ ông bà', 'Opus: phòng kinh doanh, văn phòng', 'Bố trí theo nhu cầu từng mẫu'], speech: 'Tầng 2 thì tùy mẫu nhà: với Cosmo và Fusion là phòng dành cho ông bà; còn với nhà phố Opus thì là phòng để kinh doanh hoặc làm văn phòng.' },
   3: { name: 'Tầng 3', points: ['Cosmo & Fusion: bếp, phòng ăn', 'Opus: không gian sinh hoạt', 'Khu vực sinh hoạt chung của gia đình'], speech: 'Tầng 3 thường là khu bếp và phòng ăn với Cosmo, Fusion; còn Opus là không gian sinh hoạt gia đình.' },
   4: { name: 'Tầng 4', points: ['Phòng ngủ master đẳng cấp', 'Walk-in closet và phòng tắm riêng', 'Không gian nghỉ ngơi riêng tư'], speech: 'Tầng 4 thường là phòng ngủ master với walk-in closet và phòng tắm riêng.' },
   5: { name: 'Tầng 5', points: ['Phòng ngủ cho con cái', 'Đón sáng từ giếng trời', 'Phòng tắm riêng tiện nghi'], speech: 'Tầng 5 là các phòng ngủ cho con cái, đón sáng tự nhiên từ giếng trời.' },
   6: { name: 'Sân thượng', points: ['Sân thượng thoáng đãng', 'Thang máy lên tận nơi', 'Thư giãn, trồng cây, phơi đồ'], speech: 'Trên cùng là sân thượng thoáng đãng, có thang máy lên tận nơi để thư giãn và trồng cây.' },
 };
 
-const IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-const IMAGES_ROOT = path.join(process.cwd(), 'public', 'images', '01_NyAh-PhuDinh');
+// ẢNH CHO SLIDE KHÔNG CÓ ẢNH CHỌN TAY: chọn theo NGỮ NGHĨA (xem lib/image-search.ts).
+// Thay cho cách cũ dò từ khóa + quét thư mục + đường dẫn viết cứng (hay ra sai
+// phòng, vd "phòng tắm master fusion" ra ảnh bếp). Truy vấn = câu hỏi + tên mẫu
+// nhà + tiêu đề slide (hint) - KHÔNG đưa cả đoạn chữ slide: chữ dài chung chung
+// ("Ny'ah Phú Định... tiện lợi") kéo ảnh về phối cảnh tổng, lạc chủ đề. Thiếu tên
+// mẫu thì "tầng 4 fusion" ra ảnh Fusion Gen 4. Không ảnh nào đủ ngưỡng -> [].
+const MODEL_LABEL: Record<SlideModel, string> = { cosmo_gen_2: 'Mẫu Cosmo Gen 2', fusion_gen_5: 'Mẫu Fusion Gen 5', opus: 'Mẫu Opus' };
 
-// Đọc ảnh trong 1 thư mục (không đệ quy), lọc theo đuôi file + từ khóa tùy chọn.
-// filesOnly=true: bỏ qua thư mục con (dùng cho "ảnh gốc" của 1 model/dự án).
-function listImages(absDir: string, urlPrefix: string, opts: { fileKeyword?: string; filesOnly?: boolean } = {}): string[] {
+async function semanticImages(message: string, model: SlideModel | null, hint = ''): Promise<string[]> {
   try {
-    if (!existsSync(absDir)) return [];
-    const entries = readdirSync(absDir, { withFileTypes: true });
-    let names = opts.filesOnly ? entries.filter(e => !e.isDirectory()).map(e => e.name) : entries.map(e => e.name);
-    names = names.filter(f => IMAGE_EXTS.includes(path.extname(f).toLowerCase()));
-    if (opts.fileKeyword) names = names.filter(f => f.toLowerCase().includes(opts.fileKeyword!));
-    return names.map(f => `${urlPrefix}/${f}`);
+    const ctx = [model ? MODEL_LABEL[model] : '', hint].filter(Boolean).join('. ');
+    return (await searchImages(message, ctx)).map(h => h.url);
   } catch (e) {
-    console.error(`Lỗi đọc thư mục ảnh ${absDir}:`, e);
+    console.warn('[Slide] Chọn ảnh ngữ nghĩa lỗi:', e);
     return [];
   }
 }
 
-// Ưu tiên thư mục riêng của model; nếu rỗng thì rớt về thư mục chung (shared) của không gian đó.
-// Nếu ko tìm thấy ảnh với keyword, rớt về toàn bộ ảnh của space (bỏ keyword).
-function getImagesForSpace(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null, spaceName: string, fileKeyword?: string): string[] {
-  if (model) {
-    const specific = listImages(
-      path.join(IMAGES_ROOT, 'noi_that', model, spaceName),
-      `/images/01_NyAh-PhuDinh/noi_that/${model}/${spaceName}`,
-      { fileKeyword }
-    );
-    if (specific.length > 0) return specific;
-  }
-  const general = listImages(
-    path.join(IMAGES_ROOT, 'noi_that', spaceName),
-    `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`,
-    { fileKeyword }
-  );
-  if (general.length > 0) return general;
-  // Fallback: nếu ko có ảnh với keyword, lấy tất cả ảnh của space
-  return listImages(
-    path.join(IMAGES_ROOT, 'noi_that', spaceName),
-    `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`
-  );
-}
-
-// Gom ảnh của 1 không gian (vd "bep") từ CẢ 3 model + thư mục chung - dùng khi chưa rõ model.
-// Nếu ko tìm thấy ảnh với keyword, fallback lấy toàn bộ ảnh của space.
-function getGeneralImagesForSpace(spaceName: string, fileKeyword?: string): string[] {
-  const models: Array<'cosmo_gen_2' | 'fusion_gen_5' | 'opus'> = ['cosmo_gen_2', 'fusion_gen_5', 'opus'];
-  const allImgs = models.flatMap(m => listImages(
-    path.join(IMAGES_ROOT, 'noi_that', m, spaceName),
-    `/images/01_NyAh-PhuDinh/noi_that/${m}/${spaceName}`,
-    { fileKeyword }
-  ));
-  allImgs.push(...listImages(
-    path.join(IMAGES_ROOT, 'noi_that', spaceName),
-    `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`,
-    { fileKeyword }
-  ));
-  // Fallback: nếu ko có ảnh với keyword, lấy tất cả ảnh của space từ tất cả model
-  if (allImgs.length === 0) {
-    allImgs.push(...models.flatMap(m => listImages(
-      path.join(IMAGES_ROOT, 'noi_that', m, spaceName),
-      `/images/01_NyAh-PhuDinh/noi_that/${m}/${spaceName}`
-    )));
-    allImgs.push(...listImages(
-      path.join(IMAGES_ROOT, 'noi_that', spaceName),
-      `/images/01_NyAh-PhuDinh/noi_that/${spaceName}`
-    ));
-  }
-  return allImgs;
-}
-
-// Lấy ẢNH GỐC (root) của 1 model - KHÔNG lấy trong các thư mục con (bep, gara, phong_khach...).
-// Dùng khi hỏi chung chung "cosmo gen 2" mà không chỉ rõ phòng nào.
-// Lấy ảnh từ các subfolder chính: bep, gara, phong_khach, phong_ngu, etc.
-function getRootImagesForModel(model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus'): string[] {
-  const spaces = ['bep', 'gara', 'phong_khach', 'phong_ngu', 'wc', 'tang-2'];
-  const allImgs: string[] = [];
-  for (const space of spaces) {
-    const imgs = listImages(
-      path.join(IMAGES_ROOT, 'noi_that', model, space),
-      `/images/01_NyAh-PhuDinh/noi_that/${model}/${space}`,
-      { filesOnly: true }
-    );
-    allImgs.push(...imgs);
-    if (allImgs.length >= 6) break;
-  }
-  return allImgs;
-}
-
-// Lấy ẢNH GỐC (root) của toàn dự án (không thuộc model nào cụ thể).
-function getRootImagesForProject(): string[] {
-  const rootFiles = listImages(IMAGES_ROOT, '/images/01_NyAh-PhuDinh', { filesOnly: true });
-  // Trả về ngẫu nhiên 3 tấm nếu có nhiều
-  return rootFiles.length > 3 ? rootFiles.sort(() => 0.5 - Math.random()).slice(0, 3) : rootFiles;
-}
-
 // ── DỰNG SLIDE TĨNH TỪ CATALOG (lib/static_slides.ts) ────────────────────────
 // Dữ liệu slide (title/points/speech/ảnh) nằm trong catalog; ở đây chỉ ráp lại +
-// lấy ảnh chung theo thư mục cho biến thể 'nyah' (không rõ mẫu nhà).
+// biến thể 'nyah' (không rõ mẫu nhà) không có ảnh chọn tay -> imageHint, ảnh
+// được chọn theo ngữ nghĩa sau khi chốt slide.
 type SlideModel = 'cosmo_gen_2' | 'fusion_gen_5' | 'opus';
 
 function roomSlide(key: 'bep' | 'gara' | 'phong_khach' | 'phong_ngu', model: SlideModel | null): any {
@@ -172,7 +96,11 @@ function roomSlide(key: 'bep' | 'gara' | 'phong_khach' | 'phong_ngu', model: Sli
     title: v.title,
     points: v.points,
     speech_text: v.speech_text,
-    image_urls: v.image_urls ? [...v.image_urls] : getGeneralImagesForSpace(v.imageSpace!),
+    image_urls: v.image_urls ? [...v.image_urls] : [],
+    // Gợi ý ảnh = loại phòng chung ("phòng ngủ"), KHÔNG dùng tiêu đề biến thể
+    // ("Phòng ngủ Master Cosmo") - để câu hỏi quyết định phòng ông bà/con/master.
+    imageHint: v.image_urls ? undefined : ROOM_SLIDES[key].keywords[0],
+    imageModel: model,
   };
 }
 
@@ -206,14 +134,14 @@ const SOURCE_RULE = `\n\nNGUYÊN TẮC DỮ LIỆU CHO SLIDE BOT (DYNAMIC LAYOUT
   "points": ["Ý chính 1 (Là một CÂU TRẢ LỜI NGẮN GỌN súc tích, đủ ý, ~10-20 chữ. KHÔNG dùng dạng gạch đầu dòng/đầu mục cụt lủn)", "Ý chính 2", "Ý chính 3"],
   "highlight_number": "Một con số nổi bật nhất trong đoạn văn (ví dụ '18 phút', '9,5 triệu lít', '5,19 tỷ'). Nếu không có số liệu nào ấn tượng, để trống ''. Chỉ dùng cho layout dark_minimal hoặc split.",
   "speech_text": "Câu trả lời NGẮN GỌN để HIỂN THỊ trên slide (KHÔNG đọc ra tiếng). Tối đa 1-2 câu, súc tích, đi thẳng trọng tâm. KHÔNG emoji, KHÔNG ký tự đặc biệt (*, _, #), KHÔNG ngoặc kép.",
-  "image_urls": ["Đường dẫn ảnh"] (CHỈ CHỌN ĐÚNG 1 ẢNH khớp CHÍNH XÁC chủ đề câu hỏi - chọn sai chủ đề còn tệ hơn không có ảnh, KHÔNG CHẮC thì trả mảng rỗng []. Chỉ được chọn đường dẫn bắt đầu bằng "/images/" như "/images/01_NyAh-PhuDinh/...", TUYỆT ĐỐI KHÔNG lấy các đường dẫn bắt đầu bằng "2 - trình chiếu" hoặc các file PowerPoint local).
+  "image_urls": [] (LUÔN để mảng rỗng - hệ thống tự chọn ảnh theo nội dung slide)
 }
 
-SỐ LƯỢNG Ý CHÍNH: Nếu CÓ ảnh (image_urls không rỗng) → tối đa 3 ý NGẮN để nhường chỗ cho ảnh. Nếu KHÔNG có ảnh (image_urls rỗng) → viết 4-5 ý và mỗi ý ĐẦY ĐỦ hơn (~15-25 chữ) vì chữ là thứ duy nhất trên slide. MỖI Ý PHẢI LÀ MỘT CÂU TRẢ LỜI mang thông tin giải thích (vd thay vì "Vị trí đắc địa", hãy viết "Dự án nằm ngay mặt tiền Trương Đình Hội, dễ dàng di chuyển").
+SỐ LƯỢNG Ý CHÍNH: 3 ý NGẮN (~10-20 chữ) để chừa chỗ cho ảnh hệ thống tự chọn. MỖI Ý PHẢI LÀ MỘT CÂU TRẢ LỜI mang thông tin giải thích (vd thay vì "Vị trí đắc địa", hãy viết "Dự án nằm ngay mặt tiền Trương Đình Hội, dễ dàng di chuyển").
 
 VỀ ĐỊA DANH & LỘ TRÌNH: Chủ thể luôn là DỰ ÁN NY'AH PHÚ ĐỊNH tại Trương Đình Hội, P. Phú Định (Quận 8 cũ) - TUYỆT ĐỐI KHÔNG gọi thành tên khác (vd "Tòa nhà Phú Điền" là SAI). Mọi khoảng cách/lộ trình phải TÍNH TỪ DỰ ÁN và chỉ dùng số liệu CÓ TRONG DỮ LIỆU; không có số thì nói định tính ("di chuyển nhanh qua Võ Văn Kiệt") - KHÔNG tự chế km, tên đường, lộ trình. MẶC ĐỊNH mọi địa danh khách nhắc (bệnh viện, chợ, trường, quán...) là ĐỊA ĐIỂM TRONG TP.HCM (vd "bệnh viện Hùng Vương" = BV Hùng Vương Quận 5 TP.HCM, KHÔNG PHẢI BV Hùng Vương Phú Thọ); chỉ hiểu là địa điểm tỉnh khác khi khách NÓI RÕ tên tỉnh trong câu.
 
-VỀ LINK/URL/MÃ KEY: TUYỆT ĐỐI KHÔNG đưa đường link, URL hay mã key nào vào title/points/speech_text (đặc biệt link album Google Photos/Drive kèm "key=..."). Khi dữ liệu có link album/tài liệu, thay bằng: "Liên hệ tư vấn viên để nhận chi tiết". (Trường image_urls dạng "/images/..." thì vẫn dùng bình thường.)
+VỀ LINK/URL/MÃ KEY: TUYỆT ĐỐI KHÔNG đưa đường link, URL hay mã key nào vào title/points/speech_text (đặc biệt link album Google Photos/Drive kèm "key=..."). Khi dữ liệu có link album/tài liệu, thay bằng: "Liên hệ tư vấn viên để nhận chi tiết".
 
 CÁCH CHỌN LAYOUT_TYPE (HÃY ĐA DẠNG, đừng luôn chọn 1 kiểu - biến đổi theo nội dung):
 - 'text_only': Nếu KHÔNG tìm thấy bất kỳ hình ảnh minh họa hoặc đường dẫn hình ảnh nào liên quan đến câu hỏi trong dữ liệu, hoặc nếu câu trả lời chỉ cần văn bản và số liệu.
@@ -417,8 +345,8 @@ export async function POST(req: NextRequest) {
     } else if (has(...TOPIC_SLIDES.chu_dau_tu.keywords)) {
       staticSlide = topicSlide('chu_dau_tu');
     } else if (has('tầng', 'lầu', 'tính năng tầng', 'công năng tầng')) {
-      // Câu hỏi về "tầng" rất dễ bị LLM bịa số liệu → ép text tĩnh + ảnh tính năng tầng theo model.
-      // Chọn số tầng (1-6) nếu có, mặc định ảnh tổng quan tính năng tầng 1.
+      // Câu hỏi về "tầng" rất dễ bị LLM bịa số liệu → ép text tĩnh; ảnh chọn theo ngữ nghĩa.
+      // Chọn số tầng (1-6) nếu có, mặc định tầng 1.
       const floorMatch = noD.match(/tang\s*([1-6])|lau\s*([1-5])/);
       let floor = 1;
       if (floorMatch) {
@@ -426,13 +354,6 @@ export async function POST(req: NextRequest) {
         floor = (floorMatch[2] !== undefined && floorMatch[1] === undefined) ? n + 1 : n; // "lầu 1" = tầng 2
       }
       const m = (model || 'cosmo_gen_2') as 'cosmo_gen_2' | 'fusion_gen_5' | 'opus';
-      // Ảnh tính năng tầng theo model (file có sẵn: *_tinh-nang-tang-{1..4})
-      const featImg = m === 'opus'
-        ? `/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-${Math.min(floor, 6)}.jpg`
-        : m === 'fusion_gen_5'
-          ? `/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-${Math.min(floor, 6)}.jpg`
-          : `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 6)}.jpg`;
-      const modelLabel = m === 'opus' ? 'Opus' : m === 'fusion_gen_5' ? 'Fusion Gen 5' : 'Cosmo Gen 2';
       if (model) {
         // Có model (nói rõ trong câu HOẶC suy từ ngữ cảnh lượt khách - "tầng 3"
         // sau khi vừa bàn Opus) -> trả công năng tầng của đúng model đó.
@@ -444,7 +365,9 @@ export async function POST(req: NextRequest) {
           title: `Tầng ${floor} · ${info.name}`,
           points: info.points,
           speech_text: info.speech,
-          image_urls: [info.img || featImg],
+          image_urls: [],
+          imageModel: m,
+          imageHint: `Tầng ${floor} · ${info.name}`,
         };
       } else {
         // Khách chỉ nói "tầng X" KHÔNG kèm model → trả lời CHUNG, phân biệt nhà ở vs thương mại.
@@ -455,40 +378,23 @@ export async function POST(req: NextRequest) {
           title: `Tầng ${floor} · Ny'ah Phú Định`,
           points: g.points,
           speech_text: g.speech,
-          image_urls: [g.img || `/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-${Math.min(floor, 6)}.jpg`],
+          image_urls: [],
+          imageHint: `Tầng ${floor} · ${g.name}`,
         };
       }
     } else if (hasExplicitModel && model) {
-      // Khách nhắc TÊN MẪU NHÀ mà không hỏi phòng/chủ đề cụ thể -> slide giới thiệu mẫu + ảnh gốc.
+      // Khách nhắc TÊN MẪU NHÀ mà không hỏi phòng/chủ đề cụ thể -> slide giới thiệu mẫu,
+      // ảnh chọn theo ngữ nghĩa (trước đây quét thư mục, thư mục bếp đứng đầu nên
+      // "mẫu fusion gen 5" hay "phòng tắm master fusion" đều ra ảnh bếp).
       const i = MODEL_INTRO[model];
-      const FALLBACK_IMGS: Record<string, string[]> = {
-        cosmo_gen_2: [
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg',
-        ],
-        fusion_gen_5: [
-          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg',
-        ],
-        opus: [
-          '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/opus/opus_mat-tien.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg',
-        ],
-      };
-      let imgs = getRootImagesForModel(model);
-      const prio = (u: string) => (u.includes('tong-quan') ? 0 : u.includes('mat-tien') ? 1 : 2);
-      imgs.sort((a, b) => prio(a) - prio(b));
-      // Fallback nếu readdirSync trả rỗng trên Vercel serverless
-      if (imgs.length === 0) imgs = FALLBACK_IMGS[model] || [];
       staticSlide = {
         layout_type: 'split_image_right',
         title: i.title,
         points: i.points,
         speech_text: i.speech_text,
-        image_urls: imgs.slice(0, 3),
+        image_urls: [],
+        imageModel: model,
+        imageHint: i.title,
       };
     }
 
@@ -509,9 +415,27 @@ export async function POST(req: NextRequest) {
           'Chỉ 18 phút đến Quận 1 qua đại lộ Võ Văn Kiệt',
         ],
         speech_text: "Ny'ah Phú Định là khu nhà phố compound tại mặt tiền Trương Đình Hội, Quận 8, chỉ 18 phút đến Quận 1 qua đại lộ Võ Văn Kiệt.",
-        image_urls: getRootImagesForProject(),
+        image_urls: [],
+        imageHint: 'Phối cảnh tổng quan toàn khu nhà phố compound',
       };
     }
+
+    // Slide tĩnh không có ảnh chọn tay -> chọn ảnh theo ngữ nghĩa (một lần embed câu
+    // hỏi, ~0.2-0.5s; có cache trong RAM cho câu lặp lại).
+    // Ảnh chọn tay của catalog phải là file THẬT (slides.json sửa tay/đổi tên ảnh
+    // từng để lại 11 đường dẫn chết -> slide vỡ ảnh). Lọc hết mà rỗng, hoặc catalog
+    // để trống image_urls -> chọn theo ngữ nghĩa với tiêu đề slide.
+    if (staticSlide && staticSlide.imageHint === undefined) {
+      const imgs: string[] = (staticSlide.image_urls || []).filter((u: string) => {
+        try { return typeof u === 'string' && u.startsWith('/images/') && existsSync(path.join(process.cwd(), 'public', decodeURIComponent(u))); } catch { return false; }
+      });
+      staticSlide.image_urls = imgs;
+      if (!imgs.length) { staticSlide.imageModel = model; staticSlide.imageHint = staticSlide.title || ''; }
+    }
+    if (staticSlide && staticSlide.imageHint !== undefined) {
+      staticSlide.image_urls = await semanticImages(message, staticSlide.imageModel || null, staticSlide.imageHint);
+    }
+    if (staticSlide) { delete staticSlide.imageHint; delete staticSlide.imageModel; }
 
     // NGHE NGẦM + đã khớp slide tĩnh -> TRẢ NGAY (~0ms), KHÔNG chờ LLM viết lại text
     // (LLM mất 3-5s - khách đang nói chuyện mà slide lên chậm 5s là hỏng nhịp sale).
@@ -578,13 +502,7 @@ export async function POST(req: NextRequest) {
     // hỏi vặn kiểu "không phải ... à?" giờ có câu xác nhận đúng/sai thẳng.
     if (refine && REFINE_GROQ_KEY) {
       try {
-        // Cho LLM SỬA ẢNH nếu slide tĩnh bắt nhầm chủ đề (câu hỏi lắt léo trúng
-        // nhầm từ khóa): kèm ảnh đang hiện vào prompt, LLM trả thêm trường
-        // "image" CHỈ KHI ảnh hiện tại sai rõ ràng. Server kiểm tra file tồn
-        // tại trước khi cho client thay - LLM không thể chỉ ra ảnh ma.
-        const curImg = (staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '';
-        const imgCtx = curImg ? `\nSLIDE ĐANG HIỆN: tiêu đề "${staticSlide.title || ''}", ảnh "${curImg}". Nếu ảnh này SAI CHỦ ĐỀ so với câu khách hỏi, chọn ĐÚNG 1 đường dẫn ảnh khớp hơn từ phần dữ liệu (bắt đầu bằng "/images/") điền vào trường "image"; nếu ảnh đã đúng chủ đề hoặc không chắc, để "image" là chuỗi rỗng - THAY SAI CÒN TỆ HƠN GIỮ NGUYÊN.` : '';
-        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "...", "image": ""} - "answer" là MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu câu hỏi KHÔNG liên quan dự án/bất động sản (chuyện phiếm, thời sự, chủ đề ngoài lề) hoặc không có thông tin: {"answer": ""} - im lặng tốt hơn trả lời lạc đề.' + imgCtx;
+        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "..."} - "answer" là MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu câu hỏi KHÔNG liên quan dự án/bất động sản (chuyện phiếm, thời sự, chủ đề ngoài lề) hoặc không có thông tin: {"answer": ""} - im lặng tốt hơn trả lời lạc đề.';
         const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${REFINE_GROQ_KEY}` },
@@ -606,14 +524,15 @@ export async function POST(req: NextRequest) {
               if (ANSWER_CACHE.size > 500) ANSWER_CACHE.clear(); // chặn phình bộ nhớ
               ANSWER_CACHE.set(refineCacheKey, { ans: ans.slice(0, 220), at: Date.now() });
             }
-            // Ảnh sửa lại (nếu LLM đề xuất): chỉ chấp nhận khi file THẬT SỰ tồn tại
-            // trong public/images và khác ảnh đang hiện.
+            // SỬA ẢNH THEO NGỮ NGHĨA: ảnh đang hiện của slide tĩnh bị bắt nhầm chủ đề
+            // (câu lắt léo trúng nhầm từ khóa) -> chấm lại bằng vector câu hỏi + câu
+            // trả lời; chỉ thay khi ảnh hiện tại DƯỚI ngưỡng và có ảnh khác đủ ngưỡng.
+            // Không đánh giá được (null) thì giữ nguyên - thay sai còn tệ hơn.
             let fixImg = '';
-            const rawImg = typeof j.image === 'string' ? j.image.trim() : '';
-            if (rawImg && rawImg.startsWith('/images/') && rawImg !== ((staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '')) {
-              try {
-                if (existsSync(path.join(process.cwd(), 'public', decodeURIComponent(rawImg)))) fixImg = rawImg;
-              } catch {}
+            const curImg: string = (staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '';
+            if (curImg && (await isImageOnTopic(message, ans, curImg)) === false) {
+              const [best] = await searchImages(message, ans, 1);
+              if (best && decodeURIComponent(best.url) !== decodeURIComponent(curImg)) fixImg = best.url;
             }
             return NextResponse.json({ answer_text: ans.slice(0, 220), ...(fixImg ? { image_url: fixImg } : {}), _source: 'static_llm_text' });
           }
@@ -701,7 +620,7 @@ export async function POST(req: NextRequest) {
               points: { type: "ARRAY", items: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt." } },
               highlight_number: { type: "STRING", description: "Con số nổi bật (nếu có)" },
               speech_text: { type: "STRING", description: "BẮT BUỘC viết bằng Tiếng Việt. Kịch bản đọc." },
-              image_urls: { type: "ARRAY", items: { type: "STRING" }, description: "CHỈ ĐÚNG 1 ảnh khớp CHÍNH XÁC chủ đề câu hỏi, đường dẫn phải bắt đầu bằng '/images/'. Không chắc khớp thì trả mảng rỗng []. BẮT BUỘC bỏ qua đường dẫn bắt đầu bằng '2 - trình chiếu'." }
+              image_urls: { type: "ARRAY", items: { type: "STRING" }, description: "Luôn trả mảng rỗng [] - hệ thống tự chọn ảnh." }
             },
             required: ["layout_type", "title", "points", "speech_text", "image_urls"]
           }
@@ -779,366 +698,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ...base, _source: 'static_llm_text' });
     }
 
-    // Lọc đường dẫn ảnh: phải bắt đầu /images/ VA file phải TON TAI THUC.
-    // LLM hay nhat path "ma" tu du lieu RAG cu (vd /images/2023/05/Cover-Fusion-3.webp
-    // tu noi dung website 2023) - dung dinh dang /images/ nen loc cu cho qua, nhung file
-    // khong co trong repo -> trinh duyet 404 -> slide TRANG ANH. existsSync loai het path
-    // ma (chay duoc tren Vercel vi da bundle public/images qua outputFileTracingIncludes).
-    // Loc rong -> khoi if ben duoi tu dap anh tinh dung theo tu khoa.
-    if (parsed.image_urls && Array.isArray(parsed.image_urls)) {
-      parsed.image_urls = parsed.image_urls.filter((url: string) => {
-        if (typeof url !== 'string' || !url.startsWith('/images/')) return false;
-        try { return existsSync(path.join(process.cwd(), 'public', url)); } catch { return false; }
-      });
-    } else {
-      parsed.image_urls = [];
-    }
-
-    const queryText = message.toLowerCase();
-    const contentText = ((parsed.title || '') + ' ' + (parsed.points || []).join(' ') + ' ' + (parsed.speech_text || '')).toLowerCase();
-
-    // Điểm kích hoạt ảnh cố định (Fixed Trigger Points) cho Sale Gallery
-    if (parsed.image_urls.length === 0) {
-      // 1. Phân loại Model nhà
-      let model: 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | null = null; // null = không rõ model
-      const modelSearch = queryText + ' ' + contentText;
-      if (modelSearch.includes('fusion') || modelSearch.includes('gen 5') || modelSearch.includes('gen5') || modelSearch.includes('phiêu dân') || modelSearch.includes('phiêu-dân')) {
-        model = 'fusion_gen_5';
-      } else if (modelSearch.includes('opus') || modelSearch.includes('ô-pút') || modelSearch.includes('ô pút') || modelSearch.includes('o pút')) {
-        model = 'opus';
-      } else if (modelSearch.includes('cosmo') || modelSearch.includes('cót mô') || modelSearch.includes('cót-mô') || modelSearch.includes('cốt mô')) {
-        model = 'cosmo_gen_2';
-      } else {
-        // Suy ra mẫu nhà theo SỐ CĂN khách hỏi
-        const unitNo = detectUnit(message);
-        if (unitNo) model = imageFamily(unitNo);
-      }
-
-      // 2. Tìm danh mục hình ảnh (ưu tiên theo câu hỏi của khách trước để tránh bị lẫn lộn do text cũ)
-      const getCategoryMatch = (text: string) => {
-        if (text.includes('vị trí') || text.includes('bản đồ') || text.includes('maps') || text.includes('địa chỉ') || text.includes('đường đi') || text.includes('ở đâu') || text.includes('bao xa') || text.includes('bao lâu') || text.includes('di chuyển') || text.includes('đi từ') || text.includes('cách bao') || text.includes('cách trung tâm') || text.includes('cách dự án') || text.includes('cách quận')) {
-          return 'vi_tri';
-        }
-        if (text.includes('tiện ích') || text.includes('công viên') || text.includes(' landmark coffee') || text.includes('sân chơi') || text.includes('sân cầu lông') || text.includes('bóng rổ') || text.includes('tiện nghi')) {
-          return 'tien_ich';
-        }
-        if (text.includes('bếp') || text.includes('nhà ăn') || text.includes('nấu ăn') || text.includes('phòng ăn') || text.includes('bàn ăn')) {
-          return 'bep';
-        }
-        if (text.includes('gara') || text.includes('xe hơi') || text.includes('đỗ xe') || text.includes('ô tô') || text.includes('đậu xe') || text.includes('xe ô tô')) {
-          return 'gara';
-        }
-        if (text.includes('phòng học') || text.includes('phòng làm việc') || text.includes('home office') || text.includes('góc học') || text.includes('bàn làm việc') || text.includes('workspace') || text.includes('workzone')) {
-          return 'phong_hoc';
-        }
-        if (text.includes('phòng khách') || text.includes('sofa') || text.includes('tiếp khách') || text.includes('sinh hoạt chung') || text.includes('phòng tiếp')) {
-          return 'phong_khach';
-        }
-        if (text.includes('phòng ngủ ông bà') || text.includes('phòng ông bà') || text.includes('ong ba') || text.includes('ông bà')) {
-          return 'phong_ngu_ong_ba';
-        }
-        if (text.includes('phòng ngủ master') || text.includes('ngủ master') || text.includes('master bedroom') || text.includes('phòng ngủ chính') || text.includes('phòng ngủ ba')) {
-          return 'phong_ngu_master';
-        }
-        if (text.includes('phòng ngủ trẻ em') || text.includes('ngủ trẻ em') || text.includes('trẻ em') || text.includes('ngủ con') || text.includes('phòng ngủ con') || text.includes('phòng ngủ 2') || text.includes('phòng ngủ phụ') || text.includes('phòng ngủ 3')) {
-          return 'phong_ngu_con';
-        }
-        if (text.includes('phòng ngủ') || text.includes('giường') || text.includes('nơi ngủ') || text.includes('ngủ nhỏ')) {
-          return 'phong_ngu';
-        }
-        if (text.includes('wc') || text.includes('vệ sinh') || text.includes('toilet') || text.includes('tắm') || text.includes('phòng tắm') || text.includes('lavabo')) {
-          return 'wc';
-        }
-        if (text.includes('thang máy') || text.includes('elevator') || text.includes('thang kính')) {
-          return 'thang_may';
-        }
-        if (text.includes('sân thượng') || text.includes('san thuong')) {
-          return 'san_thuong';
-        }
-        if (text.includes('ban công') || text.includes('logia') || text.includes('ngoài trời') || text.includes('vườn')) {
-          return 'ban_cong';
-        }
-        if (text.includes('sảnh') || text.includes('lounge') || text.includes('phòng chờ') || text.includes('reception')) {
-          return 'sanh';
-        }
-        if (text.includes('tầng 1') || text.includes('tầng một') || text.includes('tầng trệt') || text.includes('trệt') || text.includes('lầu trệt')) {
-          return 'tang_1';
-        }
-        if (text.includes('tầng 2') || text.includes('tầng hai') || text.includes('lầu 1') || text.includes('lầu một')) {
-          return 'tang_2';
-        }
-        if (text.includes('tầng 3') || text.includes('tầng ba') || text.includes('lầu 2') || text.includes('lầu hai')) {
-          return 'tang_3';
-        }
-        if (text.includes('mặt bằng') || text.includes('tầng') || text.includes('thiết kế') || text.includes('bố cục') || text.includes('phân lô') || text.includes('lầu')) {
-          return 'mat_bang';
-        }
-        if (text.includes('pháp lý') || text.includes('sổ hồng') || text.includes('hợp đồng') || text.includes('cam kết')) {
-          return 'phap_ly';
-        }
-        return null;
-      };
-
-      // Uu tien category tu CAU HOI. Chi suy tu NOI DUNG LLM khi khach KHONG neu
-      // ro mau nha - neu khong, points nhac "cong vien noi khu" se keo ca slide
-      // "cho xem Fusion" ve anh cong vien. Co model + cau hoi khong neu phong ->
-      // category=null -> roi ve anh TONG QUAN cua dung model do.
-      const category = getCategoryMatch(queryText) || (model ? null : getCategoryMatch(contentText));
-
-      if (category === 'vi_tri') {
-        parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/vi_tri/duong_di/18_phut_den_quan_1_chi_tiet.jpg'
-        ];
-        parsed.layout_type = 'split_image_right';
-        const mapsMatch = (parsed.speech_text || '').match(/https:\/\/maps\.(?:app\.goo\.gl|google\.com)\/\S+/);
-        parsed.maps_url = mapsMatch ? mapsMatch[0] : 'https://maps.app.goo.gl/qwf4XibyMCL9sEX6A';
-      } else if (category === 'tien_ich') {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png'];
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'bep') {
-        parsed.image_urls = model ? getImagesForSpace(model, 'bep') : getGeneralImagesForSpace('bep');
-        if (parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg'];
-          } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png'];
-          } else if (model === 'opus') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/bep/opus_bep.jpg'];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'gara') {
-        parsed.image_urls = model ? getImagesForSpace(model, 'gara') : getGeneralImagesForSpace('gara');
-        if (parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg'];
-          } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg'];
-          } else if (model === 'opus') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'phong_hoc') {
-        parsed.image_urls = getImagesForSpace(model, 'khac');
-        if (parsed.image_urls.length === 0) {
-          if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc_tang-5_phong-hoc.jpg'];
-          } else if (model === 'opus') {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1-2.jpg'
-            ];
-          } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'phong_khach') {
-        parsed.image_urls = model ? getImagesForSpace(model, 'phong_khach') : getGeneralImagesForSpace('phong_khach');
-        if (parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'];
-          } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg'];
-          } else if (model === 'opus') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'phong_ngu_ong_ba') {
-        let imgs = getImagesForSpace(model, 'phong_ngu', 'ong-ba');
-        if (imgs.length === 0) imgs = getImagesForSpace(model, 'phong_ngu', 'tang-2');
-        parsed.image_urls = imgs;
-        if (parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_tang-2-phong-ngu-ong-ba-1.png'];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'phong_ngu_master') {
-        parsed.image_urls = getImagesForSpace(model, 'phong_ngu', 'master');
-        if (parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg'];
-          } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg'];
-          } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg'];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'phong_ngu_con') {
-        let imgs = getImagesForSpace(model, 'phong_ngu', 'con');
-        if (imgs.length === 0) imgs = getImagesForSpace(model, 'phong_ngu', 'ngu-2');
-        if (imgs.length === 0) imgs = getImagesForSpace(model, 'phong_ngu', 'ngu-3');
-        parsed.image_urls = imgs;
-        if (parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-2_tang-5_8-phong-ngu-2-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-3_tang-5_9-phong-ngu-3-1.jpg'
-            ];
-          } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-2_tang-5_phong-ngu-con.jpg'];
-          } else {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-2.jpg'
-            ];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'phong_ngu') {
-        parsed.image_urls = model ? getImagesForSpace(model, 'phong_ngu') : getGeneralImagesForSpace('phong_ngu');
-        if (parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-2_tang-5_8-phong-ngu-2-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-3_tang-5_9-phong-ngu-3-1.jpg'
-            ];
-          } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-2_tang-5_phong-ngu-con.jpg'
-            ];
-          } else if (model === 'opus') {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-1.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-2.jpg'
-            ];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'wc') {
-        parsed.image_urls = model ? getImagesForSpace(model, 'wc') : getGeneralImagesForSpace('wc');
-        if (parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_phong-tam-master_tang-4_7-phong-tam-master-1.jpg'];
-          } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg'];
-          } else if (model === 'opus') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/wc/opus_wc.jpg'];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'thang_may') {
-        if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg'];
-        } else {
-          parsed.image_urls = [
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg',
-            '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg'
-          ];
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'san_thuong') {
-        let imgs = getImagesForSpace(model, 'khac', 'thuong');
-        if (imgs.length === 0) imgs = getImagesForSpace(model, 'khac', 'san-thuong');
-        parsed.image_urls = imgs;
-        if (parsed.image_urls.length === 0) {
-          if (model === 'fusion_gen_5') {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png'];
-          } else {
-            parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png'];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'ban_cong') {
-        if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/tien_ich/cong_vien/nyah-phu-dinh_cong-vien.png'];
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'sanh') {
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg'];
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'tang_1') {
-        if (model === 'opus') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg'];
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'tang_2') {
-        if (model === 'opus') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1-2.jpg'];
-        } else if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-2.jpg'];
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'tang_3') {
-        if (model === 'fusion_gen_5') {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png'];
-        } else {
-          parsed.image_urls = ['/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg'];
-        }
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'mat_bang') {
-        parsed.image_urls = [
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-1-2-3.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_cau-truc-4-5-6.jpg',
-          '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_cau-truc-1-2-3.jpg'
-        ];
-        parsed.layout_type = 'split_image_right';
-      } else if (category === 'phap_ly') {
-        // Dùng ảnh của chủ đề pháp lý (cùng ảnh slide tĩnh TOPIC_SLIDES.phap_ly) -
-        // trước đây gán nhầm ảnh bản đồ "18 phút đến Quận 1" sai chủ đề.
-        parsed.image_urls = ['/images/01_NyAh-PhuDinh/phap_ly/logo_nyahphudinh_210531_f-02.png'];
-        parsed.layout_type = 'split_image_right';
-      } else {
-        // Hỏi chung hoặc không khớp danh mục -> ưu tiên ảnh ROOT (tổng quan, mặt tiền, tính năng tầng...)
-        // KHÔNG lấy ảnh từ thư mục con (bep, gara, phong_khach...) để tránh hiện phòng ngẫu nhiên.
-        if (model) {
-          const rootImgs = getRootImagesForModel(model);
-          if (rootImgs.length > 0) {
-            parsed.image_urls = rootImgs;
-          }
-        } else {
-          // Nếu không chỉ định model cụ thể (hỏi về toàn dự án)
-          const rootImgs = getRootImagesForProject();
-          if (rootImgs.length > 0) {
-            parsed.image_urls = rootImgs;
-          }
-        }
-        
-        // Fallback tĩnh nếu dynamic scan không tìm thấy gì
-        if (!parsed.image_urls || parsed.image_urls.length === 0) {
-          if (model === 'cosmo_gen_2') {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_mat-cat.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tinh-nang-tang-1.jpg'
-            ];
-          } else if (model === 'fusion_gen_5') {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_mat-tien.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tinh-nang-tang-1.jpg'
-            ];
-          } else if (model === 'opus') {
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_mat-tien.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tinh-nang-tang-1.jpg'
-            ];
-          } else {
-            // Không rõ model → tổng quan cả 3 mẫu
-            parsed.image_urls = [
-              '/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_tong-quan.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_tong-quan.jpg',
-              '/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg'
-            ];
-          }
-        }
-        parsed.layout_type = 'split_image_right';
-      }
-    }
+    // ẢNH CỦA SLIDE ĐỘNG: chọn theo NGỮ NGHĨA (câu hỏi + chữ LLM vừa viết), bỏ
+    // ảnh LLM tự nhặt từ dữ liệu RAG (hay ra đường dẫn "ma"/sai chủ đề) và bỏ bộ
+    // dò từ khóa + đường dẫn viết cứng cũ. Không ảnh nào đủ ngưỡng -> slide chữ.
+    parsed.image_urls = parsed.skip ? [] : await semanticImages(message, model, parsed.title || '');
 
     // LAYOUT: ẢNH FULL MÀN HÌNH, chữ đè 1 góc (full_background) cho mọi slide có ảnh.
     // Riêng bản đồ vị trí giữ split để còn chỗ cho mã QR.

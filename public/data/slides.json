@@ -1,6 +1,6 @@
 {
   "_note": "Catalog slide tĩnh. Sửa file này rồi restart app là slide đổi ngay, không cần rebuild. Sinh tự động từ lib/static_slides.ts bằng: npm run slides:dump",
-  "_builtAt": "2026-08-01T18:32:01.907Z",
+  "_builtAt": "2026-10-07T03:25:22.403Z",
   "static_slides": [
     {
       "keywords": [
@@ -205,9 +205,7 @@
           "Chủ đầu tư trực tiếp đứng tên phát triển dự án"
         ],
         "speech_text": "Pháp lý dự án minh bạch - từng lô có số liệu GCN và giấy phép xây dựng rõ ràng, anh chị có thể xem hồ sơ trực tiếp.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/phap_ly/logo_nyahphudinh_210531_f-02.png"
-        ]
+        "image_urls": []
       }
     },
     {
@@ -234,7 +232,6 @@
         ],
         "speech_text": "Giá nhà thô hiện từ khoảng tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/gia_ban/gia-ban_bang-gia-hien-tai.jpg",
           "/images/01_NyAh-PhuDinh/mat_bang/ban-do-phan-lo_can-nha.jpg"
         ],
         "forceStatic": true
@@ -251,13 +248,13 @@
         "còn bán"
       ],
       "slide": {
-        "title": "Rổ hàng T6/2026 - 7 lô cuối",
+        "title": "Rổ hàng T10/2026 - 7 lô cuối",
         "points": [
           "Còn 7 lô: #01, #02, #03, #23, #24, #42, #50",
           "Đủ dòng: Office, Cosmo, Cashmere, Opus",
           "Giá gói Air từ 8,981 tỷ (lô #42), lô lớn nhất 16,57 tỷ"
         ],
-        "speech_text": "Rổ hàng tháng 6 còn đúng 7 lô: lô 1, 2, 3, 23, 24, 42 và 50 - đủ các dòng Office, Cosmo, Cashmere và Opus.",
+        "speech_text": "Rổ hàng tháng 10 còn đúng 7 lô: lô 1, 2, 3, 23, 24, 42 và 50 - đủ các dòng Office, Cosmo, Cashmere và Opus.",
         "image_urls": [
           "/images/01_NyAh-PhuDinh/mat_bang/ban-do-phan-lo_can-nha.jpg",
           "/images/01_NyAh-PhuDinh/mat_bang/ban-do-phan-lo-dien-tich.jpg"
@@ -295,9 +292,7 @@
           "Ký HĐMB công chứng: 61% còn lại → đủ 100%"
         ],
         "speech_text": "Lịch thanh toán rất nhẹ: ký cọc mười phần trăm, mỗi tháng chỉ ba phần trăm trong bảy tháng, nhận bàn giao Air thêm tám phần trăm là ba mươi chín phần trăm - phần còn lại đóng khi ký hợp đồng mua bán công chứng.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/gia_ban/gia-ban_bang-gia-hien-tai.jpg"
-        ],
+        "image_urls": [],
         "forceStatic": true
       }
     },
@@ -787,7 +782,6 @@
         "speech_text": "Đây là compound khép kín có kiểm soát ra vào và camera an ninh - trẻ em chơi trong khu bố mẹ hoàn toàn an tâm.",
         "image_urls": [
           "/images/01_NyAh-PhuDinh/tien_ich/cong_vao/tien-ich-3.jpg",
-          "/images/01_NyAh-PhuDinh/an_ninh/an-ninh_camera.jpg",
           "/images/01_NyAh-PhuDinh/tien_ich/cong_vao/tien-ich-4.jpg"
         ]
       }
@@ -1125,7 +1119,7 @@
         ],
         "speech_text": "Mẫu Fusion có hẳn phòng học riêng cho con - yên tĩnh và đủ sáng tự nhiên.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png"
+          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc_tang-5_phong-hoc.jpg"
         ]
       }
     },
@@ -1145,8 +1139,8 @@
         ],
         "speech_text": "Mẫu Fusion có bốn phòng ngủ cho ba thế hệ - ông bà ở tầng thấp, bố mẹ phòng master, các con tầng trên.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png",
-          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-con.png"
+          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-master_tang-4_7-master-bedroom-1.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-ngu-2_tang-5_phong-ngu-con.jpg"
         ],
         "forceStatic": true
       }
@@ -1424,10 +1418,7 @@
           "Thang kính lấy sáng, không tối tù"
         ],
         "speech_text": "Nhà có thang máy lên thẳng sân thượng - ông bà lớn tuổi đi lại cực kỳ nhẹ nhàng.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png",
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png"
-        ]
+        "image_urls": []
       }
     },
     {
@@ -1509,10 +1500,7 @@
           "Kết hợp gạch bông gió đón gió chéo"
         ],
         "speech_text": "Giếng trời xuyên suốt giúp phòng nào cũng có ánh sáng tự nhiên - nhà phố mà không hề tối.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png",
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/cosmo-gen-2_mat-cat.jpg"
-        ]
+        "image_urls": []
       }
     },
     {
@@ -1556,7 +1544,7 @@
         ],
         "speech_text": "Với gia đình trẻ, phòng con đón sáng tự nhiên và sân chơi ngay trong khu - bé chạy chơi bố mẹ vẫn an tâm.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-con-2.png",
+          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-2_tang-5_8-phong-ngu-2-1.jpg",
           "/images/01_NyAh-PhuDinh/tien_ich/san_choi_tre_em/tien-ich-5.jpg"
         ]
       }
@@ -1599,7 +1587,7 @@
         ],
         "speech_text": "Làm việc tại nhà rất thoải mái: Fusion có phòng riêng, Opus tách hẳn tầng văn phòng, compound lại yên tĩnh.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc.png",
+          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_phong-hoc_tang-5_phong-hoc.jpg",
           "/images/01_NyAh-PhuDinh/noi_that/opus/van phong/opus_tang-1.jpg"
         ]
       }
@@ -1642,9 +1630,7 @@
           "Kết nối không gian trong nhà với bên ngoài"
         ],
         "speech_text": "Mỗi tầng đều có ban công đón gió - đặt vài bồn cây là có mảng xanh riêng cho từng phòng.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/fusion-gen-5_mat-tien.jpg"
-        ]
+        "image_urls": []
       }
     },
     {
@@ -1704,8 +1690,8 @@
         ],
         "speech_text": "Vật liệu hoàn thiện đều tuyển chọn cao cấp - từ mặt bếp đá thạch anh đến thiết bị vệ sinh chính hãng.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png",
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_wc.png"
+          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/wc/cosmo-gen-2_phong-tam-master_tang-4_7-phong-tam-master-1.jpg"
         ]
       }
     },
@@ -1726,7 +1712,7 @@
         ],
         "speech_text": "Fusion Gen 5 nổi bật với thiết kế lệch tầng - phòng khách và bếp thông nhau tạo không gian cực kỳ thoáng đãng và hiện đại.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png",
+          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg",
           "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png"
         ]
       }
@@ -1748,9 +1734,9 @@
         ],
         "speech_text": "Gói nội thất Cashmere là lựa chọn cao cấp cho mẫu Cosmo Gen 2, sử dụng gỗ tự nhiên và đá thạch anh - vào ở ngay không cần sửa gì thêm.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png",
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png",
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png"
+          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_phong-ngu-master_tang-4_6-master-bedroom-1.jpg"
         ]
       }
     },
@@ -1769,7 +1755,7 @@
         ],
         "speech_text": "Bếp đảo đa năng như quầy bar - vừa nấu vừa trò chuyện, không còn quay lưng với cả nhà.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png",
+          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg",
           "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/bep/fusion-gen-5_tang-3.png"
         ]
       }
@@ -1788,9 +1774,7 @@
           "Động tuyến việc nhà tối ưu từng bước chân"
         ],
         "speech_text": "Khu giặt sấy đặt ngay tầng bếp, phơi đồ trên sân thượng - động tuyến việc nhà cực gọn.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png"
-        ]
+        "image_urls": []
       }
     },
     {
@@ -1810,8 +1794,8 @@
         ],
         "speech_text": "Garage trong nhà đỗ vừa cả xe bán tải lẫn SUV bảy chỗ, kèm chỗ để xe máy cho cả nhà.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png",
-          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png"
+          "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg",
+          "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg"
         ]
       }
     },
@@ -1961,11 +1945,7 @@
           "Gói Max \"chìa khóa trao tay\": từ 1,6 - 1,9 tỷ/căn tùy mẫu"
         ],
         "speech_text": "Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - trọn gói chìa khóa trao tay từ một tỷ sáu đến một tỷ chín tùy mẫu nhà.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/goi-air-vs-max_bang-so-sanh.jpg",
-          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/tu-bep_an-cuong.jpg",
-          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/may-lanh_lg.jpg"
-        ],
+        "image_urls": [],
         "forceStatic": true
       }
     },
@@ -1988,11 +1968,7 @@
           "Gói Max \"chìa khóa trao tay\": từ 1,6 - 1,9 tỷ/căn tùy mẫu"
         ],
         "speech_text": "Gói Max là gói Air cộng thêm tủ bếp cao cấp, máy lạnh toàn nhà và Smart Home ByteLife - trọn gói chìa khóa trao tay từ một tỷ sáu đến một tỷ chín tùy mẫu nhà.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/noi_that/goi-air-vs-max_bang-so-sanh.jpg",
-          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/tu-bep_an-cuong.jpg",
-          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/may-lanh_lg.jpg"
-        ],
+        "image_urls": [],
         "forceStatic": true
       }
     },
@@ -2016,11 +1992,7 @@
           "Số đo chính xác từng lô: xem datasheet cùng tư vấn viên"
         ],
         "speech_text": "Kích thước cổng chính, cửa phụ và cửa cuốn theo thiết kế từng mẫu - tư vấn viên sẽ gửi anh chị datasheet số đo chính xác của đúng lô mình chọn.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/thong_so/thong-so_cong-chinh.jpg",
-          "/images/01_NyAh-PhuDinh/thong_so/thong-so_cua-phu.jpg",
-          "/images/01_NyAh-PhuDinh/thong_so/cua-cuon.jpg"
-        ],
+        "image_urls": [],
         "forceStatic": true
       }
     },
@@ -2043,11 +2015,7 @@
           "Danh mục brand chi tiết theo gói bàn giao"
         ],
         "speech_text": "Vật liệu và thiết bị đều từ thương hiệu tuyển chọn - danh mục brand chi tiết theo từng gói bàn giao, tư vấn viên gửi anh chị bản đầy đủ.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/thong_so/brand_vat-lieu-noi-that.jpg",
-          "/images/01_NyAh-PhuDinh/thong_so/thang-may.jpg",
-          "/images/01_NyAh-PhuDinh/noi_that/thiet_bi/thiet-bi-ve-sinh_inax.jpg"
-        ],
+        "image_urls": [],
         "forceStatic": true
       }
     },
@@ -2101,11 +2069,7 @@
           "Kết hợp mặt cắt để hình dung trọn khối nhà"
         ],
         "speech_text": "Đây là mặt ngang bên hông của từng mẫu - nhìn rõ chiều sâu và cách phân tầng của căn nhà.",
-        "image_urls": [
-          "/images/01_NyAh-PhuDinh/ngoai_that/cosmo-gen-2_mat-ngang.jpg",
-          "/images/01_NyAh-PhuDinh/ngoai_that/fusion-gen-5_mat-ngang.jpg",
-          "/images/01_NyAh-PhuDinh/ngoai_that/opus_mat-ngang.jpg"
-        ],
+        "image_urls": [],
         "forceStatic": true
       }
     },
@@ -2186,7 +2150,6 @@
         ],
         "speech_text": "Mấy tin trên mạng là của bên thứ ba, hay để giá cũ hoặc giá ảo để kéo khách - giá chính thức anh chị lấy trực tiếp từ Nhã Đạt theo bảng giá từng đợt cho chuẩn ạ.",
         "image_urls": [
-          "/images/01_NyAh-PhuDinh/gia_ban/gia-ban_bang-gia-hien-tai.jpg",
           "/images/01_NyAh-PhuDinh/chu_dau_tu/nha_dat/logo_nha-dat-1.png"
         ],
         "forceStatic": true
@@ -2258,7 +2221,7 @@
           ],
           "speech_text": "Khu vực bếp và bàn ăn của căn nhà Cosmo được thiết kế ấm cúng, trang bị hệ tủ bếp hiện đại.",
           "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep.png"
+            "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/bep/cosmo-gen-2_bep_tang-3_4-bep-1.jpg"
           ]
         },
         "fusion_gen_5": {
@@ -2268,10 +2231,7 @@
             "Thiết kế mở kết nối phòng khách",
             "Trang bị thiết bị bếp cao cấp"
           ],
-          "speech_text": "Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình.",
-          "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/tang-2/fusion-gen-5_tang-2.png"
-          ]
+          "speech_text": "Bếp mẫu nhà Fusion thiết kế thông tầng thoáng đãng với hệ bàn ăn lớn cho gia đình."
         },
         "opus": {
           "title": "Phòng bếp Opus",
@@ -2316,7 +2276,7 @@
           ],
           "speech_text": "Mẫu nhà Cosmo thiết kế gara rộng rãi với sức chứa ô tô lớn, kết nối trực tiếp đến thang máy kính lên các tầng.",
           "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_gara.png"
+            "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/gara/cosmo-gen-2_garage_tang-1_1-gara-1.jpg"
           ]
         },
         "fusion_gen_5": {
@@ -2328,7 +2288,7 @@
           ],
           "speech_text": "Gara mẫu nhà Fusion được tối ưu không gian, đỗ vừa xe bán tải lớn và có thiết kế thông thoáng.",
           "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_gara.png"
+            "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/gara/fusion-gen-5_garage_tang-1_gara-1.jpg"
           ]
         },
         "opus": {
@@ -2338,10 +2298,7 @@
             "Cửa cuốn tự động an toàn",
             "Bố trí tủ giày và tủ dụng cụ"
           ],
-          "speech_text": "Mẫu nhà thương mại Opus sở hữu gara ô tô riêng biệt tại tầng trệt, kết nối thuận tiện lên khu vực kinh doanh.",
-          "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg"
-          ]
+          "speech_text": "Mẫu nhà thương mại Opus sở hữu gara ô tô riêng biệt tại tầng trệt, kết nối thuận tiện lên khu vực kinh doanh."
         },
         "nyah": {
           "title": "Gara Ô tô Ny'ah",
@@ -2372,7 +2329,7 @@
           ],
           "speech_text": "Phòng khách Cosmo Gen 2 ngập tràn ánh sáng tự nhiên nhờ hệ kính lớn và trần cao thoáng đãng.",
           "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png"
+            "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg"
           ]
         },
         "fusion_gen_5": {
@@ -2384,7 +2341,7 @@
           ],
           "speech_text": "Phòng khách mẫu nhà Fusion mang phong cách hiện đại với thiết kế lệch tầng tạo không gian rộng mở.",
           "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png"
+            "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg"
           ]
         },
         "opus": {
@@ -2394,10 +2351,7 @@
             "Tông màu gỗ ấm áp, lịch lãm",
             "Bố trí ánh sáng gián tiếp tinh tế"
           ],
-          "speech_text": "Không gian phòng khách Opus lịch lãm với gỗ tự nhiên, thiết kế lý tưởng để tiếp các đối tác kinh doanh.",
-          "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg"
-          ]
+          "speech_text": "Không gian phòng khách Opus lịch lãm với gỗ tự nhiên, thiết kế lý tưởng để tiếp các đối tác kinh doanh."
         },
         "nyah": {
           "title": "Phòng khách Ny'ah",
@@ -2427,10 +2381,7 @@
             "Bố trí giường king-size thoải mái",
             "Hệ tủ quần áo kính sang trọng"
           ],
-          "speech_text": "Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng.",
-          "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_ngu/cosmo-gen-2_noi-that-ngu-master.png"
-          ]
+          "speech_text": "Phòng ngủ chính của mẫu Cosmo được thiết kế tinh tế với hệ cửa kính lớn và phòng tắm kính riêng."
         },
         "fusion_gen_5": {
           "title": "Phòng ngủ Master Fusion",
@@ -2439,10 +2390,7 @@
             "Tích hợp phòng thay đồ riêng",
             "Cửa sổ hướng công viên nội khu"
           ],
-          "speech_text": "Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng.",
-          "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_ngu/fusion-gen-5_master-bedroom.png"
-          ]
+          "speech_text": "Phòng ngủ chính mẫu Fusion có thiết kế ấm áp, tích hợp phòng thay đồ và nhà vệ sinh riêng."
         },
         "opus": {
           "title": "Phòng ngủ Master Opus",
@@ -2451,10 +2399,7 @@
             "Ban công đón gió tự nhiên",
             "Thiết kế chuẩn khách sạn 5 sao"
           ],
-          "speech_text": "Phòng ngủ master của mẫu nhà Opus mang phong cách resort đẳng cấp với ban công rộng đón gió tự nhiên.",
-          "image_urls": [
-            "/images/01_NyAh-PhuDinh/noi_that/opus/phong_ngu/opus_phong-ngu-master.jpg"
-          ]
+          "speech_text": "Phòng ngủ master của mẫu nhà Opus mang phong cách resort đẳng cấp với ban công rộng đón gió tự nhiên."
         },
         "nyah": {
           "title": "Phòng ngủ Ny'ah",
@@ -2532,9 +2477,7 @@
         "Giấy phép xây dựng đầy đủ, minh bạch"
       ],
       "speech_text": "Dự án sở hữu pháp lý hoàn chỉnh với sổ hồng riêng từng căn, sở hữu lâu dài, sẵn sàng bàn giao cho quý khách hàng.",
-      "image_urls": [
-        "/images/01_NyAh-PhuDinh/phap_ly/logo_nyahphudinh_210531_f-02.png"
-      ]
+      "image_urls": []
     },
     "thanh_toan": {
       "keywords": [
@@ -2575,7 +2518,6 @@
       ],
       "speech_text": "Giá gói Air hiện từ tám tỷ chín trăm tám mươi mốt triệu - anh chị liên hệ để nhận bảng giá chi tiết từng lô theo rổ hàng mới nhất.",
       "image_urls": [
-        "/images/01_NyAh-PhuDinh/gia_ban/gia-ban_bang-gia-hien-tai.jpg",
         "/images/01_NyAh-PhuDinh/mat_bang/ban-do-phan-lo_can-nha.jpg"
       ]
     },
@@ -2633,7 +2575,7 @@
       ],
       "speech_text": "Mẫu nhà Cosmo Gen 2 được thiết kế thông minh, tối ưu diện tích sử dụng với gara lớn và thang máy kính sang trọng.",
       "introImages": [
-        "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png"
+        "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg"
       ]
     },
     "fusion_gen_5": {
@@ -2645,7 +2587,7 @@
       ],
       "speech_text": "Mẫu nhà Fusion Gen 5 phá cách với thiết kế lệch tầng độc đáo, mang đến không gian sống thoáng đãng, ngập tràn ánh sáng.",
       "introImages": [
-        "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png"
+        "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg"
       ]
     },
     "opus": {
@@ -2670,8 +2612,8 @@
     ],
     "speech_text": "Ny'ah Phú Định cung cấp ba mẫu nhà đặc sắc: Cosmo Gen 2, Fusion Gen 5 và Opus, mỗi mẫu có phong cách riêng phù hợp với từng nhu cầu gia đình.",
     "image_urls": [
-      "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach.png",
-      "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach.png",
+      "/images/01_NyAh-PhuDinh/noi_that/cosmo_gen_2/phong_khach/cosmo-gen-2_phong-khach_tang-1_2-phong-khach-2.jpg",
+      "/images/01_NyAh-PhuDinh/noi_that/fusion_gen_5/phong_khach/fusion-gen-5_phong-khach_tang-1_phong-khach-2.jpg",
       "/images/01_NyAh-PhuDinh/noi_that/opus/opus_tong-quan.jpg"
     ]
   }
