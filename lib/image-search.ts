@@ -63,14 +63,35 @@ function cleanText(s: string): string {
     .trim();
 }
 
+async function queryVec(idx: ImageIndex, question: string, answer: string): Promise<number[] | null> {
+  const query = cleanText(`${question}\n${answer.slice(0, 800)}`);
+  if (!query) return null;
+  const q = await embedQuery(query, idx.dim);
+  return q.length === idx.dim ? q : null;
+}
+
+// Ảnh `url` (vd ảnh chọn tay của slide tĩnh) có đúng chủ đề câu hỏi không:
+// true/false theo cùng ngưỡng MIN_SCORE (ảnh giữ chỗ luôn false); null khi
+// không đánh giá được (chưa có index, ảnh chưa được index) -> giữ nguyên ảnh.
+export async function isImageOnTopic(question: string, answer: string, url: string): Promise<boolean | null> {
+  const idx = await loadImageIndex();
+  if (!idx) return null;
+  const want = decodeURIComponent(url);
+  const im = idx.images.find(e => decodeURIComponent(e.url) === want);
+  if (!im) return null;
+  if (im.placeholder) return false;
+  const q = await queryVec(idx, question, answer);
+  if (!q || im.vec.length !== q.length) return null;
+  let s = 0;
+  for (let i = 0; i < q.length; i++) s += q[i] * im.vec[i];
+  return s >= MIN_SCORE;
+}
+
 export async function searchImages(question: string, answer = '', k = 3): Promise<ImageHit[]> {
   const idx = await loadImageIndex();
   if (!idx) return [];
-  const query = cleanText(`${question}\n${answer.slice(0, 800)}`);
-  if (!query) return [];
-
-  const q = await embedQuery(query, idx.dim);
-  if (q.length !== idx.dim) return [];
+  const q = await queryVec(idx, question, answer);
+  if (!q) return [];
 
   const scored: ImageHit[] = [];
   for (const im of idx.images) {

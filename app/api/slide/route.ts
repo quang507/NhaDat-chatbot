@@ -5,7 +5,7 @@ import { existsSync } from 'fs';
 import path from 'path';
 import { getPersona } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
-import { searchImages } from '@/lib/image-search';
+import { searchImages, isImageOnTopic } from '@/lib/image-search';
 import { detectUnit, unitContext, imageFamily, getGeneralUnsoldContext, isGeneralUnsoldQuery } from '@/lib/units';
 import { hasProjectKeyword, isCompetitor, COMPETITORS, detectModel, kwHit, rmDia } from '@/lib/intent';
 import {
@@ -97,7 +97,10 @@ function roomSlide(key: 'bep' | 'gara' | 'phong_khach' | 'phong_ngu', model: Sli
     points: v.points,
     speech_text: v.speech_text,
     image_urls: v.image_urls ? [...v.image_urls] : [],
-    imageHint: v.image_urls ? undefined : v.title,
+    // Gợi ý ảnh = loại phòng chung ("phòng ngủ"), KHÔNG dùng tiêu đề biến thể
+    // ("Phòng ngủ Master Cosmo") - để câu hỏi quyết định phòng ông bà/con/master.
+    imageHint: v.image_urls ? undefined : ROOM_SLIDES[key].keywords[0],
+    imageModel: model,
   };
 }
 
@@ -419,6 +422,16 @@ export async function POST(req: NextRequest) {
 
     // Slide tĩnh không có ảnh chọn tay -> chọn ảnh theo ngữ nghĩa (một lần embed câu
     // hỏi, ~0.2-0.5s; có cache trong RAM cho câu lặp lại).
+    // Ảnh chọn tay của catalog phải là file THẬT (slides.json sửa tay/đổi tên ảnh
+    // từng để lại 11 đường dẫn chết -> slide vỡ ảnh). Lọc hết mà rỗng, hoặc catalog
+    // để trống image_urls -> chọn theo ngữ nghĩa với tiêu đề slide.
+    if (staticSlide && staticSlide.imageHint === undefined) {
+      const imgs: string[] = (staticSlide.image_urls || []).filter((u: string) => {
+        try { return typeof u === 'string' && u.startsWith('/images/') && existsSync(path.join(process.cwd(), 'public', decodeURIComponent(u))); } catch { return false; }
+      });
+      staticSlide.image_urls = imgs;
+      if (!imgs.length) { staticSlide.imageModel = model; staticSlide.imageHint = staticSlide.title || ''; }
+    }
     if (staticSlide && staticSlide.imageHint !== undefined) {
       staticSlide.image_urls = await semanticImages(message, staticSlide.imageModel || null, staticSlide.imageHint);
     }
@@ -489,13 +502,7 @@ export async function POST(req: NextRequest) {
     // hỏi vặn kiểu "không phải ... à?" giờ có câu xác nhận đúng/sai thẳng.
     if (refine && REFINE_GROQ_KEY) {
       try {
-        // Cho LLM SỬA ẢNH nếu slide tĩnh bắt nhầm chủ đề (câu hỏi lắt léo trúng
-        // nhầm từ khóa): kèm ảnh đang hiện vào prompt, LLM trả thêm trường
-        // "image" CHỈ KHI ảnh hiện tại sai rõ ràng. Server kiểm tra file tồn
-        // tại trước khi cho client thay - LLM không thể chỉ ra ảnh ma.
-        const curImg = (staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '';
-        const imgCtx = curImg ? `\nSLIDE ĐANG HIỆN: tiêu đề "${staticSlide.title || ''}", ảnh "${curImg}". Nếu ảnh này SAI CHỦ ĐỀ so với câu khách hỏi, chọn ĐÚNG 1 đường dẫn ảnh khớp hơn từ phần dữ liệu (bắt đầu bằng "/images/") điền vào trường "image"; nếu ảnh đã đúng chủ đề hoặc không chắc, để "image" là chuỗi rỗng - THAY SAI CÒN TỆ HƠN GIỮ NGUYÊN.` : '';
-        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "...", "image": ""} - "answer" là MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu câu hỏi KHÔNG liên quan dự án/bất động sản (chuyện phiếm, thời sự, chủ đề ngoài lề) hoặc không có thông tin: {"answer": ""} - im lặng tốt hơn trả lời lạc đề.' + imgCtx;
+        const sys = systemText + '\n\n=== GHI ĐÈ NHIỆM VỤ (REFINE) ===\nBỏ toàn bộ định dạng slide ở trên. Chỉ trả về JSON đúng dạng {"answer": "..."} - "answer" là MỘT câu trả lời tiếng Việt ngắn (1-2 câu, tối đa 45 chữ) bám ĐÚNG câu khách vừa hỏi, xưng "em" gọi "anh/chị", có số liệu nếu dữ liệu có. TUYỆT ĐỐI không bịa số liệu hay địa danh ngoài dữ liệu. Nếu câu hỏi KHÔNG liên quan dự án/bất động sản (chuyện phiếm, thời sự, chủ đề ngoài lề) hoặc không có thông tin: {"answer": ""} - im lặng tốt hơn trả lời lạc đề.';
         const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${REFINE_GROQ_KEY}` },
@@ -517,14 +524,15 @@ export async function POST(req: NextRequest) {
               if (ANSWER_CACHE.size > 500) ANSWER_CACHE.clear(); // chặn phình bộ nhớ
               ANSWER_CACHE.set(refineCacheKey, { ans: ans.slice(0, 220), at: Date.now() });
             }
-            // Ảnh sửa lại (nếu LLM đề xuất): chỉ chấp nhận khi file THẬT SỰ tồn tại
-            // trong public/images và khác ảnh đang hiện.
+            // SỬA ẢNH THEO NGỮ NGHĨA: ảnh đang hiện của slide tĩnh bị bắt nhầm chủ đề
+            // (câu lắt léo trúng nhầm từ khóa) -> chấm lại bằng vector câu hỏi + câu
+            // trả lời; chỉ thay khi ảnh hiện tại DƯỚI ngưỡng và có ảnh khác đủ ngưỡng.
+            // Không đánh giá được (null) thì giữ nguyên - thay sai còn tệ hơn.
             let fixImg = '';
-            const rawImg = typeof j.image === 'string' ? j.image.trim() : '';
-            if (rawImg && rawImg.startsWith('/images/') && rawImg !== ((staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '')) {
-              try {
-                if (existsSync(path.join(process.cwd(), 'public', decodeURIComponent(rawImg)))) fixImg = rawImg;
-              } catch {}
+            const curImg: string = (staticSlide && staticSlide.image_urls && staticSlide.image_urls[0]) || '';
+            if (curImg && (await isImageOnTopic(message, ans, curImg)) === false) {
+              const [best] = await searchImages(message, ans, 1);
+              if (best && decodeURIComponent(best.url) !== decodeURIComponent(curImg)) fixImg = best.url;
             }
             return NextResponse.json({ answer_text: ans.slice(0, 220), ...(fixImg ? { image_url: fixImg } : {}), _source: 'static_llm_text' });
           }

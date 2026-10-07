@@ -73,7 +73,10 @@ const PRICES: Record<number, string> = {
   2: 'Giá: 12.791.000.000 VNĐ (đã kèm giá nội thất mẫu Opus)',
 };
 
-const UNSOLD = new Set<number>([1, 2, 3, 23, 24, 42, 50]); // rổ hàng T6.2026: còn trống
+// Rổ hàng T10.2026: vẫn đúng 7 lô này - chưa bán thêm căn nào từ T5.2026.
+// Có rổ hàng tháng mới thì sửa UNSOLD + RO_HANG_LABEL.
+const UNSOLD = new Set<number>([1, 2, 3, 23, 24, 42, 50]);
+const RO_HANG_LABEL = 'T10/2026';
 
 // Đặc điểm theo HỌ mẫu nhà (dùng chung cho các biến thể: Cosmo/Cosmo v2/Cosmo Gen 2...).
 const FAMILY_FEATURES: Record<ModelFamily, string> = {
@@ -177,13 +180,13 @@ export function isGeneralUnsoldQuery(message: string): boolean {
 
 export function getGeneralUnsoldContext(): string {
   const unsoldList = Array.from(UNSOLD).sort((a, b) => a - b);
-  let str = "=== DANH SÁCH CÁC CĂN/LÔ CÒN TRỐNG (CHƯA BÁN) & GIÁ BÁN TỪNG CĂN ===\n";
+  let str = `=== RỔ HÀNG ${RO_HANG_LABEL} - DANH SÁCH CÁC CĂN/LÔ CÒN TRỐNG (CHƯA BÁN) & GIÁ BÁN TỪNG CĂN ===\n`;
   for (const n of unsoldList) {
     const l = LOTS[n];
     if (!l) continue;
     const price = PRICES[n] || 'Liên hệ trực tiếp để có giá chính xác';
     str += `- Lô #${String(n).padStart(2, '0')}: Mẫu ${l.model}, DT đất: ${l.dtDat}m², DT sàn: ${l.dtSan}m², Hướng: ${l.huong}. ${price}\n`;
   }
-  str += "\nLƯU Ý: Tất cả các căn/lô khác ngoài danh sách này đều ĐÃ BÁN.";
+  str += `\nLƯU Ý: Tất cả các căn/lô khác ngoài danh sách này đều ĐÃ BÁN. Đây là rổ hàng MỚI NHẤT (${RO_HANG_LABEL}) - dữ liệu bên dưới ghi rổ hàng tháng cũ hơn thì theo danh sách này.`;
   return str;
 }
