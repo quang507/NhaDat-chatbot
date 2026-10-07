@@ -73,10 +73,15 @@ const PRICES: Record<number, string> = {
   2: 'Giá: 12.791.000.000 VNĐ (đã kèm giá nội thất mẫu Opus)',
 };
 
-// Rổ hàng T10.2026: vẫn đúng 7 lô này - chưa bán thêm căn nào từ T5.2026.
+// Rổ hàng T10.2026: 9 lô còn trống (gồm cặp Office 25 + 26 vẫn đang bán).
 // Có rổ hàng tháng mới thì sửa UNSOLD + RO_HANG_LABEL.
-const UNSOLD = new Set<number>([1, 2, 3, 23, 24, 42, 50]);
+const UNSOLD = new Set<number>([1, 2, 3, 23, 24, 25, 26, 42, 50]);
 const RO_HANG_LABEL = 'T10/2026';
+
+// Cặp lô Office dùng chung tầng hầm: ưu tiên bán gộp 2 lô, khách cần vẫn bán lẻ.
+const PAIRED: Record<number, number> = { 1: 2, 2: 1, 25: 26, 26: 25 };
+const pairNote = (n: number) =>
+  `Ưu tiên bán cặp với lô #${String(PAIRED[n]).padStart(2, '0')} vì dùng chung tầng hầm; khách cần mua lẻ vẫn có thể trao đổi.`;
 
 // Đặc điểm theo HỌ mẫu nhà (dùng chung cho các biến thể: Cosmo/Cosmo v2/Cosmo Gen 2...).
 const FAMILY_FEATURES: Record<ModelFamily, string> = {
@@ -155,7 +160,7 @@ export function unitContext(n: number): { facts: string; modelKeywords: string }
   const l = LOTS[n];
   if (!l) return { facts: '', modelKeywords: '' };
   const depth = l.front ? (l.dtDat / l.front) : 0;
-  const status = UNSOLD.has(n) ? 'CÒN TRỐNG (chưa bán)' : 'ĐÃ BÁN';
+  const status = UNSOLD.has(n) ? `CÒN TRỐNG (chưa bán)${PAIRED[n] ? `. ${pairNote(n)}` : ''}` : 'ĐÃ BÁN';
   const facts = `THÔNG TIN CHÍNH XÁC LÔ #${String(n).padStart(2, '0')} (dùng đúng số liệu này, KHÔNG bịa; "DT" = Diện Tích):
 - Mẫu nhà (tên đầy đủ): ${l.model}
 - DT đất (theo GCN): ${l.dtDat} m²; DT sàn (GPXD): ${l.dtSan} m²
@@ -185,7 +190,7 @@ export function getGeneralUnsoldContext(): string {
     const l = LOTS[n];
     if (!l) continue;
     const price = PRICES[n] || 'Liên hệ trực tiếp để có giá chính xác';
-    str += `- Lô #${String(n).padStart(2, '0')}: Mẫu ${l.model}, DT đất: ${l.dtDat}m², DT sàn: ${l.dtSan}m², Hướng: ${l.huong}. ${price}\n`;
+    str += `- Lô #${String(n).padStart(2, '0')}: Mẫu ${l.model}, DT đất: ${l.dtDat}m², DT sàn: ${l.dtSan}m², Hướng: ${l.huong}. ${price}${PAIRED[n] ? ` ${pairNote(n)}` : ''}\n`;
   }
   str += `\nLƯU Ý: Tất cả các căn/lô khác ngoài danh sách này đều ĐÃ BÁN. Đây là rổ hàng MỚI NHẤT (${RO_HANG_LABEL}) - dữ liệu bên dưới ghi rổ hàng tháng cũ hơn thì theo danh sách này.`;
   return str;

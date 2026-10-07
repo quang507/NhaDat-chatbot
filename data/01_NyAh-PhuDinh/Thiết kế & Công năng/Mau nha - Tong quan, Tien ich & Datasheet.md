@@ -94,7 +94,7 @@ Khu nhà được phê duyệt 1/500, có sổ hồng riêng từng căn TRƯỚ
 
 ## Rổ hàng & đối tác
 
-- Rổ hàng T10.2026 (cập nhật 10/2026, không đổi so với T5.2026): các lô còn trống, đánh dấu "LOCK ngay giá tốt": #01, 02, 03, 23, 24, 42, 50.
+- Rổ hàng T10.2026 (cập nhật 10/2026, không đổi so với T5.2026): các lô còn trống, đánh dấu "LOCK ngay giá tốt": #01, 02, 03, 23, 24, 25, 26, 42, 50. Lô 01 + 02 (Office 1) và 25 + 26 (Office 2) ưu tiên bán cặp vì dùng chung tầng hầm; khách cần mua lẻ từng lô vẫn có thể trao đổi.
 - Đối tác: phát triển & phân phối Nhã Đạt (nhà đất Đô Thị Mới); xây dựng: Vĩnh Khang, KACONS; ngân hàng: TPBank, Techcombank, MB, BIDV.
 
 ---

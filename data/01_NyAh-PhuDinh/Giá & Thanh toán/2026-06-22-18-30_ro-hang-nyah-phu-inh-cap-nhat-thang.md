@@ -10,7 +10,7 @@
 
 **Quỹ căn:** đánh số từ 01 đến 50.
 
-**CÁC CĂN CÒN TRỐNG (CHƯA BÁN) — rổ hàng T10.2026 (không đổi so với tháng 5/2026):** căn **01, 02, 03, 23, 24, 42, 50**.
+**CÁC CĂN CÒN TRỐNG (CHƯA BÁN) — rổ hàng T10.2026 (không đổi so với tháng 5/2026):** căn **01, 02, 03, 23, 24, 25, 26, 42, 50**. Lô 01 + 02 (Office 1) và 25 + 26 (Office 2) ưu tiên bán cặp vì dùng chung tầng hầm; khách cần mua lẻ từng lô vẫn có thể trao đổi.
 
 Các căn còn lại đã bán hoặc đã giữ chỗ. Lưu ý: rổ hàng thay đổi theo thời gian, vui lòng liên hệ tư vấn để xác nhận căn còn trống mới nhất trước khi quyết định.
 
