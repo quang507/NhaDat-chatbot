@@ -170,7 +170,7 @@ Diện tích từng lô ghi trong "Bảng chuẩn 50 lô" cùng thư mục.
 Tài liệu TỔNG HỢP DUY NHẤT (đã gộp từ "Bảng giá độc quyền", "Danh sách lô đất", "Rổ hàng cập nhật tháng") — mẫu nhà, diện tích đất thực, kích thước chuẩn mẫu nhà, diện tích sử dụng, kết cấu, giá bán, tình trạng — của từng căn/lô đất trong rổ hàng dự án Ny'ah Phú Định, để chatbot tra cứu nhanh và trả lời chính xác.
 
 ⚠️ LƯU Ý: "Kích Thước Chuẩn Mẫu Nhà" là kích thước THIẾT KẾ MẪU (theo model nhà) — KHÁC với "Diện Tích Đất Thực" (đo thực tế từng lô, có thể lệch do lô góc/lô méo). Luôn ưu tiên dùng "Diện Tích Đất Thực" khi khách hỏi diện tích đất của một lô cụ thể.
-⚠️ Tình trạng cập nhật tới tháng 5/2026 — rổ hàng thay đổi theo thời gian, luôn nhắc khách xác nhận lại với tư vấn viên trước khi chốt.
+⚠️ Tình trạng cập nhật tới tháng 10/2026 (rổ hàng T10.2026 - không đổi so với T5.2026) — rổ hàng thay đổi theo thời gian, luôn nhắc khách xác nhận lại với tư vấn viên trước khi chốt.
 
 | Mã Lô | Mẫu Nhà | Diện Tích Đất Thực (m²) | Kích Thước Chuẩn Mẫu Nhà (m²) | Diện Tích Sàn Sử Dụng (m²) | Kết Cấu & Đặc Điểm | Giá Bán (Chưa NT) | Giá Bán (Gói Air) | Giá Bán (Gói Max) | Tình Trạng (T5/2026) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
