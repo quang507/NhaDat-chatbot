@@ -180,9 +180,9 @@ export const STATIC_SLIDES: CatalogEntry[] = fromJSON<CatalogEntry[]>('static_sl
   {
     keywords: ['còn căn nào', 'còn hàng', 'rổ hàng', 'còn trống', 'căn nào còn', 'lô nào còn', 'còn bán'],
     slide: {
-      title: 'Rổ hàng T10/2026 - 7 lô cuối',
-      points: ['Còn 7 lô: #01, #02, #03, #23, #24, #42, #50', 'Đủ dòng: Office, Cosmo, Cashmere, Opus', 'Giá gói Air từ 8,981 tỷ (lô #42), lô lớn nhất 16,57 tỷ'],
-      speech_text: 'Rổ hàng tháng 10 còn đúng 7 lô: lô 1, 2, 3, 23, 24, 42 và 50 - đủ các dòng Office, Cosmo, Cashmere và Opus.',
+      title: 'Rổ hàng T10/2026 - 9 lô cuối',
+      points: ['Còn 9 lô: #01, #02, #03, #23, #24, #25, #26, #42, #50', 'Office 01+02 và 25+26 ưu tiên bán cặp (chung tầng hầm), vẫn có thể bán lẻ', 'Giá gói Air từ 8,981 tỷ (lô #42), lô lớn nhất 16,57 tỷ (#26)'],
+      speech_text: 'Rổ hàng tháng 10 còn 9 lô: lô 1, 2, 3, 23, 24, 25, 26, 42 và 50. Hai cặp Office 1 và 2, 25 và 26 ưu tiên bán cặp vì chung tầng hầm, khách cần vẫn có thể mua lẻ.',
       image_urls: [`${IMG}/mat_bang/ban-do-phan-lo_can-nha.jpg`, `${IMG}/mat_bang/ban-do-phan-lo-dien-tich.jpg`],
       forceStatic: true,
     },
