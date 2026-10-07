@@ -133,16 +133,6 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
       });
     let acc = '';
 
-    // Bắn SONG SONG /api/slide (ambient=true -> nhánh slide tĩnh ~0ms, không
-    // tốn LLM) để lấy ảnh dự án đính kèm câu trả lời - cùng cơ chế /voice dùng.
-    // Câu không khớp chủ đề thì slide trả skip -> không đính gì.
-    const slidePromise: Promise<{ skip?: boolean; title?: string; image_urls?: string[]; _forceStatic?: boolean } | null> =
-      fetch('/api/slide', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, ambient: true }),
-      }).then(r => (r.ok ? r.json() : null)).catch(() => null);
-
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -187,31 +177,19 @@ export default function ChatPanel({ embedded = false, fullPage = false }: ChatPa
         writeAssistant('Không có phản hồi, vui lòng thử lại.');
       } else {
         recorderRef.current.answerLast(acc);
-        // Trả lời xong -> đính ảnh dự án. Thứ tự ưu tiên:
-        //   1. Slide khóa cứng (_forceStatic: công năng tầng, tiến độ căn...) - ảnh
-        //      người đã chọn tay, giữ nguyên theo từ khóa.
-        //   2. Ảnh chọn theo NGỮ NGHĨA (câu hỏi + câu trả lời, /api/images).
-        //   3. Ảnh của slide khớp từ khóa (như trước).
-        // Chờ tối đa 4s mỗi nguồn - quá hạn thì thôi, không giữ khách.
+        // Trả lời xong -> đính ảnh dự án chọn theo NGỮ NGHĨA (câu hỏi + câu trả lời,
+        // /api/images). Không ảnh nào đủ ngưỡng thì không đính - ảnh sai chủ đề còn
+        // tệ hơn không có ảnh. Chờ tối đa 4s, quá hạn thì thôi, không giữ khách.
         const within = <T,>(p: Promise<T>) => Promise.race([p, new Promise<null>(r => setTimeout(() => r(null), 4000))]);
-        const slide = await within(slidePromise);
-        const slideImgs = slide && !slide.skip && Array.isArray(slide.image_urls) ? slide.image_urls : [];
-        let picked: string[] = [];
-        let alt = slide?.title || 'Ảnh dự án';
-        if (slide?._forceStatic && slideImgs.length) {
-          picked = slideImgs.slice(0, 2);
-        } else {
-          const sem = await within(
-            fetch('/api/images', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ question: msg, answer: acc }),
-            }).then(r => (r.ok ? r.json() : null)).catch(() => null) as Promise<{ images?: { url: string }[] } | null>,
-          );
-          const semUrls = Array.isArray(sem?.images) ? sem!.images.map(i => i.url) : [];
-          if (semUrls.length) { picked = semUrls; alt = 'Ảnh dự án'; }
-          else picked = slideImgs.slice(0, 2);
-        }
+        const sem = await within(
+          fetch('/api/images', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: msg, answer: acc }),
+          }).then(r => (r.ok ? r.json() : null)).catch(() => null) as Promise<{ images?: { url: string }[] } | null>,
+        );
+        const picked = Array.isArray(sem?.images) ? sem!.images.map(i => i.url) : [];
+        const alt = 'Ảnh dự án';
         const imgs = Array.from(new Set(picked)).slice(0, 3);
         if (imgs.length) {
           const md = '\n\n' + imgs.map(u => `![${alt}](${u})`).join('\n');

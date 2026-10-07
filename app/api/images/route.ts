@@ -6,7 +6,7 @@ export const runtime = 'nodejs';
 
 // Chọn ảnh đính kèm câu trả lời chat theo NGỮ NGHĨA (câu hỏi + câu trả lời).
 // Trả mảng rỗng khi chưa có image_index.json / không ảnh nào đủ ngưỡng -
-// client tự quay về ảnh của /api/slide (so khớp từ khóa).
+// khi đó client không đính ảnh.
 export async function POST(req: NextRequest) {
   if (rateLimited(req, 'images', 60)) return NextResponse.json({ images: [] }, { status: 429 });
   try {

@@ -1126,8 +1126,8 @@ export function matchStaticSlide(message: string, phase: 'combo' | 'general'): C
 // BLOCK B - SLIDE PHÒNG THEO MẪU NHÀ + SLIDE CHỦ ĐỀ  (gộp từ app/api/slide/route.ts)
 // ───────────────────────────────────────────────────────────────────────────
 // Trước đây là ~330 dòng if/else hardcode trong route. Nay chỉ còn DỮ LIỆU ở đây;
-// route.ts vẫn lo NHẬN DIỆN mẫu nhà (số căn/biến thể STT) và LẤY ẢNH CHUNG theo
-// thư mục (getGeneralImagesForSpace) khi biến thể 'nyah' không có ảnh cố định.
+// route.ts vẫn lo NHẬN DIỆN mẫu nhà (số căn/biến thể STT) và CHỌN ẢNH THEO NGỮ
+// NGHĨA (lib/image-search.ts) khi biến thể 'nyah' không có ảnh cố định.
 // ═══════════════════════════════════════════════════════════════════════════
 
 export type RoomModel = 'cosmo_gen_2' | 'fusion_gen_5' | 'opus' | 'nyah';
@@ -1136,8 +1136,8 @@ export interface RoomVariant {
   title: string;
   points: string[];
   speech_text: string;
-  image_urls?: string[]; // ảnh cố định; bỏ trống -> route lấy ảnh chung theo imageSpace
-  imageSpace?: string;   // dùng cho biến thể 'nyah' (getGeneralImagesForSpace)
+  image_urls?: string[]; // ảnh cố định; bỏ trống -> route chọn ảnh theo ngữ nghĩa
+  imageSpace?: string;   // không còn dùng để chọn ảnh (giữ cho slides.json cũ)
 }
 export interface RoomEntry { keywords: string[]; variants: Record<RoomModel, RoomVariant>; }
 
