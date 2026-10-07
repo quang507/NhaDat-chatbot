@@ -23,8 +23,9 @@ interface ImageIndex { model: string; dim: number; builtAt: string; images: Imag
 
 export interface ImageHit { url: string; score: number; desc: string }
 
-// Ngưỡng chưa được tinh chỉnh trên câu hỏi thật - chỉnh qua env khi đã thử.
-const MIN_SCORE = Number(process.env.IMAGE_MIN_SCORE) || 0.6;
+// 0.68: thử trên 6 câu thật - câu đúng chủ đề có ảnh đầu >= 0.71, câu lạc đề
+// (pháp lý - chưa có ảnh giấy tờ) chỉ ~0.65. Chỉnh qua env khi cần.
+const MIN_SCORE = Number(process.env.IMAGE_MIN_SCORE) || 0.68;
 // Ảnh thứ 2, 3 phải sát điểm ảnh đầu - tránh đính kèm ảnh "đủ ngưỡng" nhưng lạc đề.
 const MAX_GAP = Number(process.env.IMAGE_MAX_GAP) || 0.05;
 
