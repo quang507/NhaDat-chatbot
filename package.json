@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/gen-blur-bg.mjs",
+    "prebuild": "node scripts/gen-blur-bg.mjs && node scripts/gen-image-manifest.mjs",
     "images:bg": "node scripts/gen-blur-bg.mjs",
     "images:index": "node scripts/build-image-index.mjs",
     "server": "bun server/index.ts",
