@@ -1,7 +1,12 @@
 {
   "framework": "nextjs",
-  "buildCommand": "node scripts/gen-blur-bg.mjs && next build",
+  "buildCommand": "node scripts/gen-blur-bg.mjs && node scripts/gen-image-manifest.mjs && next build",
   "outputDirectory": ".next",
+  "git": {
+    "deploymentEnabled": {
+      "chatbot-logs": false
+    }
+  },
   "regions": [
     "sin1"
   ]

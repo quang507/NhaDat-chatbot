@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimited } from '@/lib/ratelimit';
 import { readFile } from 'fs/promises';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import path from 'path';
 import { getPersona } from '@/lib/admin';
 import { loadIndex, retrieve } from '@/lib/rag';
@@ -14,6 +14,18 @@ import {
 } from '@/lib/static_slides';
 
 export const runtime = 'nodejs';
+
+// Ảnh trong public/images KHÔNG đóng gói vào hàm (tốn Functions Storage mỗi deploy) -
+// kiểm tồn tại qua image_manifest.json (scripts/gen-image-manifest.mjs sinh lúc build).
+// Thiếu manifest (dev chưa chạy prebuild) thì quay về existsSync trên đĩa.
+let IMAGE_SET: Set<string> | null | undefined;
+function imageExists(url: string): boolean {
+  if (IMAGE_SET === undefined) {
+    const p = path.join(process.cwd(), 'image_manifest.json');
+    try { IMAGE_SET = existsSync(p) ? new Set(JSON.parse(readFileSync(p, 'utf-8'))) : null; } catch { IMAGE_SET = null; }
+  }
+  return IMAGE_SET ? IMAGE_SET.has(url) : existsSync(path.join(process.cwd(), 'public', url));
+}
 
 // Cache câu trả lời refine (pha 2) trong RAM của lambda: câu hỏi lặp lại trong
 // showroom trả ngay 0ms. Mất khi lambda nguội - chấp nhận được, đây là cache
@@ -427,7 +439,7 @@ export async function POST(req: NextRequest) {
     // để trống image_urls -> chọn theo ngữ nghĩa với tiêu đề slide.
     if (staticSlide && staticSlide.imageHint === undefined) {
       const imgs: string[] = (staticSlide.image_urls || []).filter((u: string) => {
-        try { return typeof u === 'string' && u.startsWith('/images/') && existsSync(path.join(process.cwd(), 'public', decodeURIComponent(u))); } catch { return false; }
+        try { return typeof u === 'string' && u.startsWith('/images/') && imageExists(decodeURIComponent(u)); } catch { return false; }
       });
       staticSlide.image_urls = imgs;
       if (!imgs.length) { staticSlide.imageModel = model; staticSlide.imageHint = staticSlide.title || ''; }
